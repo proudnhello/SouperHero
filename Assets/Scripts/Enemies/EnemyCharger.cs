@@ -6,9 +6,23 @@ using UnityEngine;
 
 public class EnemyCharger : EnemyBaseClass
 {
-    protected new String soupAbility = "charge";
-    protected new int soupNumber = 1;
-    protected new void UpdateAI(){
+    [SerializeField]
+    private int newMaxHealth = 100;
+    [SerializeField]
+    private float newMoveSpeed = 1f;
+    [SerializeField]
+    private String newSoupAbility = "charge";
+    [SerializeField]
+    private int newSoupNumber = 10;
+    protected new void Start(){
+        base.Start();
+        maxHealth = newMaxHealth;
+        moveSpeed = newMoveSpeed;
+        currentHealth = maxHealth;
+        soupAbility = newSoupAbility;
+        soupNumber = newSoupNumber;
+    }
+    protected override void UpdateAI(){
         Vector2 direction = playerTransform.position - transform.position;
         direction = direction.normalized;
         direction *= Time.deltaTime;
@@ -16,15 +30,7 @@ public class EnemyCharger : EnemyBaseClass
         transform.Translate(direction);
     }
 
-    void Update(){
-        if(!soupable){
-            UpdateAI();
-        }
-        if(Input.GetKeyDown(KeyCode.F)){
-            TakeDamage(50);
-        }
-        if(Input.GetKeyDown(KeyCode.G)){
-            Debug.Log(Soupify());
-        }
+    protected new void Update(){
+        base.Update();
     }
 }

@@ -3,21 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBaseClass : MonoBehaviour
+public abstract class EnemyBaseClass : MonoBehaviour
 {
     protected bool soupable = false;
     protected int maxHealth = 100;
     protected int currentHealth = 100;
     protected float moveSpeed = 1f;
     protected SpriteRenderer sprite;
-    public Transform playerTransform;
-    protected String soupAbility = "test";
-    protected int soupNumber = 1;
-    void Start(){
+    protected Transform playerTransform;
+    protected String soupAbility = "null";
+    protected int soupNumber = -1;
+    protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
+        playerTransform = PlayerManager.instance.player.transform;
     }
 
-    void Update(){
+    protected void Update(){
         if(!soupable){
             UpdateAI();
         }
@@ -36,9 +37,7 @@ public class EnemyBaseClass : MonoBehaviour
     public bool getSoupable(){
         return soupable;
     }
-    protected void UpdateAI(){
-        return;
-    }
+    protected abstract void UpdateAI();
     protected void BecomeSoupable(){
         soupable = true;
         sprite.color = new Color(255, 255, 255);
