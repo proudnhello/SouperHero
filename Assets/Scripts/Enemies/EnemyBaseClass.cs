@@ -10,6 +10,8 @@ public class EnemyBaseClass : MonoBehaviour
     private int currentHealth = 100;
     private SpriteRenderer sprite;
     public Transform playerTransform;
+    private String soupAbility = "test";
+    private int soupNumber = 1;
     void Start(){
         sprite = GetComponent<SpriteRenderer>();
     }
@@ -46,13 +48,13 @@ public class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    public String Soupify(){
+    public (String, int) Soupify(){
         if(soupable){
             Destroy(gameObject);
-            return "test";
+            return (soupAbility, soupNumber);
         }
         else{
-            return "";
+            return ("null", -1);
         }
     }
 }
