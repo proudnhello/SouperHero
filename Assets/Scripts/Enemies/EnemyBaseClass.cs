@@ -16,6 +16,12 @@ public class EnemyBaseClass : MonoBehaviour
 
     void Update(){
         UpdateAI();
+        if(Input.GetKeyDown(KeyCode.F)){
+            TakeDamage(50);
+        }
+        if(Input.GetKeyDown(KeyCode.G)){
+            Debug.Log(Soupify());
+        }
     }
 
     public int getCurrentHealth(){
@@ -37,6 +43,16 @@ public class EnemyBaseClass : MonoBehaviour
         currentHealth = Math.Clamp(currentHealth-amount, 0, maxHealth);
         if(currentHealth == 0){
             BecomeSoupable();
+        }
+    }
+
+    public String Soupify(){
+        if(soupable){
+            Destroy(gameObject);
+            return "test";
+        }
+        else{
+            return "";
         }
     }
 }
