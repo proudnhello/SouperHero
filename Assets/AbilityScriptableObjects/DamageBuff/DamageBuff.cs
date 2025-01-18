@@ -6,7 +6,7 @@ using UnityEngine;
 public class DamageBuff : AbilityAbstractClass
 {
     private GameObject player;
-    [SerializeField] public int buffAmount;
+    [SerializeField] public int buffAmount; // this will change to be based on soup value
     
     public override void Initialize(int duration)
     {
@@ -15,12 +15,15 @@ public class DamageBuff : AbilityAbstractClass
         // TODO: make buffAmount based on soupValue
         // ex: buffAmount = Mathf.CeilToInt(PlayerManager.instance.soupVal / 25)
 
+        int usageValue = Mathf.CeilToInt(duration / 10.0f);
+        _maxUsage = usageValue;
+        _remainingUsage = usageValue;
+
         if (player != null)
         {
             player.GetComponent<PlayerAttack>().playerDamage += buffAmount;
             // TODO: make maxUsage based on soupValue
             // ex: _maxUsage = soupVal / 10
-            _remainingUsage = _maxUsage;
             Debug.Log("buffing player!");
         }
         else
@@ -32,6 +35,7 @@ public class DamageBuff : AbilityAbstractClass
     public override void Active(){
         if (_remainingUsage <= 0)
         {
+            Debug.Log("ending buff");
             End();
         }
         _remainingUsage--;
@@ -40,7 +44,14 @@ public class DamageBuff : AbilityAbstractClass
     public override void End()
     {
         // decrease player damage by buff amount
-        player.GetComponent<PlayerAttack>().playerDamage -= buffAmount;
-        Debug.Log("debuffing player :(");
+        if (player != null)
+        {
+            player.GetComponent<PlayerAttack>().playerDamage -= buffAmount;
+            Debug.Log("debuffing player :(");
+        }
+        else
+        {
+            Debug.LogWarning("Player not found!");
+        }
     }
 }
