@@ -13,6 +13,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float attackRadius;
     [SerializeField] private LayerMask enemies;
 
+    [SerializeField] private AbilityAbstractClass[] abilities; //Lo: This will likely be moved later.
+                                                               //Added all abilities for testing
     void Start()
     {
         testAttack.SetActive(false); //Testing
@@ -36,7 +38,10 @@ public class PlayerAttack : MonoBehaviour
             enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(10);
         }
 
-        //Lo TODO: Iterate over ability array and activate() all abilities
+        foreach (AbilityAbstractClass ability in abilities) //Activate all abilities in array
+        {
+            ability.Active();
+        }
     }
 
     IEnumerator TestDisplayPlayerAttack() //Display test attack radius
