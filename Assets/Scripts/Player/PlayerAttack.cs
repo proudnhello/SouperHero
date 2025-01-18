@@ -12,6 +12,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject testAttack; //Temporary object
     [SerializeField] private float attackRadius;
     [SerializeField] private LayerMask enemies;
+    [SerializeField] public int playerDamage = 10;
 
     void Start()
     {
@@ -33,7 +34,7 @@ public class PlayerAttack : MonoBehaviour
         Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, enemies);
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
         {
-            enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(10);
+            enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(playerDamage);
         }
 
         //Lo TODO: Iterate over ability array and activate() all abilities
