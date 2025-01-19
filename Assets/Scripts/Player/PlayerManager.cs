@@ -14,12 +14,19 @@ public class PlayerManager : MonoBehaviour
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
+    [SerializeField] private GameObject attackSpeed;
 
     [Header("Movement")]
     [SerializeField] float speed = 10.0f;
 
     [Header("Abilities")]
-    [SerializeField] private AbilityAbstractClass[] abilities; 
+    [SerializeField] private AbilityAbstractClass[] abilities;
+
+    [Header("Soup")]
+    [SerializeField] private int maxPotSize = 0;
+    List<(string, int)> pot;
+    private int potFullness = 0;
+
     private void Awake()
     {
         if (instance == null)
@@ -61,5 +68,28 @@ public class PlayerManager : MonoBehaviour
     public LayerMask GetEnemies()
     {
         return instance.enemies;
+    }
+
+    // Add soup to the pot. If the pot is full, the soup will be wasted.
+    public void AddToPot((string, int) soupVal)
+    {
+        if (potFullness+soupVal.Item2 >= maxPotSize)
+        {
+            soupVal.Item2 = maxPotSize - potFullness;
+        }
+        if (soupVal.Item2 == 0)
+        {
+            return;
+        }
+        potFullness += soupVal.Item2;
+        for (int i = 0; i < pot.Count; i++)
+        {
+            if (pot[i].Item1 == soupVal.Item1)
+            {
+                int newSoupVal = pot[i].Item2 + soupVal.Item2;
+                pot[i] = (soupVal.Item1, newSoupVal);
+                return;
+            }
+        }
     }
 }

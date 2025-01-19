@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class PlayerAttack : MonoBehaviour
 {
     [Header("Keybinds")]
     private KeyCode attackKey = KeyCode.Mouse0;
+    private KeyCode soupKey = KeyCode.Mouse1;
 
     [Header("Attack")]
     [SerializeField] private GameObject attackPoint;
@@ -26,6 +28,10 @@ public class PlayerAttack : MonoBehaviour
         {
             Attack();
         }
+        if (Input.GetKeyDown(soupKey))
+        {
+            SoupAttack();
+        }
     }
 
     void Attack()
@@ -41,6 +47,22 @@ public class PlayerAttack : MonoBehaviour
         foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities()) //Activate all abilities in array
         {
             ability.Active();
+        }
+    }
+
+    void SoupAttack()
+    {
+        StartCoroutine(TestDisplayPlayerAttack());
+
+        Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
+        foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
+        {
+            (string, int) soup = enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().Soupify();
+            if (soup.Item1 != null && soup.Item1 != "null")
+            {
+                PlayerManager.instance.AddToPot(soup);
+                print(soup.Item1 + " added to pot, added " + soup.Item2);
+            }
         }
     }
 
