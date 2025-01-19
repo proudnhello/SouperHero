@@ -11,14 +11,13 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject attackPoint;
     [SerializeField] private GameObject testAttack; //Temporary object
     [SerializeField] private float attackRadius;
-    [SerializeField] private LayerMask enemies;
-    [SerializeField] public int playerDamage = 10;
-
-    [SerializeField] private AbilityAbstractClass[] abilities; //Lo: This will likely be moved later.
-                                                               //Added all abilities for testing
     void Start()
     {
         testAttack.SetActive(false); //Testing
+        foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities()) //Initialize all abilities in array
+        {
+            ability.Initialize(10);
+        }
     }
 
     void Update()
@@ -33,13 +32,13 @@ public class PlayerAttack : MonoBehaviour
     {
         StartCoroutine(TestDisplayPlayerAttack());
 
-        Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, enemies);
+        Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
         {
-            enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(playerDamage);
+            enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.instance.GetDamage());
         }
 
-        foreach (AbilityAbstractClass ability in abilities) //Activate all abilities in array
+        foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities()) //Activate all abilities in array
         {
             ability.Active();
         }

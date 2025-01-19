@@ -22,9 +22,6 @@ public abstract class EnemyBaseClass : MonoBehaviour
         if(!soupable){
             UpdateAI();
         }
-        if(Input.GetKeyDown(KeyCode.F)){
-            TakeDamage(50);
-        }
         if(Input.GetKeyDown(KeyCode.G)){
             Debug.Log(Soupify());
         }

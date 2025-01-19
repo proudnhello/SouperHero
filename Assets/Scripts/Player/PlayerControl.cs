@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    [SerializeField] float speed = 10.0f;
     float horizontal;
     float vertical;
     Rigidbody2D rb;
@@ -28,6 +27,6 @@ public class PlayerControl : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(horizontal, vertical).normalized * speed;
+        rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerManager.instance.GetSpeed();
     }
 }

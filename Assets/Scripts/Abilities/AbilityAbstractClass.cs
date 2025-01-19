@@ -13,7 +13,7 @@ public abstract class AbilityAbstractClass : ScriptableObject
     [SerializeField] protected float _remainingUsage;
 
     // Initialize and End are mostly for use by buffs, most abilities get triggered with a call to Active().
-    public abstract void Initialize(int duration);
+    public abstract void Initialize(int soupVal);
     public abstract void Active();
     public abstract void End();
 }

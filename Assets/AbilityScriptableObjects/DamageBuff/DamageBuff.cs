@@ -5,31 +5,31 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Abilities/DamageBuff")]
 public class DamageBuff : AbilityAbstractClass
 {
-    private GameObject player;
+    private PlayerManager player;
     [SerializeField] public int buffAmount; // this will change to be based on soup value
+    bool isActive = false;
     
-    public override void Initialize(int duration)
+    public override void Initialize(int soupVal)
     {
-        player = PlayerManager.instance.player;
+        player = PlayerManager.instance;
         // TODO: make buffAmount based on soupValue
         // ex: buffAmount = Mathf.CeilToInt(PlayerManager.instance.soupVal / 25)
 
-        int usageValue = Mathf.CeilToInt(duration / 10.0f);
+        int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
         _maxUsage = usageValue;
         _remainingUsage = usageValue;
 
         if (player != null)
         {
-            Debug.Log("DMG Before buff: " + player.GetComponent<PlayerAttack>().playerDamage);
-            player.GetComponent<PlayerAttack>().playerDamage += buffAmount;
-            Debug.Log("DMG after buff: " + (player.GetComponent<PlayerAttack>().playerDamage));
-            // TODO: make maxUsage based on soupValue
-            // ex: _maxUsage = soupVal / 10
+            Debug.Log("DMG Before buff: " + PlayerManager.instance.GetDamage());
+            player.SetDamage(buffAmount + PlayerManager.instance.GetDamage());
+            Debug.Log("DMG after buff: " + PlayerManager.instance.GetDamage());
         }
         else
         {
             Debug.LogWarning("Player not found!");
         }
+        isActive = true;
         return;
     }
     public override void Active(){
@@ -41,7 +41,7 @@ public class DamageBuff : AbilityAbstractClass
         else
         {
             _remainingUsage--;
-            Debug.Log("using buff >:], buffed DMG = " + player.GetComponent<PlayerAttack>().playerDamage);
+            Debug.Log("using buff >:], buffed DMG = " + PlayerManager.instance.GetDamage());
         }
     }
     public override void End()
@@ -49,8 +49,13 @@ public class DamageBuff : AbilityAbstractClass
         // decrease player damage by buff amount
         if (player != null)
         {
-            player.GetComponent<PlayerAttack>().playerDamage -= buffAmount;
-            Debug.Log("DMG after debuff: " + (player.GetComponent<PlayerAttack>().playerDamage));
+            if (!isActive)
+            {
+                return;
+            }
+            player.SetDamage(PlayerManager.instance.GetDamage() - buffAmount);
+            Debug.Log("DMG after debuff: " + PlayerManager.instance.GetDamage());
+            isActive = false;
         }
         else
         {
