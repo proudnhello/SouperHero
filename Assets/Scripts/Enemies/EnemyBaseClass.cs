@@ -17,6 +17,9 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
 
+    [SerializeField]
+    protected float knockBackTime = 1.0f;
+
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
         playerTransform = PlayerManager.instance.player.transform;
@@ -71,7 +74,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
 
     public IEnumerator KnockBack()
     {
-        int maxFlashCycles = 4;
+        int maxFlashCycles = Mathf.CeilToInt((knockBackTime / 0.3f));
         int flashCycles = 0;
         while(maxFlashCycles > flashCycles)
         {
