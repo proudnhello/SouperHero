@@ -25,9 +25,8 @@ public class EnemyCharger : EnemyBaseClass
     protected override void UpdateAI(){
         Vector2 direction = playerTransform.position - transform.position;
         direction = direction.normalized;
-        direction *= Time.deltaTime;
         direction *= moveSpeed;
-        transform.Translate(direction);
+        _rigidbody.velocity = direction;
     }
 
     protected new void Update(){
