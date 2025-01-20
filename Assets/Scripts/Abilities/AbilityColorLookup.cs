@@ -21,7 +21,7 @@ public class AbilityColorLookup : ScriptableObject
         abilityColorLookup = new Dictionary<string, string>();
         foreach (AbilityColorLookupEntry entry in lookup)
         {
-            abilityColorLookup.Add(enemyName, entry.color);
+            abilityColorLookup.Add(entry.enemyName, entry.color);
         }
     }   
 
