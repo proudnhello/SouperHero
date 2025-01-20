@@ -1,14 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("Keybinds")]
-    private KeyCode attackKey = KeyCode.Mouse0;
-    private KeyCode soupKey = KeyCode.Mouse1;
-
     [Header("Attack")]
     [SerializeField] private GameObject attackPoint;
     [SerializeField] private GameObject testAttack; //Temporary object
@@ -24,13 +21,18 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(attackKey))
+        if (Input.GetKeyDown(PlayerManager.instance.attackKey))
         {
             Attack();
         }
-        if (Input.GetKeyDown(soupKey))
+        if (Input.GetKeyDown(PlayerManager.instance.soupKey))
         {
             SoupAttack();
+        }
+        if (Input.GetKeyDown(PlayerManager.instance.drinkey))
+        {
+            print("Drink");
+            PlayerManager.instance.Drink();
         }
     }
 
@@ -44,7 +46,7 @@ public class PlayerAttack : MonoBehaviour
             enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.instance.GetDamage());
         }
 
-        foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities()) //Activate all abilities in array
+        foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
         {
             ability.Active();
         }
@@ -61,7 +63,6 @@ public class PlayerAttack : MonoBehaviour
             if (soup.Item1 != null && soup.Item1 != "null")
             {
                 PlayerManager.instance.AddToPot(soup);
-                print(soup.Item1 + " added to pot, added " + soup.Item2);
             }
         }
     }

@@ -214,14 +214,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 4732919122290708663}
+  attackKey: 323
+  soupKey: 324
+  drinkey: 32
   enemies:
     serializedVersion: 2
     m_Bits: 128
   playerDamage: 10
+  attackSpeed: {fileID: 0}
   speed: 10
-  abilities:
-  - {fileID: 11400000, guid: 5cd713239b83c4a7aa60754a0d8d9949, type: 2}
-  - {fileID: 11400000, guid: 8a482a84ff9df5940b8b2144da887138, type: 2}
+  abilities: []
+  lookup: {fileID: 11400000, guid: 7c19852f0fd33ba42b1005646759b9a5, type: 2}
+  maxPotSize: 100
 --- !u!50 &3811208658680137570
 Rigidbody2D:
   serializedVersion: 4

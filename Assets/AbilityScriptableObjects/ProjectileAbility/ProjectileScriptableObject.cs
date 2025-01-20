@@ -17,14 +17,12 @@ public class ProjectileScriptableObject : AbilityAbstractClass
 
     // TODO: remove once ability manager is implemented
     [SerializeField] float _lifespan = 3.0f;
-    bool isActive = false;  
 
     public override void Initialize(int soupVal)
     {
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
         _maxUsage = usageValue;
         _remainingUsage = usageValue;
-        isActive = true;
     }
     public override void Active()
     {   
@@ -64,15 +62,11 @@ public class ProjectileScriptableObject : AbilityAbstractClass
 
     public override void End()
     {
-        if(!isActive)
-        {
-            return;
-        }
         if(_currentProjectile)
         {
             Destroy(_currentProjectile);
         }
-        isActive = false;
+        PlayerManager.instance.RemoveAbility(this);
     }
 
 

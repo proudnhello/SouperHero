@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -9,7 +11,9 @@ public class PlayerManager : MonoBehaviour
 
 
     [Header("Keybinds")]
-    private KeyCode attackKey = KeyCode.Mouse0;
+    public KeyCode attackKey = KeyCode.Mouse0;
+    public KeyCode soupKey = KeyCode.Mouse1;
+    public KeyCode drinkey = KeyCode.Space;
 
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
@@ -20,11 +24,12 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] float speed = 10.0f;
 
     [Header("Abilities")]
-    [SerializeField] private AbilityAbstractClass[] abilities;
+    [SerializeField] private List<AbilityAbstractClass> abilities;
 
     [Header("Soup")]
-    [SerializeField] private int maxPotSize = 0;
-    List<(string, int)> pot;
+    [SerializeField] private AbilityLookup lookup;
+    [SerializeField] private int maxPotSize = 100;
+    List<(string, int)> pot = new List<(string, int)>();
     private int potFullness = 0;
 
     private void Awake()
@@ -55,12 +60,7 @@ public class PlayerManager : MonoBehaviour
         instance.speed = newSpeed;
     }
 
-    public KeyCode GetAttackKey()
-    {
-        return instance.attackKey;
-    }
-
-    public AbilityAbstractClass[] GetAbilities()
+    public List<AbilityAbstractClass> GetAbilities()
     {
         return instance.abilities;
     }
@@ -73,6 +73,8 @@ public class PlayerManager : MonoBehaviour
     // Add soup to the pot. If the pot is full, the soup will be wasted.
     public void AddToPot((string, int) soupVal)
     {
+        print("soupVal" + soupVal.Item2);
+
         if (potFullness+soupVal.Item2 >= maxPotSize)
         {
             soupVal.Item2 = maxPotSize - potFullness;
@@ -91,5 +93,42 @@ public class PlayerManager : MonoBehaviour
                 return;
             }
         }
+        pot.Add(soupVal);
+    }
+
+    // Drink the soup in the pot and activate the abilities that correspond to the soup.
+    public void Drink()
+    {
+        foreach((string, int) soup in pot)
+        {
+            print(soup.Item1 + " " + soup.Item2);
+        }
+        // You can't drink soup if the pot is empty
+        if (pot.Count == 0)
+        {
+            return;
+        }
+
+        // First end all active abilities
+        foreach (AbilityAbstractClass ability in abilities.ToList())
+        {
+            ability.End();
+        }
+
+        // Then drink the soup
+        List<AbilityAbstractClass> drankAbilities = lookup.Drink(pot);
+        print(drankAbilities);
+
+        abilities.Clear();
+        pot.Clear();
+        foreach (AbilityAbstractClass ability in drankAbilities)
+        {
+            abilities.Add(ability);
+        }
+    }
+
+    public void RemoveAbility(AbilityAbstractClass ability)
+    {
+        abilities.Remove(ability);
     }
 }

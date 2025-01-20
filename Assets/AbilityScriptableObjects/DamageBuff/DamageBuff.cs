@@ -7,7 +7,6 @@ public class DamageBuff : AbilityAbstractClass
 {
     private PlayerManager player;
     [SerializeField] public int buffAmount; // this will change to be based on soup value
-    bool isActive = false;
     
     public override void Initialize(int soupVal)
     {
@@ -16,6 +15,7 @@ public class DamageBuff : AbilityAbstractClass
         // ex: buffAmount = Mathf.CeilToInt(PlayerManager.instance.soupVal / 25)
 
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
+        Debug.Log(usageValue);
         _maxUsage = usageValue;
         _remainingUsage = usageValue;
 
@@ -29,7 +29,6 @@ public class DamageBuff : AbilityAbstractClass
         {
             Debug.LogWarning("Player not found!");
         }
-        isActive = true;
         return;
     }
     public override void Active(){
@@ -49,13 +48,9 @@ public class DamageBuff : AbilityAbstractClass
         // decrease player damage by buff amount
         if (player != null)
         {
-            if (!isActive)
-            {
-                return;
-            }
             player.SetDamage(PlayerManager.instance.GetDamage() - buffAmount);
             Debug.Log("DMG after debuff: " + PlayerManager.instance.GetDamage());
-            isActive = false;
+            PlayerManager.instance.RemoveAbility(this);
         }
         else
         {
