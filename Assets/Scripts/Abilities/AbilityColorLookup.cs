@@ -30,4 +30,9 @@ public class AbilityColorLookup : ScriptableObject
         return abilityColorLookup[enemyName];
     }
 
+    public void AddColor(string enemyName, string color)
+    {
+        abilityColorLookup.Add(enemyName, color);
+    }
+
 }
