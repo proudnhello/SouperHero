@@ -32,6 +32,11 @@ public class PlayerManager : MonoBehaviour
     List<(string, int)> pot = new List<(string, int)>();
     private int potFullness = 0;
 
+    [Header("Health")]
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int health;
+
+
     private void Awake()
     {
         if (instance == null)
@@ -130,5 +135,35 @@ public class PlayerManager : MonoBehaviour
     public void RemoveAbility(AbilityAbstractClass ability)
     {
         abilities.Remove(ability);
+    }
+
+    public void SetHealth(int newHealth)
+    {
+        instance.health = (int)newHealth;
+    }
+
+    public int GetHealth()
+    {
+        return instance.health;
+    }
+
+    public void Heal(int healAmount)
+    {
+        instance.health += healAmount;
+        if (instance.health > maxHealth)
+        {
+            instance.health = maxHealth;
+        }
+    }
+
+    public void TakeDamage(int damageAmount)
+    {
+        instance.health -= damageAmount;
+        if (instance.health <= 0)
+        {
+            instance.health = 0;
+            // Game over
+            Debug.Log("Game Over womp womp");
+        }
     }
 }
