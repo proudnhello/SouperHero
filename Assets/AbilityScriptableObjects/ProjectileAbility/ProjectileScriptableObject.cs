@@ -7,10 +7,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Abilities/Projectile")]
 public class ProjectileScriptableObject : AbilityAbstractClass
 {
+    [SerializeField]
+    private List<GameObject> _projectilePool;
 
     public GameObject projectilePrefab;
-    private GameObject _currentProjectile;
-
     private Vector2 _projectileDirection;
 
     [SerializeField] float _projectileSpeed = 100.0f;
@@ -23,7 +23,35 @@ public class ProjectileScriptableObject : AbilityAbstractClass
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
         _maxUsage = usageValue;
         _remainingUsage = usageValue;
+
+        Debug.Log("Projectiles Initialized!!");
+
+        for(int i = 0; i < _maxUsage; i++)
+        {
+            // create all objects in the pool, and deactivate all
+            _projectilePool.Add(Instantiate(projectilePrefab));
+            _projectilePool[i].SetActive(false);
+        }
     }
+
+    private void startProjectile(GameObject go, GameObject player) {
+        // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
+        go.SetActive(true);
+        go.transform.position = player.transform.position;
+        go.transform.up = player.transform.up;
+        _projectileDirection = player.transform.up;
+
+        // Get its rigidbody component, and set its velocity to the direction it is facing multiplied by the projectile speed.
+        if (go.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb))
+        {
+            rb.velocity = go.transform.up * _projectileSpeed;
+        }
+        else
+        {
+            Debug.LogWarning("Projectile prefab needs a Rigidbody component for movement!");
+        }
+    }
+
     public override void Active()
     {   
         // Check if ability has time, otherwise call End()
@@ -31,43 +59,48 @@ public class ProjectileScriptableObject : AbilityAbstractClass
         {
             End();
             return;
-        }
-        // If its the first time calling Active(), then spawn the projectile
-        if (_remainingUsage == _maxUsage)
+        } else 
         {
-            // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
-            _currentProjectile = Instantiate(projectilePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
-            _currentProjectile.transform.up = PlayerManager.instance.player.transform.up;
-            _projectileDirection = PlayerManager.instance.player.transform.up;
+            // Get an inactive object from the pool
+            GameObject go = GetPooledObject();
+            if (go != null)
+            {
+                // make the projectile active in heirarchy and start its journey
 
-            // Get its rigidbody component, and set its velocity to the direction it is facing multiplied by the projectile speed.
-            if (_currentProjectile.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb))
-            {
-                rb.velocity = _currentProjectile.transform.up * _projectileSpeed;
-            }
-            else
-            {
-                Debug.LogWarning("Projectile prefab needs a Rigidbody component for movement!");
+                // Comment: odd business, mostly because why pool? feels useless lowkey other than the loading all objects at once.... have to bring this up later
+                startProjectile(go, PlayerManager.instance.player);
+                // Timer helper object HUNTS DOWN the object and MURDERS it after the delay.
+                TimerHelper.instance.DeactivateAfterDelay(go, _lifespan);
+                _remainingUsage--;
             }
         }
-        //TODO: _remainingUsage--;
-        Destroy(_currentProjectile, _lifespan);
-    }
-
-    private void Destroy(GameObject objectToDestroy, float delay)
-    {
-        // TODO: placeholder. Real destruction will be goverened by ability manager and update.
-        Object.Destroy(objectToDestroy, delay);
     }
 
     public override void End()
     {
-        if(_currentProjectile)
+        for (int i = 0; i < _projectilePool.Count; i++)
         {
-            Destroy(_currentProjectile);
+            if( _projectilePool[i] != null )
+            {
+                Destroy(_projectilePool[i]);
+            }
         }
         PlayerManager.instance.RemoveAbility(this);
     }
 
+    private GameObject GetPooledObject()
+    {
+        // loop over the object pool
+        for (int i = 0; i < _projectilePool.Count; i++)
+        {
+            // check if there are any objects that are not currently active
+            if (!_projectilePool[i].activeInHierarchy)
+            {
+                // if object is inactive, return it for usage :P
+                return _projectilePool[i];
+            }
+        }
+        return null;
+    }
 
 }
