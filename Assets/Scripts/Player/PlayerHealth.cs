@@ -30,6 +30,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void KnockBack(GameObject collider)
     {
+        Debug.Log("Knocking back player");
         Vector3 direction = (PlayerManager.instance.player.GetComponent<Transform>().position - collider.GetComponent<Transform>().position).normalized;
         PlayerManager.instance.player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         PlayerManager.instance.player.GetComponent<Rigidbody2D>().AddForce(direction * 3, ForceMode2D.Impulse);
