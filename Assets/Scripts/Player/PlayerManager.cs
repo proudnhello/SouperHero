@@ -147,9 +147,15 @@ public class PlayerManager : MonoBehaviour
         return instance.health;
     }
 
+    public int GetMaxHealth()
+    {
+        return instance.maxHealth;
+    }
+
     public void Heal(int healAmount)
     {
         instance.health += healAmount;
+        Debug.Log("Healing");
         if (instance.health > maxHealth)
         {
             instance.health = maxHealth;
@@ -159,6 +165,7 @@ public class PlayerManager : MonoBehaviour
     public void TakeDamage(int damageAmount)
     {
         instance.health -= damageAmount;
+        Debug.Log("Taking damage");
         if (instance.health <= 0)
         {
             instance.health = 0;
