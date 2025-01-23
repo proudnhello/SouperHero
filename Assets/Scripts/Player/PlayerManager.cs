@@ -21,6 +21,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private int playerDamage = 10;
     [SerializeField] private float attackSpeed = 3;
     [SerializeField] private float attackDelay = 0;
+    [SerializeField] private float attackRadius = 1.0f;
 
     [Header("Movement")]
     [SerializeField] float speed = 10.0f;
@@ -193,5 +194,15 @@ public class PlayerManager : MonoBehaviour
             // Game over
             Debug.Log("Game Over womp womp");
         }
+    }
+
+    public float GetAttackRadius()
+    {
+        return instance.attackRadius;
+    }
+    public float SetAttackRadius(float newRadius)
+    {
+        instance.attackRadius = newRadius;
+        return instance.attackRadius;
     }
 }

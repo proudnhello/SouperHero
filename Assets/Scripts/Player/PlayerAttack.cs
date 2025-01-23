@@ -35,6 +35,9 @@ public class PlayerAttack : MonoBehaviour
             print("Drink");
             PlayerManager.instance.Drink();
         }
+
+        attackRadius = PlayerManager.instance.GetAttackRadius();
+        testAttack.transform.localScale = new Vector3(attackRadius, attackRadius, 1); 
     }
 
     void Attack()
