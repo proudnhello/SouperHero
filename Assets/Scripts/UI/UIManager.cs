@@ -19,9 +19,8 @@ public class UIManager : MonoBehaviour
     void Start() {
 
     }
-    void HealthChange() {
-        // healthText.GetComponent<TMP_Text>().text = PlayerManager.instance.playerHealth.ToString();
-        healthText.GetComponent<TMP_Text>().text = PlayerManager.instance.playerHealth.ToString();
+    public void HealthChange() {
+        healthText.GetComponent<TMP_Text>().text = PlayerManager.instance.health.ToString();
 
     }
 

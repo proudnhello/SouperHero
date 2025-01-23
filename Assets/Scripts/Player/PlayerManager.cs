@@ -17,8 +17,6 @@ public class PlayerManager : MonoBehaviour
     public KeyCode soupKey = KeyCode.Mouse1;
     public KeyCode drinkey = KeyCode.Space;
     [Header("Attack")]
-    [SerializeField] public int playerHealth = 100;
-    [Header("Attack")]
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
     [SerializeField] private float attackSpeed = 3;
@@ -38,7 +36,7 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Health")]
     [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int health;
+    [SerializeField] public int health;
 
 
     private void Awake()
