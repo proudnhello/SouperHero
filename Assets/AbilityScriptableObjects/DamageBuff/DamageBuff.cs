@@ -6,7 +6,8 @@ using UnityEngine;
 public class DamageBuff : AbilityAbstractClass
 {
     private PlayerManager player;
-    [SerializeField] public int buffAmount; // this will change to be based on soup value
+    [SerializeField] public int buffMult = 3; // this will change to be based on soup value
+    int buffAmount = 10;
     
     public override void Initialize(int soupVal)
     {
@@ -18,6 +19,7 @@ public class DamageBuff : AbilityAbstractClass
         Debug.Log(usageValue);
         _maxUsage = usageValue;
         _remainingUsage = usageValue;
+        buffAmount = soupVal/buffMult;
 
         if (player != null)
         {
