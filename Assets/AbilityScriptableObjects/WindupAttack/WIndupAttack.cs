@@ -11,8 +11,6 @@ public class WindupAttack : AbilityAbstractClass
     public override void Initialize(int soupVal)
     {
         player = PlayerManager.instance;
-        // TODO: make buffAmount based on soupValue
-        // ex: buffAmount = Mathf.CeilToInt(PlayerManager.instance.soupVal / 25)
 
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
         Debug.Log(usageValue);
@@ -21,9 +19,7 @@ public class WindupAttack : AbilityAbstractClass
 
         if (player != null)
         {
-            Debug.Log("DMG Before buff: " + PlayerManager.instance.GetDamage());
-            player.SetDamage(buffAmount + PlayerManager.instance.GetDamage());
-            Debug.Log("DMG after buff: " + PlayerManager.instance.GetDamage());
+            Debug.Log("Windup attack initiated");
         }
         else
         {
@@ -34,13 +30,13 @@ public class WindupAttack : AbilityAbstractClass
     public override void Active(){
         if (_remainingUsage <= 0)
         {
-            Debug.Log("ending buff");
+            Debug.Log("ending windup attack");
             End();
         }
         else
         {
             _remainingUsage--;
-            Debug.Log("using buff >:], buffed DMG = " + PlayerManager.instance.GetDamage());
+            Debug.Log("using windup attack");
         }
     }
     public override void End()
