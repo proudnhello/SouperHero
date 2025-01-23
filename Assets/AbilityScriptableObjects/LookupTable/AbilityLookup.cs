@@ -34,6 +34,7 @@ public class AbilityLookup : ScriptableObject
                 int value = soup.Item2;
                 if (name == entry.enemyType && value > entry.minSoupValue && value <= entry.maxSoupValue)
                 {
+                    Debug.Log("BRIAN TEST" + name);
                     AbilityAbstractClass ability = Instantiate(entry.ability);
                     ability.Initialize(value);
                     abilities.Add(ability);

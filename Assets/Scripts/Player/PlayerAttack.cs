@@ -10,6 +10,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject attackPoint;
     [SerializeField] private GameObject testAttack; //Temporary object
     [SerializeField] private float attackRadius;
+    private bool isAttacking;
     void Start()
     {
         testAttack.SetActive(false); //Testing
@@ -38,24 +39,16 @@ public class PlayerAttack : MonoBehaviour
 
     void Attack()
     {
-        StartCoroutine(TestDisplayPlayerAttack());
-
-        Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
-        foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
-        {
-            enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
-        }
-
-        foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
-        {
-            ability.Active();
+        if(!isAttacking){
+            StartCoroutine(TestDisplayPlayerAttack());
         }
     }
 
     void SoupAttack()
     {
-        StartCoroutine(TestDisplayPlayerAttack());
-
+        if(!isAttacking){
+            StartCoroutine(TestDisplayPlayerAttack());
+        }
         Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
         {
@@ -69,9 +62,24 @@ public class PlayerAttack : MonoBehaviour
 
     IEnumerator TestDisplayPlayerAttack() //Display test attack radius
     {
+        // Windup
+        isAttacking = true;
+        yield return new WaitForSeconds(PlayerManager.instance.getAttackDelay());
+        
+        // Attack
         testAttack.SetActive(true);
-        yield return new WaitForSeconds(0.3f);
+        Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
+        foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
+        {
+            enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
+        }
+        foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
+        {
+            ability.Active();
+        }
+        yield return new WaitForSeconds(1f/PlayerManager.instance.getAttackSpeed());
         testAttack.SetActive(false);
+        isAttacking = false;
     }
 
     private void OnDrawGizmos() //Draw in scene for testing
