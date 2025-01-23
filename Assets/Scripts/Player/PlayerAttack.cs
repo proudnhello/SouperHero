@@ -37,7 +37,16 @@ public class PlayerAttack : MonoBehaviour
         }
 
         attackRadius = PlayerManager.instance.GetAttackRadius();
-        testAttack.transform.localScale = new Vector3(attackRadius, attackRadius, 1); 
+        testAttack.transform.localScale = new Vector3(attackRadius, attackRadius, 1);
+
+        if (isAttacking)
+        {
+            Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
+            foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
+            {
+                enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
+            }
+        }
     }
 
     void Attack()
@@ -66,16 +75,11 @@ public class PlayerAttack : MonoBehaviour
     IEnumerator TestDisplayPlayerAttack() //Display test attack radius
     {
         // Windup
-        isAttacking = true;
         yield return new WaitForSeconds(PlayerManager.instance.getAttackDelay());
-        
+        isAttacking = true;
+
         // Attack
         testAttack.SetActive(true);
-        Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
-        foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
-        {
-            enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
-        }
         foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
         {
             ability.Active();
