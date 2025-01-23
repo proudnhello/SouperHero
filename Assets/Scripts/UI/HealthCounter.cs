@@ -9,29 +9,26 @@ public class Health : MonoBehaviour
     [Header("UI Configuration")]
     [SerializeField] List<GameObject> heartList;
     private int heartCount = 0;
-    private int playerHealth = PlayerManager.instance.health / 10;
+    private int playerHealth = 0; 
     [Header("Debug")]
-    public GameObject healthText;
+    public TMP_Text healthText;
 
     void Start() {
         // Initialize with all hearts as empty
         foreach(GameObject heart in heartList) {
             heart.SetActive(false);
         }
-
+        playerHealth = PlayerManager.instance.health / 10;
         for (int i = 0; i < playerHealth; i++) {
             heartList[i].SetActive(true);
             heartCount++;
         }
-    }
 
-    void Update()
-    {
-        HealthChange(); 
+        PlayerHealth.HealthChange += HealthChange;
     }
 
     public void HealthChange() {
-        healthText.GetComponent<TMP_Text>().text = PlayerManager.instance.health.ToString();
+        healthText.text = PlayerManager.instance.health.ToString();
         playerHealth = PlayerManager.instance.health / 10;
         if (heartCount < playerHealth - 1) {
             AddHealth();
@@ -43,13 +40,13 @@ public class Health : MonoBehaviour
 
     void AddHealth() {
         Debug.Log("Health Count: " + heartCount + "Player Health " + playerHealth);
-        heartList[heartCount].SetActive(true);
+        heartList[heartCount-1].SetActive(true);
         heartCount++;
 
     }
 
     void RemoveHealth() {
-        heartList[heartCount].SetActive(false);
+        heartList[heartCount-1].SetActive(false);
         heartCount--;
 
     }
