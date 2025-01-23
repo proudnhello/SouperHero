@@ -8,7 +8,6 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
     public GameObject healthText;
-    private TMP_Text text;
     private void Awake()
     {
         if (instance == null)
