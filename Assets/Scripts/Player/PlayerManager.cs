@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.U2D.Sprites;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -18,7 +19,8 @@ public class PlayerManager : MonoBehaviour
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
-    [SerializeField] private GameObject attackSpeed;
+    [SerializeField] private float attackSpeed = 3;
+    [SerializeField] private float attackDelay = 0;
 
     [Header("Movement")]
     [SerializeField] float speed = 10.0f;
@@ -60,6 +62,22 @@ public class PlayerManager : MonoBehaviour
         instance.speed = newSpeed;
     }
 
+    public float getAttackSpeed(){
+        return attackSpeed;
+    }
+
+    public void setAttackSpeed(float newAttackSpeed){
+        attackSpeed = newAttackSpeed;
+    }
+
+    public float getAttackDelay(){
+        return attackDelay;
+    }
+
+    public void setAttackDelay(float newAttackDelay){
+        attackDelay = newAttackDelay;
+    }
+
     public List<AbilityAbstractClass> GetAbilities()
     {
         return instance.abilities;
@@ -74,6 +92,7 @@ public class PlayerManager : MonoBehaviour
     public void AddToPot((string, int) soupVal)
     {
         print("soupVal" + soupVal.Item2);
+        print("name" + soupVal.Item1);
 
         if (potFullness+soupVal.Item2 >= maxPotSize)
         {
@@ -117,7 +136,9 @@ public class PlayerManager : MonoBehaviour
 
         // Then drink the soup
         List<AbilityAbstractClass> drankAbilities = lookup.Drink(pot);
-        print(drankAbilities);
+        foreach(AbilityAbstractClass ability in drankAbilities){
+            print(ability._abilityName);
+        }
 
         abilities.Clear();
         pot.Clear();
