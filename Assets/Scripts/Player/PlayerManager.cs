@@ -18,7 +18,7 @@ public class PlayerManager : MonoBehaviour
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
-    [SerializeField] private GameObject attackSpeed;
+    [SerializeField] private float attackSpeed = 3;
 
     [Header("Movement")]
     [SerializeField] float speed = 10.0f;
@@ -58,6 +58,14 @@ public class PlayerManager : MonoBehaviour
     public void SetSpeed(float newSpeed)
     {
         instance.speed = newSpeed;
+    }
+
+    public float getAttackSpeed(){
+        return attackSpeed;
+    }
+
+    public void setAttackSpeed(float newAttackSpeed){
+        attackSpeed = newAttackSpeed;
     }
 
     public List<AbilityAbstractClass> GetAbilities()
