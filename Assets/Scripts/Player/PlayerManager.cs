@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor.U2D.Sprites;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
@@ -15,7 +16,6 @@ public class PlayerManager : MonoBehaviour
     public KeyCode attackKey = KeyCode.Mouse0;
     public KeyCode soupKey = KeyCode.Mouse1;
     public KeyCode drinkey = KeyCode.Space;
-
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
@@ -33,6 +33,11 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private int maxPotSize = 100;
     List<(string, int)> pot = new List<(string, int)>();
     private int potFullness = 0;
+
+    [Header("Health")]
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] public int health;
+
 
     private void Awake()
     {
@@ -151,5 +156,42 @@ public class PlayerManager : MonoBehaviour
     public void RemoveAbility(AbilityAbstractClass ability)
     {
         abilities.Remove(ability);
+    }
+
+    public void SetHealth(int newHealth)
+    {
+        instance.health = (int)newHealth;
+    }
+
+    public int GetHealth()
+    {
+        return instance.health;
+    }
+
+    public int GetMaxHealth()
+    {
+        return instance.maxHealth;
+    }
+
+    public void Heal(int healAmount)
+    {
+        instance.health += healAmount;
+        Debug.Log("Healing");
+        if (instance.health > maxHealth)
+        {
+            instance.health = maxHealth;
+        }
+    }
+
+    public void TakeDamage(int damageAmount)
+    {
+        instance.health -= damageAmount;
+        Debug.Log("Taking damage");
+        if (instance.health <= 0)
+        {
+            instance.health = 0;
+            // Game over
+            Debug.Log("Game Over womp womp");
+        }
     }
 }
