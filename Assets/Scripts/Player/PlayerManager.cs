@@ -19,6 +19,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
     [SerializeField] private float attackSpeed = 3;
+    [SerializeField] private float attackDelay = 0;
 
     [Header("Movement")]
     [SerializeField] float speed = 10.0f;
@@ -68,6 +69,14 @@ public class PlayerManager : MonoBehaviour
         attackSpeed = newAttackSpeed;
     }
 
+    public float getAttackDelay(){
+        return attackDelay;
+    }
+
+    public void setAttackDelay(float newAttackDelay){
+        attackDelay = newAttackDelay;
+    }
+
     public List<AbilityAbstractClass> GetAbilities()
     {
         return instance.abilities;
@@ -82,6 +91,7 @@ public class PlayerManager : MonoBehaviour
     public void AddToPot((string, int) soupVal)
     {
         print("soupVal" + soupVal.Item2);
+        print("name" + soupVal.Item1);
 
         if (potFullness+soupVal.Item2 >= maxPotSize)
         {

@@ -63,12 +63,10 @@ public class PlayerAttack : MonoBehaviour
     IEnumerator TestDisplayPlayerAttack() //Display test attack radius
     {
         // Windup
-        Debug.Log("start windup");
         isAttacking = true;
-        yield return new WaitForSeconds(1f/PlayerManager.instance.getAttackSpeed());
+        yield return new WaitForSeconds(PlayerManager.instance.getAttackDelay());
         
         // Attack
-        Debug.Log("start attack");
         testAttack.SetActive(true);
         Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius

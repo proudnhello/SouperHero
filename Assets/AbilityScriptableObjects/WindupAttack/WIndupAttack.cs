@@ -19,7 +19,10 @@ public class WindupAttack : AbilityAbstractClass
 
         if (player != null)
         {
-            Debug.Log("Windup attack initiated");
+            Debug.Log("Windup attack buff initiated");
+            player.setAttackDelay(player.getAttackDelay() + 0.3f);
+            player.SetDamage(player.GetDamage() + buffAmount);
+
         }
         else
         {
@@ -44,8 +47,8 @@ public class WindupAttack : AbilityAbstractClass
         // decrease player damage by buff amount
         if (player != null)
         {
-            player.SetDamage(PlayerManager.instance.GetDamage() - buffAmount);
-            Debug.Log("DMG after debuff: " + PlayerManager.instance.GetDamage());
+            player.setAttackDelay(player.getAttackDelay() - 0.3f);
+            player.SetDamage(player.GetDamage() - buffAmount);
             PlayerManager.instance.RemoveAbility(this);
         }
         else
