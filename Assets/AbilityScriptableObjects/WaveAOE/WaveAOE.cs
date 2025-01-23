@@ -6,7 +6,9 @@ using UnityEngine;
 public class WaveAOE : AbilityAbstractClass
 {
     [SerializeField] GameObject wavePrefab;
-    GameObject currentWave;
+    [SerializeField] float waveLifespan = 1f;
+    [SerializeField] float waveScale = 1f;
+    GameObject currentWave = null;
     public override void Initialize(int soupVal)
     {
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
@@ -15,7 +17,12 @@ public class WaveAOE : AbilityAbstractClass
     }
     public override void Active()
     {
-        currentWave = Instantiate(wavePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
+        if (currentWave != null)
+        {
+            currentWave = Instantiate(wavePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
+            currentWave.transform.parent = PlayerManager.instance.player.transform;
+            currentWave.transform.localScale = new Vector3(waveScale, waveScale, waveScale);
+        }
     }
 
     public override void End()
