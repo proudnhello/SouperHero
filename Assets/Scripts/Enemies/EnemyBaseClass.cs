@@ -72,6 +72,10 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
+    public void DamagePlayer() {
+        
+    }
+
     public IEnumerator KnockBack()
     {
         int maxFlashCycles = Mathf.CeilToInt((knockBackTime / 0.3f));
@@ -94,6 +98,13 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
         else{
             return ("null", -1);
+        }
+    }
+
+    private void OnCollisionEnter(Collision other) {
+        if (other.gameObject.CompareTag("Bullet"))
+        {
+
         }
     }
 }

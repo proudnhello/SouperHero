@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor.U2D.Sprites;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
@@ -15,7 +16,8 @@ public class PlayerManager : MonoBehaviour
     public KeyCode attackKey = KeyCode.Mouse0;
     public KeyCode soupKey = KeyCode.Mouse1;
     public KeyCode drinkey = KeyCode.Space;
-
+    [Header("Attack")]
+    [SerializeField] public int playerHealth = 100;
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
