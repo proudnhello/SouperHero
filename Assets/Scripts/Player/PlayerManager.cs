@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.U2D.Sprites;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -135,7 +136,9 @@ public class PlayerManager : MonoBehaviour
 
         // Then drink the soup
         List<AbilityAbstractClass> drankAbilities = lookup.Drink(pot);
-        print(drankAbilities);
+        foreach(AbilityAbstractClass ability in drankAbilities){
+            print(ability._abilityName);
+        }
 
         abilities.Clear();
         pot.Clear();
