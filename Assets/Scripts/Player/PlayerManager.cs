@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private AbilityLookup lookup;
     [SerializeField] private int maxPotSize = 100;
     List<(string, int)> pot = new List<(string, int)>();
-    private int potFullness = 0;
 
     [Header("Health")]
     [SerializeField] private int maxHealth = 100;
@@ -46,6 +46,7 @@ public class PlayerManager : MonoBehaviour
         {
             instance = this;
         }
+        health = maxHealth;
     }
 
     public int GetDamage()
@@ -94,6 +95,21 @@ public class PlayerManager : MonoBehaviour
         return instance.enemies;
     }
 
+    private int potFullness
+    {
+        get
+        {
+            int total = 0;
+            foreach(var amount in pot)
+            {
+                total += amount.Item2;
+            }
+            return total;
+        }
+    }
+
+
+    public static event Action<List<(string, int)>> SoupifyEnemy;
     // Add soup to the pot. If the pot is full, the soup will be wasted.
     public void AddToPot((string, int) soupVal)
     {
@@ -108,19 +124,21 @@ public class PlayerManager : MonoBehaviour
         {
             return;
         }
-        potFullness += soupVal.Item2;
         for (int i = 0; i < pot.Count; i++)
         {
             if (pot[i].Item1 == soupVal.Item1)
             {
                 int newSoupVal = pot[i].Item2 + soupVal.Item2;
                 pot[i] = (soupVal.Item1, newSoupVal);
+                SoupifyEnemy?.Invoke(pot);
                 return;
             }
         }
         pot.Add(soupVal);
+        SoupifyEnemy?.Invoke(pot);
     }
 
+    public static event Action DrinkPot;
     // Drink the soup in the pot and activate the abilities that correspond to the soup.
     public void Drink()
     {
@@ -152,6 +170,7 @@ public class PlayerManager : MonoBehaviour
         {
             abilities.Add(ability);
         }
+        DrinkPot?.Invoke();
     }
 
     public void RemoveAbility(AbilityAbstractClass ability)

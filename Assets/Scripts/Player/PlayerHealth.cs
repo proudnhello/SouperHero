@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerHealth : MonoBehaviour
 {
 
     [SerializeField] private float damageTime = 1.0f;   // time the player flashes red when taking damage
     private bool invincible = false;
+
+    public static event Action HealthChange;
     void Start()
     {
         PlayerManager.instance.SetHealth(PlayerManager.instance.GetMaxHealth());
@@ -17,6 +20,8 @@ public class PlayerHealth : MonoBehaviour
         
     }
 
+
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Enemy" && !invincible)    
@@ -24,7 +29,7 @@ public class PlayerHealth : MonoBehaviour
             invincible = true;
             PlayerManager.instance.TakeDamage(10); // change this so that the player takes damage based on the enemy's damage
             KnockBack(collision.gameObject);
-            StartCoroutine("TakeDamage");
+            StartCoroutine(TakeDamage());
         }
     }
 
@@ -43,8 +48,9 @@ public class PlayerHealth : MonoBehaviour
         float maxFlashCycles = ((damageTime / 0.3f));
         int flashCycles = 0;
         Color playerColor = PlayerManager.instance.player.GetComponent<SpriteRenderer>().color;
-        
-        while(maxFlashCycles > flashCycles)
+        HealthChange?.Invoke();
+
+        while (maxFlashCycles > flashCycles)
         {
             PlayerManager.instance.player.GetComponent<SpriteRenderer>().color = Color.red;
             yield return new WaitForSeconds(0.15f);
