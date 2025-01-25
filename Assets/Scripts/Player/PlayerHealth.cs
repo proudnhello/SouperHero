@@ -24,7 +24,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Enemy" && !invincible)    
+        if (collision.gameObject.tag == "Enemy" && !invincible && !collision.gameObject.GetComponent<EnemyBaseClass>().getSoupable())    
         {
             invincible = true;
             PlayerManager.instance.TakeDamage(10); // change this so that the player takes damage based on the enemy's damage

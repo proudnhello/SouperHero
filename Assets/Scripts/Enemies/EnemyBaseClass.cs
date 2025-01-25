@@ -52,6 +52,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected void BecomeSoupable(){
         soupable = true;
         sprite.color = new Color(255, 255, 255);
+        GetComponent<Collider2D>().isTrigger = true;
     }
     public void TakeDamage(int amount, GameObject source){
         if (!takingDamage)
