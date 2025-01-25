@@ -9,7 +9,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected bool takingDamage = false;
     protected int maxHealth = 100;
     protected int currentHealth = 100;
-    protected float moveSpeed = 1f;
+    internal float moveSpeed = 1f;
     protected SpriteRenderer sprite;
     protected Transform playerTransform;
     protected String soupAbility = "null";
@@ -20,11 +20,17 @@ public abstract class EnemyBaseClass : MonoBehaviour
     [SerializeField]
     protected float knockBackTime = 1.0f;
 
+    // initialize enemy status effect class
+    internal EnemyStatusEffects statusEffect;
+
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
         playerTransform = PlayerManager.instance.player.transform;
         _rigidbody = GetComponent<Rigidbody2D>();
         _initialColor = sprite.color;
+
+        // make an instance of status effect class on startup
+        statusEffect = new EnemyStatusEffects(this);
     }
 
     protected void Update(){
