@@ -1013,6 +1013,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 408429403}
   m_CullTransparentMesh: 1
+--- !u!1 &421704769
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 421704771}
+  - component: {fileID: 421704770}
+  m_Layer: 0
+  m_Name: BoySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &421704770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421704769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa692e8da2c4f94ebe8641519acdef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  possibleEnemies:
+  - {fileID: 2528350703771062636, guid: f287c3f448d5d9e4a9da546fd28291a0, type: 3}
+  - {fileID: 2528350703771062636, guid: 9a8edcc93a3bc1344bea04552997e311, type: 3}
+  weights: 0200000001000000
+  frequency: 5
+  cluster: 3
+--- !u!4 &421704771
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421704769}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8197863, y: -0.9375339, z: 0.019656857}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &452866566
 GameObject:
   m_ObjectHideFlags: 0
@@ -3943,3 +3993,4 @@ SceneRoots:
   - {fileID: 800824640}
   - {fileID: 992003209}
   - {fileID: 31681979}
+  - {fileID: 421704771}
