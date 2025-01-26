@@ -9,8 +9,8 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected bool takingDamage = false;
     [SerializeField] protected int maxHealth = 100;
     protected int currentHealth = 100;
-    protected float moveSpeed = 1f;
-    protected SpriteRenderer sprite;
+    internal float moveSpeed = 1f;
+    internal SpriteRenderer sprite;
     protected Transform playerTransform;
     [SerializeField] protected String enemyName = "null";
     [SerializeField] protected int soupNumber = -1;
@@ -20,12 +20,18 @@ public abstract class EnemyBaseClass : MonoBehaviour
     [SerializeField]
     protected float knockBackTime = 1.0f;
 
+    // initialize enemy status effect class
+    internal EnemyStatusEffects statusEffect;
+
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
         playerTransform = PlayerManager.instance.player.transform;
         _rigidbody = GetComponent<Rigidbody2D>();
         _initialColor = sprite.color;
         currentHealth = maxHealth;
+
+        // make an instance of status effect class on startup
+        statusEffect = new EnemyStatusEffects(this);
     }
 
     protected void Update(){
@@ -52,8 +58,8 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected abstract void UpdateAI();
     protected void BecomeSoupable(){
         soupable = true;
-        sprite.color = new Color(255, 255, 255);
         GetComponent<Collider2D>().isTrigger = true;
+        sprite.color = new Color(1, 1, 1);
     }
     public void TakeDamage(int amount, GameObject source){
         if (!takingDamage)

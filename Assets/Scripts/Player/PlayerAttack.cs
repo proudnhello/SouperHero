@@ -83,6 +83,9 @@ public class PlayerAttack : MonoBehaviour
         foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
         {
             ability.Active();
+
+            //Printing The Ability to The Console
+            Debug.Log(ability);
         }
         yield return new WaitForSeconds(1f/PlayerManager.instance.getAttackSpeed());
         testAttack.SetActive(false);
