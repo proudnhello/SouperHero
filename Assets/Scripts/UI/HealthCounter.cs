@@ -34,7 +34,7 @@ public class Health : MonoBehaviour
         if (heartCount < playerHealth - 1) {
             AddHealth();
         }
-        if (heartCount > playerHealth - 1 && playerHealth >= 0) {
+        if (heartCount > playerHealth - 1 && heartCount > 0) {
             RemoveHealth();
         }
     }
@@ -47,7 +47,7 @@ public class Health : MonoBehaviour
     }
 
     void RemoveHealth() {
-        if (heartCount-1 < 0 || heartCount-1 >= heartList.Count)
+        if (heartCount-1 < 0)
         {
             Debug.Log("Error: heartCount is already 0!!!");
             return;
