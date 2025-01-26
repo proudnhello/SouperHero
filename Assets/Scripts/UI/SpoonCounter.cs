@@ -24,14 +24,14 @@ public class SpoonCounter : MonoBehaviour
         int newSpoonCount = PlayerManager.instance.GetAbilities().Count;
         if (newSpoonCount != playerSpoons)
         {
-            UpdateSpoons();
+            UpdateSpoons(newSpoonCount);
         }
     }
-    public void UpdateSpoons() {
-        if (playerSpoons < abilities.Count) {
+    public void UpdateSpoons(int count) {
+        if (playerSpoons < count) {
             AddSpoon();
         }
-        if (playerSpoons > abilities.Count) {
+        if (playerSpoons > count) {
             DeleteSpoon();
         }
     }
@@ -44,7 +44,7 @@ public class SpoonCounter : MonoBehaviour
     }
 
     void DeleteSpoon() {
-        spoonList[playerSpoons].SetActive(true);
+        spoonList[playerSpoons-1].SetActive(false);
         playerSpoons--;
 
     }
