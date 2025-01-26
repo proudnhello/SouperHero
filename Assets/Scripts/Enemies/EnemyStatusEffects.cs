@@ -25,14 +25,21 @@ public class EnemyStatusEffects
 
     public void AddStatusEffect(StatusEffect statusEffect)
     {
-        statusEffects.Add(statusEffect);
 
-        Debug.Log("Adding" + statusEffect.ToString() + "...");
+
+        // Check what the status effect is and if it has been added before adding
+
+        Debug.Log("Slow?" + (statusEffect == StatusEffect.Slow));
+        Debug.Log("Does Not Have Slow?" + (!HasStatusEffect(StatusEffect.Slow)));
 
         if (statusEffect == StatusEffect.Slow && !HasStatusEffect(StatusEffect.Slow))
         {
+            Debug.Log("Adding" + statusEffect.ToString() + "...");
+            // Add Status Effect
+            statusEffects.Add(statusEffect);
             Debug.Log("Calling" + statusEffect.ToString() + "coroutine...");
-            SlowCoroutine();
+            // Call Coroutine Associated with the status effect (Slow)
+            enemy.StartCoroutine(SlowCoroutine());
         }
     }
 
@@ -63,11 +70,16 @@ public class EnemyStatusEffects
 
         Debug.Log("Enemy " + enemy.name + " New Movespeed:" + enemy.moveSpeed);
 
+        //// Store original color and set to light blue
+        //Color originalColor = enemy.sprite.color;
+        //enemy.sprite.color = new Color(0.7f, 0.7f, 1.0f);
+
         // wait for 10 seconds
         yield return new WaitForSeconds(10);
 
-        // reset enemy speed
+        // reset enemy speed and color
         enemy.moveSpeed = oldSpeed;
+        //enemy.sprite.color = originalColor;
 
         // remove slow status effect
         RemoveStatusEffect(StatusEffect.Slow);

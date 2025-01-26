@@ -10,7 +10,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected int maxHealth = 100;
     protected int currentHealth = 100;
     internal float moveSpeed = 1f;
-    protected SpriteRenderer sprite;
+    internal SpriteRenderer sprite;
     protected Transform playerTransform;
     protected String soupAbility = "null";
     protected int soupNumber = -1;
@@ -57,7 +57,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected abstract void UpdateAI();
     protected void BecomeSoupable(){
         soupable = true;
-        sprite.color = new Color(255, 255, 255);
+        sprite.color = new Color(1, 1, 1);
     }
     public void TakeDamage(int amount, GameObject source){
         if (!takingDamage)
