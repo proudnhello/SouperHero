@@ -16,9 +16,8 @@ public abstract class EnemyBaseClass : MonoBehaviour
     [SerializeField] protected int soupNumber = -1;
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
-
-    [SerializeField]
-    protected float knockBackTime = 1.0f;
+    public int playerCollisionDamage = 10;
+    [SerializeField] protected float knockBackTime = 1.0f;
 
     // initialize enemy status effect class
     internal EnemyStatusEffects statusEffect;
@@ -80,8 +79,14 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    public void DamagePlayer() {
+    public void DamagePlayer(int damage) {
+        PlayerHealth playerHealth = PlayerManager.instance.player.GetComponent<PlayerHealth>();
         
+        // Check if enemy is not soupable and player is not invincible
+        if (!soupable && !playerHealth.IsInvincible()) {
+            PlayerManager.instance.TakeDamage(damage);
+            playerHealth.StartCoroutine(playerHealth.TakeDamageAnimation());
+        }
     }
 
     public IEnumerator KnockBack()
@@ -109,10 +114,4 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision other) {
-        if (other.gameObject.CompareTag("Bullet"))
-        {
-
-        }
-    }
 }

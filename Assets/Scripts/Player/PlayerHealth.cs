@@ -20,16 +20,27 @@ public class PlayerHealth : MonoBehaviour
         
     }
 
-
+    public bool IsInvincible()
+    {
+        return invincible;
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // check if the collision is with an enemy and if the player is not invincible
         if (collision.gameObject.tag == "Enemy" && !invincible && !collision.gameObject.GetComponent<EnemyBaseClass>().getSoupable())    
         {
+            // make the player invincible for a short time
             invincible = true;
-            PlayerManager.instance.TakeDamage(10); // change this so that the player takes damage based on the enemy's damage
+
+            // take damage based on the enemy's collision damage
+            PlayerManager.instance.TakeDamage(collision.gameObject.GetComponent<EnemyBaseClass>().playerCollisionDamage);
+
+            // knock back the player
             KnockBack(collision.gameObject);
-            StartCoroutine(TakeDamage());
+
+            // play the damage animation
+            StartCoroutine(TakeDamageAnimation());
         }
     }
 
@@ -43,7 +54,7 @@ public class PlayerHealth : MonoBehaviour
         player.GetComponent<Rigidbody2D>().AddForce(direction * 3, ForceMode2D.Impulse);
     }
 
-    public IEnumerator TakeDamage(){
+    public IEnumerator TakeDamageAnimation(){
 
         float maxFlashCycles = ((damageTime / 0.3f));
         int flashCycles = 0;
