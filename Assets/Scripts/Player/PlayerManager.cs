@@ -113,6 +113,10 @@ public class PlayerManager : MonoBehaviour
     // Add soup to the pot. If the pot is full, the soup will be wasted.
     public void AddToPot((string, int) soupVal)
     {
+
+        Debug.Log("soupVal: " + soupVal.Item2);
+        Debug.Log("name: " + soupVal.Item1);
+
         if (potFullness+soupVal.Item2 >= maxPotSize)
         {
             soupVal.Item2 = maxPotSize - potFullness;

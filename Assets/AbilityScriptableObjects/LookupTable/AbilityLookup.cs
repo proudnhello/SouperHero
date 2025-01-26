@@ -32,15 +32,16 @@ public class AbilityLookup : ScriptableObject
     {
         List<AbilityAbstractClass> abilities = new List<AbilityAbstractClass>();
 
-        
-        foreach (EnemyLookupEntry entry in lookup)
+        foreach ((string, int) soup in pot)
         {
-            foreach ((string, int) soup in pot)
+            bool foundEnemy = false;
+            foreach (EnemyLookupEntry entry in lookup)
             {
                 if(soup.Item1 != entry.enemyType)
                 {
                     continue;
                 }
+                foundEnemy = true;
                 foreach (AbilityLookupEntry abilityEntry in entry.abilities)
                 {
                     if (soup.Item2 > abilityEntry.minSoupValue && soup.Item2 <= abilityEntry.maxSoupValue)
@@ -50,6 +51,10 @@ public class AbilityLookup : ScriptableObject
                         abilities.Add(ability);
                     }
                 }
+            }
+            if (!foundEnemy)
+            {
+                Debug.LogError($"Enemy type '{soup.Item1}' not found in ability lookup table");
             }
         }
 
