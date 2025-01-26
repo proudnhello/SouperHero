@@ -12,7 +12,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected float moveSpeed = 1f;
     protected SpriteRenderer sprite;
     protected Transform playerTransform;
-    [SerializeField] protected String soupAbility = "null";
+    [SerializeField] protected String enemyName = "null";
     [SerializeField] protected int soupNumber = -1;
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
@@ -96,7 +96,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     public (String, int) Soupify(){
         if(soupable){
             Destroy(gameObject);
-            return (soupAbility, soupNumber);
+            return (enemyName, soupNumber);
         }
         else{
             return ("null", -1);
