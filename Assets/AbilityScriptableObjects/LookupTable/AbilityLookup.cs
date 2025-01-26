@@ -12,31 +12,43 @@ public class AbilityLookup : ScriptableObject
     // Dictionaries are not editable in the editor. The only things that are editable are arrays and lists of serializable objects (which are primatives and structs of primatives)
     // This will get massily unwieldy to edit if we have a lot of abilities/enemy types, but I still think it's the best way
     [Serializable]
-    public struct AbilityLookupEntry
+    public struct EnemyLookupEntry
     {
         public string enemyType;
+        public List<AbilityLookupEntry> abilities;
+    }
+
+    [Serializable]
+    public struct AbilityLookupEntry
+    {
         public int minSoupValue;
         public int maxSoupValue;
         public AbilityAbstractClass ability;
     }
 
-    public AbilityLookupEntry[] lookup;
+    public EnemyLookupEntry[] lookup;
 
     public List<AbilityAbstractClass> Drink(List<(string, int)> pot)
     {
         List<AbilityAbstractClass> abilities = new List<AbilityAbstractClass>();
 
-        foreach (AbilityLookupEntry entry in lookup)
+        
+        foreach (EnemyLookupEntry entry in lookup)
         {
             foreach ((string, int) soup in pot)
             {
-                string name = soup.Item1;
-                int value = soup.Item2;
-                if (name == entry.enemyType && value > entry.minSoupValue && value <= entry.maxSoupValue)
+                if(soup.Item1 != entry.enemyType)
                 {
-                    AbilityAbstractClass ability = Instantiate(entry.ability);
-                    ability.Initialize(value);
-                    abilities.Add(ability);
+                    continue;
+                }
+                foreach (AbilityLookupEntry abilityEntry in entry.abilities)
+                {
+                    if (soup.Item2 > abilityEntry.minSoupValue && soup.Item2 <= abilityEntry.maxSoupValue)
+                    {
+                        AbilityAbstractClass ability = Instantiate(abilityEntry.ability);
+                        ability.Initialize(soup.Item2);
+                        abilities.Add(ability);
+                    }
                 }
             }
         }

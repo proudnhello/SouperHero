@@ -7,13 +7,13 @@ public abstract class EnemyBaseClass : MonoBehaviour
 {
     protected bool soupable = false;
     protected bool takingDamage = false;
-    protected int maxHealth = 100;
+    [SerializeField] protected int maxHealth = 100;
     protected int currentHealth = 100;
     protected float moveSpeed = 1f;
     protected SpriteRenderer sprite;
     protected Transform playerTransform;
-    protected String soupAbility = "null";
-    protected int soupNumber = -1;
+    [SerializeField] protected String soupAbility = "null";
+    [SerializeField] protected int soupNumber = -1;
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
 
@@ -25,6 +25,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
         playerTransform = PlayerManager.instance.player.transform;
         _rigidbody = GetComponent<Rigidbody2D>();
         _initialColor = sprite.color;
+        currentHealth = maxHealth;
     }
 
     protected void Update(){
@@ -52,6 +53,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected void BecomeSoupable(){
         soupable = true;
         sprite.color = new Color(255, 255, 255);
+        GetComponent<Collider2D>().isTrigger = true;
     }
     public void TakeDamage(int amount, GameObject source){
         if (!takingDamage)

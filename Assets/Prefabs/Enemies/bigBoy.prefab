@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 3477775123895350176}
   - component: {fileID: 2528350703771062636}
   - component: {fileID: 62433673787859804}
-  - component: {fileID: -5123221331809649190}
+  - component: {fileID: 5158286074045889100}
   m_Layer: 7
-  m_Name: Charger
-  m_TagString: Untagged
+  m_Name: bigBoy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.37, y: 0.93, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0.2121155, g: 0.99215686, b: 0.15294117, a: 1}
+  m_Color: {r: 0.99215686, g: 0.15294117, b: 0.76195794, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -100,13 +100,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  soupAbility: charge
-  soupNumber: 10
-  knockBackTime: 0.65
+  soupAbility: bigBoy
+  soupNumber: 40
+  knockBackTime: 0.2
   newMaxHealth: 100
-  newMoveSpeed: 5
-  newSoupAbility: charge
-  newSoupNumber: 10
+  newMoveSpeed: 3
+  newSoupAbility: bigBoy
+  newSoupNumber: 40
 --- !u!60 &62433673787859804
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -155,7 +155,7 @@ PolygonCollider2D:
       - {x: -0.5, y: -0.28866667}
       - {x: 0.5, y: -0.28866667}
   m_UseDelaunayMesh: 0
---- !u!50 &-5123221331809649190
+--- !u!50 &5158286074045889100
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
