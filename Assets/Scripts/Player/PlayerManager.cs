@@ -38,7 +38,7 @@ public class PlayerManager : MonoBehaviour
     [Header("Health")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] public int health;
-
+    private int shieldAmount = 0;
 
     private void Awake()
     {
@@ -83,6 +83,16 @@ public class PlayerManager : MonoBehaviour
 
     public void setAttackDelay(float newAttackDelay){
         attackDelay = newAttackDelay;
+    }
+
+    public int getShieldAmount()
+    {
+        return shieldAmount;
+    }
+
+    public void setShieldAmount(int newShieldAmount)
+    {
+        shieldAmount = newShieldAmount;
     }
 
     public List<AbilityAbstractClass> GetAbilities()
@@ -206,7 +216,18 @@ public class PlayerManager : MonoBehaviour
 
     public void TakeDamage(int damageAmount)
     {
-        instance.health -= damageAmount;
+        if (shieldAmount > 0)
+        {
+            instance.shieldAmount -= damageAmount;
+            if(instance.shieldAmount <= 0)
+            {
+                instance.shieldAmount = 0;
+            }
+        }
+        else
+        {
+            instance.health -= damageAmount;
+        }
         Debug.Log("Taking damage");
         if (instance.health <= 0)
         {
