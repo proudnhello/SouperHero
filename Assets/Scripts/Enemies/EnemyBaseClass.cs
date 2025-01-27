@@ -19,6 +19,12 @@ public abstract class EnemyBaseClass : MonoBehaviour
     public int playerCollisionDamage = 10;
     [SerializeField] protected float knockBackTime = 1.0f;
 
+    [Header("Player Detection")]
+    private bool playerDetected = false;
+    private float detectionRadius = 4f;
+    private float detectionDelay = 0.3f;
+    private LayerMask playerLayermask;
+
     // initialize enemy status effect class
     internal EnemyStatusEffects statusEffect;
 
@@ -31,12 +37,19 @@ public abstract class EnemyBaseClass : MonoBehaviour
 
         // make an instance of status effect class on startup
         statusEffect = new EnemyStatusEffects(this);
+
+        playerLayermask = LayerMask.GetMask("Player");
+        StartCoroutine(DetectionCoroutine());
     }
 
     protected void Update(){
         if(!soupable && !takingDamage)
         {
-            UpdateAI();
+            if (playerDetected)
+            {
+                UpdateAI();
+            }
+            else Patrol();
         } else if (soupable)
         {
             _rigidbody.velocity = Vector3.zero;
@@ -53,6 +66,10 @@ public abstract class EnemyBaseClass : MonoBehaviour
 
     public bool getSoupable(){
         return soupable;
+    }
+    public float GetKnockBackTime()
+    {
+        return knockBackTime;
     }
     protected abstract void UpdateAI();
     protected void BecomeSoupable(){
@@ -74,7 +91,27 @@ public abstract class EnemyBaseClass : MonoBehaviour
                 Vector3 direction = (transform.position - source.transform.position).normalized;
                 _rigidbody.velocity = Vector3.zero;
                 _rigidbody.AddForce(direction * 6, ForceMode2D.Impulse);
-                StartCoroutine("KnockBack");
+                StartCoroutine("KnockBack", knockBackTime);
+            }
+        }
+    }
+
+    public void TakeDamage(int amount, GameObject source, float knockback)
+    {
+        if (!takingDamage)
+        {
+            takingDamage = true;
+            currentHealth = Math.Clamp(currentHealth - amount, 0, maxHealth);
+            if (currentHealth == 0)
+            {
+                BecomeSoupable();
+            }
+            else
+            {
+                Vector3 direction = (transform.position - source.transform.position).normalized;
+                _rigidbody.velocity = Vector3.zero;
+                _rigidbody.AddForce(direction * 6, ForceMode2D.Impulse);
+                StartCoroutine("KnockBack", knockback);
             }
         }
     }
@@ -89,9 +126,9 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    public IEnumerator KnockBack()
+    public IEnumerator KnockBack(float time)
     {
-        int maxFlashCycles = Mathf.CeilToInt((knockBackTime / 0.3f));
+        int maxFlashCycles = Mathf.CeilToInt((time / 0.3f));
         int flashCycles = 0;
         while(maxFlashCycles > flashCycles)
         {
@@ -114,4 +151,36 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
+    IEnumerator DetectionCoroutine()
+    {
+        yield return new WaitForSeconds(detectionDelay);
+        CheckDetection();
+        StartCoroutine(DetectionCoroutine());
+    }
+
+    protected void CheckDetection()
+    {
+        Collider2D collider = Physics2D.OverlapCircle((Vector2)transform.position, detectionRadius, playerLayermask);
+        if (collider != null)
+        {
+            playerDetected = true;
+        } else
+        {
+            playerDetected = false;
+        }
+    }
+
+    protected void Patrol()
+    {
+        _rigidbody.velocity = Vector2.zero;
+    } 
+
+    private void OnDrawGizmos() //Testing only
+    {
+        //Lo: Toggle Gizmos on in game view to see radius
+        //Display detection radius on enemies
+        Gizmos.color = new Color(255, 0, 0, 0.25f);
+        if (playerDetected) Gizmos.color = new Color(0, 255, 0, 0.25f);
+        Gizmos.DrawSphere((Vector2)transform.position, detectionRadius);
+    }
 }

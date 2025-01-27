@@ -22,11 +22,11 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(PlayerManager.instance.attackKey))
+        if (Input.GetKeyDown(PlayerManager.instance.attackKey) || Input.GetKeyDown(PlayerManager.instance.altAttackKey))
         {
             Attack();
         }
-        if (Input.GetKeyDown(PlayerManager.instance.soupKey))
+        if (Input.GetKeyDown(PlayerManager.instance.soupKey) || Input.GetKeyDown(PlayerManager.instance.altSoupKey))
         {
             Debug.Log("SoupAttack");
             SoupAttack();

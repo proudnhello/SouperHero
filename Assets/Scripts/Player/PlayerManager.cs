@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
-using UnityEditor.U2D.Sprites;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 
@@ -15,7 +14,9 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Keybinds")]
     public KeyCode attackKey = KeyCode.Mouse0;
+    public KeyCode altAttackKey = KeyCode.V;
     public KeyCode soupKey = KeyCode.Mouse1;
+    public KeyCode altSoupKey = KeyCode.F;
     public KeyCode drinkey = KeyCode.Space;
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
