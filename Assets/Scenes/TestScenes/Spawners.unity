@@ -152,9 +152,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleEnemies:
-  - {fileID: 2528350703771062636, guid: a7c48130a816049cfa44233a2cb50dd5, type: 3}
-  - {fileID: 2528350703771062636, guid: 8fe12a7ca82294b6ba83b3f9cc58aaa3, type: 3}
-  weights: 0300000001000000
+  - enemy: {fileID: 4823484854343417924, guid: a7c48130a816049cfa44233a2cb50dd5, type: 3}
+    weight: 3
+  - enemy: {fileID: 4823484854343417924, guid: 8fe12a7ca82294b6ba83b3f9cc58aaa3, type: 3}
+    weight: 1
   frequency: 5
   cluster: 3
 --- !u!4 &31681979
@@ -1043,9 +1044,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleEnemies:
-  - {fileID: 2528350703771062636, guid: f287c3f448d5d9e4a9da546fd28291a0, type: 3}
-  - {fileID: 2528350703771062636, guid: 9a8edcc93a3bc1344bea04552997e311, type: 3}
-  weights: 0200000001000000
+  - enemy: {fileID: 4823484854343417924, guid: 9a8edcc93a3bc1344bea04552997e311, type: 3}
+    weight: 1
+  - enemy: {fileID: 4823484854343417924, guid: f287c3f448d5d9e4a9da546fd28291a0, type: 3}
+    weight: 3
   frequency: 5
   cluster: 3
 --- !u!4 &421704771
