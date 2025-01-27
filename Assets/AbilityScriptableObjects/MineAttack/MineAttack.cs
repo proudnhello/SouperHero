@@ -8,9 +8,9 @@ public class MineAttack : AbilityAbstractClass
 {
     private PlayerManager player;
     [SerializeField] GameObject minePrefab;
-    [SerializeField] private int maxUsageMult = 2;
-    [SerializeField] private int damageMult = 4;
-    [SerializeField] private float delayMult = 3;
+    //[SerializeField] private int maxUsageMult = 2;
+    //[SerializeField] private int damageMult = 4;
+    //[SerializeField] private float delayMult = 3;
     [SerializeField] private float sizeMult = 1.5f;
     [SerializeField] private float mineLifespan = 5f;
 
