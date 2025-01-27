@@ -9,16 +9,18 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected bool takingDamage = false;
     [SerializeField] protected int maxHealth = 100;
     protected int currentHealth = 100;
-    protected float moveSpeed = 1f;
-    protected SpriteRenderer sprite;
+    internal float moveSpeed = 1f;
+    internal SpriteRenderer sprite;
     protected Transform playerTransform;
-    [SerializeField] protected String soupAbility = "null";
+    [SerializeField] protected String enemyName = "null";
     [SerializeField] protected int soupNumber = -1;
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
+    public int playerCollisionDamage = 10;
+    [SerializeField] protected float knockBackTime = 1.0f;
 
-    [SerializeField]
-    protected float knockBackTime = 1.0f;
+    // initialize enemy status effect class
+    internal EnemyStatusEffects statusEffect;
 
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
@@ -26,6 +28,9 @@ public abstract class EnemyBaseClass : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _initialColor = sprite.color;
         currentHealth = maxHealth;
+
+        // make an instance of status effect class on startup
+        statusEffect = new EnemyStatusEffects(this);
     }
 
     protected void Update(){
@@ -52,8 +57,8 @@ public abstract class EnemyBaseClass : MonoBehaviour
     protected abstract void UpdateAI();
     protected void BecomeSoupable(){
         soupable = true;
-        sprite.color = new Color(255, 255, 255);
         GetComponent<Collider2D>().isTrigger = true;
+        sprite.color = sprite.color / 1.5f;
     }
     public void TakeDamage(int amount, GameObject source){
         if (!takingDamage)
@@ -74,8 +79,14 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    public void DamagePlayer() {
+    public void DamagePlayer(int damage) {
+        PlayerHealth playerHealth = PlayerManager.instance.player.GetComponent<PlayerHealth>();
         
+        // Check if enemy is not soupable and player is not invincible
+        if (!soupable && !playerHealth.IsInvincible()) {
+            PlayerManager.instance.TakeDamage(damage);
+            playerHealth.StartCoroutine(playerHealth.TakeDamageAnimation());
+        }
     }
 
     public IEnumerator KnockBack()
@@ -96,17 +107,11 @@ public abstract class EnemyBaseClass : MonoBehaviour
     public (String, int) Soupify(){
         if(soupable){
             Destroy(gameObject);
-            return (soupAbility, soupNumber);
+            return (enemyName, soupNumber);
         }
         else{
             return ("null", -1);
         }
     }
 
-    private void OnCollisionEnter(Collision other) {
-        if (other.gameObject.CompareTag("Bullet"))
-        {
-
-        }
-    }
 }

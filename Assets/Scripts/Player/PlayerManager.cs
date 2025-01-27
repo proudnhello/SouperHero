@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
-using UnityEditor.U2D.Sprites;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 
@@ -15,7 +14,9 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Keybinds")]
     public KeyCode attackKey = KeyCode.Mouse0;
+    public KeyCode altAttackKey = KeyCode.V;
     public KeyCode soupKey = KeyCode.Mouse1;
+    public KeyCode altSoupKey = KeyCode.F;
     public KeyCode drinkey = KeyCode.Space;
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
@@ -38,7 +39,7 @@ public class PlayerManager : MonoBehaviour
     [Header("Health")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] public int health;
-
+    private int shieldAmount = 0;
 
     private void Awake()
     {
@@ -85,6 +86,16 @@ public class PlayerManager : MonoBehaviour
         attackDelay = newAttackDelay;
     }
 
+    public int getShieldAmount()
+    {
+        return shieldAmount;
+    }
+
+    public void setShieldAmount(int newShieldAmount)
+    {
+        shieldAmount = newShieldAmount;
+    }
+
     public List<AbilityAbstractClass> GetAbilities()
     {
         return instance.abilities;
@@ -113,6 +124,10 @@ public class PlayerManager : MonoBehaviour
     // Add soup to the pot. If the pot is full, the soup will be wasted.
     public void AddToPot((string, int) soupVal)
     {
+
+        Debug.Log("soupVal: " + soupVal.Item2);
+        Debug.Log("name: " + soupVal.Item1);
+
         if (potFullness+soupVal.Item2 >= maxPotSize)
         {
             soupVal.Item2 = maxPotSize - potFullness;
@@ -202,7 +217,18 @@ public class PlayerManager : MonoBehaviour
 
     public void TakeDamage(int damageAmount)
     {
-        instance.health -= damageAmount;
+        if (shieldAmount > 0)
+        {
+            instance.shieldAmount -= damageAmount;
+            if(instance.shieldAmount <= 0)
+            {
+                instance.shieldAmount = 0;
+            }
+        }
+        else
+        {
+            instance.health -= damageAmount;
+        }
         Debug.Log("Taking damage");
         if (instance.health <= 0)
         {

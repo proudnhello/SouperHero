@@ -22,12 +22,13 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(PlayerManager.instance.attackKey))
+        if (Input.GetKeyDown(PlayerManager.instance.attackKey) || Input.GetKeyDown(PlayerManager.instance.altAttackKey))
         {
             Attack();
         }
-        if (Input.GetKeyDown(PlayerManager.instance.soupKey))
+        if (Input.GetKeyDown(PlayerManager.instance.soupKey) || Input.GetKeyDown(PlayerManager.instance.altSoupKey))
         {
+            Debug.Log("SoupAttack");
             SoupAttack();
         }
         if (Input.GetKeyDown(PlayerManager.instance.drinkey))
@@ -65,6 +66,12 @@ public class PlayerAttack : MonoBehaviour
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
         {
             (string, int) soup = enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().Soupify();
+
+            Debug.Log("Enemy Name (Before AddToPot): " + soup.Item1);
+            Debug.Log("Enemy SoupVal (Before AddToPot): " + soup.Item2);
+            if (soup.Item1 == null || soup.Item1 == "null") {
+                Debug.Log("ENEMY NAME WAS NULL - FIX THIS ASAP");
+            }
             if (soup.Item1 != null && soup.Item1 != "null")
             {
                 PlayerManager.instance.AddToPot(soup);
@@ -83,6 +90,9 @@ public class PlayerAttack : MonoBehaviour
         foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
         {
             ability.Active();
+
+            //Printing The Ability to The Console
+            Debug.Log(ability);
         }
         yield return new WaitForSeconds(1f/PlayerManager.instance.getAttackSpeed());
         testAttack.SetActive(false);

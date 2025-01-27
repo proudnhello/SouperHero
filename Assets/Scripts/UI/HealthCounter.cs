@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
@@ -23,7 +24,7 @@ public class Health : MonoBehaviour
             heartList[i].SetActive(true);
             heartCount++;
         }
-
+        healthText.text = PlayerManager.instance.health.ToString();
         PlayerHealth.HealthChange += HealthChange;
     }
 
@@ -33,7 +34,7 @@ public class Health : MonoBehaviour
         if (heartCount < playerHealth - 1) {
             AddHealth();
         }
-        if (heartCount > playerHealth - 1) {
+        if (heartCount > playerHealth - 1 && heartCount > 0) {
             RemoveHealth();
         }
     }
@@ -46,6 +47,12 @@ public class Health : MonoBehaviour
     }
 
     void RemoveHealth() {
+        if (heartCount-1 < 0)
+        {
+            Debug.Log("Error: heartCount is already 0!!!");
+            return;
+        }
+
         heartList[heartCount-1].SetActive(false);
         heartCount--;
 
