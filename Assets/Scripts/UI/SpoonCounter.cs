@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpoonCounter : MonoBehaviour
 {
     [Header("UI Configuration")]
     [SerializeField] List<GameObject> spoonList;
-    private int playerSpoons;
-    private List<AbilityAbstractClass> abilities;
+    // private int playerSpoons;
 
     void Start() {
         // Initialize with inactive spoons
-        abilities = PlayerManager.instance.GetAbilities();
         foreach (GameObject spoon in spoonList) {
             spoon.SetActive(false);
         }
@@ -21,31 +20,19 @@ public class SpoonCounter : MonoBehaviour
     void Update()
     {
         // Only update UI if the number of abilities changes
-        int newSpoonCount = PlayerManager.instance.GetAbilities().Count;
-        if (newSpoonCount != playerSpoons)
-        {
-            UpdateSpoons(newSpoonCount);
-        }
-    }
-    public void UpdateSpoons(int count) {
-        if (playerSpoons < count) {
-            AddSpoon();
-        }
-        if (playerSpoons > count) {
-            DeleteSpoon();
-        }
+        // playerSpoons = UIManager.instance.playerSpoons;
     }
 
-    void AddSpoon() {
-        Debug.Log("Spoon Count: " + playerSpoons + abilities);
+    public void AddSpoon(Color color, int playerSpoons) {
+        Debug.Log("Spoon Count: " + playerSpoons);
         spoonList[playerSpoons].SetActive(true);
-        playerSpoons++;
+        UnityEngine.UI.Image spoonImage = spoonList[playerSpoons].GetComponent<UnityEngine.UI.Image>();
+        spoonImage.color = color;
 
     }
 
-    void DeleteSpoon() {
+    public void DeleteSpoon(int playerSpoons) {
         spoonList[playerSpoons-1].SetActive(false);
-        playerSpoons--;
 
     }
 }
