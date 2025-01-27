@@ -54,6 +54,10 @@ public abstract class EnemyBaseClass : MonoBehaviour
     public bool getSoupable(){
         return soupable;
     }
+    public float GetKnockBackTime()
+    {
+        return knockBackTime;
+    }
     protected abstract void UpdateAI();
     protected void BecomeSoupable(){
         soupable = true;
@@ -74,7 +78,27 @@ public abstract class EnemyBaseClass : MonoBehaviour
                 Vector3 direction = (transform.position - source.transform.position).normalized;
                 _rigidbody.velocity = Vector3.zero;
                 _rigidbody.AddForce(direction * 6, ForceMode2D.Impulse);
-                StartCoroutine("KnockBack");
+                StartCoroutine("KnockBack", knockBackTime);
+            }
+        }
+    }
+
+    public void TakeDamage(int amount, GameObject source, float knockback)
+    {
+        if (!takingDamage)
+        {
+            takingDamage = true;
+            currentHealth = Math.Clamp(currentHealth - amount, 0, maxHealth);
+            if (currentHealth == 0)
+            {
+                BecomeSoupable();
+            }
+            else
+            {
+                Vector3 direction = (transform.position - source.transform.position).normalized;
+                _rigidbody.velocity = Vector3.zero;
+                _rigidbody.AddForce(direction * 6, ForceMode2D.Impulse);
+                StartCoroutine("KnockBack", knockback);
             }
         }
     }
@@ -89,9 +113,9 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    public IEnumerator KnockBack()
+    public IEnumerator KnockBack(float time)
     {
-        int maxFlashCycles = Mathf.CeilToInt((knockBackTime / 0.3f));
+        int maxFlashCycles = Mathf.CeilToInt((time / 0.3f));
         int flashCycles = 0;
         while(maxFlashCycles > flashCycles)
         {
