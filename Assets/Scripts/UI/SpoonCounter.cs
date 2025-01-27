@@ -8,12 +8,10 @@ public class SpoonCounter : MonoBehaviour
 {
     [Header("UI Configuration")]
     [SerializeField] List<GameObject> spoonList;
-    private List<AbilityAbstractClass> abilities;
     // private int playerSpoons;
 
     void Start() {
         // Initialize with inactive spoons
-        abilities = PlayerManager.instance.GetAbilities();
         foreach (GameObject spoon in spoonList) {
             spoon.SetActive(false);
         }
@@ -26,17 +24,15 @@ public class SpoonCounter : MonoBehaviour
     }
 
     public void AddSpoon(Color color, int playerSpoons) {
-        Debug.Log("Spoon Count: " + playerSpoons + abilities);
+        Debug.Log("Spoon Count: " + playerSpoons);
         spoonList[playerSpoons].SetActive(true);
         UnityEngine.UI.Image spoonImage = spoonList[playerSpoons].GetComponent<UnityEngine.UI.Image>();
         spoonImage.color = color;
-        // playerSpoons++;
 
     }
 
     public void DeleteSpoon(int playerSpoons) {
         spoonList[playerSpoons-1].SetActive(false);
-        // playerSpoons--;
 
     }
 }

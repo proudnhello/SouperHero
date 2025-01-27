@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class UIManager : MonoBehaviour
     private static SpoonCounter spoonCounter;
     public int playerSpoons;
 
+    [Header("Soup")]
+    [SerializeField] private AbilityColorLookup colorLookup;
+    [SerializeField] private AbilityLookup abilityLookup;
+    
     private void Awake()
     {
         if (instance == null)
@@ -28,10 +33,18 @@ public class UIManager : MonoBehaviour
         // UpdateSpoons(newSpoonCount);
     }
 
-    void UpdateSpoons(int count) {
-        if (playerSpoons < count) {
-            spoonCounter.AddSpoon(Color.red, playerSpoons);
-            playerSpoons++;
+    void UpdateSpoons(int count, List<AbilityAbstractClass> abilities) {
+        if (playerSpoons < count) // Add spoons
+        {
+            for (int i = playerSpoons; i < count; i++) 
+            {
+                if (i < abilities.Count)
+                {
+                    Color color = abilityLookup.GetAbilityColor(abilities[i]);
+                    spoonCounter.AddSpoon(color, playerSpoons);
+                    playerSpoons++;
+                }
+            }
         }
         if (playerSpoons > count) {
             spoonCounter.DeleteSpoon(playerSpoons);
@@ -41,7 +54,8 @@ public class UIManager : MonoBehaviour
 
     public void UpdateAbilities() {
         int newSpoonCount = PlayerManager.instance.GetAbilities().Count;
-        UpdateSpoons(newSpoonCount);
+        List<AbilityAbstractClass> abilities = PlayerManager.instance.GetAbilities();
+        UpdateSpoons(newSpoonCount, abilities);
     }
 
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public abstract class EnemyBaseClass : MonoBehaviour
@@ -21,6 +22,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
 
     // initialize enemy status effect class
     internal EnemyStatusEffects statusEffect;
+    [SerializeField] TMP_Text statusText;
 
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
@@ -79,6 +81,22 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
+    public void TakeDamageNoSource(int amount) {
+        if (!takingDamage)
+        {
+            takingDamage = true;
+            currentHealth = Math.Clamp(currentHealth - amount, 0, maxHealth);
+            if (currentHealth == 0)
+            {
+                BecomeSoupable();
+            }
+            else
+            {;
+                StartCoroutine("KnockBack");
+            }
+        }
+    }
+
     public void DamagePlayer(int damage) {
         PlayerHealth playerHealth = PlayerManager.instance.player.GetComponent<PlayerHealth>();
         
@@ -114,4 +132,11 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
+    public void ModifyEffect(string statusEffect) {
+        if (statusText != null) {
+            statusText.text = statusEffect;
+        } else {
+            Debug.LogError("statusText is not assigned");
+        }
+    }
 }

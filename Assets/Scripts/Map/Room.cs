@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public int spawnCount;          // we will spawn a certain amt of enemies in this room
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
