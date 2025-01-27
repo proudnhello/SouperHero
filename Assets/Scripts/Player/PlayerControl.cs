@@ -31,8 +31,6 @@ public class PlayerControl : MonoBehaviour
             _useMouse = false;
         }
 
-        Debug.Log(_useMouse);
-
         Vector2 keyDirection = Vector2.zero;
         if (Input.GetKey(KeyCode.UpArrow))
             keyDirection += Vector2.up;
