@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Bullet class that is called when enemy bullet is instantiated from EnemyRanged
 public class EnemyRangedBullet : MonoBehaviour
 {
     private float bulletLifeTime = 3f;
-    private float bulletSpeed = 10f;
+    private float bulletSpeed = 15f;
 
     private Rigidbody2D rb;
 
@@ -25,7 +26,6 @@ public class EnemyRangedBullet : MonoBehaviour
         if (collider.gameObject.tag == "Player")
         {
             PlayerManager.instance.TakeDamage(10);
-            //StartCoroutine(collider.gameObject.GetComponent<PlayerHealth>().TakeDamage());
             Destroy(this.gameObject);
         }
     }

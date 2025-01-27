@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//The ranged enemy follows player constantly until they are in range, at which point they freeze and fire bullets
 //Code tutorial for ranged enemy found at: https://www.youtube.com/watch?v=bwi4lteomic
 
 public class EnemyRanged : EnemyBaseClass
@@ -10,10 +11,11 @@ public class EnemyRanged : EnemyBaseClass
     private float newMoveSpeed = 1f;
 
     //[SerializeField] private float distanceToStop = 5f;
-    [SerializeField] private float distanceToShoot;
-    private float fireRate = 1f;
-    private float rotateSpeed = 0.01f;
+    [SerializeField] private float distanceToShoot; //Lo: Stop and shoot distance are currently the same
+    private float fireRate = 0.5f;
+    private float rotateSpeed = 0.1f;
     private float timeToFire = 0f;
+    private Vector2 targetDirection;
 
     public Transform firingPoint;
     public GameObject EnemyBullet;
@@ -46,7 +48,6 @@ public class EnemyRanged : EnemyBaseClass
 
     private void Follow() //Code re-used from EnemyCharger script
     {
-        Vector2 targetDirection = playerTransform.position - transform.position;
         targetDirection = targetDirection.normalized;
         targetDirection *= moveSpeed;
         _rigidbody.velocity = targetDirection;
@@ -66,7 +67,7 @@ public class EnemyRanged : EnemyBaseClass
 
     private void RotateTowardsPlayer()
     {
-        Vector2 targetDirection = playerTransform.position - transform.position;
+        targetDirection = playerTransform.position - transform.position;
         float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90f;
         Quaternion q = Quaternion.Euler(new Vector3(0, 0, angle));
         transform.localRotation = Quaternion.Slerp(transform.localRotation, q, rotateSpeed);
