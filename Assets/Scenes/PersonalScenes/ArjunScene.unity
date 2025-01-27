@@ -2434,12 +2434,12 @@ GameObject:
   - component: {fileID: 1154323831}
   - component: {fileID: 1154323830}
   m_Layer: 0
-  m_Name: ChargerSpawner
+  m_Name: BomberSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1154323830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2453,11 +2453,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleEnemies:
-  - {fileID: 2528350703771062636, guid: a7c48130a816049cfa44233a2cb50dd5, type: 3}
-  - {fileID: 2528350703771062636, guid: 8fe12a7ca82294b6ba83b3f9cc58aaa3, type: 3}
-  weights: 0300000001000000
-  frequency: 5
-  cluster: 3
+  - {fileID: 3999536718259681931, guid: ca310863cc77ceb4a9385488f58c0ba4, type: 3}
+  weights: 03000000
+  frequency: 15
+  cluster: 1
 --- !u!4 &1154323831
 Transform:
   m_ObjectHideFlags: 0
