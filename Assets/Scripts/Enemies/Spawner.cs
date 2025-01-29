@@ -1,30 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    // I DONT KNOW A BETTER SOLUTION MOORE HELP
-    public List<EnemyBaseClass> possibleEnemies;
-    public List<int> weights;
+    [Serializable]
+    public class SpawnableEnemy {
+        public GameObject enemy;
+        public int weight = 1;
+    }
+    public List<SpawnableEnemy> possibleEnemies;
     public int frequency = 10;
     public int cluster = 1;
     private int totalWeight;
-    private Dictionary<int, EnemyBaseClass> spawnerDict;
+    private Dictionary<int, GameObject> spawnerDict;
     void Start()
     {
-        // Preventative measures
-        if(possibleEnemies.Count != weights.Count)
-        {
-            Debug.LogWarning("Uneven number of weights and possible enemies");
-        }
-
         // Calculate total weight
         totalWeight = 0;
-        for(int i = 0; i < weights.Count; i++)
+        for(int i = 0; i < possibleEnemies.Count; i++)
         {
-            totalWeight += weights[i];
-            if (weights[i] <= 0)
+            totalWeight += possibleEnemies[i].weight;
+            if (possibleEnemies[i].weight <= 0)
             {
                 Debug.LogWarning("Zero or negative weight");
             }
@@ -32,12 +30,12 @@ public class Spawner : MonoBehaviour
 
         // Build spawner dictionary
         int count = 0;
-        spawnerDict = new Dictionary<int, EnemyBaseClass>();
-        for(int i = 0; i < weights.Count; i++)
+        spawnerDict = new Dictionary<int, GameObject>();
+        for(int i = 0; i < possibleEnemies.Count; i++)
         {
-            for(int j = 0; j < weights[i]; j++)
+            for(int j = 0; j < possibleEnemies[i].weight; j++)
             {
-                spawnerDict.Add(count, possibleEnemies[i]);
+                spawnerDict.Add(count, possibleEnemies[i].enemy);
                 count++;
             }
         }
@@ -48,7 +46,7 @@ public class Spawner : MonoBehaviour
     {
         for(int i = 0; i < cluster; i++)
         {
-            int x = Random.Range(0, totalWeight);
+            int x = UnityEngine.Random.Range(0, totalWeight);
             Instantiate(spawnerDict[x]);
         }
         yield return new WaitForSeconds(frequency);
