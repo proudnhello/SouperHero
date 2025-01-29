@@ -24,7 +24,7 @@ public class Health : MonoBehaviour
             heartList[i].SetActive(true);
             heartCount++;
         }
-
+        healthText.text = PlayerManager.instance.health.ToString();
         PlayerHealth.HealthChange += HealthChange;
     }
 

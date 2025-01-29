@@ -24,6 +24,7 @@ public class AbilityLookup : ScriptableObject
         public int minSoupValue;
         public int maxSoupValue;
         public AbilityAbstractClass ability;
+        public Color color;
     }
 
     public EnemyLookupEntry[] lookup;
@@ -60,4 +61,19 @@ public class AbilityLookup : ScriptableObject
 
         return abilities;
     }
+
+    public Color GetAbilityColor(AbilityAbstractClass ability)
+{
+    foreach (var enemyEntry in lookup)
+    {
+        foreach (var abilityEntry in enemyEntry.abilities)
+        {
+            if (abilityEntry.ability.GetType() == ability.GetType()) // Match by type
+            {
+                return abilityEntry.color;
+            }
+        }
+    }
+    return Color.white;
+}
 }
