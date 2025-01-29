@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7080394600601963999}
   - component: {fileID: 6262608325633742357}
   - component: {fileID: -1724495508604851915}
+  - component: {fileID: 3473422587863937416}
   - component: {fileID: 9040864403600467015}
   m_Layer: 0
   m_Name: Fireball
@@ -74,6 +75,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e33e638e405f15428e67a5c6196baf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  despawn: 1
+  despawnTime: -1
+--- !u!114 &3473422587863937416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625937390386494801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9131802411c7ec4b8443fd4729e1fcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  despawn: 1
+  despawnTime: -1
 --- !u!60 &9040864403600467015
 PolygonCollider2D:
   m_ObjectHideFlags: 0

@@ -23,9 +23,18 @@ public class AbilityColorLookup : ScriptableObject
         {
             abilityColorLookup.Add(entry.enemyName, entry.color);
         }
-    }   
+    }
 
-    public string GetColor(string enemyName)
+    public string GetColorByIndex(int index)
+    {
+        if (index >= 0 && index < lookup.Length)
+        {
+            return lookup[index].color;
+        }
+        return null;
+    }
+
+    public string GetColorByEnemy(string enemyName)
     {
         return abilityColorLookup[enemyName];
     }
