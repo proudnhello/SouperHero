@@ -129,7 +129,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
             }
             else
             {;
-                StartCoroutine("KnockBack");
+                StartCoroutine("KnockBack", knockBackTime);
             }
         }
     }

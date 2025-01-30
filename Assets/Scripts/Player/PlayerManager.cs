@@ -32,12 +32,12 @@ public class PlayerManager : MonoBehaviour
     }
 
     [SerializeField] private float attackSpeed = 3;
-    public float getAttackSpeed()
+    public float GetAttackSpeed()
     {
         return attackSpeed;
     }
 
-    public void setAttackSpeed(float newAttackSpeed)
+    public void SetAttackSpeed(float newAttackSpeed)
     {
         attackSpeed = newAttackSpeed;
     }

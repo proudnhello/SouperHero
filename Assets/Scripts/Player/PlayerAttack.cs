@@ -94,7 +94,7 @@ public class PlayerAttack : MonoBehaviour
             //Printing The Ability to The Console
             Debug.Log(ability);
         }
-        yield return new WaitForSeconds(1f/PlayerManager.instance.getAttackSpeed());
+        yield return new WaitForSeconds(1f/PlayerManager.instance.GetAttackSpeed());
         testAttack.SetActive(false);
         isAttacking = false;
     }
