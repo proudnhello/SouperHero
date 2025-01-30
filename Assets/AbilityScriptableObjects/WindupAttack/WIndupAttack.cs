@@ -7,38 +7,22 @@ public class WindupAttack : AbilityAbstractClass
 {
     private PlayerManager player;
     [SerializeField] private int maxUsageMult = 2;
-    [SerializeField] private int damageMult = 4;
-    [SerializeField] private float delayMult = 10;
-    [SerializeField] private float sizeMult = 100;
-
-
-    int damageBuffAmount = 0;
-    float delayAmount = 0;
-    float sizeIncrease = 0;
+    [SerializeField] private float damageBuff = 20;
+    [SerializeField] private float delay = 0.5f;
+    [SerializeField] private float sizeIncreace = 1;
 
     public override void Initialize(int soupVal)
     {
         player = PlayerManager.instance;
 
         int usageValue = Mathf.CeilToInt(soupVal / maxUsageMult);
-        _maxUsage = usageValue;
-        _remainingUsage = usageValue;
-        damageBuffAmount = soupVal/damageMult;
-        delayAmount = soupVal/delayMult;
-        sizeIncrease = soupVal/sizeMult;
-
-        Debug.Log("Windup attack initialized");
-        Debug.Log("Damage buff amount: " + damageBuffAmount);
-        Debug.Log("Delay amount: " + delayAmount);
-        Debug.Log("Size increase: " + sizeIncrease);
-        
 
         if (player != null)
         {
             Debug.Log("Windup attack buff initiated");
-            player.setAttackDelay(player.getAttackDelay() + 0.3f);
-            player.SetDamage(player.GetDamage() + damageBuffAmount);
-            player.SetAttackRadius(player.GetAttackRadius() + sizeIncrease);
+            player.setAttackDelay(player.getAttackDelay() + delay);
+            player.SetDamage(player.GetDamage() + (int)damageBuff);
+            player.SetAttackRadius(player.GetAttackRadius() + sizeIncreace);
         }
         else
         {
@@ -63,9 +47,9 @@ public class WindupAttack : AbilityAbstractClass
         // decrease player damage by buff amount
         if (player != null)
         {
-            player.setAttackDelay(player.getAttackDelay() - 0.3f);
-            player.SetDamage(player.GetDamage() - damageBuffAmount);
-            player.SetAttackRadius(player.GetAttackRadius() - sizeIncrease);
+            player.setAttackDelay(player.getAttackDelay() - delay);
+            player.SetDamage(player.GetDamage() - (int)damageBuff);
+            player.SetAttackRadius(player.GetAttackRadius() - sizeIncreace);
 
             PlayerManager.instance.RemoveAbility(this);
         }
