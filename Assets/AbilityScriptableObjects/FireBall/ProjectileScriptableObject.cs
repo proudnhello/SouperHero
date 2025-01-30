@@ -32,9 +32,6 @@ public class ProjectileScriptableObject : AbilityAbstractClass
             End();
             return;
         }
-        // If its the first time calling Active(), then spawn the projectile
-        if (_remainingUsage == _maxUsage)
-        {
             // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
             _currentProjectile = Instantiate(projectilePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
             _currentProjectile.transform.up = PlayerManager.instance.player.transform.up;
@@ -49,23 +46,22 @@ public class ProjectileScriptableObject : AbilityAbstractClass
             {
                 Debug.LogWarning("Projectile prefab needs a Rigidbody component for movement!");
             }
-        }
-        //TODO: _remainingUsage--;
-        Destroy(_currentProjectile, _lifespan);
+
+            if(_currentProjectile.TryGetComponent<ProjectileDamage>(out ProjectileDamage projectile))
+        {
+                projectile.despawnTime = _lifespan;
+            }
+            else
+        {
+                Debug.LogWarning("Projectile lacks the ability to deal damage!");
+            }
+  
+        _remainingUsage--;
     }
 
-    private void Destroy(GameObject objectToDestroy, float delay)
-    {
-        // TODO: placeholder. Real destruction will be goverened by ability manager and update.
-        Object.Destroy(objectToDestroy, delay);
-    }
 
     public override void End()
     {
-        if(_currentProjectile)
-        {
-            Destroy(_currentProjectile);
-        }
         PlayerManager.instance.RemoveAbility(this);
     }
 

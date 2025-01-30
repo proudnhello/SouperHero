@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -5123221331809649190}
   m_Layer: 7
   m_Name: Miner
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,6 +102,7 @@ MonoBehaviour:
   maxHealth: 100
   enemyName: miner
   soupNumber: 10
+  playerCollisionDamage: 10
   knockBackTime: 0.65
   newMoveSpeed: 5
 --- !u!60 &62433673787859804

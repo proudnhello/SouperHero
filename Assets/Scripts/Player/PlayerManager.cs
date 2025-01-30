@@ -21,12 +21,60 @@ public class PlayerManager : MonoBehaviour
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
+    public int GetDamage()
+    {
+        return instance.playerDamage;
+    }
+
+    public void SetDamage(int newDamage)
+    {
+        instance.playerDamage = newDamage;
+    }
+
     [SerializeField] private float attackSpeed = 3;
+    public float getAttackSpeed()
+    {
+        return attackSpeed;
+    }
+
+    public void setAttackSpeed(float newAttackSpeed)
+    {
+        attackSpeed = newAttackSpeed;
+    }
+
     [SerializeField] private float attackDelay = 0;
+    public float getAttackDelay()
+    {
+        return attackDelay;
+    }
+
+    public void setAttackDelay(float newAttackDelay)
+    {
+        attackDelay = newAttackDelay;
+    }
+
     [SerializeField] private float attackRadius = 1.0f;
+    public float GetAttackRadius()
+    {
+        return instance.attackRadius;
+    }
+    public float SetAttackRadius(float newRadius)
+    {
+        instance.attackRadius = newRadius;
+        return instance.attackRadius;
+    }
 
     [Header("Movement")]
     [SerializeField] float speed = 10.0f;
+    public float GetSpeed()
+    {
+        return instance.speed;
+    }
+
+    public void SetSpeed(float newSpeed)
+    {
+        instance.speed = newSpeed;
+    }
 
     [Header("Abilities")]
     [SerializeField] private List<AbilityAbstractClass> abilities;
@@ -40,52 +88,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
     [SerializeField] public int health;
     private int shieldAmount = 0;
-
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        health = maxHealth;
-    }
-
-    public int GetDamage()
-    {
-        return instance.playerDamage;
-    }
-
-    public void SetDamage(int newDamage)
-    {
-        instance.playerDamage = newDamage;
-    }
-
-    public float GetSpeed()
-    {
-        return instance.speed;
-    }
-
-    public void SetSpeed(float newSpeed)
-    {
-        instance.speed = newSpeed;
-    }
-
-    public float getAttackSpeed(){
-        return attackSpeed;
-    }
-
-    public void setAttackSpeed(float newAttackSpeed){
-        attackSpeed = newAttackSpeed;
-    }
-
-    public float getAttackDelay(){
-        return attackDelay;
-    }
-
-    public void setAttackDelay(float newAttackDelay){
-        attackDelay = newAttackDelay;
-    }
-
     public int getShieldAmount()
     {
         return shieldAmount;
@@ -94,6 +96,15 @@ public class PlayerManager : MonoBehaviour
     public void setShieldAmount(int newShieldAmount)
     {
         shieldAmount = newShieldAmount;
+    }
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        health = maxHealth;
     }
 
     public List<AbilityAbstractClass> GetAbilities()
@@ -238,13 +249,4 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public float GetAttackRadius()
-    {
-        return instance.attackRadius;
-    }
-    public float SetAttackRadius(float newRadius)
-    {
-        instance.attackRadius = newRadius;
-        return instance.attackRadius;
-    }
 }
