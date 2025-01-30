@@ -11,6 +11,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject testAttack; //Temporary object
     [SerializeField] private float attackRadius;
     private bool isAttacking;
+    int mostRecentPotUsed = 0;
     void Start()
     {
         testAttack.SetActive(false); //Testing
@@ -31,10 +32,17 @@ public class PlayerAttack : MonoBehaviour
             Debug.Log("SoupAttack");
             SoupAttack();
         }
-        if (Input.GetKeyDown(PlayerManager.instance.drinkey))
+        KeyCode currentKey = KeyCode.Alpha1;
+        // Due to how the key codes are arranged, adding 1 to Alpha1 will give us Alpha2, and so on
+        // Things get icky if we have 10 or more pots, but ah well sure 
+        for (int i = 0; i < PlayerManager.instance.GetNumberOfPots(); i++)
         {
-            print("Drink");
-            PlayerManager.instance.Drink();
+            if (Input.GetKeyDown(currentKey))
+            {
+                mostRecentPotUsed = i;
+                PlayerManager.instance.Drink(i);
+            }
+            currentKey++;
         }
 
         attackRadius = PlayerManager.instance.GetAttackRadius();
@@ -74,7 +82,7 @@ public class PlayerAttack : MonoBehaviour
             }
             if (soup.Item1 != null && soup.Item1 != "null")
             {
-                PlayerManager.instance.AddToPot(soup);
+                PlayerManager.instance.AddToPot(soup, mostRecentPotUsed);
             }
         }
     }

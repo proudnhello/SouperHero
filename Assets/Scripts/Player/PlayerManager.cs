@@ -82,7 +82,15 @@ public class PlayerManager : MonoBehaviour
     [Header("Soup")]
     [SerializeField] private AbilityLookup lookup;
     [SerializeField] private int maxPotSize = 100;
-    List<(string, int)> pot = new List<(string, int)>();
+    [SerializeField] private int numberofPots = 3;
+
+    public int GetNumberOfPots()
+    {
+        return numberofPots;
+    }
+
+    List<List<(string, int)>> pots = new List<List<(string, int)>>();
+    List<int> potFullnesses = new List<int>();
 
     [Header("Health")]
     [SerializeField] private int maxHealth = 100;
@@ -105,6 +113,11 @@ public class PlayerManager : MonoBehaviour
             instance = this;
         }
         health = maxHealth;
+        for (int i = 0; i < numberofPots; i++)
+        {
+            pots.Add(new List<(string, int)>());
+            potFullnesses.Add(0);
+        }
     }
 
     public List<AbilityAbstractClass> GetAbilities()
@@ -117,27 +130,13 @@ public class PlayerManager : MonoBehaviour
         return instance.enemies;
     }
 
-    private int potFullness
-    {
-        get
-        {
-            int total = 0;
-            foreach(var amount in pot)
-            {
-                total += amount.Item2;
-            }
-            return total;
-        }
-    }
-
 
     public static event Action<List<(string, int)>> SoupifyEnemy;
     // Add soup to the pot. If the pot is full, the soup will be wasted.
-    public void AddToPot((string, int) soupVal)
+    public void AddToPot((string, int) soupVal, int potNumber)
     {
-
-        Debug.Log("soupVal: " + soupVal.Item2);
-        Debug.Log("name: " + soupVal.Item1);
+        int potFullness = potFullnesses[potNumber];
+        List<(string, int)> pot = pots[potNumber];
 
         if (potFullness+soupVal.Item2 >= maxPotSize)
         {
@@ -163,8 +162,9 @@ public class PlayerManager : MonoBehaviour
 
     public static event Action DrinkPot;
     // Drink the soup in the pot and activate the abilities that correspond to the soup.
-    public void Drink()
+    public void Drink(int potNumber)
     {
+        List<(string, int)> pot = pots[potNumber];
         foreach((string, int) soup in pot)
         {
             print(soup.Item1 + " " + soup.Item2);
