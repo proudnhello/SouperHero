@@ -67,8 +67,12 @@ public class PlayerAttack : MonoBehaviour
 
     void SoupAttack()
     {
-        if(!isAttacking){
+        if(!isAttacking && PlayerManager.instance.AbleToSoup(mostRecentPotUsed)){
             StartCoroutine(TestDisplayPlayerAttack());
+        }
+        else
+        {
+            return;
         }
         Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
@@ -100,7 +104,7 @@ public class PlayerAttack : MonoBehaviour
             ability.Active();
 
             //Printing The Ability to The Console
-            Debug.Log(ability);
+            //Debug.Log(ability);
         }
         yield return new WaitForSeconds(1f/PlayerManager.instance.GetAttackSpeed());
         testAttack.SetActive(false);

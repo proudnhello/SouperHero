@@ -82,6 +82,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private AbilityLookup lookup;
     [SerializeField] private int maxPotSize = 100;
     [SerializeField] private int numberofPots = 3;
+    [SerializeField] private int defaultSoupUsage = 3;
 
     public int GetNumberOfPots()
     {
@@ -91,10 +92,12 @@ public class PlayerManager : MonoBehaviour
     List<Pot> pots = new List<Pot>();
     List<int> potFullnesses = new List<int>();
 
-    public struct Pot
+    public class Pot
     {
         public List<(string, int)> soup;
         public int fullness;
+        public int uses;
+        public int maxUsage;
     }
 
     [Header("Health")]
@@ -123,6 +126,8 @@ public class PlayerManager : MonoBehaviour
             Pot pot = new Pot();
             pot.soup = new List<(string, int)>();
             pot.fullness = 0;
+            pot.maxUsage = defaultSoupUsage;
+            pot.uses = defaultSoupUsage;
             pots.Add(pot);
         }
     }
@@ -137,6 +142,14 @@ public class PlayerManager : MonoBehaviour
         return instance.enemies;
     }
 
+    public bool AbleToSoup(int potNumber)
+    {
+        if (pots[potNumber].uses < pots[potNumber].maxUsage)
+        {
+            return false;
+        }
+        return true;
+    }
 
     public static event Action<List<(string, int)>> SoupifyEnemy;
     // Add soup to the pot. If the pot is full, the soup will be wasted.
@@ -144,6 +157,12 @@ public class PlayerManager : MonoBehaviour
     {
         Pot pot = pots[potNumber];
         int potFullness = pot.fullness;
+
+        if (pot.uses < pot.maxUsage)
+        {
+            print("You can't add to this soup now! You already drank some!");
+            return;
+        }
 
         if (potFullness+soupVal.Item2 >= maxPotSize)
         {
@@ -194,9 +213,18 @@ public class PlayerManager : MonoBehaviour
             print(ability._abilityName);
         }
 
-        abilities.Clear();
-        pot.soup.Clear();
-        pot.fullness = 0;
+        pot.uses--;
+        print("Remaining Uses " + pot.uses);
+
+        // If there are no uses left, empty the pot and reset the usage
+        if (pot.uses <= 0)
+        {
+            print("Empty Pot, emptying");
+            abilities.Clear();
+            pot.soup.Clear();
+            pot.fullness = 0;
+            pot.uses = pot.maxUsage;
+        }
         foreach (AbilityAbstractClass ability in drankAbilities)
         {
             abilities.Add(ability);
