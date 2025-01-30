@@ -11,7 +11,6 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager instance;
     public GameObject player;
 
-
     [Header("Keybinds")]
     public KeyCode attackKey = KeyCode.Mouse0;
     public KeyCode altAttackKey = KeyCode.V;
@@ -89,8 +88,14 @@ public class PlayerManager : MonoBehaviour
         return numberofPots;
     }
 
-    List<List<(string, int)>> pots = new List<List<(string, int)>>();
+    List<Pot> pots = new List<Pot>();
     List<int> potFullnesses = new List<int>();
+
+    public struct Pot
+    {
+        public List<(string, int)> soup;
+        public int fullness;
+    }
 
     [Header("Health")]
     [SerializeField] private int maxHealth = 100;
@@ -115,8 +120,10 @@ public class PlayerManager : MonoBehaviour
         health = maxHealth;
         for (int i = 0; i < numberofPots; i++)
         {
-            pots.Add(new List<(string, int)>());
-            potFullnesses.Add(0);
+            Pot pot = new Pot();
+            pot.soup = new List<(string, int)>();
+            pot.fullness = 0;
+            pots.Add(pot);
         }
     }
 
@@ -135,8 +142,8 @@ public class PlayerManager : MonoBehaviour
     // Add soup to the pot. If the pot is full, the soup will be wasted.
     public void AddToPot((string, int) soupVal, int potNumber)
     {
-        int potFullness = potFullnesses[potNumber];
-        List<(string, int)> pot = pots[potNumber];
+        Pot pot = pots[potNumber];
+        int potFullness = pot.fullness;
 
         if (potFullness+soupVal.Item2 >= maxPotSize)
         {
@@ -146,31 +153,31 @@ public class PlayerManager : MonoBehaviour
         {
             return;
         }
-        for (int i = 0; i < pot.Count; i++)
+        for (int i = 0; i < pot.soup.Count; i++)
         {
-            if (pot[i].Item1 == soupVal.Item1)
+            if (pot.soup[i].Item1 == soupVal.Item1)
             {
-                int newSoupVal = pot[i].Item2 + soupVal.Item2;
-                pot[i] = (soupVal.Item1, newSoupVal);
-                SoupifyEnemy?.Invoke(pot);
+                int newSoupVal = pot.soup[i].Item2 + soupVal.Item2;
+                pot.soup[i] = (soupVal.Item1, newSoupVal);
+                SoupifyEnemy?.Invoke(pot.soup);
                 return;
             }
         }
-        pot.Add(soupVal);
-        SoupifyEnemy?.Invoke(pot);
+        pot.soup.Add(soupVal);
+        SoupifyEnemy?.Invoke(pot.soup);
     }
 
     public static event Action DrinkPot;
     // Drink the soup in the pot and activate the abilities that correspond to the soup.
     public void Drink(int potNumber)
     {
-        List<(string, int)> pot = pots[potNumber];
-        foreach((string, int) soup in pot)
+        Pot pot = pots[potNumber];
+        foreach((string, int) soup in pot.soup)
         {
             print(soup.Item1 + " " + soup.Item2);
         }
         // You can't drink soup if the pot is empty
-        if (pot.Count == 0)
+        if (pot.soup.Count == 0)
         {
             return;
         }
@@ -182,13 +189,14 @@ public class PlayerManager : MonoBehaviour
         }
 
         // Then drink the soup
-        List<AbilityAbstractClass> drankAbilities = lookup.Drink(pot);
+        List<AbilityAbstractClass> drankAbilities = lookup.Drink(pot.soup);
         foreach(AbilityAbstractClass ability in drankAbilities){
             print(ability._abilityName);
         }
 
         abilities.Clear();
-        pot.Clear();
+        pot.soup.Clear();
+        pot.fullness = 0;
         foreach (AbilityAbstractClass ability in drankAbilities)
         {
             abilities.Add(ability);
