@@ -8,8 +8,9 @@ public class MineDamage : MonoBehaviour
     [SerializeField] private bool despawn = true;
     [SerializeField] public float despawnTime = -1f;
 
-    [SerializeField] private float explosionTime = 0.5f;
-    [SerializeField] private float explosionRadius = 3f;
+    public float explosionTime = 0.5f;
+    public float explosionRadius = 3f;
+    public float damageMult = 2;
     [SerializeField] private LayerMask enemyLayerMask;
     
     // When an enemy enters the mine's trigger collider, the mine will explode
@@ -41,7 +42,7 @@ public class MineDamage : MonoBehaviour
         {
             EnemyBaseClass enemyBase = enemy.gameObject.GetComponent<EnemyBaseClass>();
             if(enemyBase != null){
-                enemyBase.TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
+                enemyBase.TakeDamage((int)(PlayerManager.instance.GetDamage() * damageMult), this.gameObject);
             }
         }
 

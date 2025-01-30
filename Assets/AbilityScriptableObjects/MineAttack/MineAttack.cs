@@ -8,11 +8,13 @@ public class MineAttack : AbilityAbstractClass
 {
     private PlayerManager player;
     [SerializeField] GameObject minePrefab;
-    //[SerializeField] private int maxUsageMult = 2;
-    //[SerializeField] private int damageMult = 4;
+    [SerializeField] private int damageMult = 2;
     //[SerializeField] private float delayMult = 3;
     [SerializeField] private float sizeMult = 1.5f;
     [SerializeField] private float mineLifespan = 5f;
+
+    [SerializeField] private float explosionTime = 0.5f;
+    [SerializeField] private float explosionRadiusMult = 2f;
 
     private GameObject currentMine;
 
@@ -34,7 +36,11 @@ public class MineAttack : AbilityAbstractClass
             currentMine.transform.localScale = new Vector3(sizeMult, sizeMult, sizeMult);
         }
 
-        currentMine.GetComponent<MineDamage>().despawnTime = mineLifespan;
+        MineDamage mine = currentMine.GetComponent<MineDamage>();
+        mine.despawnTime = mineLifespan;
+        mine.explosionTime = explosionTime;
+        mine.explosionRadius = PlayerManager.instance.GetAttackRadius() * explosionRadiusMult;
+        mine.damageMult = damageMult;
 
         Debug.Log("MineAttack active");
 
