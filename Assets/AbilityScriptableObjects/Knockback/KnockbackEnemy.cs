@@ -7,8 +7,8 @@ public class KnockbackEnemy : MonoBehaviour
     private const int enemyLayer = 7;
     [SerializeField] private bool despawn = true;
     [SerializeField] public float despawnTime = -1f;
-    [SerializeField] private float damageToKnockback = 0.1f;
-    [SerializeField] private float damageMult = 0.3f;
+    public float damageToKnockback = 0.1f;
+    public float damageMult = 0.3f;
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.gameObject.layer == enemyLayer)
