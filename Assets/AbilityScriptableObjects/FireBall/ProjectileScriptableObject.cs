@@ -17,6 +17,7 @@ public class ProjectileScriptableObject : AbilityAbstractClass
 
     // TODO: remove once ability manager is implemented
     [SerializeField] float _lifespan = 3.0f;
+    [SerializeField] float _radiusMultiplier = 0.5f;
 
     public override void Initialize(int soupVal)
     {
@@ -37,7 +38,7 @@ public class ProjectileScriptableObject : AbilityAbstractClass
         _currentProjectile.transform.up = PlayerManager.instance.player.transform.up;
         _projectileDirection = PlayerManager.instance.player.transform.up;
 
-        float radius = PlayerManager.instance.GetAttackRadius() * 0.5f;
+        float radius = PlayerManager.instance.GetAttackRadius() * _radiusMultiplier;
         _currentProjectile.transform.localScale = new Vector3(radius, radius, radius);
 
         float speed = PlayerManager.instance.GetAttackSpeed() * _baseProjectileSpeed;

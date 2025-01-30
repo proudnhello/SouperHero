@@ -6,8 +6,6 @@ using UnityEngine;
 public class SnowBall : AbilityAbstractClass
 {
     private PlayerManager player;
-    // [SerializeField] public int buffMult = 3; // this will change to be based on soup value
-    // int buffAmount = 10;
 
     // Create a game object that you can define in the inspector
     [SerializeField] private GameObject snowBallPrefab;
@@ -16,15 +14,12 @@ public class SnowBall : AbilityAbstractClass
     // Define Projectile Speed
     [SerializeField] float _projectileSpeed = 100.0f;
 
-    // Define Projectile Lifespan
-    [SerializeField] float _lifespan = 3.0f;
        
     // Initialize direction vector
     private Vector2 _projectileDirection;
 
     public override void Initialize(int soupVal)
     {
-        /* Idk what this does*/
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
         _maxUsage = usageValue;
         _remainingUsage = usageValue;
@@ -54,14 +49,6 @@ public class SnowBall : AbilityAbstractClass
                 Debug.LogWarning("Projectile prefab needs a Rigidbody component for movement!");
             }
         }
-
-        Destroy(_currentSnowBall, _lifespan);
-    }
-
-    private void Destroy(GameObject objectToDestroy, float delay)
-    {
-        // TODO: placeholder. Real destruction will be goverened by ability manager and update.
-        Object.Destroy(objectToDestroy, delay);
     }
 
     public override void End()
