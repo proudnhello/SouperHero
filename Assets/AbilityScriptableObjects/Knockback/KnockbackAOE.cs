@@ -8,7 +8,7 @@ public class KnockbackAOE : AbilityAbstractClass
 {
     [SerializeField] GameObject wavePrefab;
     [SerializeField] float waveLifespan = 1f;
-    [SerializeField] float waveScale = 1f;
+    [SerializeField] float playerAttackScale = 1f;
     int usageValue = 5;
     GameObject currentWave = null;
     public override void Initialize(int soupVal)
@@ -23,6 +23,7 @@ public class KnockbackAOE : AbilityAbstractClass
         {
             currentWave = Instantiate(wavePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
             currentWave.transform.parent = PlayerManager.instance.player.transform;
+            float waveScale = PlayerManager.instance.GetAttackRadius() * playerAttackScale;
             currentWave.transform.localScale = new Vector3(waveScale, waveScale, waveScale);
 
         }

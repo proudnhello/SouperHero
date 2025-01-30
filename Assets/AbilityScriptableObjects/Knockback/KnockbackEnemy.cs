@@ -7,14 +7,14 @@ public class KnockbackEnemy : MonoBehaviour
     private const int enemyLayer = 7;
     [SerializeField] private bool despawn = true;
     [SerializeField] public float despawnTime = -1f;
-    [SerializeField] private float knockbackMultiplier = 3f;
+    [SerializeField] private float damageToKnockback = 0.1f;
     [SerializeField] private float damageMult = 0.3f;
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.gameObject.layer == enemyLayer)
         {
             EnemyBaseClass enemy = collider.gameObject.GetComponent<EnemyBaseClass>();
-            enemy.TakeDamage((int)(PlayerManager.instance.GetDamage() * damageMult), this.gameObject, enemy.GetKnockBackTime() * knockbackMultiplier);
+            enemy.TakeDamage((int)(PlayerManager.instance.GetDamage() * damageMult), this.gameObject, enemy.GetKnockBackTime() * PlayerManager.instance.GetDamage() * damageToKnockback);
             if (despawn)
             {
                 Destroy(this.gameObject);
