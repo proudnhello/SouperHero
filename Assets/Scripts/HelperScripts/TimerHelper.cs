@@ -37,4 +37,18 @@ public class TimerHelper : MonoBehaviour
             target.SetActive(false);
         }
     }
+
+    // Generic timer function for any buff/debuff.
+    // Will let the buff go for duration amount of seconds and then call the End() function.
+    // Actual buffing/debuffing should be done in the Initialize() function calling this timer. 
+    public void StartBuffTimer(AbilityAbstractClass ability, float duration)
+    {
+        StartCoroutine(BuffTimer(ability, duration));
+    }
+
+    private IEnumerator BuffTimer(AbilityAbstractClass ability, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ability.End();
+    }
 }
