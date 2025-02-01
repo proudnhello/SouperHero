@@ -153,37 +153,47 @@ public class PlayerManager : MonoBehaviour
 
     public static event Action<List<(string, int)>> SoupifyEnemy;
     // Add soup to the pot. If the pot is full, the soup will be wasted.
-    public void AddToPot((string, int) soupVal, int potNumber)
+    public void AddToPot(List<String> soupVal, int potNumber)
     {
+        print("adding to pot " + String.Join(" ", soupVal.ToArray()));
         Pot pot = pots[potNumber];
-        int potFullness = pot.fullness;
-
         if (pot.uses < pot.maxUsage)
         {
             print("You can't add to this soup now! You already drank some!");
             return;
         }
-
-        if (potFullness+soupVal.Item2 >= maxPotSize)
-        {
-            soupVal.Item2 = maxPotSize - potFullness;
-        }
-        if (soupVal.Item2 == 0)
+        if(pot.fullness >= maxPotSize)
         {
             return;
         }
-        for (int i = 0; i < pot.soup.Count; i++)
+        if (soupVal.Count == 0)
         {
-            if (pot.soup[i].Item1 == soupVal.Item1)
+            return;
+        }
+        pot.fullness++;
+
+        // Iterate over the pot. If that flavor is to be added, increment the count. If not, add it to the list.
+        for (int i = 0; i < soupVal.Count; i++)
+        {
+            bool found = false;
+            for (int j = 0; j < pot.soup.Count; j++)
             {
-                int newSoupVal = pot.soup[i].Item2 + soupVal.Item2;
-                pot.soup[i] = (soupVal.Item1, newSoupVal);
-                SoupifyEnemy?.Invoke(pot.soup);
-                return;
+                if (pot.soup[j].Item1 == soupVal[i])
+                {
+                    pot.soup[j] = (pot.soup[j].Item1, pot.soup[j].Item2 + 1);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                pot.soup.Add((soupVal[i], 1));
             }
         }
-        pot.soup.Add(soupVal);
-        SoupifyEnemy?.Invoke(pot.soup);
+        foreach((string, int) soup in pot.soup)
+        {
+            print("in pot " + soup.Item1 + " " + soup.Item2);
+        }
     }
 
     public static event Action DrinkPot;
