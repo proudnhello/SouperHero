@@ -101,11 +101,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 50
-  enemyName: ranger
-  soupNumber: 20
+  ingredient:
+    name: ranger
+    flavors:
+    - spicy
+    - spicy
+    - refreshing
+    - refreshing
+  playerCollisionDamage: 10
   knockBackTime: 0.5
+  statusText: {fileID: 0}
   newMoveSpeed: 2
-  distanceToStop: 5
+  distanceToShoot: 0
   firingPoint: {fileID: 4816195811675097778}
   EnemyBullet: {fileID: 4015994893912900655, guid: 8736b60df83c03540bb5bc960fb10f04, type: 3}
 --- !u!60 &4656655801565701859
