@@ -169,9 +169,10 @@ public class PlayerManager : MonoBehaviour
     {
         Pot pot = pots[potNumber];
         pot.soup.Clear();
-        
+        print("Making Pot ;)");
         foreach (Ingredient ingredient in ingedientValue)
         {
+            PrintIngredient(ingredient);
             foreach (string flavor in ingredient.flavors)
             {
                 bool found = false;
