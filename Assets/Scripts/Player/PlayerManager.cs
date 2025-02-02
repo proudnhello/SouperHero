@@ -199,7 +199,14 @@ public class PlayerManager : MonoBehaviour
     public void Drink(int potNumber)
     {
         // TESTING - fetch the first three ingredients in the inventory and create a pot with them
-        CreatePot(inventory.GetRange(0, 3), potNumber);
+        if (inventory.Count < 3)
+        {
+            CreatePot(inventory, potNumber);
+        }
+        else
+        {
+            CreatePot(inventory.GetRange(0, 3), potNumber);
+        }
 
         Pot pot = pots[potNumber];
         foreach((string, int) soup in pot.soup)

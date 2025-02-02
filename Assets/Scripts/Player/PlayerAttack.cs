@@ -11,6 +11,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject testAttack; //Temporary object
     [SerializeField] private float attackRadius;
     private bool isAttacking;
+    private bool souping = false;
     int mostRecentPotUsed = 0;
     void Start()
     {
@@ -68,6 +69,7 @@ public class PlayerAttack : MonoBehaviour
     void SoupAttack()
     {
         if(!isAttacking){
+            souping = true;
             StartCoroutine(TestDisplayPlayerAttack());
         }
         else
@@ -91,16 +93,24 @@ public class PlayerAttack : MonoBehaviour
 
         // Attack
         testAttack.SetActive(true);
-        foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
+        if (!souping)
         {
-            ability.Active();
+            foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
+            {
+                ability.Active();
 
-            //Printing The Ability to The Console
-            //Debug.Log(ability);
+                //Printing The Ability to The Console
+                //Debug.Log(ability);
+            }
+        }
+        else
+        {
+            print("Skipping Abilities b/c SOUP");
         }
         yield return new WaitForSeconds(1f/PlayerManager.instance.GetAttackSpeed());
         testAttack.SetActive(false);
         isAttacking = false;
+        souping = false;
     }
 
     private void OnDrawGizmos() //Draw in scene for testing
