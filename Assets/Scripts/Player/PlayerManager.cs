@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
+using UnityEngine.UIElements;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -80,10 +81,10 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Soup")]
     [SerializeField] private AbilityLookup lookup;
-    [SerializeField] private int maxPotSize = 100;
+    [SerializeField] private int maxPotSize = 5;
     [SerializeField] private int numberofPots = 3;
     [SerializeField] private int defaultSoupUsage = 3;
-
+    private List<Ingredient> inventory = new List<Ingredient>();
     public int GetNumberOfPots()
     {
         return numberofPots;
@@ -98,6 +99,18 @@ public class PlayerManager : MonoBehaviour
         public int fullness;
         public int uses;
         public int maxUsage;
+    }
+
+    [Serializable]
+    public struct Ingredient
+    {
+        public string name;
+        public List<string> flavors;
+    }
+
+    public void PrintIngredient(Ingredient i)
+    {
+        print(i.name + ", with flavors: " + String.Join(" ", i.flavors.ToArray()));
     }
 
     [Header("Health")]
@@ -142,64 +155,51 @@ public class PlayerManager : MonoBehaviour
         return instance.enemies;
     }
 
-    public bool AbleToSoup(int potNumber)
+    // Add an ingredient to the player's inventory
+    public void AddToInventory(Ingredient ingredient)
     {
-        if (pots[potNumber].uses < pots[potNumber].maxUsage)
-        {
-            return false;
-        }
-        return true;
+        inventory.Add(ingredient);
+        PrintIngredient(ingredient);
     }
 
     public static event Action<List<(string, int)>> SoupifyEnemy;
-    // Add soup to the pot. If the pot is full, the soup will be wasted.
-    public void AddToPot(List<String> soupVal, int potNumber)
-    {
-        print("adding to pot " + String.Join(" ", soupVal.ToArray()));
-        Pot pot = pots[potNumber];
-        if (pot.uses < pot.maxUsage)
-        {
-            print("You can't add to this soup now! You already drank some!");
-            return;
-        }
-        if(pot.fullness >= maxPotSize)
-        {
-            return;
-        }
-        if (soupVal.Count == 0)
-        {
-            return;
-        }
-        pot.fullness++;
 
-        // Iterate over the pot. If that flavor is to be added, increment the count. If not, add it to the list.
-        for (int i = 0; i < soupVal.Count; i++)
+    // Convert a list of ingredients into a pot of soup, controlled by the potNumber
+    public void CreatePot(List<Ingredient> ingedientValue, int potNumber)
+    {
+        Pot pot = pots[potNumber];
+        pot.soup.Clear();
+        
+        foreach (Ingredient ingredient in ingedientValue)
         {
-            bool found = false;
-            for (int j = 0; j < pot.soup.Count; j++)
+            foreach (string flavor in ingredient.flavors)
             {
-                if (pot.soup[j].Item1 == soupVal[i])
+                bool found = false;
+                for (int i = 0; i < pot.soup.Count; i++)
                 {
-                    pot.soup[j] = (pot.soup[j].Item1, pot.soup[j].Item2 + 1);
-                    found = true;
-                    break;
+                    if (pot.soup[i].Item1 == flavor)
+                    {
+                        pot.soup[i] = (flavor, pot.soup[i].Item2 + 1);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    pot.soup.Add((flavor, 1));
                 }
             }
-            if (!found)
-            {
-                pot.soup.Add((soupVal[i], 1));
-            }
-        }
-        foreach((string, int) soup in pot.soup)
-        {
-            print("in pot " + soup.Item1 + " " + soup.Item2);
         }
     }
 
     public static event Action DrinkPot;
+
     // Drink the soup in the pot and activate the abilities that correspond to the soup.
     public void Drink(int potNumber)
     {
+        // TESTING - fetch the first three ingredients in the inventory and create a pot with them
+        CreatePot(inventory.GetRange(0, 3), potNumber);
+
         Pot pot = pots[potNumber];
         foreach((string, int) soup in pot.soup)
         {
