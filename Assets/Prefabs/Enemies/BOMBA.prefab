@@ -164,10 +164,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 25
-  enemyName: bomber
-  soupNumber: 25
+  ingredient:
+    name: bomba
+    flavors:
+    - spicy
+    - megaSpicy
   playerCollisionDamage: 0
   knockBackTime: 1
+  statusText: {fileID: 0}
   _runSpeed: 5
   _walkSpeed: 1.5
   _chaseForSeconds: 5

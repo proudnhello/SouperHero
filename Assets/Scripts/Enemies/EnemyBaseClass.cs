@@ -13,8 +13,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     internal float moveSpeed = 1f;
     internal SpriteRenderer sprite;
     protected Transform playerTransform;
-    [SerializeField] protected String enemyName = "null";
-    [SerializeField] protected int soupNumber = -1;
+    [SerializeField] protected PlayerManager.Ingredient ingredient; 
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
     public int playerCollisionDamage = 10;
@@ -159,13 +158,13 @@ public abstract class EnemyBaseClass : MonoBehaviour
         takingDamage = false;
     }
 
-    public (String, int) Soupify(){
+    public PlayerManager.Ingredient Soupify(){
         if(soupable){
             Destroy(gameObject);
-            return (enemyName, soupNumber);
+            return ingredient;
         }
         else{
-            return ("null", -1);
+            return new PlayerManager.Ingredient();
         }
     }
 
