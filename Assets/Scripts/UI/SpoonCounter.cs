@@ -24,7 +24,6 @@ public class SpoonCounter : MonoBehaviour
     }
 
     public void AddSpoon(Color color, int playerSpoons) {
-        Debug.Log("Spoon Count: " + playerSpoons);
         spoonList[playerSpoons].SetActive(true);
         UnityEngine.UI.Image spoonImage = spoonList[playerSpoons].GetComponent<UnityEngine.UI.Image>();
         spoonImage.color = color;

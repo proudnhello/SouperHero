@@ -298,7 +298,6 @@ public class PlayerManager : MonoBehaviour
         {
             instance.health -= damageAmount;
         }
-        Debug.Log("Taking damage");
         if (instance.health <= 0)
         {
             instance.health = 0;

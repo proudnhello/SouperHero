@@ -20,7 +20,6 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(pauseKey))
         {
             isPaused = !isPaused;
-            Debug.Log("Escape pressed");
         }
         if (isPaused) {
             PauseGame();

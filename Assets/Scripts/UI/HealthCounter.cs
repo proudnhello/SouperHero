@@ -40,7 +40,6 @@ public class Health : MonoBehaviour
     }
 
     void AddHealth() {
-        Debug.Log("Health Count: " + heartCount + "Player Health " + playerHealth);
         heartList[heartCount-1].SetActive(true);
         heartCount++;
 

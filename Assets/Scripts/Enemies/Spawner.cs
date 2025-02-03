@@ -47,7 +47,7 @@ public class Spawner : MonoBehaviour
         for(int i = 0; i < cluster; i++)
         {
             int x = UnityEngine.Random.Range(0, totalWeight);
-            Instantiate(spawnerDict[x]);
+            Instantiate(spawnerDict[x], this.gameObject.transform);
         }
         yield return new WaitForSeconds(frequency);
         StartCoroutine(Spawn());

@@ -30,7 +30,6 @@ public class PlayerAttack : MonoBehaviour
         }
         if (Input.GetKeyDown(PlayerManager.instance.soupKey) || Input.GetKeyDown(PlayerManager.instance.altSoupKey))
         {
-            Debug.Log("SoupAttack");
             SoupAttack();
         }
         KeyCode currentKey = KeyCode.Alpha1;
