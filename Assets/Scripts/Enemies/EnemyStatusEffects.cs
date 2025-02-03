@@ -46,7 +46,7 @@ public class EnemyStatusEffects
             statusEffects.Add(statusEffect);
 
             Debug.Log("Calling " + statusEffect + " coroutine...");
-            enemy.ModifyEffect(statusEffect.ToString());
+            enemy.ModifyEffect("" + statusEffect);
             enemy.StartCoroutine(effectCoroutines[statusEffect]);
         }
     }

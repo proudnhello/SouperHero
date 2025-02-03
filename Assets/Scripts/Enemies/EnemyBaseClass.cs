@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 
@@ -164,7 +165,9 @@ public abstract class EnemyBaseClass : MonoBehaviour
             return ingredient;
         }
         else{
-            return new PlayerManager.Ingredient();
+            PlayerManager.Ingredient nullIngredient = new PlayerManager.Ingredient();
+            nullIngredient.name = "null";
+            return nullIngredient;
         }
     }
 
@@ -200,11 +203,10 @@ public abstract class EnemyBaseClass : MonoBehaviour
         if (playerDetected) Gizmos.color = new Color(0, 255, 0, 0.25f);
         Gizmos.DrawSphere((Vector2)transform.position, detectionRadius);
     }
+
     public void ModifyEffect(string statusEffect) {
         if (statusText != null) {
             statusText.text = statusEffect;
-        } else {
-            Debug.LogError("statusText is not assigned");
         }
     }
 }
