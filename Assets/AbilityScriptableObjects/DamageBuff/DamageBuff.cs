@@ -27,6 +27,7 @@ public class DamageBuff : AbilityAbstractClass
         {
             // buff player's damage by buff amount
             player.SetDamage(buffAmount + PlayerManager.instance.GetDamage());
+            Debug.Log("setting damage");
         }
         else
         {
@@ -36,6 +37,7 @@ public class DamageBuff : AbilityAbstractClass
         if(timerHelper != null)
         {
             // start the timer for the buff
+            Debug.Log("starting buff timer");
             timerHelper.StartBuffTimer(this, buffDuration);
         }
         else{
@@ -56,9 +58,8 @@ public class DamageBuff : AbilityAbstractClass
         if (player != null)
         {
             player.SetDamage(PlayerManager.instance.GetDamage() - buffAmount);
-            PlayerManager.instance.RemoveAbility(this);
-
-            Debug.Log("DMG after debuff: " + PlayerManager.instance.GetDamage());
+            Debug.Log("Ending buff");
+            //Debug.Log("DMG after debuff: " + PlayerManager.instance.GetDamage());
         }
         else
         {
