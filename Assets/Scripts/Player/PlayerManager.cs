@@ -81,7 +81,7 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Soup")]
     [SerializeField] private AbilityLookup lookup;
-    [SerializeField] private int maxPotSize = 5;
+    //[SerializeField] private int maxPotSize = 5;
     [SerializeField] private int numberofPots = 3;
     [SerializeField] private int defaultSoupUsage = 3;
     private List<Ingredient> inventory = new List<Ingredient>();
@@ -162,14 +162,13 @@ public class PlayerManager : MonoBehaviour
         PrintIngredient(ingredient);
     }
 
-    public static event Action<List<(string, int)>> SoupifyEnemy;
+    //public static event Action<List<(string, int)>> SoupifyEnemy;
 
     // Convert a list of ingredients into a pot of soup, controlled by the potNumber
     public void CreatePot(List<Ingredient> ingedientValue, int potNumber)
     {
         Pot pot = pots[potNumber];
         pot.soup.Clear();
-        print("Making Pot ;)");
         foreach (Ingredient ingredient in ingedientValue)
         {
             PrintIngredient(ingredient);
@@ -199,7 +198,19 @@ public class PlayerManager : MonoBehaviour
     public void Drink(int potNumber)
     {
         // TESTING - fetch the first three ingredients in the inventory and create a pot with them
-        CreatePot(inventory.GetRange(0, 3), potNumber);
+        if (inventory.Count < 3)
+        {
+            CreatePot(inventory, potNumber);
+            inventory.Clear();
+        }
+        else
+        {
+            CreatePot(inventory.GetRange(0, 3), potNumber);
+            for (int i = 0; i < 3; i++)
+            {
+                inventory.RemoveAt(0);
+            }
+        }
 
         Pot pot = pots[potNumber];
         foreach((string, int) soup in pot.soup)
@@ -287,7 +298,6 @@ public class PlayerManager : MonoBehaviour
         {
             instance.health -= damageAmount;
         }
-        Debug.Log("Taking damage");
         if (instance.health <= 0)
         {
             instance.health = 0;

@@ -9,17 +9,17 @@ public class PotContentUI : MonoBehaviour
     private void Start()
     {
         text = GetComponent<TMP_Text>();
-        PlayerManager.SoupifyEnemy += OnSoupifyEnemy;
+        //PlayerManager.SoupifyEnemy += OnSoupifyEnemy;
         PlayerManager.DrinkPot += () => text.text = "";
     }
 
-    void OnSoupifyEnemy(List<(string, int)> pot)
-    {
-        string display = "";
-        foreach (var type in pot)
-        {
-            display += type.Item1 + " " + type.Item2 + "\n";
-        }
-        text.text = display;
-    }
+    //void OnSoupifyEnemy(List<(string, int)> pot)
+    //{
+    //    string display = "";
+    //    foreach (var type in pot)
+    //    {
+    //        display += type.Item1 + " " + type.Item2 + "\n";
+    //    }
+    //    text.text = display;
+    //}
 }

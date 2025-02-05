@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(pauseKey))
         {
             isPaused = !isPaused;
-            Debug.Log("Escape pressed");
         }
         if (isPaused) {
             PauseGame();
@@ -39,12 +39,23 @@ public class GameManager : MonoBehaviour
 
     void PauseGame() {
         // For possible view of inventory
-        Time.timeScale = 0;
-        pauseScreen.SetActive(true);
+        if(pauseScreen != null)
+        {
+            Time.timeScale = 0;
+            pauseScreen.SetActive(true);
+        }
     }
 
     void ResumeGame() {
-        Time.timeScale = 1;
-        pauseScreen.SetActive(false);
+        if (pauseScreen != null)
+        {
+            Time.timeScale = 1;
+            pauseScreen.SetActive(false);
+        }
+    }
+
+    public void LoadGameLevel()
+    {
+        SceneManager.LoadScene(1);
     }
 }
