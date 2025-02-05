@@ -6,11 +6,31 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
+using static Unity.VisualScripting.Member;
+using Pot = PlayerSoup.Pot;
+using Ingredient = PlayerSoup.Ingredient;
 
 public class PlayerManager : MonoBehaviour
 {
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        health = maxHealth;
+        for (int i = 0; i < numberofPots; i++)
+        {
+            Pot pot = new Pot(defaultSoupUsage);
+            pots.Add(pot);
+        }
+        soup = player.GetComponent<PlayerSoup>();
+        soup.lookup = lookup;
+    }
+
     public static PlayerManager instance;
     public GameObject player;
+    public PlayerSoup soup;
 
     [Header("Keybinds")]
     public KeyCode attackKey = KeyCode.Mouse0;
@@ -93,24 +113,54 @@ public class PlayerManager : MonoBehaviour
     List<Pot> pots = new List<Pot>();
     List<int> potFullnesses = new List<int>();
 
-    public class Pot
-    {
-        public List<(string, int)> soup;
-        public int fullness;
-        public int uses;
-        public int maxUsage;
-    }
-
-    [Serializable]
-    public struct Ingredient
-    {
-        public string name;
-        public List<string> flavors;
-    }
-
     public void PrintIngredient(Ingredient i)
     {
         print(i.name + ", with flavors: " + String.Join(" ", i.flavors.ToArray()));
+    }
+
+    // Convert a list of ingredients into a pot of soup, controlled by the potNumber
+    public void FillPot(List<Ingredient> ingedientValue, int potNumber)
+    {
+        soup.FillPot(ingedientValue, pots[potNumber]);
+    }
+
+    public static event Action DrinkPot;
+
+    // Drink the soup in the pot and activate the abilities that correspond to the soup.
+    public void Drink(int potNumber)
+    {
+        // TESTING - fetch the first three ingredients in the inventory and create a pot with them
+        if (inventory.Count < 3)
+        {
+            FillPot(inventory, potNumber);
+            inventory.Clear();
+        }
+        else
+        {
+            FillPot(inventory.GetRange(0, 3), potNumber);
+            for (int i = 0; i < 3; i++)
+            {
+                inventory.RemoveAt(0);
+            }
+        }
+
+        // First end all active abilities
+        foreach (AbilityAbstractClass ability in abilities.ToList())
+        {
+            ability.End();
+        }
+        abilities.Clear();
+
+        abilities = soup.Drink(pots[potNumber]);
+        if(abilities == null)
+        {
+            abilities = new List<AbilityAbstractClass>();
+        }
+    }
+
+    public void RemoveAbility(AbilityAbstractClass ability)
+    {
+        abilities.Remove(ability);
     }
 
     [Header("Health")]
@@ -126,24 +176,7 @@ public class PlayerManager : MonoBehaviour
     {
         shieldAmount = newShieldAmount;
     }
-
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        health = maxHealth;
-        for (int i = 0; i < numberofPots; i++)
-        {
-            Pot pot = new Pot();
-            pot.soup = new List<(string, int)>();
-            pot.fullness = 0;
-            pot.maxUsage = defaultSoupUsage;
-            pot.uses = defaultSoupUsage;
-            pots.Add(pot);
-        }
-    }
+    
 
     public List<AbilityAbstractClass> GetAbilities()
     {
@@ -163,101 +196,6 @@ public class PlayerManager : MonoBehaviour
     }
 
     //public static event Action<List<(string, int)>> SoupifyEnemy;
-
-    // Convert a list of ingredients into a pot of soup, controlled by the potNumber
-    public void CreatePot(List<Ingredient> ingedientValue, int potNumber)
-    {
-        Pot pot = pots[potNumber];
-        pot.soup.Clear();
-        foreach (Ingredient ingredient in ingedientValue)
-        {
-            PrintIngredient(ingredient);
-            foreach (string flavor in ingredient.flavors)
-            {
-                bool found = false;
-                for (int i = 0; i < pot.soup.Count; i++)
-                {
-                    if (pot.soup[i].Item1 == flavor)
-                    {
-                        pot.soup[i] = (flavor, pot.soup[i].Item2 + 1);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    pot.soup.Add((flavor, 1));
-                }
-            }
-        }
-    }
-
-    public static event Action DrinkPot;
-
-    // Drink the soup in the pot and activate the abilities that correspond to the soup.
-    public void Drink(int potNumber)
-    {
-        // TESTING - fetch the first three ingredients in the inventory and create a pot with them
-        if (inventory.Count < 3)
-        {
-            CreatePot(inventory, potNumber);
-            inventory.Clear();
-        }
-        else
-        {
-            CreatePot(inventory.GetRange(0, 3), potNumber);
-            for (int i = 0; i < 3; i++)
-            {
-                inventory.RemoveAt(0);
-            }
-        }
-
-        Pot pot = pots[potNumber];
-        foreach((string, int) soup in pot.soup)
-        {
-            print(soup.Item1 + " " + soup.Item2);
-        }
-        // You can't drink soup if the pot is empty
-        if (pot.soup.Count == 0)
-        {
-            return;
-        }
-
-        // First end all active abilities
-        foreach (AbilityAbstractClass ability in abilities.ToList())
-        {
-            ability.End();
-        }
-
-        // Then drink the soup
-        List<AbilityAbstractClass> drankAbilities = lookup.Drink(pot.soup);
-        foreach(AbilityAbstractClass ability in drankAbilities){
-            print(ability._abilityName);
-        }
-
-        pot.uses--;
-        print("Remaining Uses " + pot.uses);
-
-        // If there are no uses left, empty the pot and reset the usage
-        if (pot.uses <= 0)
-        {
-            print("Empty Pot, emptying");
-            abilities.Clear();
-            pot.soup.Clear();
-            pot.fullness = 0;
-            pot.uses = pot.maxUsage;
-        }
-        foreach (AbilityAbstractClass ability in drankAbilities)
-        {
-            abilities.Add(ability);
-        }
-        DrinkPot?.Invoke();
-    }
-
-    public void RemoveAbility(AbilityAbstractClass ability)
-    {
-        abilities.Remove(ability);
-    }
 
     public void SetHealth(int newHealth)
     {
@@ -284,7 +222,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(int damageAmount, GameObject source)
     {
         if (shieldAmount > 0)
         {
@@ -296,7 +234,7 @@ public class PlayerManager : MonoBehaviour
         }
         else
         {
-            instance.health -= damageAmount;
+            player.GetComponent<PlayerHealth>().TakeDamage(damageAmount, source);
         }
         if (instance.health <= 0)
         {
@@ -306,4 +244,15 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    // Thoughtlessly reduces health, will not cause iframes or animation. You should probably use TakeDamage
+    public void ReduceHealth(int damage)
+    {
+        instance.health -= damage;
+        if (instance.health <= 0)
+        {
+            instance.health = 0;
+            // Game over
+            Debug.Log("Game Over womp womp");
+        }
+    }
 }

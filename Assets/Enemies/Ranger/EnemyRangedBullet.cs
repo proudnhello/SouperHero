@@ -25,7 +25,7 @@ public class EnemyRangedBullet : MonoBehaviour
     {
         if (collider.gameObject.tag == "Player")
         {
-            PlayerManager.instance.TakeDamage(10);
+            PlayerManager.instance.TakeDamage(10, this.gameObject);
             Destroy(this.gameObject);
         }
     }

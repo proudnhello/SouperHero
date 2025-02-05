@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     float horizontal;
     float vertical;
@@ -56,4 +56,6 @@ public class PlayerControl : MonoBehaviour
     {
         rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerManager.instance.GetSpeed();
     }
+
+
 }

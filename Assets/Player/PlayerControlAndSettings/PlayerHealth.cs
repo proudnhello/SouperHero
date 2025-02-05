@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using static Unity.VisualScripting.Member;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -25,22 +26,27 @@ public class PlayerHealth : MonoBehaviour
         return invincible;
     }
 
+    public void TakeDamage(int amount, GameObject source)
+    {
+        // make the player invincible for a short time
+        invincible = true;
+
+        // take damage based on the enemy's collision damage
+        PlayerManager.instance.ReduceHealth(amount);
+
+        // knock back the player
+        KnockBack(source);
+
+        // play the damage animation
+        StartCoroutine(TakeDamageAnimation());
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // check if the collision is with an enemy and if the player is not invincible
         if (collision.gameObject.tag == "Enemy" && !invincible && !collision.gameObject.GetComponent<EnemyBaseClass>().getSoupable())    
         {
-            // make the player invincible for a short time
-            invincible = true;
-
-            // take damage based on the enemy's collision damage
-            PlayerManager.instance.TakeDamage(collision.gameObject.GetComponent<EnemyBaseClass>().playerCollisionDamage);
-
-            // knock back the player
-            KnockBack(collision.gameObject);
-
-            // play the damage animation
-            StartCoroutine(TakeDamageAnimation());
+            TakeDamage(collision.gameObject.GetComponent<EnemyBaseClass>().playerCollisionDamage, collision.gameObject);
         }
     }
 

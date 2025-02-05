@@ -14,7 +14,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
     internal float moveSpeed = 1f;
     internal SpriteRenderer sprite;
     protected Transform playerTransform;
-    [SerializeField] protected PlayerManager.Ingredient ingredient; 
+    [SerializeField] protected PlayerSoup.Ingredient ingredient; 
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
     public int playerCollisionDamage = 10;
@@ -139,7 +139,7 @@ public abstract class EnemyBaseClass : MonoBehaviour
         
         // Check if enemy is not soupable and player is not invincible
         if (!soupable && !playerHealth.IsInvincible()) {
-            PlayerManager.instance.TakeDamage(damage);
+            PlayerManager.instance.TakeDamage(damage, this.gameObject);
             playerHealth.StartCoroutine(playerHealth.TakeDamageAnimation());
         }
     }
@@ -159,13 +159,13 @@ public abstract class EnemyBaseClass : MonoBehaviour
         takingDamage = false;
     }
 
-    public PlayerManager.Ingredient Soupify(){
+    public PlayerSoup.Ingredient Soupify(){
         if(soupable){
             Destroy(gameObject);
             return ingredient;
         }
         else{
-            PlayerManager.Ingredient nullIngredient = new PlayerManager.Ingredient();
+            PlayerSoup.Ingredient nullIngredient = new PlayerSoup.Ingredient();
             nullIngredient.name = "null";
             return nullIngredient;
         }
