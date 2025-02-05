@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -38,6 +39,11 @@ public class PlayerHealth : MonoBehaviour
 
             // knock back the player
             KnockBack(collision.gameObject);
+
+            // check if the player is still alive if so, go to game over screen
+            if (PlayerManager.instance.IsDead()){
+                GameManager.instance.DeathScreen();
+            }
 
             // play the damage animation
             StartCoroutine(TakeDamageAnimation());
