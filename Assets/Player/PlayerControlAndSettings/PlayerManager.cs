@@ -41,9 +41,22 @@ public class PlayerManager : MonoBehaviour
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
     [SerializeField] private int playerDamage = 10;
+
+    private bool dead = false;
+
     public int GetDamage()
     {
         return instance.playerDamage;
+    }
+
+    public bool IsDead()
+    {
+        return instance.dead;
+    }
+
+    public bool IsAlive()
+    {
+        return !instance.dead;
     }
 
     public void SetDamage(int newDamage)
@@ -239,6 +252,7 @@ public class PlayerManager : MonoBehaviour
         if (instance.health <= 0)
         {
             instance.health = 0;
+            instance.dead = true;
             // Game over
             Debug.Log("Game Over womp womp");
         }

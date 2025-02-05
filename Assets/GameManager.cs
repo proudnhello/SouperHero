@@ -58,4 +58,23 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(1);
     }
+
+    // Goes to Death Scene
+    public void DeathScreen()
+    {
+        SceneManager.LoadScene(2);
+        Cursor.visible = true;
+    }
+
+    // Goes back to Main Menu
+    public void MainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    // Restarts the Game
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(1);
+    }
 }
