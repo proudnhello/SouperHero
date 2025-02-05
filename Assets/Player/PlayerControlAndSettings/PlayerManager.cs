@@ -265,6 +265,7 @@ public class PlayerManager : MonoBehaviour
         if (instance.health <= 0)
         {
             instance.health = 0;
+            instance.dead = true;
             // Game over
             Debug.Log("Game Over womp womp");
         }
