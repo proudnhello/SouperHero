@@ -5,7 +5,7 @@ using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
 using UnityEngine;
 
-public class Health : MonoBehaviour
+public class HealthCounter : MonoBehaviour
 {
     [Header("UI Configuration")]
     [SerializeField] List<GameObject> heartList;
@@ -26,6 +26,10 @@ public class Health : MonoBehaviour
         }
         healthText.text = PlayerManager.instance.health.ToString();
         PlayerHealth.HealthChange += HealthChange;
+    }
+    private void OnDisable()
+    {
+        PlayerHealth.HealthChange -= HealthChange;
     }
 
     public void HealthChange() {
