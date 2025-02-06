@@ -40,7 +40,9 @@ public class UIManager : MonoBehaviour
             {
                 if (i < abilities.Count)
                 {
-                    Color color = abilityLookup.GetAbilityColor(abilities[i]);
+                    // TODO: Implement color lookup for abilities
+                    // Color color = abilityLookup.GetAbilityColor(abilities[i]);
+                    Color color = Color.red;
                     spoonCounter.AddSpoon(color, playerSpoons);
                     playerSpoons++;
                 }

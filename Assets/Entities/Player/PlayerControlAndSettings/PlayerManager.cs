@@ -7,10 +7,10 @@ using UnityEngine;
 using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
 using static Unity.VisualScripting.Member;
-using Pot = PlayerSoup.Pot;
+using Spoon = PlayerSoup.Spoon;
 using Ingredient = PlayerSoup.Ingredient;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : Entity
 {
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class PlayerManager : MonoBehaviour
         health = maxHealth;
         for (int i = 0; i < numberofPots; i++)
         {
-            Pot pot = new Pot(defaultSoupUsage);
+            Spoon pot = new Spoon(defaultSoupUsage);
             pots.Add(pot);
         }
         soup = player.GetComponent<PlayerSoup>();
@@ -40,14 +40,8 @@ public class PlayerManager : MonoBehaviour
     public KeyCode drinkey = KeyCode.Space;
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
-    [SerializeField] private int playerDamage = 10;
 
     private bool dead = false;
-
-    public int GetDamage()
-    {
-        return instance.playerDamage;
-    }
 
     public bool IsDead()
     {
@@ -57,11 +51,6 @@ public class PlayerManager : MonoBehaviour
     public bool IsAlive()
     {
         return !instance.dead;
-    }
-
-    public void SetDamage(int newDamage)
-    {
-        instance.playerDamage = newDamage;
     }
 
     [SerializeField] private float attackSpeed = 3;
@@ -97,16 +86,14 @@ public class PlayerManager : MonoBehaviour
         return instance.attackRadius;
     }
 
-    [Header("Movement")]
-    [SerializeField] float speed = 10.0f;
     public float GetSpeed()
     {
-        return instance.speed;
+        return instance.moveSpeed;
     }
 
     public void SetSpeed(float newSpeed)
     {
-        instance.speed = newSpeed;
+        instance.moveSpeed = newSpeed;
     }
 
     [Header("Abilities")]
@@ -123,7 +110,7 @@ public class PlayerManager : MonoBehaviour
         return numberofPots;
     }
 
-    List<Pot> pots = new List<Pot>();
+    List<Spoon> pots = new List<Spoon>();
     List<int> potFullnesses = new List<int>();
 
     public void PrintIngredient(Ingredient i)
@@ -176,21 +163,6 @@ public class PlayerManager : MonoBehaviour
         abilities.Remove(ability);
     }
 
-    [Header("Health")]
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] public int health;
-    private int shieldAmount = 0;
-    public int getShieldAmount()
-    {
-        return shieldAmount;
-    }
-
-    public void setShieldAmount(int newShieldAmount)
-    {
-        shieldAmount = newShieldAmount;
-    }
-    
-
     public List<AbilityAbstractClass> GetAbilities()
     {
         return instance.abilities;
@@ -210,20 +182,6 @@ public class PlayerManager : MonoBehaviour
 
     //public static event Action<List<(string, int)>> SoupifyEnemy;
 
-    public void SetHealth(int newHealth)
-    {
-        instance.health = (int)newHealth;
-    }
-
-    public int GetHealth()
-    {
-        return instance.health;
-    }
-
-    public int GetMaxHealth()
-    {
-        return instance.maxHealth;
-    }
 
     public void Heal(int healAmount)
     {
@@ -235,20 +193,10 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damageAmount, GameObject source)
+    public override void TakeDamage(int damageAmount, GameObject source)
     {
-        if (shieldAmount > 0)
-        {
-            instance.shieldAmount -= damageAmount;
-            if(instance.shieldAmount <= 0)
-            {
-                instance.shieldAmount = 0;
-            }
-        }
-        else
-        {
-            player.GetComponent<PlayerHealth>().TakeDamage(damageAmount, source);
-        }
+        
+        player.GetComponent<PlayerHealth>().TakeDamage(damageAmount, source);
         if (instance.health <= 0)
         {
             instance.health = 0;
@@ -258,8 +206,8 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    // Thoughtlessly reduces health, will not cause iframes or animation. You should probably use TakeDamage
-    public void ReduceHealth(int damage)
+    // Thoughtlessly reduces health, will not cause iframes or animation
+    public override void TakeDamage(int damage)
     {
         instance.health -= damage;
         if (instance.health <= 0)
@@ -269,5 +217,7 @@ public class PlayerManager : MonoBehaviour
             // Game over
             Debug.Log("Game Over womp womp");
         }
+        // Used for testing status effects
+        // InitializeStatusEffects();
     }
 }

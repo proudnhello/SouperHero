@@ -26,7 +26,7 @@ public class SuicideBomberScript : EnemyBaseClass
     {
         base.Start();
         moveSpeed = _walkSpeed;
-        currentHealth = maxHealth;
+        health = maxHealth;
 
         _state = BomberState.IDLING;
         _detectionRadius = transform.GetChild(0).gameObject;

@@ -5,13 +5,10 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 
-public abstract class EnemyBaseClass : MonoBehaviour
+public abstract class EnemyBaseClass : Entity
 {
     protected bool soupable = false;
     protected bool takingDamage = false;
-    [SerializeField] protected int maxHealth = 100;
-    protected int currentHealth = 100;
-    internal float moveSpeed = 1f;
     internal SpriteRenderer sprite;
     protected Transform playerTransform;
     [SerializeField] protected PlayerSoup.Ingredient ingredient; 
@@ -25,20 +22,14 @@ public abstract class EnemyBaseClass : MonoBehaviour
     private float detectionRadius = 4f;
     private float detectionDelay = 0.3f;
     private LayerMask playerLayermask;
-
-    // initialize enemy status effect class
-    internal EnemyStatusEffects statusEffect;
-    [SerializeField] TMP_Text statusText;
+    
 
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
         playerTransform = PlayerManager.instance.player.transform;
         _rigidbody = GetComponent<Rigidbody2D>();
         _initialColor = sprite.color;
-        currentHealth = maxHealth;
-
-        // make an instance of status effect class on startup
-        statusEffect = new EnemyStatusEffects(this);
+        health = maxHealth;
 
         playerLayermask = LayerMask.GetMask("Player");
         StartCoroutine(DetectionCoroutine());
@@ -62,10 +53,6 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    public int getCurrentHealth(){
-        return currentHealth;
-    }
-
     public bool getSoupable(){
         return soupable;
     }
@@ -79,12 +66,12 @@ public abstract class EnemyBaseClass : MonoBehaviour
         GetComponent<Collider2D>().isTrigger = true;
         sprite.color = sprite.color / 1.5f;
     }
-    public void TakeDamage(int amount, GameObject source){
+    public override void TakeDamage(int amount, GameObject source){
         if (!takingDamage)
         {
             takingDamage = true;
-            currentHealth = Math.Clamp(currentHealth - amount, 0, maxHealth);
-            if (currentHealth == 0)
+            health = Math.Clamp(health - amount, 0, maxHealth);
+            if (health == 0)
             {
                 BecomeSoupable();
             }
@@ -103,8 +90,8 @@ public abstract class EnemyBaseClass : MonoBehaviour
         if (!takingDamage)
         {
             takingDamage = true;
-            currentHealth = Math.Clamp(currentHealth - amount, 0, maxHealth);
-            if (currentHealth == 0)
+            health = Math.Clamp(health - amount, 0, maxHealth);
+            if (health == 0)
             {
                 BecomeSoupable();
             }
@@ -118,12 +105,12 @@ public abstract class EnemyBaseClass : MonoBehaviour
         }
     }
 
-    public void TakeDamageNoSource(int amount) {
+    public override void TakeDamage(int amount) {
         if (!takingDamage)
         {
             takingDamage = true;
-            currentHealth = Math.Clamp(currentHealth - amount, 0, maxHealth);
-            if (currentHealth == 0)
+            health = Math.Clamp(health - amount, 0, maxHealth);
+            if (health == 0)
             {
                 BecomeSoupable();
             }
@@ -204,9 +191,4 @@ public abstract class EnemyBaseClass : MonoBehaviour
         Gizmos.DrawSphere((Vector2)transform.position, detectionRadius);
     }
 
-    public void ModifyEffect(string statusEffect) {
-        if (statusText != null) {
-            statusText.text = statusEffect;
-        }
-    }
 }

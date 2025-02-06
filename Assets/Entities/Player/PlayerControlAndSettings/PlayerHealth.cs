@@ -33,7 +33,7 @@ public class PlayerHealth : MonoBehaviour
         invincible = true;
 
         // take damage based on the enemy's collision damage
-        PlayerManager.instance.ReduceHealth(amount);
+        PlayerManager.instance.TakeDamage(amount);
 
         // knock back the player
         KnockBack(source);
