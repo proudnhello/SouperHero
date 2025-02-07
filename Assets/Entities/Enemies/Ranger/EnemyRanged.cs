@@ -25,7 +25,7 @@ public class EnemyRanged : EnemyBaseClass
     {
         base.Start();
         moveSpeed = newMoveSpeed;
-        currentHealth = maxHealth;
+        health = maxHealth;
     }
     protected override void UpdateAI()
     {

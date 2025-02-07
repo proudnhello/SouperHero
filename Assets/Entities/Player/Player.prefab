@@ -248,6 +248,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1eadd37078b22844bf9216ccacb5154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
+  maxHealth: 100
+  baseMoveSpeed: 5
+  baseAttackDamage: 5
+  statusEffects: []
+  statusText: {fileID: 0}
   player: {fileID: 4732919122290708663}
   soup: {fileID: 5078482587777496223}
   attackKey: 323
@@ -258,17 +264,13 @@ MonoBehaviour:
   enemies:
     serializedVersion: 2
     m_Bits: 128
-  playerDamage: 10
   attackSpeed: 3
   attackDelay: 0
   attackRadius: 1
-  speed: 10
   abilities: []
   lookup: {fileID: 11400000, guid: 7c19852f0fd33ba42b1005646759b9a5, type: 2}
   numberofPots: 3
   defaultSoupUsage: 3
-  maxHealth: 100
-  health: 0
 --- !u!114 &5078482587777496223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,7 +283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc451894e10cc02488aaf6ef837ecac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookup: {fileID: 0}
 --- !u!50 &3811208658680137570
 Rigidbody2D:
   serializedVersion: 4

@@ -11,7 +11,7 @@ public class EnemyCharger : EnemyBaseClass
     protected new void Start(){
         base.Start();
         moveSpeed = newMoveSpeed;
-        currentHealth = maxHealth;
+        health = maxHealth;
     }
     protected override void UpdateAI(){
         Vector2 direction = playerTransform.position - transform.position;

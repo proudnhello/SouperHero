@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 [CreateAssetMenu(menuName = "Abilities/Shield")]
 public class Shield : AbilityAbstractClass
 {
@@ -22,3 +22,4 @@ public class Shield : AbilityAbstractClass
         player.setShieldAmount(0);
     }
 }
+*/

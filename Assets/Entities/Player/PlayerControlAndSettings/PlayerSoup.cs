@@ -18,13 +18,13 @@ public class PlayerSoup : MonoBehaviour
         return numberofPots;
     }
 
-    public class Pot
+    public class Spoon
     {
         public List<(string, int)> soup;
         public int uses;
         public int maxUsage;
 
-        public Pot(int usage)
+        public Spoon(int usage)
         {
             soup = new List<(string, int)>();
             uses = usage;
@@ -60,7 +60,7 @@ public class PlayerSoup : MonoBehaviour
     //public static event Action<List<(string, int)>> SoupifyEnemy;
 
     // Convert a list of ingredients into a pot of soup, controlled by the potNumber
-    public Pot FillPot(List<Ingredient> ingedientValue, Pot pot)
+    public Spoon FillPot(List<Ingredient> ingedientValue, Spoon pot)
     {
         pot.Empty();
         foreach (Ingredient ingredient in ingedientValue)
@@ -90,7 +90,7 @@ public class PlayerSoup : MonoBehaviour
     public static event Action DrinkPot;
 
     // Drink the soup in the pot and activate the abilities that correspond to the soup.
-    public List<AbilityAbstractClass> Drink(Pot pot)
+    public List<AbilityAbstractClass> Drink(Spoon pot)
     {
         List<AbilityAbstractClass> abilities = new List<AbilityAbstractClass>();
         // TESTING - fetch the first three ingredients in the inventory and create a pot with them

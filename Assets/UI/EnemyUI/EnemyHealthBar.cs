@@ -19,9 +19,9 @@ public class EnemyHealthBar : MonoBehaviour
     }
     void Update()
     {
-        debugText.text = enemyClass.getCurrentHealth().ToString();
-        slider.value = enemyClass.getCurrentHealth() / 100f;
-        if (enemy.getCurrentHealth() == 0) {
+        debugText.text = enemyClass.GetHealth().ToString();
+        slider.value = enemyClass.GetHealth() / 100f;
+        if (enemy.GetHealth() == 0) {
             gameObject.SetActive(false);
         }
     }
