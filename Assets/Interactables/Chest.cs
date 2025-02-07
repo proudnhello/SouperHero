@@ -20,10 +20,18 @@ public class Chest : Interactable
     { 
         if(CanInteract())
         {
-            // add the ingredient to the player's inventory
-            PlayerManager.instance.AddToInventory(ingredient);
-            // set the interactable to false so the chest can't be opened multiple times
-            SetInteractable(false);
+            OpenChest();
         }
+    }
+
+    private void OpenChest(){
+        // add the ingredient to the player's inventory
+        PlayerManager.instance.AddToInventory(ingredient);
+        // set the interactable to false so the chest can't be opened multiple times
+        SetInteractable(false);
+        // remove the interactable prompt
+        SetInteractablePrompt(false);
+        // set chest to a different color so we know it's open
+        GetComponent<SpriteRenderer>().color = Color.gray;
     }
 }
