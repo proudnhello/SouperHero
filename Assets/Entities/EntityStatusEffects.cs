@@ -6,13 +6,15 @@ using UnityEngine;
 public class EntityStatusEffects : MonoBehaviour
 {
     private Entity entity;
+    private float interval = 0.5f;
+    private float counter = 0f;
 
     public void LinkToEntity(Entity entity)
     {
         CreateStatusEffects();
         this.entity = entity;
     }
-    private Dictionary<StatusType, string> effectCoroutines;
+    private Dictionary<StatusType, StatusDelegate> effectFunctions;
 
     [Serializable]
     public enum StatusType
@@ -25,131 +27,188 @@ public class EntityStatusEffects : MonoBehaviour
     }
 
     [Serializable]
+    public enum Operation
+    {
+        Add,
+        Multiply
+    }
+
+    [Serializable]
     public struct StatusEffect
     {
         public StatusType statusType;
+        public Operation operation;
         public float duration;
-        public float interval;
         public int intensity;
     }
 
-    public static StatusEffect CreateStatusEffect(StatusType statusType, float duration, float interval, int intensity)
+    public static StatusEffect CreateStatusEffect(StatusType statusType, float duration, Operation op, int intensity)
     {
         return new StatusEffect
         {
             statusType = statusType,
             duration = duration,
-            interval = interval,
             intensity = intensity
         };
     }
 
+    public StatusEffect Duplicate(StatusEffect effect)
+    {
+        return new StatusEffect
+        {
+            statusType = effect.statusType,
+            duration = effect.duration,
+            intensity = effect.intensity,
+            operation = effect.operation
+        };
+    }
+
+    private delegate void StatusDelegate(StatusEffect effect);
     private void CreateStatusEffects()
     {
         print("making status effects");
-        effectCoroutines = new Dictionary<StatusType, string>
+        effectFunctions = new Dictionary<StatusType, StatusDelegate>
         {
-            { StatusType.Stun, "StunCoroutine" },
-            { StatusType.Slow, "SlowCoroutine" },
-            { StatusType.Burn, "BurnCoroutine" },
-            { StatusType.Freeze, "FreezeCoroutine" },
-            { StatusType.Poison, "PoisonCoroutine" },
+            { StatusType.Stun, Stun },
+            { StatusType.Slow, Slow },
+            { StatusType.Burn, Burn },
+            { StatusType.Freeze, Freeze },
+            { StatusType.Poison, Poison },
         };
         // Each status Effect should have a parameter to multiply the numbers
     }  
 
-    public List<StatusType> statusEffects = new();
+    public List<StatusEffect> addStatusEffects = new();
+    public List<StatusEffect> multStatusEffects = new();
     public void AddStatusEffect(StatusEffect statusEffect)
     {
-        // Check what the status effect is and if it has been added before adding
-        print(effectCoroutines);
-        if (effectCoroutines.ContainsKey(statusEffect.statusType) && !HasStatusEffect(statusEffect.statusType))
+        if(statusEffect.operation == Operation.Add)
         {
-            Debug.Log("Adding " + statusEffect.statusType + "...");
-            statusEffects.Add(statusEffect.statusType);
-
-            Debug.Log("Calling " + effectCoroutines[statusEffect.statusType] + " coroutine...");
-            StartCoroutine(effectCoroutines[statusEffect.statusType], statusEffect);
+            addStatusEffects.Add(statusEffect);
+        }
+        else
+        {
+            multStatusEffects.Add(statusEffect);
         }
     }
 
+    // Removes all status effects of a certain type
     public void RemoveStatusEffect(StatusEffect statusEffect)
     {
-        statusEffects.Remove(statusEffect.statusType);
-        StopCoroutine(effectCoroutines[statusEffect.statusType]);
+        for (int i = 0; i < addStatusEffects.Count; i++)
+        {
+            if (addStatusEffects[i].statusType == statusEffect.statusType)
+            {
+                addStatusEffects.RemoveAt(i);
+            }
+        }
+
+        for (int i = 0; i < multStatusEffects.Count; i++)
+        {
+            if (multStatusEffects[i].statusType == statusEffect.statusType)
+            {
+                multStatusEffects.RemoveAt(i);
+            }
+        }
     }
     public bool HasStatusEffect(StatusType statusEffect)
     {
-        return statusEffects.Contains(statusEffect);
+        return addStatusEffects.Exists(effect => effect.statusType == statusEffect) || multStatusEffects.Exists(effect => effect.statusType == statusEffect);
+    }
+
+    public void Update()
+    {
+        // Apply status effects every interval
+        counter += Time.deltaTime;
+        if(counter < interval)
+        {
+            return;
+        }
+        counter = 0f;
+        // Take all of the status effects and merge them into one per type
+        // Then apply the status effect to the entity
+        foreach (StatusType status in effectFunctions.Keys)
+        {
+            if(!HasStatusEffect(status))
+            {
+                continue;
+            }
+            StatusEffect effect = new StatusEffect();
+            effect.statusType = status;
+            effect.intensity = 0;
+            effect.operation = Operation.Add;
+
+            // First, merge add all of the status effects of the same type (reducing their interval as we go
+            for (int i = 0;i < addStatusEffects.Count;i++)
+            {
+                if (addStatusEffects[i].statusType == status)
+                {
+                    StatusEffect addEffect = addStatusEffects[i];
+                    effect.intensity += addStatusEffects[i].intensity;
+                    addEffect.duration -= interval;
+                    addStatusEffects[i] = addEffect;
+                    if(addEffect.duration <= 0)
+                    {
+                        addStatusEffects.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+
+            // Then, multiply all of the status effects of the same type
+            for(int i = 0; i < multStatusEffects.Count; i++)
+            {
+                if (multStatusEffects[i].statusType == status)
+                {
+                    StatusEffect multEffect = multStatusEffects[i];
+                    effect.intensity *= multStatusEffects[i].intensity;
+                    multEffect.duration -= interval;
+                    multStatusEffects[i] = multEffect;
+                    if(multEffect.duration <= 0)
+                    {
+                        multStatusEffects.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+
+            // Finally, apply the status effect
+            effectFunctions[status](effect);
+        }
     }
 
     // Different status effects have different coroutines
-    public IEnumerator SlowCoroutine(StatusEffect effect)
+    public void Slow(StatusEffect effect)
     {
-        Debug.Log("Enemy " + entity.name + " Old Movespeed:" + entity.GetMoveSpeed());
-        // lower enemy speed by 10
-        float oldSpeed = entity.GetMoveSpeed();
-        entity.SetMoveSpeed(entity.GetMoveSpeed() - 10f);
-
-        // if enemy speed is less than 1, set it to 1
-        if (entity.GetMoveSpeed() < 1)
-        {
-            entity.SetMoveSpeed(1);
-        }
-
-        Debug.Log("Enemy " + entity.name + " New Movespeed:" + entity.GetMoveSpeed());
-
-        // wait for 10 seconds
-        yield return new WaitForSeconds(10);
-        // reset enemy speed and color
-        entity.SetMoveSpeed(oldSpeed);
-
-        // remove slow status effect
-        RemoveStatusEffect(effect);
+        entity.SetMoveSpeed(entity.GetBaseMoveSpeed() - effect.intensity);
     }
 
-    public IEnumerator BurnCoroutine(StatusEffect effect)
+    public void Burn(StatusEffect effect)
     {
-        // TODO: complete burn status
-        // damage enemy for 10 seconds maybe for 5 health each
-        float duration = 5f;
-        float interval = 1f; 
-        int dmgPerInterval = 5;
-        while (duration > 0f) {
-            entity.TakeDamage(Mathf.Max(dmgPerInterval, 0));
-            yield return new WaitForSeconds(interval);
-            duration-= interval;
-            dmgPerInterval--;
-        }
-        RemoveStatusEffect(effect);
+        print("burning " + effect.intensity);
+        entity.TakeDamage(effect.intensity);
     }
 
-    public IEnumerator StunCoroutine(StatusEffect effect)
+    public void Stun(StatusEffect effect)
     {
-        // stun enemy for 5 seconds
-        float oldSpeed = entity.GetMoveSpeed();
-        entity.SetMoveSpeed(0f);
-        yield return new WaitForSeconds(3);
-        entity.SetMoveSpeed(oldSpeed);
-        RemoveStatusEffect(effect);
 
     }
 
-    public IEnumerator FreezeCoroutine(StatusEffect effect)
+    public void Freeze(StatusEffect effect)
     {
         // TODO: make freeze different from stun
         // freeze enemy for 10 seconds
-        float oldSpeed = entity.GetMoveSpeed();
+        /*float oldSpeed = entity.GetMoveSpeed();
         entity.SetMoveSpeed(0f);
         yield return new WaitForSeconds(10);
         entity.SetMoveSpeed(oldSpeed);
-        RemoveStatusEffect(effect);
+        RemoveStatusEffect(effect);*/
 
     }
 
-    public IEnumerator PoisonCoroutine(StatusEffect effect)
+    public void Poison(StatusEffect effect)
     {   
-        // slows and depletes health for 10 seconds
+        /*// slows and depletes health for 10 seconds
         float oldSpeed = entity.GetMoveSpeed();
         entity.SetMoveSpeed(entity.GetMoveSpeed() - 10f);
 
@@ -172,7 +231,7 @@ public class EntityStatusEffects : MonoBehaviour
 
         yield return new WaitForSeconds(10);
         entity.SetMoveSpeed(oldSpeed);
-        RemoveStatusEffect(effect);
+        RemoveStatusEffect(effect);*/
 
     }
 }

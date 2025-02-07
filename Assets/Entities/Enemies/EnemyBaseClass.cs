@@ -33,6 +33,7 @@ public abstract class EnemyBaseClass : Entity
 
         playerLayermask = LayerMask.GetMask("Player");
         StartCoroutine(DetectionCoroutine());
+        InitializeStats();
     }
 
     protected void Update(){

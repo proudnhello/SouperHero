@@ -26,6 +26,7 @@ public class PlayerManager : Entity
         }
         soup = player.GetComponent<PlayerSoup>();
         soup.lookup = lookup;
+        InitializeStats();
     }
 
     public static PlayerManager instance;

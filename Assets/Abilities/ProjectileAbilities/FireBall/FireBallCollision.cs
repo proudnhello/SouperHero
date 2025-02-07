@@ -13,7 +13,7 @@ public class FireBallCollision : MonoBehaviour
         {
             EnemyBaseClass enemy =  collider.gameObject.GetComponent<EnemyBaseClass>();
             enemy.TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
-            EntityStatusEffects.StatusEffect burn = EntityStatusEffects.CreateStatusEffect(EntityStatusEffects.StatusType.Burn, 2f, 0.2f, 1);
+            EntityStatusEffects.StatusEffect burn = EntityStatusEffects.CreateStatusEffect(EntityStatusEffects.StatusType.Burn, 5f, EntityStatusEffects.Operation.Add, 1);
             enemy.AddStatusEffect(burn);
             
             if (despawn)

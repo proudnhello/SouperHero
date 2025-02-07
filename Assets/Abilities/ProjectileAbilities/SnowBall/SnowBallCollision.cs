@@ -13,7 +13,7 @@ public class SnowBallCollision : MonoBehaviour
         {
             EnemyBaseClass enemy =  collider.gameObject.GetComponent<EnemyBaseClass>();
             enemy.TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
-            EntityStatusEffects.StatusEffect slow = EntityStatusEffects.CreateStatusEffect(EntityStatusEffects.StatusType.Slow, 3f, 3f, 5);
+            EntityStatusEffects.StatusEffect slow = EntityStatusEffects.CreateStatusEffect(EntityStatusEffects.StatusType.Slow, 5f, EntityStatusEffects.Operation.Add, -2);
             enemy.statusEffect.AddStatusEffect(slow);
             
             if (despawn)

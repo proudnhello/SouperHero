@@ -57,7 +57,11 @@ public class Entity : MonoBehaviour
     }
 
     [Header("Movement")]
-    [SerializeField] protected float moveSpeed;
+    [SerializeField] protected float baseMoveSpeed;
+    protected float moveSpeed;
+    public float GetBaseMoveSpeed() { 
+        return baseMoveSpeed;
+    }
     public float GetMoveSpeed()
     {
         return moveSpeed;
@@ -68,7 +72,12 @@ public class Entity : MonoBehaviour
     }
 
     [Header("Attacks")]
-    [SerializeField] protected int attackDamage;
+    [SerializeField] protected float baseAttackDamage;
+    protected int attackDamage;
+    public float GetBaseAttackDamage()
+    {
+        return baseAttackDamage;
+    }
     public int GetDamage()
     {
         return attackDamage;
@@ -83,6 +92,13 @@ public class Entity : MonoBehaviour
     // initialize enemy status effect class
     internal EntityStatusEffects statusEffect;
     [SerializeField] TMP_Text statusText;
+    public void InitializeStats()
+    {
+        InitializeStatusEffects();
+        attackDamage = (int)baseAttackDamage;
+        moveSpeed = baseMoveSpeed;
+        health = maxHealth;
+    }
     public void InitializeStatusEffects()
     {
         statusEffect = this.AddComponent<EntityStatusEffects>();
@@ -94,10 +110,6 @@ public class Entity : MonoBehaviour
     }
     public void AddStatusEffects(List<StatusEffect> effects)
     {
-        if (statusEffect == null)
-        {
-            InitializeStatusEffects();
-        }
         for (int i = 0; i < effects.Count; i++)
         {
             statusEffect.AddStatusEffect(effects[i]);
@@ -107,10 +119,6 @@ public class Entity : MonoBehaviour
 
     public void AddStatusEffect(StatusEffect effect)
     {
-        if (statusEffect == null)
-        {
-            InitializeStatusEffects();
-        }
         statusEffect.AddStatusEffect(effect);
         // statusText.text += effect.statusType.ToString() + "\n";
     }

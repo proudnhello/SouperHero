@@ -27,6 +27,14 @@ public class HealthCounter : MonoBehaviour
         healthText.text = PlayerManager.instance.GetHealth().ToString();
         PlayerHealth.HealthChange += HealthChange;
     }
+
+    // What did I say about not having duplicate copies of stats?
+    // Hacky fix to make sure the health is updated
+    public void FixedUpdate()
+    {
+        HealthChange();
+    }
+
     private void OnDisable()
     {
         PlayerHealth.HealthChange -= HealthChange;
