@@ -125,68 +125,74 @@ public class EntityStatusEffects : MonoBehaviour
             return;
         }
         counter = 0f;
-        // Take all of the status effects and merge them into one per type
-        // Then apply the status effect to the entity
+        // Call the status effect functions
         foreach (StatusType status in effectFunctions.Keys)
         {
-            if(!HasStatusEffect(status))
-            {
-                continue;
-            }
             StatusEffect effect = new StatusEffect();
             effect.statusType = status;
-            effect.intensity = 0;
-            effect.operation = Operation.Add;
-
-            // First, merge add all of the status effects of the same type (reducing their interval as we go
-            for (int i = 0;i < addStatusEffects.Count;i++)
-            {
-                if (addStatusEffects[i].statusType == status)
-                {
-                    StatusEffect addEffect = addStatusEffects[i];
-                    effect.intensity += addStatusEffects[i].intensity;
-                    addEffect.duration -= interval;
-                    addStatusEffects[i] = addEffect;
-                    if(addEffect.duration <= 0)
-                    {
-                        addStatusEffects.RemoveAt(i);
-                        i--;
-                    }
-                }
-            }
-
-            // Then, multiply all of the status effects of the same type
-            for(int i = 0; i < multStatusEffects.Count; i++)
-            {
-                if (multStatusEffects[i].statusType == status)
-                {
-                    StatusEffect multEffect = multStatusEffects[i];
-                    effect.intensity *= multStatusEffects[i].intensity;
-                    multEffect.duration -= interval;
-                    multStatusEffects[i] = multEffect;
-                    if(multEffect.duration <= 0)
-                    {
-                        multStatusEffects.RemoveAt(i);
-                        i--;
-                    }
-                }
-            }
-
-            // Finally, apply the status effect
             effectFunctions[status](effect);
         }
+    }
+
+    // Determines the intensity of the status effect
+    // If there's a base value of the stat being modified (ie, moveSpeed), pass it in as baseValue, otherwise pass in 0
+    public int CalculateIntensity(List<StatusEffect> effects, StatusEffect effect, int baseValue)
+    {
+        StatusType status = effect.statusType;
+        effect.operation = Operation.Add;
+        effect.intensity = baseValue;
+
+        // First, merge add all of the status effects of the same type (reducing their interval as we go
+        for (int i = 0;i < addStatusEffects.Count;i++)
+        {
+            if (addStatusEffects[i].statusType == status)
+            {
+                StatusEffect addEffect = addStatusEffects[i];
+                effect.intensity += addStatusEffects[i].intensity;
+                addEffect.duration -= interval;
+                addStatusEffects[i] = addEffect;
+                if(addEffect.duration <= 0)
+                {
+                    addStatusEffects.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        // Then, multiply all of the status effects of the same type
+        for(int i = 0; i < multStatusEffects.Count; i++)
+        {
+            if (multStatusEffects[i].statusType == status)
+            {
+                StatusEffect multEffect = multStatusEffects[i];
+                effect.intensity *= multStatusEffects[i].intensity;
+                multEffect.duration -= interval;
+                multStatusEffects[i] = multEffect;
+                if(multEffect.duration <= 0)
+                {
+                    multStatusEffects.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+        return effect.intensity;
     }
 
     // Different status effects have different coroutines
     public void Slow(StatusEffect effect)
     {
-        entity.SetMoveSpeed(entity.GetBaseMoveSpeed() - effect.intensity);
+        int intensity = CalculateIntensity(addStatusEffects, effect, 0);
+        entity.SetMoveSpeed(entity.GetBaseMoveSpeed() - intensity);
     }
 
     public void Burn(StatusEffect effect)
     {
-        print("burning " + effect.intensity);
-        entity.TakeDamage(effect.intensity);
+        int intensity = CalculateIntensity(addStatusEffects, effect, 0);
+        if(intensity <= 0)
+        {
+            return;
+        }
+        entity.TakeDamage(intensity);
     }
 
     public void Stun(StatusEffect effect)
