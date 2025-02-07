@@ -33,5 +33,7 @@ public class Chest : Interactable
         SetInteractablePrompt(false);
         // set chest to a different color so we know it's open
         GetComponent<SpriteRenderer>().color = Color.gray;
+
+        Debug.Log("Opened chest");
     }
 }

@@ -13,7 +13,6 @@ public class PlayerEnvInteraction : MonoBehaviour
         {
             currentInteractable = interactable;
             interactable.SetInteractablePrompt(true);
-            Debug.Log("Can interact with " + currentInteractable.GetInteractableType());
         }
     }
 
@@ -24,7 +23,6 @@ public class PlayerEnvInteraction : MonoBehaviour
         {
             currentInteractable = null;
             interactable.SetInteractablePrompt(false);
-            Debug.Log("Can no longer interact with " + interactable.GetInteractableType());
         }
     }
 
