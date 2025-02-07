@@ -31,16 +31,9 @@ public class WindupAttack : AbilityAbstractClass
         return;
     }
     public override void Active(){
-        if (_remainingUsage <= 0)
-        {
-            Debug.Log("ending windup attack");
-            End();
-        }
-        else
-        {
-            _remainingUsage--;
-            Debug.Log("using windup attack");
-        }
+        
+        Debug.Log("using windup attack");
+        
     }
     public override void End()
     {

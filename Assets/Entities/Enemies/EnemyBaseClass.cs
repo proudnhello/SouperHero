@@ -11,7 +11,7 @@ public abstract class EnemyBaseClass : Entity
     protected bool takingDamage = false;
     internal SpriteRenderer sprite;
     protected Transform playerTransform;
-    [SerializeField] protected PlayerSoup.Ingredient ingredient; 
+    [SerializeField] protected PlayerSoup.FlavorIngredient ingredient; 
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
     public int playerCollisionDamage = 10;
@@ -147,13 +147,13 @@ public abstract class EnemyBaseClass : Entity
         takingDamage = false;
     }
 
-    public PlayerSoup.Ingredient Soupify(){
+    public PlayerSoup.FlavorIngredient Soupify(){
         if(soupable){
             Destroy(gameObject);
             return ingredient;
         }
         else{
-            PlayerSoup.Ingredient nullIngredient = new PlayerSoup.Ingredient();
+            PlayerSoup.FlavorIngredient nullIngredient = new PlayerSoup.FlavorIngredient();
             nullIngredient.name = "null";
             return nullIngredient;
         }

@@ -19,8 +19,6 @@ public class DamageBuff : AbilityAbstractClass
         // ex: buffAmount = Mathf.CeilToInt(PlayerManager.instance.soupVal / 25)
 
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
-        _maxUsage = usageValue;
-        _remainingUsage = usageValue;
         buffAmount = soupVal/buffMult;
 
         if (player != null)

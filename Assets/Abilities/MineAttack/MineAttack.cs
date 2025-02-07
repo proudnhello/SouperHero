@@ -21,13 +21,10 @@ public class MineAttack : AbilityAbstractClass
     public override void Initialize(int soupVal)
     {
         Debug.Log("MineAttack initialized");
-        _maxUsage = Mathf.CeilToInt(soupVal / 2.0f);
-        _remainingUsage = _maxUsage;
     }
 
     public override void Active()
     {
-        _remainingUsage--;
 
         if (currentMine == null)
         {
@@ -43,11 +40,6 @@ public class MineAttack : AbilityAbstractClass
         mine.damageMult = damageMult;
 
         Debug.Log("MineAttack active");
-
-        if (_remainingUsage <= 0)
-        {
-            End();
-        }
     }
 
     public override void End()

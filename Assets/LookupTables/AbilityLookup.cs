@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StatusEffect = EntityStatusEffects.StatusEffect;
 
 [CreateAssetMenu(menuName = "Abilities/LookupTable")]
 
@@ -12,68 +13,66 @@ public class AbilityLookup : ScriptableObject
     // Dictionaries are not editable in the editor. The only things that are editable are arrays and lists of serializable objects (which are primatives and structs of primatives)
     // This will get massily unwieldy to edit if we have a lot of abilities/enemy types, but I still think it's the best way
     [Serializable]
-    public struct EnemyLookupEntry
+    public struct FlavorLookup
     {
-        public string enemyType;
-        public List<AbilityLookupEntry> abilities;
+        public string flavorName;
+        public List<FlavorLookupEntry> abilities;
     }
 
     [Serializable]
-    public struct AbilityLookupEntry
+    public struct FlavorLookupEntry
     {
-        public int minSoupValue;
-        public int maxSoupValue;
-        public AbilityAbstractClass ability;
+        public int minAppearences;
+        public int maxAppearances;
+        public StatusEffect status;
         public Color color;
     }
 
-    public EnemyLookupEntry[] lookup;
+    public FlavorLookup[] lookup;
 
-    public List<AbilityAbstractClass> Drink(List<(string, int)> pot)
+    public List<StatusEffect> GetStatusEffects(List<(string, int)> pot)
     {
-        List<AbilityAbstractClass> abilities = new List<AbilityAbstractClass>();
+        List<StatusEffect> statuses = new List<StatusEffect>();
 
         foreach ((string, int) soup in pot)
         {
-            bool foundEnemy = false;
-            foreach (EnemyLookupEntry entry in lookup)
+            bool foundFlavor = false;
+            foreach (FlavorLookup entry in lookup)
             {
-                if(soup.Item1 != entry.enemyType)
+                if(soup.Item1 != entry.flavorName)
                 {
                     continue;
                 }
-                foundEnemy = true;
-                foreach (AbilityLookupEntry abilityEntry in entry.abilities)
+                foundFlavor = true;
+                foreach (FlavorLookupEntry abilityEntry in entry.abilities)
                 {
-                    if (soup.Item2 > abilityEntry.minSoupValue && soup.Item2 <= abilityEntry.maxSoupValue)
+                    if (soup.Item2 > abilityEntry.minAppearences && soup.Item2 <= abilityEntry.maxAppearances)
                     {
-                        AbilityAbstractClass ability = Instantiate(abilityEntry.ability);
-                        ability.Initialize(soup.Item2);
-                        abilities.Add(ability);
+                        StatusEffect status = abilityEntry.status;
                     }
                 }
             }
-            if (!foundEnemy)
+            if (!foundFlavor)
             {
                 Debug.LogError($"Enemy type '{soup.Item1}' not found in ability lookup table");
             }
         }
 
-        return abilities;
+        return statuses;
     }
 
-    public Color GetAbilityColor(AbilityAbstractClass ability)
-{
-    foreach (var enemyEntry in lookup)
+    public Color GetAbilityColor(StatusEffect ability)
     {
-        foreach (var abilityEntry in enemyEntry.abilities)
+        /*foreach (var enemyEntry in lookup)
         {
-            if (abilityEntry.ability.GetType() == ability.GetType()) // Match by type
+            foreach (var abilityEntry in enemyEntry.abilities)
             {
-                return abilityEntry.color;
+                if (abilityEntry.ability.GetType() == ability.GetType()) // Match by type
+                {
+                    return abilityEntry.color;
+                }
             }
-        }
+        }*/
+        return Color.white;
     }
-    return Color.white;
-}
 }

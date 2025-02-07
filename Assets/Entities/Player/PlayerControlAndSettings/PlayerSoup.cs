@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static PlayerManager;
+using StatusEffect = EntityStatusEffects.StatusEffect;
 
 public class PlayerSoup : MonoBehaviour
 {
-    private List<Ingredient> inventory = new List<Ingredient>();
+    private List<FlavorIngredient> flavorInventory = new List<FlavorIngredient>();
+    private List<AbilityIngredient> abilityInventory = new List<AbilityIngredient>();
     private int numberofPots = 3;
     // This is set in player manager, so I don't want people being confused seeing it in the editor
     [NonSerialized]
@@ -20,15 +23,17 @@ public class PlayerSoup : MonoBehaviour
 
     public class Spoon
     {
-        public List<(string, int)> soup;
+        public List<AbilityAbstractClass> abilities;
+        public List<StatusEffect> statusEffects;
         public int uses;
         public int maxUsage;
 
-        public Spoon(int usage)
+        public Spoon()
         {
-            soup = new List<(string, int)>();
-            uses = usage;
-            maxUsage = uses;
+            statusEffects = new List<StatusEffect>();
+            abilities = new List<AbilityAbstractClass>();
+            uses = -1;
+            maxUsage = -1;
         }
 
         public void Refill()
@@ -38,97 +43,91 @@ public class PlayerSoup : MonoBehaviour
 
         public void Empty()
         {
-            soup.Clear();
+            statusEffects.Clear();
+            abilities.Clear();
             uses = maxUsage;
         }
     }
 
     [Serializable]
-    public struct Ingredient
+    public struct FlavorIngredient
     {
         public string name;
         public List<string> flavors;
     }
 
-    // Add an ingredient to the player's inventory
-    public void AddToInventory(Ingredient ingredient)
+    public struct AbilityIngredient
     {
-        inventory.Add(ingredient);
+        public string name;
+        public AbilityAbstractClass ability;
+        public int uses;
+    }
+
+    // Add an ingredient to the player's inventory
+    public void AddToInventory(FlavorIngredient ingredient)
+    {
+        flavorInventory.Add(ingredient);
         PrintIngredient(ingredient);
+    }
+    
+    public void AddToInventory(AbilityIngredient ingredient)
+    {
+        abilityInventory.Add(ingredient);
     }
 
     //public static event Action<List<(string, int)>> SoupifyEnemy;
 
-    // Convert a list of ingredients into a pot of soup, controlled by the potNumber
-    public Spoon FillPot(List<Ingredient> ingedientValue, Spoon pot)
+    // Convert a list of ingredients into a spoon that can be used
+    public Spoon FillSpoon(List<FlavorIngredient> flavor, List<AbilityIngredient> ability, Spoon spoon)
     {
-        pot.Empty();
-        foreach (Ingredient ingredient in ingedientValue)
+        spoon.Empty();
+        spoon.maxUsage = 0;
+        List<(string, int)> pot = new List<(string, int)>();
+        List<AbilityAbstractClass> added = new List<AbilityAbstractClass>();
+
+        // First, add the abilities
+        foreach(AbilityIngredient a in ability)
+        {
+            spoon.maxUsage += a.uses;
+            // Because all of these ingredients ***should*** contain the same instance of the ability, we can check if we've already added it like this
+            // in b4 i make a duplicate of an instance for some fukin reason then get confused why it's not working
+            if (!added.Contains(a.ability))
+            {
+                spoon.abilities.Add(Instantiate(a.ability));
+                added.Add(a.ability);
+            }
+        }
+
+        // Then, create the pot that the lookup table can understand
+        foreach (FlavorIngredient ingredient in flavor)
         {
             PrintIngredient(ingredient);
-            foreach (string flavor in ingredient.flavors)
+            foreach (string f in ingredient.flavors)
             {
                 bool found = false;
-                for (int i = 0; i < pot.soup.Count; i++)
+                for (int i = 0; i < pot.Count; i++)
                 {
-                    if (pot.soup[i].Item1 == flavor)
+                    if (pot[i].Item1 == f)
                     {
-                        pot.soup[i] = (flavor, pot.soup[i].Item2 + 1);
+                        pot[i] = (f, pot[i].Item2 + 1);
                         found = true;
                         break;
                     }
                 }
                 if (!found)
                 {
-                    pot.soup.Add((flavor, 1));
+                    pot.Add((f, 1));
                 }
             }
         }
-        return pot;
+        spoon.statusEffects = lookup.GetStatusEffects(pot);
+        spoon.uses = spoon.maxUsage;
+        return spoon;
     }
 
     public static event Action DrinkPot;
 
-    // Drink the soup in the pot and activate the abilities that correspond to the soup.
-    public List<AbilityAbstractClass> Drink(Spoon pot)
-    {
-        List<AbilityAbstractClass> abilities = new List<AbilityAbstractClass>();
-        // TESTING - fetch the first three ingredients in the inventory and create a pot with them
-
-        foreach ((string, int) soup in pot.soup)
-        {
-            print(soup.Item1 + " " + soup.Item2);
-        }
-        // You can't drink soup if the pot is empty
-        if (pot.soup.Count == 0)
-        {
-            return null;
-        }
-
-        // Then drink the soup
-        List<AbilityAbstractClass> drankAbilities = lookup.Drink(pot.soup);
-        foreach (AbilityAbstractClass ability in drankAbilities)
-        {
-            print(ability._abilityName);
-        }
-
-        pot.uses--;
-        print("Remaining Uses " + pot.uses);
-
-        // If there are no uses left, empty the pot and reset the usage
-        if (pot.uses <= 0)
-        {
-            pot.Empty();
-        }
-        foreach (AbilityAbstractClass ability in drankAbilities)
-        {
-            abilities.Add(ability);
-        }
-
-        return abilities;
-    }
-
-    public void PrintIngredient(Ingredient i)
+    public void PrintIngredient(FlavorIngredient i)
     {
         print(i.name + ", with flavors: " + String.Join(" ", i.flavors.ToArray()));
     }

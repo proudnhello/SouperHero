@@ -22,17 +22,9 @@ public class ProjectileScriptableObject : AbilityAbstractClass
     public override void Initialize(int soupVal)
     {
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
-        _maxUsage = usageValue;
-        _remainingUsage = usageValue;
     }
     public override void Active()
     {   
-        // Check if ability has time, otherwise call End()
-        if(_remainingUsage <= 0)
-        {
-            End();
-            return;
-        }
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         _currentProjectile = Instantiate(projectilePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
         _currentProjectile.transform.up = PlayerManager.instance.player.transform.up;
@@ -62,7 +54,6 @@ public class ProjectileScriptableObject : AbilityAbstractClass
             Debug.LogWarning("Projectile lacks the ability to deal damage!");
         }
   
-        _remainingUsage--;
     }
 
 
