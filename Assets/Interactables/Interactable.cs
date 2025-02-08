@@ -5,8 +5,8 @@ using UnityEngine;
 public abstract class Interactable : MonoBehaviour
 {
     [Header("Info")]
-    [SerializeField] protected string type;
-    [SerializeField] protected bool canInteract;
+    protected string type;
+    protected bool canInteract = true; //Always start object as interactable
 
     [SerializeField] public GameObject interactablePrompt;
 
