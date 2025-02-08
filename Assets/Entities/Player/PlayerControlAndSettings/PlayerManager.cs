@@ -40,6 +40,7 @@ public class PlayerManager : Entity
     public KeyCode soupKey = KeyCode.Mouse1;
     public KeyCode altSoupKey = KeyCode.F;
     public KeyCode drinkey = KeyCode.Space;
+    public KeyCode interactionKey = KeyCode.E;
     [Header("Attack")]
     [SerializeField] private LayerMask enemies;
 
