@@ -11,7 +11,8 @@ public class Chest : Interactable
     private void Start()
     {
         // set the type of the interactable
-        type = "Chest";
+        //type = "Chest";
+        type = this.name;
         // disable the interactable prompt
         interactablePrompt.SetActive(false);
     }
