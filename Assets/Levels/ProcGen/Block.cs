@@ -6,6 +6,8 @@ public class Block : MonoBehaviour
 {
     private List<Portal> _incomingPortals;
     private Portal _outgoingPortal;
+    [SerializeField]
+    private char _blockType;
 
     private void Awake()
     {
@@ -18,10 +20,6 @@ public class Block : MonoBehaviour
             {
                 _outgoingPortal = p;
             }
-        }
-        if(!_outgoingPortal)
-        {
-            Debug.LogError("BLOCK NEEDS ONE NON-ACCEPTING PORTAL!!");
         }
     }
 
@@ -38,5 +36,8 @@ public class Block : MonoBehaviour
     public Bounds GetBounds()
     {
         return RoomGenerator.GetPrefabBounds(this.gameObject); ;
+    }
+    public char getBlockType() { 
+        return _blockType;
     }
 }
