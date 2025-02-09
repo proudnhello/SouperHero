@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StatusEffect = EntityStatusEffects.StatusEffect;
+using AbilityStats = AbilityAbstractClass.AbilityStats;
 
 [CreateAssetMenu(menuName = "Abilities/LookupTable")]
 
@@ -24,15 +25,33 @@ public class AbilityLookup : ScriptableObject
     {
         public int minAppearences;
         public int maxAppearances;
-        public StatusEffect status;
+        public StatusEffectLookup status;
+        public BuffLookup buff;
         public Color color;
+    }
+
+    [Serializable]
+    public struct StatusEffectLookup
+    {
+        public bool givesStatusEffect;
+        public StatusEffect status;
+    }
+
+    [Serializable]
+    public struct BuffLookup
+    {
+        public bool givesBuff;
+        public AbilityAbstractClass.Stat stat;
+        public float value;
+        public EntityStatusEffects.Operation operation;
     }
 
     public FlavorLookup[] lookup;
 
-    public List<StatusEffect> GetStatusEffects(List<(string, int)> pot)
+    public (List<StatusEffect>, AbilityStats) GetStatusEffects(List<(string, int)> pot)
     {
         List<StatusEffect> statuses = new List<StatusEffect>();
+        List <BuffLookup> buffs = new List<BuffLookup>();
 
         foreach ((string, int) soup in pot)
         {
@@ -46,9 +65,20 @@ public class AbilityLookup : ScriptableObject
                 foundFlavor = true;
                 foreach (FlavorLookupEntry abilityEntry in entry.abilities)
                 {
-                    if (soup.Item2 > abilityEntry.minAppearences && soup.Item2 <= abilityEntry.maxAppearances)
+                    // If the count is in min, inclusive, and max, exclusive
+                    if (soup.Item2 >= abilityEntry.minAppearences && soup.Item2 < abilityEntry.maxAppearances)
                     {
-                        StatusEffect status = abilityEntry.status;
+                        if (abilityEntry.status.givesStatusEffect)
+                        {
+                            // Holy shit, status.status.statusType.ToSring(). That's vile
+                            Debug.Log("adding status " + abilityEntry.status.status.statusType.ToString());
+                            // Not that status.status is pretty either
+                            statuses.Add(abilityEntry.status.status);
+                        }
+                        if (abilityEntry.buff.givesBuff)
+                        {
+                            buffs.Add(abilityEntry.buff);
+                        }
                     }
                 }
             }
@@ -58,7 +88,18 @@ public class AbilityLookup : ScriptableObject
             }
         }
 
-        return statuses;
+        // This sorts the buffs by their operation, so that the adds are all done first, then the multiplies
+        // (Hopefully, my sort, enum.compareto, and lambda functions are rusty)
+        buffs.Sort((a, b) => a.operation.CompareTo(b.operation));
+
+        AbilityStats stats = AbilityAbstractClass.NewAbilityStats();
+
+        foreach (BuffLookup buff in buffs)
+        {
+            stats = AbilityAbstractClass.IncreaceStat(stats, buff);
+        }
+
+        return (statuses, stats);
     }
 
     public Color GetAbilityColor(StatusEffect ability)

@@ -7,6 +7,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static PlayerManager;
 using StatusEffect = EntityStatusEffects.StatusEffect;
+using AbilityStats = AbilityAbstractClass.AbilityStats;
 
 public class PlayerSoup : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class PlayerSoup : MonoBehaviour
     {
         public List<AbilityAbstractClass> abilities;
         public List<StatusEffect> statusEffects;
+        public AbilityStats stats;
         public int uses;
         public int maxUsage;
 
@@ -32,6 +34,7 @@ public class PlayerSoup : MonoBehaviour
         {
             statusEffects = new List<StatusEffect>();
             abilities = new List<AbilityAbstractClass>();
+            stats = AbilityAbstractClass.NewAbilityStats();
             uses = -1;
             maxUsage = -1;
         }
@@ -56,6 +59,7 @@ public class PlayerSoup : MonoBehaviour
         public List<string> flavors;
     }
 
+    [Serializable]
     public struct AbilityIngredient
     {
         public string name;
@@ -85,20 +89,7 @@ public class PlayerSoup : MonoBehaviour
         List<(string, int)> pot = new List<(string, int)>();
         List<AbilityAbstractClass> added = new List<AbilityAbstractClass>();
 
-        // First, add the abilities
-        foreach(AbilityIngredient a in ability)
-        {
-            spoon.maxUsage += a.uses;
-            // Because all of these ingredients ***should*** contain the same instance of the ability, we can check if we've already added it like this
-            // in b4 i make a duplicate of an instance for some fukin reason then get confused why it's not working
-            if (!added.Contains(a.ability))
-            {
-                spoon.abilities.Add(Instantiate(a.ability));
-                added.Add(a.ability);
-            }
-        }
-
-        // Then, create the pot that the lookup table can understand
+        // First, compile the flavors in a format the lookuptable will use
         foreach (FlavorIngredient ingredient in flavor)
         {
             PrintIngredient(ingredient);
@@ -120,7 +111,28 @@ public class PlayerSoup : MonoBehaviour
                 }
             }
         }
-        spoon.statusEffects = lookup.GetStatusEffects(pot);
+
+        // Then, lookup status effects and abilities
+        (List<StatusEffect>, AbilityStats) temp = lookup.GetStatusEffects(pot);
+        spoon.statusEffects = temp.Item1;
+        spoon.stats = temp.Item2;
+
+        // Then, add abilities to the spoon, applying the ability buffs as we go
+        foreach (AbilityIngredient a in ability)
+        {
+            spoon.maxUsage += a.uses;
+            // Because all of these ingredients ***should*** contain the same instance of the ability, we can check if we've already added it like this
+            // in b4 i make a duplicate of an instance for some fukin reason then get confused why it's not working
+            if (!added.Contains(a.ability))
+            {
+                AbilityAbstractClass newAbility = Instantiate(a.ability);
+                newAbility.SetStats(spoon.stats);
+                newAbility.SetStatusEffects(spoon.statusEffects);
+                spoon.abilities.Add(newAbility);
+                added.Add(a.ability);
+            }
+        }
+
         spoon.uses = spoon.maxUsage;
         return spoon;
     }

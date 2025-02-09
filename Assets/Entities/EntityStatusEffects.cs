@@ -33,23 +33,16 @@ public class EntityStatusEffects : MonoBehaviour
         Multiply
     }
     [SerializeField]
-    public enum WhoEffected
-    {
-        Self,
-        ThoseHit
-    }
-
     [Serializable]
     public struct StatusEffect
     {
         public StatusType statusType;
         public Operation operation;
-        public WhoEffected whoEffected;
         public float duration;
         public int intensity;
     }
 
-    public static StatusEffect CreateStatusEffect(StatusType statusType, WhoEffected whoEffected, float duration, Operation op, int intensity)
+    public static StatusEffect CreateStatusEffect(StatusType statusType, float duration, Operation op, int intensity)
     {
         return new StatusEffect
         {
@@ -57,7 +50,6 @@ public class EntityStatusEffects : MonoBehaviour
             duration = duration,
             intensity = intensity,
             operation = op,
-            whoEffected = whoEffected
         };
     }
 
@@ -69,14 +61,12 @@ public class EntityStatusEffects : MonoBehaviour
             duration = effect.duration,
             intensity = effect.intensity,
             operation = effect.operation,
-            whoEffected = effect.whoEffected
         };
     }
 
     private delegate void StatusDelegate(StatusEffect effect);
     private void CreateStatusEffects()
     {
-        print("making status effects");
         effectFunctions = new Dictionary<StatusType, StatusDelegate>
         {
             { StatusType.Stun, Stun },
