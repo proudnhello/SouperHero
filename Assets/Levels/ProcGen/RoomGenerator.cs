@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using UnityEngine;
 
 // Shuffle function for a list. From: https://discussions.unity.com/t/clever-way-to-shuffle-a-list-t-in-one-line-of-c-code/535113
@@ -31,14 +32,13 @@ public class RoomGenerator : MonoBehaviour
     public List<Block> connectorBlocks;
     public List<Block> intermediateBlocks;
     public List<Block> endBlocks;
+    public GameObject cap;
 
     [SerializeField]
     private string _startString = "";
 
     void Start()
     {
-        // Start the scene identifying where the player will spawn
-        // Have a select number of rooms you want
         if(startBlocks.Count <= 0)
         {
             Debug.LogError("No start blocks, dumbass");
@@ -89,7 +89,6 @@ public class RoomGenerator : MonoBehaviour
     private void AlignBlockToPortal(Block block, Portal p)
     {
         float angleDiff = p.getDirectionAsAngle() - block.getOutgoingPortal().getDirectionAsAngle();
-        Debug.Log("Angle Diff: " + angleDiff * Mathf.Rad2Deg);
         block.gameObject.transform.Rotate(new Vector3(0, 0, 1), Mathf.Rad2Deg * angleDiff);
         Vector2 positionDiff = p.gameObject.transform.position - block.getOutgoingPortal().gameObject.transform.position;
         block.gameObject.transform.position = (Vector2) block.gameObject.transform.position + positionDiff;
@@ -100,7 +99,6 @@ public class RoomGenerator : MonoBehaviour
         if (_blocks.Count > 0)
         {
             List<Portal> randomPortalList = GetRandomPortalList();
-            Debug.Log("Num Portals available: " + randomPortalList.Count);
             foreach (Portal p in randomPortalList)
             {
                 if (!p.isClosed())
@@ -113,9 +111,6 @@ public class RoomGenerator : MonoBehaviour
                         randomPortalList.Clear();
                         _blocks.Add(block);
                         return true;
-                    } else
-                    {
-                        Debug.Log("Failed Bounds Check");
                     }
                 }
             }
@@ -124,7 +119,6 @@ public class RoomGenerator : MonoBehaviour
         }
         else
         {
-            Debug.Log("ADDED STARTER BLOCK!");
             _blocks.Add(block);
             return true;
         }
@@ -165,64 +159,28 @@ public class RoomGenerator : MonoBehaviour
                 b = Instantiate(intermediateBlocks[0]).GetComponent<Block>();
                 break;
             default:
-                return false;
+                return true;
         }
         if(TryPlaceBlock(b))
         {
-            Debug.Log("Can Place!");
             return PlaceNextBlock(depth + 1);
         }
         return false;
     }
 
-    void GenerateRoom() {
+    void GenerateRoom()
+    {
         // try to generate the rooms
         bool succeeded = PlaceNextBlock(0);
-        if(succeeded)
+        if (succeeded)
         {
             Debug.Log("succeeded in placing blocks!");
-        } else
+        }
+        else
         {
             Debug.Log("FAILED LMFAOOOOOOOOOOOOOOAOAOAOA");
         }
-        // second pass to plug holes (cap each dead end connector with a room)
         List<Portal> potentialEnds = new List<Portal>();
-        foreach(Block b in _blocks)
-        {
-            if(b.getBlockType() == 'C')
-            {
-                foreach (Portal p in b.getPortals()) { 
-                    if(!p.isClosed())
-                    {
-                        Block b2 = Instantiate(intermediateBlocks[0]).GetComponent<Block>();
-                        if(!AtMostOnceAttach(b2, p)) {
-                            Destroy(b2.gameObject);
-                            Debug.Log("b2: " + (b2 == null));
-                        }
-                    }
-                }
-            }
-            switch (b.getBlockType())
-            {
-                case 'S':
-                    DrawBounds(b.GetBounds(), Color.black);
-                    break;
-                case 'C':
-                    DrawBounds(b.GetBounds(), Color.green);
-                    break;
-                case 'I':
-                    DrawBounds(b.GetBounds(), Color.red);
-                    break;
-                default:
-                    break;
-            }
-        }
-        foreach (Block b in _auxilary)
-        {
-            DrawBounds(b.GetBounds(), Color.cyan);
-        }
-        _blocks.AddRange(_auxilary);
-        _auxilary.Clear();
         foreach (Block b in _blocks)
         {
             foreach (Portal p in b.getPortals())
@@ -243,12 +201,57 @@ public class RoomGenerator : MonoBehaviour
                 break;
             }
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // second pass to plug holes (cap each dead end connector with a room)
+        foreach (Block b in _blocks)
+        {
+            if (b.getBlockType() == 'C')
+            {
+                foreach (Portal p in b.getPortals())
+                {
+                    if (!p.isClosed())
+                    {
+                        Block b2 = Instantiate(cap).GetComponent<Block>();
+                        if (!AtMostOnceAttach(b2, p))
+                        {
+                            Destroy(b2.gameObject);
+                        }
+                    }
+                }
+            }
+            switch (b.getBlockType())
+            {
+                case 'S':
+                    DrawBounds(b.GetBounds(), Color.black);
+                    break;
+                case 'C':
+                    DrawBounds(b.GetBounds(), Color.green);
+                    break;
+                case 'I':
+                    DrawBounds(b.GetBounds(), Color.red);
+                    break;
+                case 'E':
+                    DrawBounds(b.GetBounds(), Color.yellow);
+                    break;
+                default:
+                    break;
+            }
+        }
+        foreach (Block b in _auxilary)
+        {
+            DrawBounds(b.GetBounds(), Color.cyan);
+        }
+        _blocks.AddRange(_auxilary);
+        _auxilary.Clear();
+        foreach (Block b in _blocks)
+        {
+            foreach (Portal p in b.getPortals())
+            {
+                if (!p.isClosed())
+                {
+                    p.setClosed(true);
+                }
+            }
+        }
     }
 
 
