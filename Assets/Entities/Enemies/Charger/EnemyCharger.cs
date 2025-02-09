@@ -7,10 +7,8 @@ using UnityEngine;
 public class EnemyCharger : EnemyBaseClass
 {
     [SerializeField]
-    private float newMoveSpeed = 1f;
     protected new void Start(){
         base.Start();
-        moveSpeed = newMoveSpeed;
         health = maxHealth;
     }
     protected override void UpdateAI(){

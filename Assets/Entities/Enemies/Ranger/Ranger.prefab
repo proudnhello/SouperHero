@@ -100,7 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d0ed89a70c02a43b97f7052c4df1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 50
   maxHealth: 50
+  baseMoveSpeed: 2
+  baseAttackDamage: 10
+  statusEffects: []
+  statusText: {fileID: 0}
   ingredient:
     name: ranger
     flavors:
@@ -110,7 +115,6 @@ MonoBehaviour:
     - refreshing
   playerCollisionDamage: 10
   knockBackTime: 0.5
-  statusText: {fileID: 0}
   newMoveSpeed: 2
   distanceToShoot: 0
   firingPoint: {fileID: 4816195811675097778}
