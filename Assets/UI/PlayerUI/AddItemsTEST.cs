@@ -12,7 +12,8 @@ public class AddItemsTEST : MonoBehaviour
     void Start()
     {
         GameObject g = Instantiate(ingredientObj, new Vector2(potObj.transform.position.x - 50.0f, potObj.transform.position.y + 85.0f), Quaternion.identity, this.transform);
-        g.transform.localScale = g.transform.localScale * 5;
+        //g.transform.localScale = g.transform.localScale * 10;
+
         //Instantiate(ingredientObj);
         //Instantiate(ingredientObj, new Vector2(0,0), Quaternion.identity, potObj.transform);
     }
