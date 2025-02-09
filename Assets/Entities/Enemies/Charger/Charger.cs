@@ -16,7 +16,6 @@ public class Charger : EnemyBaseClass
     }
     protected override void UpdateAI(){
         agent.SetDestination(playerTransform.position);
-        Debug.Log("moving");
     }
 
     protected new void Update(){

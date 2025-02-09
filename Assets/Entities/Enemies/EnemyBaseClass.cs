@@ -18,10 +18,10 @@ public abstract class EnemyBaseClass : Entity
     [SerializeField] protected float knockBackTime = 1.0f;
 
     [Header("Player Detection")]
-    private bool playerDetected = false;
-    private float detectionRadius = 4f;
-    private float detectionDelay = 0.3f;
-    private LayerMask playerLayermask;
+    protected bool playerDetected = false;
+    protected float detectionRadius = 4f;
+    protected float detectionDelay = 0.3f;
+    protected LayerMask playerLayermask;
     
 
     protected void Start(){
