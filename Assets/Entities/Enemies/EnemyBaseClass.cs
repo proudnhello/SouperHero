@@ -134,7 +134,7 @@ public abstract class EnemyBaseClass : Entity
 
     public IEnumerator KnockBack(float time)
     {
-        int maxFlashCycles = Mathf.CeilToInt((time / 0.3f));
+        int maxFlashCycles = Mathf.CeilToInt(time / 0.3f);
         int flashCycles = 0;
         while(maxFlashCycles > flashCycles)
         {
