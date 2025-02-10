@@ -8,7 +8,7 @@ using UnityEngine.AI;
 public class Spacer : EnemyBaseClass
 {
     private NavMeshAgent agent;
-    [SerializeField] float attackRadius = 2.0f;
+    [SerializeField] float attackRadius = 3.0f;
     [SerializeField] float timeBetweenAttacks = 1.0f;
     private bool playerWithinRange;
     protected new void Start(){
@@ -26,13 +26,14 @@ public class Spacer : EnemyBaseClass
         else{
             playerWithinRange = false;
         }
-        Debug.Log(playerWithinRange);
-        if(!playerWithinRange){
-            agent.isStopped = false;
-        }
-        else{
+
+        if(playerWithinRange){
             agent.isStopped = true;
         }
+        else{
+            agent.isStopped = false;
+        }
+
         agent.SetDestination(playerTransform.position);
     }
 

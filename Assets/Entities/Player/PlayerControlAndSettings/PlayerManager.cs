@@ -18,6 +18,10 @@ public class PlayerManager : Entity
         {
             instance = this;
         }
+        else
+        {
+            Destroy(gameObject);
+        }
         health = maxHealth;
         for (int i = 0; i < numberofPots; i++)
         {
