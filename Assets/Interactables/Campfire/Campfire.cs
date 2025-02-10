@@ -27,13 +27,14 @@ public class Campfire : Interactable
             cooking = true;
             cookingPot.SetActive(true);
             CookingScreen.SetActive(true);
+            Debug.Log("Setting player movement to false from Interact()");
             SetPlayerMovement(false);
             SetInteractable(false);
         }
     }
 
     private void SetPlayerMovement(bool value){
-        Debug.Log("Setting player movement to " + value);
+        //Debug.Log("Setting player movement to " + value);
         GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerMovement>().enabled = value;
     }
 
@@ -53,11 +54,7 @@ public class Campfire : Interactable
 
         if (cooking && Input.GetKeyDown(PlayerManager.instance.interactionKey))
         {
-            SetPlayerMovement(true);
-            cookingPot.SetActive(false);
-            CookingScreen.SetActive(false);
-            SetInteractable(true);
-            cooking = false;
+            StopCooking();
         }
 
         if (!interactablePrompt.activeSelf)
@@ -68,5 +65,14 @@ public class Campfire : Interactable
         }
 
 
+    }
+
+    private void StopCooking(){
+        Debug.Log("Setting player movement to true from StopCooking()");
+        SetPlayerMovement(true);
+        cookingPot.SetActive(false);
+        CookingScreen.SetActive(false);
+        SetInteractable(true);
+        cooking = false;
     }
 }
