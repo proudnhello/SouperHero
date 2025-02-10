@@ -7,15 +7,15 @@ public class FireBallCollision : MonoBehaviour
     private const int enemyLayer = 7;
     [SerializeField] private bool despawn = true;
     [SerializeField] public float despawnTime = -1f;
+    public AbilityAbstractClass.AbilityStats stats;
+    public List<EntityStatusEffects.StatusEffect> statusEffects;
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.gameObject.layer == enemyLayer)
         {
             EnemyBaseClass enemy =  collider.gameObject.GetComponent<EnemyBaseClass>();
-            enemy.TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
-            EntityStatusEffects.StatusEffect burn = EntityStatusEffects.CreateStatusEffect(EntityStatusEffects.StatusType.Burn, 5f, EntityStatusEffects.Operation.Add, 1);
-            enemy.AddStatusEffect(burn);
-            
+            enemy.TakeDamage(stats.damage, this.gameObject);
+            enemy.AddStatusEffects(statusEffects);
             if (despawn)
             {
                 Destroy(this.gameObject);

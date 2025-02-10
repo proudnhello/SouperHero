@@ -16,8 +16,6 @@ public class KnockbackAOE : AbilityAbstractClass
     public override void Initialize(int soupVal)
     {
         usageValue = Mathf.CeilToInt(soupVal / 2.0f);
-        _maxUsage = usageValue;
-        _remainingUsage = usageValue;
     }
     public override void Active()
     {
@@ -33,12 +31,6 @@ public class KnockbackAOE : AbilityAbstractClass
         }
 
         currentWave.GetComponent<KnockbackEnemy>().despawnTime = waveLifespan;
-
-        usageValue--;
-        if(usageValue <= 0)
-        {
-            End();
-        }
     }
 
     public override void End()

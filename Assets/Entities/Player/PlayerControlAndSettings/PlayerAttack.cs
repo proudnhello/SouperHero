@@ -16,9 +16,9 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         testAttack.SetActive(false); //Testing
-        foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities()) //Initialize all abilities in array
+        foreach (AbilityAbstractClass ability in PlayerManager.instance.UseSpoon()) //Initialize all abilities in array
         {
-            ability.Initialize(10);
+
         }
     }
 
@@ -78,7 +78,7 @@ public class PlayerAttack : MonoBehaviour
         Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
         {
-            PlayerSoup.Ingredient soup = enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().Soupify();
+            PlayerSoup.AbilityIngredient soup = enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().Soupify();
             if(soup.name != "null") {
                 PlayerManager.instance.AddToInventory(soup);
             }
@@ -95,7 +95,7 @@ public class PlayerAttack : MonoBehaviour
         testAttack.SetActive(true);
         if (!souping)
         {
-            foreach (AbilityAbstractClass ability in PlayerManager.instance.GetAbilities().ToList()) //Activate all abilities in array
+            foreach (AbilityAbstractClass ability in PlayerManager.instance.UseSpoon().ToList()) //Activate all abilities in array
             {
                 ability.Active();
 

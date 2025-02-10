@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Ingredient = PlayerSoup.Ingredient;
+using Ingredient = PlayerSoup.FlavorIngredient;
 
 //Script for all collectable ingredients in the environment
 //Based off of the Chest.cs script

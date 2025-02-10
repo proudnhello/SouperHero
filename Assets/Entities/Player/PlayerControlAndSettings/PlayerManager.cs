@@ -8,7 +8,8 @@ using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
 using static Unity.VisualScripting.Member;
 using Spoon = PlayerSoup.Spoon;
-using Ingredient = PlayerSoup.Ingredient;
+using FlavorIngredient = PlayerSoup.FlavorIngredient;
+using AbilityIngredient = PlayerSoup.AbilityIngredient;
 
 public class PlayerManager : Entity
 {
@@ -19,10 +20,10 @@ public class PlayerManager : Entity
             instance = this;
         }
         health = maxHealth;
-        for (int i = 0; i < numberofPots; i++)
+        for (int i = 0; i < numberofSpoons + 1; i++)
         {
-            Spoon pot = new Spoon(defaultSoupUsage);
-            pots.Add(pot);
+            Spoon spoon = new Spoon();
+            spoons.Add(spoon);
         }
         soup = player.GetComponent<PlayerSoup>();
         soup.lookup = lookup;
@@ -99,75 +100,59 @@ public class PlayerManager : Entity
     }
 
     [Header("Abilities")]
-    [SerializeField] private List<AbilityAbstractClass> abilities;
+    // Add abilities for testing here
+    [SerializeField] private List<AbilityAbstractClass> DEBUG_ONLY_ABILITIES;
 
     [Header("Soup")]
     [SerializeField] private AbilityLookup lookup;
     //[SerializeField] private int maxPotSize = 5;
-    [SerializeField] private int numberofPots = 3;
-    [SerializeField] private int defaultSoupUsage = 3;
-    private List<Ingredient> inventory = new List<Ingredient>();
+    [SerializeField] private int numberofSpoons = 4;
+    private int currentSpoon = 0;
+    private List<FlavorIngredient> flavorInventory = new List<FlavorIngredient>();
+    private List<AbilityIngredient> abilityInventory = new List<AbilityIngredient>();
     public int GetNumberOfPots()
     {
-        return numberofPots;
+        return numberofSpoons;
     }
 
-    List<Spoon> pots = new List<Spoon>();
-    List<int> potFullnesses = new List<int>();
+    List<Spoon> spoons = new List<Spoon>();
 
-    public void PrintIngredient(Ingredient i)
+    public void PrintIngredient(FlavorIngredient i)
     {
         print(i.name + ", with flavors: " + String.Join(" ", i.flavors.ToArray()));
     }
 
     // Convert a list of ingredients into a pot of soup, controlled by the potNumber
-    public void FillPot(List<Ingredient> ingedientValue, int potNumber)
+    public void FillPot(List<FlavorIngredient> flavors, List<AbilityIngredient> abilities, int spoonNumber)
     {
-        soup.FillPot(ingedientValue, pots[potNumber]);
+        soup.FillSpoon(flavors, abilities, spoons[spoonNumber]);
     }
 
     public static event Action DrinkPot;
 
     // Drink the soup in the pot and activate the abilities that correspond to the soup.
-    public void Drink(int potNumber)
+    public void Drink(int spoonNumber)
     {
-        // TESTING - fetch the first three ingredients in the inventory and create a pot with them
-        if (inventory.Count < 3)
-        {
-            FillPot(inventory, potNumber);
-            inventory.Clear();
-        }
-        else
-        {
-            FillPot(inventory.GetRange(0, 3), potNumber);
-            for (int i = 0; i < 3; i++)
-            {
-                inventory.RemoveAt(0);
-            }
-        }
-
-        // First end all active abilities
-        foreach (AbilityAbstractClass ability in abilities.ToList())
-        {
-            ability.End();
-        }
-        abilities.Clear();
-
-        abilities = soup.Drink(pots[potNumber]);
-        if(abilities == null)
-        {
-            abilities = new List<AbilityAbstractClass>();
-        }
+        // For testing, take the entire list of both types of ingredients and fill the pot with them
+        // Later on, this will be removed, and we'll do it all thru the UI
+        print("You used " + spoonNumber + " :)");
+        currentSpoon = spoonNumber;
+        FillPot(flavorInventory, abilityInventory, spoonNumber);
+        flavorInventory.Clear();
+        abilityInventory.Clear();
     }
 
     public void RemoveAbility(AbilityAbstractClass ability)
     {
-        abilities.Remove(ability);
+        return;
     }
 
-    public List<AbilityAbstractClass> GetAbilities()
+    // This will fetch the abilities from the spoon and return them to the player
+    // It will also decrement the number of uses of the spoon. It is expected that this will be called every time the player attacks
+    public List<AbilityAbstractClass> UseSpoon()
     {
-        return instance.abilities;
+        List<AbilityAbstractClass> abilities = spoons[currentSpoon].abilities;
+        return abilities;
     }
 
     public LayerMask GetEnemies()
@@ -176,10 +161,15 @@ public class PlayerManager : Entity
     }
 
     // Add an ingredient to the player's inventory
-    public void AddToInventory(Ingredient ingredient)
+    public void AddToInventory(FlavorIngredient ingredient)
     {
-        inventory.Add(ingredient);
+        flavorInventory.Add(ingredient);
         PrintIngredient(ingredient);
+    }
+
+    public void AddToInventory(AbilityIngredient ingredient)
+    {
+        abilityInventory.Add(ingredient);
     }
 
     //public static event Action<List<(string, int)>> SoupifyEnemy;

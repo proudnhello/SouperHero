@@ -55,8 +55,8 @@ public class UIManager : MonoBehaviour
     }
 
     public void UpdateAbilities() {
-        int newSpoonCount = PlayerManager.instance.GetAbilities().Count;
-        List<AbilityAbstractClass> abilities = PlayerManager.instance.GetAbilities();
+        int newSpoonCount = PlayerManager.instance.UseSpoon().Count;
+        List<AbilityAbstractClass> abilities = PlayerManager.instance.UseSpoon();
         UpdateSpoons(newSpoonCount, abilities);
     }
 

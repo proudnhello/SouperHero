@@ -32,7 +32,7 @@ public class EntityStatusEffects : MonoBehaviour
         Add,
         Multiply
     }
-
+    [SerializeField]
     [Serializable]
     public struct StatusEffect
     {
@@ -48,7 +48,8 @@ public class EntityStatusEffects : MonoBehaviour
         {
             statusType = statusType,
             duration = duration,
-            intensity = intensity
+            intensity = intensity,
+            operation = op,
         };
     }
 
@@ -59,14 +60,13 @@ public class EntityStatusEffects : MonoBehaviour
             statusType = effect.statusType,
             duration = effect.duration,
             intensity = effect.intensity,
-            operation = effect.operation
+            operation = effect.operation,
         };
     }
 
     private delegate void StatusDelegate(StatusEffect effect);
     private void CreateStatusEffects()
     {
-        print("making status effects");
         effectFunctions = new Dictionary<StatusType, StatusDelegate>
         {
             { StatusType.Stun, Stun },

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Ingredient = PlayerSoup.Ingredient;
+using Ingredient = PlayerSoup.FlavorIngredient;
 
 public class Chest : Interactable
 {
