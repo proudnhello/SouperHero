@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
@@ -9,29 +11,31 @@ public class RoomGenerator : MonoBehaviour
     public int _mapWidth;
     public int _mapHeight;
 
-    private List<List<char>> _map;
+    private List<List<Block>> _map;
 
     public List<Block> _startBlocks;
-    public List<Block> _connectorBlocks;
     public List<Block> _intermediateBlocks;
+
+    public GameObject connector2;
+    public GameObject connector3;
+    public GameObject connector4;
 
     void Start()
     {
         // Start the scene identifying where the player will spawn
         // Have a select number of rooms you want
-        _map = new List<List<char>>();
+        _map = new List<List<Block>>();
         for(int i = 0; i < _mapWidth; i++)
         {
-            _map.Add(new List<char>());
+            _map.Add(new List<Block>());
         }
         for(int i = 0; i < _mapWidth; i++) { 
             for (int j = 0; j < _mapHeight; j++)
             {
-                _map[i].Add(' ');
+                _map[i].Add(null);
             }
         }
         GenerateRoom();
-        Gizmos.color = Color.yellow;
     }
 
     private Vector2 getOffset(int row, int col, Block b)
@@ -44,19 +48,31 @@ public class RoomGenerator : MonoBehaviour
         b.gameObject.transform.position = getOffset(row, col, b);
         for(int i = 0; i < b.BlockWidth(); ++i)
         {
-            if(row + i >= _mapWidth || _map[row + i][col] != ' ')
+            if(row + i >= _mapWidth || _map[row + i][col] != null)
             {
                 return false;
             }
         }
         for (int i = 0; i < b.BlockHeight(); ++i)
         {
-            if (col + i >= _mapHeight || _map[row][col + i] != ' ')
+            if (col + i >= _mapHeight || _map[row][col + i] != null)
             {
                 return false;
             }
         }
         return true;
+    }
+
+    private void fillBlock(int row, int col, Block b)
+    {
+        for (int j = 0; j < b.BlockWidth(); ++j)
+        {
+            _map[row + j][col] = b;
+        }
+        for (int j = 0; j < b.BlockHeight(); ++j)
+        {
+            _map[row][col + j] = b;
+        }
     }
 
     // BFS Random Placement for intermediates // CHATGPT GAVE ME PSEUDO CODE
@@ -76,17 +92,92 @@ public class RoomGenerator : MonoBehaviour
                 b.gameObject.transform.rotation = Quaternion.identity;
                 if (row + b.BlockWidth() < _mapWidth && canPlaceIntermediate(row, col, b))
                 {
-                    for (int j = 0; j < b.BlockWidth(); ++j)
-                    {
-                        _map[row + j][col] = 'I';
-                    }
-                    for (int j = 0; j < b.BlockHeight(); ++j)
-                    {
-                        _map[row][col + j] = 'I';
-                    }
+                    fillBlock(row, col, b);
                     placed = true;
                     Vector2 offset = getOffset(row, col, b);
-                    DrawRect(new Vector3(row * TILE_WIDTH, col * TILE_HEIGHT, 0), new Vector3(offset.x, offset.y, 0), Color.yellow);
+                }
+            }
+        }
+    }
+
+    private bool checkForBlock(int row, int col)
+    {
+        Block b = _map[row][col];
+        return b != null && b.BlockType() != "Connector";
+    }
+
+    private string getConnectionsAt(int row, int col)
+    {
+        int rowPlus = row + 1;
+        int rowMinus = row - 1;
+        int colPlus = col + 1;
+        int colMinus = col - 1;
+
+        string s = "";
+
+        if(rowMinus >= 0)
+        {
+            if(checkForBlock(rowMinus, col))
+            {
+                s += "W";
+            }
+        }
+        if (colMinus >= 0)
+        {
+            if (checkForBlock(row, colMinus))
+            {
+                s += "N";
+            }
+        }
+        if (rowPlus < _mapWidth)
+        {
+            if (checkForBlock(rowPlus, col))
+            {
+                s += "E";
+            }
+        }
+        if (colPlus < _mapHeight)
+        {
+            if (checkForBlock(row, colPlus))
+            {
+                s += "S";
+            }
+        }
+        return s;
+    }
+
+    private void firstSweepConnect()
+    {
+        for (int row = 0; row < _mapWidth; row++)
+        {
+            for (int col = 0; col < _mapHeight; col++)
+            {
+                if (!_map[row][col])
+                {
+                    string c = getConnectionsAt(row, col);
+                    switch (c.Length)
+                    {
+                        case 2:
+                            Block b = Instantiate(connector2).GetComponent<Block>();
+                            canPlaceIntermediate(row, col, b);
+                            fillBlock(row, col, b);
+                            _map[row][col] = b;
+                            break;
+                        case 3:
+                            Block b2 = Instantiate(connector3).GetComponent<Block>();
+                            canPlaceIntermediate(row, col, b2);
+                            fillBlock(row, col, b2);
+                            _map[row][col] = b2;
+                            break;
+                        case 4:
+                            Block b3 = Instantiate(connector4).GetComponent<Block>();
+                            canPlaceIntermediate(row, col, b3);
+                            fillBlock(row, col, b3);
+                            _map[row][col] = b3;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -97,9 +188,13 @@ public class RoomGenerator : MonoBehaviour
         int midWidth = (_mapWidth - 1) / 2;
         int midHeight = (_mapHeight - 1) / 2;
 
-        _map[midWidth][midHeight] = 'S';
         Block b = Instantiate(_startBlocks[0]).GetComponent<Block>();
         b.gameObject.transform.position = getOffset(midWidth, midHeight, b);
+        _map[midWidth][midHeight] = b;
+
+        placeIntermediates(10);
+
+        firstSweepConnect();
 
         for (int i = 0; i < _mapWidth; ++i)
         {
@@ -108,10 +203,32 @@ public class RoomGenerator : MonoBehaviour
                 DrawRect(new Vector3(i * TILE_WIDTH, j * TILE_WIDTH, 0), new Vector3((i + 1) * TILE_WIDTH, (j + 1) * TILE_HEIGHT, 0), Color.red);
             }
         }
-
-        placeIntermediates(10);
-
-        Print2DArray(_map);
+        for (int i = 0; i < _mapWidth; ++i)
+        {
+            for (int j = 0; j < _mapHeight; ++j)
+            {
+                if (_map[i][j])
+                {
+                    Color c;
+                    switch (_map[i][j].BlockType())
+                    {
+                        case "Start":
+                            c = Color.yellow;
+                            break;
+                        case "Connector":
+                            c = Color.green;
+                            break;
+                        case "Intermediate":
+                            c = Color.cyan;
+                            break;
+                        default:
+                            c = Color.magenta;
+                            break;
+                    }
+                    DrawRect(new Vector3(i * TILE_WIDTH, j * TILE_WIDTH, 0), new Vector3((i + 1) * TILE_WIDTH, (j + 1) * TILE_HEIGHT, 0), c);
+                }
+            }
+        }
     }
 
     public static void DrawRect(Vector3 min, Vector3 max, Color color)
@@ -122,25 +239,25 @@ public class RoomGenerator : MonoBehaviour
         UnityEngine.Debug.DrawLine(min, new Vector3(max.x, min.y), color);
     }
 
-    public static void Print2DArray(List<List<char>> matrix)
-    {
-        string s = "";
-        for (int i = 0; i < matrix.Count; i++)
-        {
-            for (int j = 0; j < matrix[0].Count; j++)
-            {
-                if (matrix[i][matrix.Count - j - 1] != ' ')
-                {
-                    s += '*';
-                }
-                else
-                {
-                    s += "_";
-                }
+    //public static void Print2DArray(List<List<char>> matrix)
+    //{
+    //    string s = "";
+    //    for (int i = 0; i < matrix.Count; i++)
+    //    {
+    //        for (int j = 0; j < matrix[0].Count; j++)
+    //        {
+    //            if (matrix[i][matrix.Count - j - 1] != ' ')
+    //            {
+    //                s += '*';
+    //            }
+    //            else
+    //            {
+    //                s += "_";
+    //            }
 
-            }
-            s += '\n';
-        }
-        Debug.Log(s);
-    }
+    //        }
+    //        s += '\n';
+    //    }
+    //    Debug.Log(s);
+    //}
 }
