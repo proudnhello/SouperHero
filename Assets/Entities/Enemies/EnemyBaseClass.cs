@@ -22,7 +22,8 @@ public abstract class EnemyBaseClass : Entity
     private float detectionRadius = 4f;
     private float detectionDelay = 0.3f;
     private LayerMask playerLayermask;
-    
+
+    public AddToPot potScript;
 
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
@@ -149,6 +150,8 @@ public abstract class EnemyBaseClass : Entity
 
     public PlayerSoup.Ingredient Soupify(){
         if(soupable){
+            //AddToPot.AddIngredient(_initialColor);
+            potScript.AddIngredient(_initialColor);
             Destroy(gameObject);
             return ingredient;
         }

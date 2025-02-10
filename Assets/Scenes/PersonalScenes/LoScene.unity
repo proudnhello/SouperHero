@@ -615,6 +615,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2528350703771062636, guid: a7c48130a816049cfa44233a2cb50dd5, type: 3}
+      propertyPath: potScript
+      value: 
+      objectReference: {fileID: 1092121228}
+    - target: {fileID: 2528350703771062636, guid: a7c48130a816049cfa44233a2cb50dd5, type: 3}
       propertyPath: baseMoveSpeed
       value: 2
       objectReference: {fileID: 0}
@@ -695,6 +699,10 @@ PrefabInstance:
       propertyPath: maxHealth
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4908519082844136015, guid: 59be7e7add38d30468a067550d1f327b, type: 3}
+      propertyPath: potScript
+      value: 
+      objectReference: {fileID: 1092121228}
     - target: {fileID: 4908519082844136015, guid: 59be7e7add38d30468a067550d1f327b, type: 3}
       propertyPath: distanceToShoot
       value: 3
@@ -1891,8 +1899,8 @@ GameObject:
   - component: {fileID: 1092121225}
   - component: {fileID: 1092121224}
   - component: {fileID: 1092121223}
-  - component: {fileID: 1092121222}
   - component: {fileID: 1092121228}
+  - component: {fileID: 1092121222}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2023,8 +2031,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a4631f13d0b34e43888b9faaaf26e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingredientObj: {fileID: 4780662962236365352, guid: b06fdc05a686c6e4ba9fcecb3504de47, type: 3}
-  potObj: {fileID: 1212038679}
+  ingredient: {fileID: 0}
+  pot: {fileID: 0}
 --- !u!1 &1163623088
 GameObject:
   m_ObjectHideFlags: 0
