@@ -19,7 +19,7 @@ public abstract class EnemyBaseClass : Entity
 
     [Header("Player Detection")]
     protected bool playerDetected = false;
-    protected float detectionRadius = 4f;
+    [SerializeField] protected float detectionRadius = 4f;
     protected float detectionDelay = 0.3f;
     protected LayerMask playerLayermask;
     
