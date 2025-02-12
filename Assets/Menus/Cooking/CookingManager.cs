@@ -47,26 +47,10 @@ public class CookingManager : MonoBehaviour
         potFlavorIngredients.Remove(ingredient);
     }
 
-    //public GameObject CookingSlots;
-    //public void CookIngredients()
-    //{
+    private int numSpoons = PlayerManager.instance.numberOfSpoons;
+    public void cookTheSoup()
+    {
 
-    //    // Initialize Ability Ingredient List
-    //    List<AbilityIngredient> potAbilityIngredients = new();
-
-    //    // Initialize Flavor Ingredient List
-    //    List<FlavorIngredient> potFlavorIngredients = new();
-
-    //    // Get the transform of the cooking slots
-    //    Transform cookingSlotsTransform = CookingSlots.transform;
-
-    //    foreach (Transform child in cookingSlotsTransform)
-    //    {
-    //        Transform item = child.Find("Item(Clone)");
-    //        Ingredient ingredient = item.GetComponent<Ingredient>();
-    //        PlayerManager.instance.RemoveFromInventory(ingredient);
-    //    }
-
-    //}
+    }
 
 }

@@ -22,7 +22,7 @@ public class PlayerManager : Entity
             instance = this;
         }
         health = maxHealth;
-        for (int i = 0; i < numberofSpoons + 1; i++)
+        for (int i = 0; i < numberOfSpoons + 1; i++)
         {
             Spoon spoon = new Spoon();
             spoons.Add(spoon);
@@ -108,7 +108,7 @@ public class PlayerManager : Entity
     [Header("Soup")]
     [SerializeField] private AbilityLookup lookup;
     //[SerializeField] private int maxPotSize = 5;
-    [SerializeField] private int numberofSpoons = 4;
+    [SerializeField] public int numberOfSpoons = 4;
     private int currentSpoon = 0;
 
     [Header("Inventory")]
@@ -116,7 +116,7 @@ public class PlayerManager : Entity
     public List<AbilityIngredient> abilityInventory = new List<AbilityIngredient>();
     public int GetNumberOfPots()
     {
-        return numberofSpoons;
+        return numberOfSpoons;
     }
 
     List<Spoon> spoons = new List<Spoon>();
