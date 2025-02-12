@@ -11,11 +11,32 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _previousMousePosition;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _previousMousePosition = Input.mousePosition;
         rb = GetComponent<Rigidbody2D>();
     }
+
+    void OnEnable()
+    {
+        Debug.Log("Player Movement has been enabled.");
+        rb.bodyType = RigidbodyType2D.Dynamic;
+    }
+
+    void OnDisable()
+    {
+        Debug.Log("Player Movement has been disabled.");
+        rb.bodyType = RigidbodyType2D.Kinematic; // Prevent physics interactions
+        rb.velocity = Vector2.zero; // Stop movement
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            col.enabled = false; // Completely disable collisions
+        }
+    }
+
+
 
     // Update is called once per frame
     void Update()
