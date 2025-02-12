@@ -17,6 +17,7 @@ public class RoomGenerator : MonoBehaviour
     public List<Block> _intermediateBlocks;
 
     public GameObject connector2;
+    public GameObject connector25;
     public GameObject connector3;
     public GameObject connector4;
 
@@ -115,32 +116,32 @@ public class RoomGenerator : MonoBehaviour
 
         string s = "";
 
-        if(rowMinus >= 0)
+        if (colPlus < _mapHeight)
         {
-            if(checkForBlock(rowMinus, col))
-            {
-                s += "W";
-            }
-        }
-        if (colMinus >= 0)
-        {
-            if (checkForBlock(row, colMinus))
+            if (checkForBlock(row, colPlus) && _map[row][colPlus].south)
             {
                 s += "N";
             }
         }
+        if (colMinus >= 0)
+        {
+            if (checkForBlock(row, colMinus) && _map[row][colMinus].north)
+            {
+                s += "S";
+            }
+        }
         if (rowPlus < _mapWidth)
         {
-            if (checkForBlock(rowPlus, col))
+            if (checkForBlock(rowPlus, col) && _map[rowPlus][col].west)
             {
                 s += "E";
             }
         }
-        if (colPlus < _mapHeight)
+        if (rowMinus >= 0)
         {
-            if (checkForBlock(row, colPlus))
+            if (checkForBlock(rowMinus, col) && _map[rowMinus][col].east)
             {
-                s += "S";
+                s += "W";
             }
         }
         return s;
@@ -158,13 +159,62 @@ public class RoomGenerator : MonoBehaviour
                     switch (c.Length)
                     {
                         case 2:
-                            Block b = Instantiate(connector2).GetComponent<Block>();
+                            float angle = 0.0f;
+                            bool connectorType2Need = false;
+                            switch(c)
+                            {
+                                case "NW":
+                                    break;
+                                case "NE":
+                                    angle = -90.0f;
+                                    break;
+                                case "NS":
+                                    angle = 90.0f;
+                                    connectorType2Need = true;
+                                    break;
+                                case "SW":
+                                    angle = 90.0f;
+                                    break;
+                                case "SE":
+                                    angle = 180.0f;
+                                    break;
+                                case "EW":
+                                    connectorType2Need = true;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            Block b = null;
+                            if(connectorType2Need)
+                            {
+                                b = Instantiate(connector2).GetComponent<Block>();
+                            } else
+                            {
+                                b = Instantiate(connector25).GetComponent<Block>();
+                            }
+                            b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
                             canPlaceIntermediate(row, col, b);
                             fillBlock(row, col, b);
                             _map[row][col] = b;
                             break;
                         case 3:
+                            float angle2 = 0.0f;
+                            switch(c)
+                            {
+                                case "NSE":
+                                    angle2 = -90.0f;
+                                    break;
+                                case "NSW":
+                                    angle2 = 90.0f;
+                                    break;
+                                case "SEW":
+                                    angle2 = 180.0f;
+                                    break;
+                                case "NEW":
+                                    break;
+                            }
                             Block b2 = Instantiate(connector3).GetComponent<Block>();
+                            b2.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle2));
                             canPlaceIntermediate(row, col, b2);
                             fillBlock(row, col, b2);
                             _map[row][col] = b2;
