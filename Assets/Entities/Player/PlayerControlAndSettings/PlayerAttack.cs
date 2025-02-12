@@ -79,7 +79,7 @@ public class PlayerAttack : MonoBehaviour
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
         {
             AbilityIngredient soup = enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().Soupify();
-            if(soup.name != "null") {
+            if(soup.ingredientName != "null") {
                 PlayerManager.instance.AddToInventory(soup);
             }
         }

@@ -151,10 +151,13 @@ public abstract class EnemyBaseClass : Entity
 
     public AbilityIngredient Soupify(){
         if(soupable){
+
+            Debug.Log("Enemy Is Soupable in Soupify");
             Destroy(gameObject);
             return ingredient;
         }
         else{
+            Debug.Log("Enemy Is Not Soupable in Soupify");
             AbilityIngredient nullIngredient = new AbilityIngredient();
             nullIngredient.name = "null";
             return nullIngredient;

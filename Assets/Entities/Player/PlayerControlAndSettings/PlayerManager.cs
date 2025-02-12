@@ -205,11 +205,11 @@ public class PlayerManager : Entity
     public GameObject InventorySlot;
     public GameObject DraggableItem;
 
-    public void ListItems(String listType)
+    public void InventoryItems(String listType)
     {
         if (listType != "flavor" && listType != "ability")
         {
-            Debug.LogError($"Invalid List Type For ListItems(): {listType}");
+            Debug.LogError($"Invalid List Type For InventoryItems(): {listType}");
         }
 
         if (listType == "flavor")
