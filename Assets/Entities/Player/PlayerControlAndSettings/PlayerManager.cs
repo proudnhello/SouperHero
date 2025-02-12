@@ -8,7 +8,10 @@ using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
 using static Unity.VisualScripting.Member;
 using Spoon = PlayerSoup.Spoon;
-using Ingredient = PlayerSoup.Ingredient;
+using static UnityEditor.Progress;
+using UnityEditor;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerManager : Entity
 {
@@ -19,10 +22,10 @@ public class PlayerManager : Entity
             instance = this;
         }
         health = maxHealth;
-        for (int i = 0; i < numberofPots; i++)
+        for (int i = 0; i < numberofSpoons + 1; i++)
         {
-            Spoon pot = new Spoon(defaultSoupUsage);
-            pots.Add(pot);
+            Spoon spoon = new Spoon();
+            spoons.Add(spoon);
         }
         soup = player.GetComponent<PlayerSoup>();
         soup.lookup = lookup;
@@ -99,75 +102,67 @@ public class PlayerManager : Entity
     }
 
     [Header("Abilities")]
-    [SerializeField] private List<AbilityAbstractClass> abilities;
+    // Add abilities for testing here
+    [SerializeField] private List<AbilityAbstractClass> DEBUG_ONLY_ABILITIES;
 
     [Header("Soup")]
     [SerializeField] private AbilityLookup lookup;
     //[SerializeField] private int maxPotSize = 5;
-    [SerializeField] private int numberofPots = 3;
-    [SerializeField] private int defaultSoupUsage = 3;
-    private List<Ingredient> inventory = new List<Ingredient>();
+    [SerializeField] private int numberofSpoons = 4;
+    private int currentSpoon = 0;
+
+    [Header("Inventory")]
+    public List<FlavorIngredient> flavorInventory = new List<FlavorIngredient>();
+    public List<AbilityIngredient> abilityInventory = new List<AbilityIngredient>();
     public int GetNumberOfPots()
     {
-        return numberofPots;
+        return numberofSpoons;
     }
 
-    List<Spoon> pots = new List<Spoon>();
-    List<int> potFullnesses = new List<int>();
+    List<Spoon> spoons = new List<Spoon>();
 
-    public void PrintIngredient(Ingredient i)
+    public void PrintIngredient(FlavorIngredient i)
     {
-        print(i.name + ", with flavors: " + String.Join(" ", i.flavors.ToArray()));
+        if (i == null)
+        {
+            Debug.LogError("PrintIngredient: FlavorIngredient is null!");
+            return;
+        }
+
+        Debug.Log($"Ingredient: {i}");
+        Debug.Log($"Ingredient Name: {i.ingredientName}");
+        Debug.Log($"Ingredient Flavors: {i.flavors}");
+
+        print(i.ingredientName + ", with flavors: " + String.Join(" ", i.flavors.ToArray()));
     }
 
     // Convert a list of ingredients into a pot of soup, controlled by the potNumber
-    public void FillPot(List<Ingredient> ingedientValue, int potNumber)
+    public void FillPot(List<FlavorIngredient> flavors, List<AbilityIngredient> abilities, int spoonNumber)
     {
-        soup.FillPot(ingedientValue, pots[potNumber]);
+        soup.FillSpoon(flavors, abilities, spoons[spoonNumber]);
     }
 
     public static event Action DrinkPot;
 
     // Drink the soup in the pot and activate the abilities that correspond to the soup.
-    public void Drink(int potNumber)
+    // Switch this later to change spoons
+    public void Drink(int spoonNumber)
     {
-        // TESTING - fetch the first three ingredients in the inventory and create a pot with them
-        if (inventory.Count < 3)
-        {
-            FillPot(inventory, potNumber);
-            inventory.Clear();
-        }
-        else
-        {
-            FillPot(inventory.GetRange(0, 3), potNumber);
-            for (int i = 0; i < 3; i++)
-            {
-                inventory.RemoveAt(0);
-            }
-        }
-
-        // First end all active abilities
-        foreach (AbilityAbstractClass ability in abilities.ToList())
-        {
-            ability.End();
-        }
-        abilities.Clear();
-
-        abilities = soup.Drink(pots[potNumber]);
-        if(abilities == null)
-        {
-            abilities = new List<AbilityAbstractClass>();
-        }
+        // For testing, take the entire list of both types of ingredients and fill the pot with them
+        // Later on, this will be removed, and we'll do it all thru the UI
+        print("You used " + spoonNumber + " :)");
+        currentSpoon = spoonNumber;
+        FillPot(flavorInventory, abilityInventory, spoonNumber);
+        flavorInventory.Clear();
+        abilityInventory.Clear();
     }
 
-    public void RemoveAbility(AbilityAbstractClass ability)
+    // This will fetch the abilities from the spoon and return them to the player
+    // It will also decrement the number of uses of the spoon. It is expected that this will be called every time the player attacks
+    public List<AbilityAbstractClass> UseSpoon()
     {
-        abilities.Remove(ability);
-    }
-
-    public List<AbilityAbstractClass> GetAbilities()
-    {
-        return instance.abilities;
+        List<AbilityAbstractClass> abilities = spoons[currentSpoon].abilities;
+        return abilities;
     }
 
     public LayerMask GetEnemies()
@@ -176,13 +171,210 @@ public class PlayerManager : Entity
     }
 
     // Add an ingredient to the player's inventory
-    public void AddToInventory(Ingredient ingredient)
+    public void AddToInventory(FlavorIngredient ingredient)
     {
-        inventory.Add(ingredient);
+        if (ingredient == null)
+        {
+            Debug.LogError("AddToInventory: ingredient is null!");
+            return;
+        }
+        flavorInventory.Add(ingredient);
         PrintIngredient(ingredient);
     }
 
-    //public static event Action<List<(string, int)>> SoupifyEnemy;
+    public void AddToInventory(AbilityIngredient ingredient)
+    {
+        abilityInventory.Add(ingredient);
+    }
+
+    public void RemoveFromInventory(FlavorIngredient ingredient)
+    {
+        flavorInventory.Remove(ingredient);
+    }
+
+    public void RemoveFromInventory(AbilityIngredient ingredient)
+    {
+        abilityInventory.Remove(ingredient);
+    }
+
+    public Transform InventoryContent;
+    public GameObject InventorySlot;
+    public GameObject DraggableItem;
+
+    public void InventoryItems(String listType, Boolean clean = false)
+    {
+        if (listType != "flavor" && listType != "ability")
+        {
+            Debug.LogError($"Invalid List Type For InventoryItems(): {listType}");
+        }
+
+        if (clean)
+        {
+            // clean before use
+            foreach (Transform item in InventoryContent)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+
+        if (listType == "flavor")
+        {
+            foreach (var ingredient in flavorInventory)
+            {
+                // Instantiate the InventorySlot prefab into InventoryContent
+                GameObject obj = Instantiate(InventorySlot, InventoryContent);
+
+                if (obj == null)
+                {
+                    Debug.LogError("Object instantiation failed.");
+                    return;
+                }
+
+                // Instantiate draggableItem as a child of the InventorySlot
+                GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
+
+                if (draggableInstance == null)
+                {
+                    Debug.LogError("Draggable item instantiation failed.");
+                    return;
+                }
+
+                // Find ItemName and ItemIcon transforms once
+                Transform itemIconTransform = obj.transform.Find("Item(Clone)");
+                if (itemIconTransform == null)
+                {
+                    Debug.LogError("Could not find ItemIcon in instantiated object.");
+                    return;
+                }
+
+                // Find the ItemName inside ItemIcon and ensure the components exist
+                Transform itemNameTransform = itemIconTransform.Find("ItemName");
+                if (itemNameTransform == null)
+                {
+                    Debug.LogError("Could not find ItemName inside ItemIcon.");
+                    return;
+                }
+
+                // Get the components from the found transforms
+                TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
+                UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
+
+                if (ingredient == null)
+                {
+                    Debug.LogError($"Ingredient from flavor inventory is null: check the inspector!!!");
+                    return;
+                }
+
+                if (itemName == null)
+                {
+                    Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
+                    return;
+                }
+
+                if (itemIcon == null)
+                {
+                    Debug.LogError("itemIcon is null, couldn't find the Image component.");
+                    return;
+                }
+
+                //// Log the existing values before modifying them
+                //Debug.Log($"Item Name Text Before: {itemName.text}");
+                //Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
+
+                // Update the UI components with ingredient values
+                itemName.text = ingredient.ingredientName;
+                itemIcon.sprite = ingredient.icon;
+
+                // Change the Alpha
+                Color currentColor = itemIcon.color;
+                currentColor.a = 1f;
+                itemIcon.color = currentColor;
+
+                //// Log the updated values
+                //Debug.Log($"Item Name Text After: {itemName.text}");
+                //Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
+            }
+        }
+        else if (listType == "ability")
+        {
+            foreach (var ingredient in abilityInventory)
+            {
+                // Instantiate the InventorySlot prefab into InventoryContent
+                GameObject obj = Instantiate(InventorySlot, InventoryContent);
+
+                if (obj == null)
+                {
+                    Debug.LogError("Object instantiation failed.");
+                    return;
+                }
+
+                // Instantiate draggableItem as a child of the InventorySlot
+                GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
+
+                if (draggableInstance == null)
+                {
+                    Debug.LogError("Draggable item instantiation failed.");
+                    return;
+                }
+
+                // Find ItemName and ItemIcon transforms once
+                Transform itemIconTransform = obj.transform.Find("Item(Clone)");
+                if (itemIconTransform == null)
+                {
+                    Debug.LogError("Could not find ItemIcon in instantiated object.");
+                    return;
+                }
+
+                // Find the ItemName inside ItemIcon and ensure the components exist
+                Transform itemNameTransform = itemIconTransform.Find("ItemName");
+                if (itemNameTransform == null)
+                {
+                    Debug.LogError("Could not find ItemName inside ItemIcon.");
+                    return;
+                }
+
+                // Get the components from the found transforms
+                TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
+                UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
+
+                if (ingredient == null)
+                {
+                    Debug.LogError($"Ingredient from flavor inventory is null: check the inspector!!!");
+                    return;
+                }
+
+                if (itemName == null)
+                {
+                    Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
+                    return;
+                }
+
+                if (itemIcon == null)
+                {
+                    Debug.LogError("itemIcon is null, couldn't find the Image component.");
+                    return;
+                }
+
+                //// Log the existing values before modifying them
+                //Debug.Log($"Item Name Text Before: {itemName.text}");
+                //Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
+
+                // Update the UI components with ingredient values
+                itemName.text = ingredient.ingredientName;
+                itemIcon.sprite = ingredient.icon;
+
+                // Change the Alpha
+                Color currentColor = itemIcon.color;
+                currentColor.a = 1f;
+                itemIcon.color = currentColor;
+
+                //// Log the updated values
+                //Debug.Log($"Item Name Text After: {itemName.text}");
+                //Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
+            }
+        }
+    }
+
 
 
     public void Heal(int healAmount)

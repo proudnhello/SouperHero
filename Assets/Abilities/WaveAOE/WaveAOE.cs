@@ -14,8 +14,6 @@ public class WaveAOE : AbilityAbstractClass
     public override void Initialize(int soupVal)
     {
         usageValue = Mathf.CeilToInt(soupVal / 2.0f);
-        _maxUsage = usageValue;
-        _remainingUsage = usageValue;
     }
     public override void Active()
     {
@@ -31,15 +29,11 @@ public class WaveAOE : AbilityAbstractClass
         currentWave.GetComponent<ProjectileDamage>().despawnTime = waveLifespan;
 
         usageValue--;
-        if(usageValue <= 0)
-        {
-            End();
-        }
     }
 
     public override void End()
     {
-        PlayerManager.instance.RemoveAbility(this);
+        //PlayerManager.instance.RemoveAbility(this);
     }
     
 }

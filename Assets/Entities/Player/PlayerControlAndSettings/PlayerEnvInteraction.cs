@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerEnvInteraction : MonoBehaviour
 {
     private Interactable currentInteractable = null;
+    private int lastInteractionFrame = -1;
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -26,15 +27,25 @@ public class PlayerEnvInteraction : MonoBehaviour
         }
     }
 
+    private int interactCounter = 0;
+
     private void Update()
     {
-        if (Input.GetKeyDown(PlayerManager.instance.interactionKey))
+        //Debug.Log($"Update called at Frame: {Time.frameCount}");
+
+        if (currentInteractable != null && 
+        currentInteractable.CanInteract() && 
+        Input.GetKeyDown(PlayerManager.instance.interactionKey) &&
+        Time.frameCount != lastInteractionFrame)
         {
-            if (currentInteractable != null && currentInteractable.CanInteract())
-            {
-                currentInteractable.Interact();
-                Debug.Log("Interacted with " + currentInteractable.GetInteractableType());
-            }
+            // store last interaction frame so we aren't interacting multiple times in the same frame
+            lastInteractionFrame = Time.frameCount;
+            currentInteractable.Interact();
+
+            interactCounter++;
+            Debug.Log($"Interact if statement has been run {interactCounter} times");
+
+            Debug.Log("Interacted with " + currentInteractable.GetInteractableType() + $"at time: {Time.time}, Frame: {Time.frameCount}");
         }
     }
 }

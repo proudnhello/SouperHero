@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 5350723197342933447}
   - component: {fileID: 8164715066139808346}
   - component: {fileID: 4812580723542955891}
+  - component: {fileID: 6819749058595861961}
   m_Layer: 8
   m_Name: Leek
   m_TagString: Untagged
@@ -183,11 +184,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a51c79d69a0aa4e9f039927f214b99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: Leek
   interactablePrompt: {fileID: 541221688300418807}
   ingredient:
-    name: 
-    flavors: []
+    name: Leek
+    flavors:
+    - fresh
 --- !u!70 &4812580723542955891
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -223,3 +224,16 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 2}
   m_Direction: 0
+--- !u!114 &6819749058595861961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5854243488706272828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d576201fc5a155844b4844cfd37d30e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 0}

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public abstract class EnemyBaseClass : Entity
@@ -11,7 +12,7 @@ public abstract class EnemyBaseClass : Entity
     protected bool takingDamage = false;
     internal SpriteRenderer sprite;
     protected Transform playerTransform;
-    [SerializeField] protected PlayerSoup.Ingredient ingredient; 
+    [SerializeField] protected AbilityIngredient ingredient; 
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
     public int playerCollisionDamage = 10;
@@ -72,6 +73,7 @@ public abstract class EnemyBaseClass : Entity
         {
             takingDamage = true;
             health = Math.Clamp(health - amount, 0, maxHealth);
+            Debug.Log("final damage " + amount);
             if (health == 0)
             {
                 BecomeSoupable();
@@ -147,13 +149,16 @@ public abstract class EnemyBaseClass : Entity
         takingDamage = false;
     }
 
-    public PlayerSoup.Ingredient Soupify(){
+    public AbilityIngredient Soupify(){
         if(soupable){
+
+            Debug.Log("Enemy Is Soupable in Soupify");
             Destroy(gameObject);
             return ingredient;
         }
         else{
-            PlayerSoup.Ingredient nullIngredient = new PlayerSoup.Ingredient();
+            Debug.Log("Enemy Is Not Soupable in Soupify");
+            AbilityIngredient nullIngredient = new AbilityIngredient();
             nullIngredient.name = "null";
             return nullIngredient;
         }

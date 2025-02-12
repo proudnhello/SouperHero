@@ -7,8 +7,17 @@ public class CrosshairCursor : MonoBehaviour
     // [Header("Configuration")]
 
     void Awake() {
-        Cursor.visible = false;
-        // set cursor back to active on pause screen
+        CursorManager.Singleton.HideCursor();
+    }
+
+    private void OnEnable()
+    {
+        CursorManager.Singleton.HideCursor();
+    }
+
+    private void OnDisable()
+    {
+        CursorManager.Singleton.ShowCursor();
     }
 
     public void Aim(bool isAiming) {

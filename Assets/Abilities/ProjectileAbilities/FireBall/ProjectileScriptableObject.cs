@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 // To create a projectile scriptable object, just go to the project overview, right click, click "create", and
@@ -22,26 +23,22 @@ public class ProjectileScriptableObject : AbilityAbstractClass
     public override void Initialize(int soupVal)
     {
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
-        _maxUsage = usageValue;
-        _remainingUsage = usageValue;
     }
     public override void Active()
     {   
-        // Check if ability has time, otherwise call End()
-        if(_remainingUsage <= 0)
-        {
-            End();
-            return;
-        }
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         _currentProjectile = Instantiate(projectilePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
         _currentProjectile.transform.up = PlayerManager.instance.player.transform.up;
         _projectileDirection = PlayerManager.instance.player.transform.up;
+        _currentProjectile.GetComponent<FireBallCollision>().stats = stats;
+        _currentProjectile.GetComponent<FireBallCollision>().statusEffects = statusEffects;
 
-        float radius = PlayerManager.instance.GetAttackRadius() * _radiusMultiplier;
+        float radius = stats.size * _radiusMultiplier;
         _currentProjectile.transform.localScale = new Vector3(radius, radius, radius);
 
-        float speed = PlayerManager.instance.GetAttackSpeed() * _baseProjectileSpeed;
+        float speed = stats.speed * _baseProjectileSpeed;
+
+        _currentProjectile.GetComponent<FireBallCollision>().despawnTime = stats.duration;
 
         // Get its rigidbody component, and set its velocity to the direction it is facing multiplied by the projectile speed.
         if (_currentProjectile.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb))
@@ -53,22 +50,12 @@ public class ProjectileScriptableObject : AbilityAbstractClass
             Debug.LogWarning("Projectile prefab needs a Rigidbody component for movement!");
         }
 
-        if(_currentProjectile.TryGetComponent<ProjectileDamage>(out ProjectileDamage projectile))
-        {
-            projectile.despawnTime = _lifespan;
-        }
-        else
-        {
-            Debug.LogWarning("Projectile lacks the ability to deal damage!");
-        }
-  
-        _remainingUsage--;
     }
 
 
     public override void End()
     {
-        PlayerManager.instance.RemoveAbility(this);
+        //PlayerManager.instance.RemoveAbility(this);
     }
 
 

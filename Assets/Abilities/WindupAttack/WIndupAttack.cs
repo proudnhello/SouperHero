@@ -31,16 +31,9 @@ public class WindupAttack : AbilityAbstractClass
         return;
     }
     public override void Active(){
-        if (_remainingUsage <= 0)
-        {
-            Debug.Log("ending windup attack");
-            End();
-        }
-        else
-        {
-            _remainingUsage--;
-            Debug.Log("using windup attack");
-        }
+        
+        Debug.Log("using windup attack");
+        
     }
     public override void End()
     {
@@ -51,7 +44,7 @@ public class WindupAttack : AbilityAbstractClass
             player.SetDamage(player.GetDamage() - (int)damageBuff);
             player.SetAttackRadius(player.GetAttackRadius() - sizeIncreace);
 
-            PlayerManager.instance.RemoveAbility(this);
+            //PlayerManager.instance.RemoveAbility(this);
         }
         else
         {

@@ -19,8 +19,6 @@ public class DamageBuff : AbilityAbstractClass
         // ex: buffAmount = Mathf.CeilToInt(PlayerManager.instance.soupVal / 25)
 
         int usageValue = Mathf.CeilToInt(soupVal / 2.0f);
-        _maxUsage = usageValue;
-        _remainingUsage = usageValue;
         buffAmount = soupVal/buffMult;
 
         if (player != null)
@@ -58,7 +56,7 @@ public class DamageBuff : AbilityAbstractClass
         if (player != null)
         {
             player.SetDamage(PlayerManager.instance.GetDamage() - buffAmount);
-            PlayerManager.instance.RemoveAbility(this);
+            //PlayerManager.instance.RemoveAbility(this);
             Debug.Log("Ending buff");
             //Debug.Log("DMG after debuff: " + PlayerManager.instance.GetDamage());
         }
