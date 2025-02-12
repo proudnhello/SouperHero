@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CookingSlot : InventorySlot
+public class CookingSlot : InventorySlot, IDropHandler
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject cookingSlot;
+    // Slightly modifying OnDrop From the base class
+    public new void OnDrop(PointerEventData eventData)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Call old drop
+        base.OnDrop(eventData);
     }
 }
