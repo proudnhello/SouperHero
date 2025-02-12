@@ -100,19 +100,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d0ed89a70c02a43b97f7052c4df1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
   maxHealth: 50
-  ingredient:
-    name: ranger
-    flavors:
-    - spicy
-    - spicy
-    - refreshing
-    - refreshing
+  baseMoveSpeed: 0
+  baseAttackDamage: 0
+  statusEffects: []
+  statusText: {fileID: 0}
+  ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
   playerCollisionDamage: 10
   knockBackTime: 0.5
-  statusText: {fileID: 0}
   newMoveSpeed: 2
-  distanceToShoot: 0
+  distanceToShoot: 3
   firingPoint: {fileID: 4816195811675097778}
   EnemyBullet: {fileID: 4015994893912900655, guid: 8736b60df83c03540bb5bc960fb10f04, type: 3}
 --- !u!60 &4656655801565701859

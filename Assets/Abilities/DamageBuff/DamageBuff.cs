@@ -56,7 +56,7 @@ public class DamageBuff : AbilityAbstractClass
         if (player != null)
         {
             player.SetDamage(PlayerManager.instance.GetDamage() - buffAmount);
-            PlayerManager.instance.RemoveAbility(this);
+            //PlayerManager.instance.RemoveAbility(this);
             Debug.Log("Ending buff");
             //Debug.Log("DMG after debuff: " + PlayerManager.instance.GetDamage());
         }

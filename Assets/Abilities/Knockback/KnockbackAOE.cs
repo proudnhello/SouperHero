@@ -36,7 +36,7 @@ public class KnockbackAOE : AbilityAbstractClass
     public override void End()
     {
         currentWave.GetComponent<KnockbackEnemy>().despawnTime = 0;
-        PlayerManager.instance.RemoveAbility(this);
+        //PlayerManager.instance.RemoveAbility(this);
     }
     
 }

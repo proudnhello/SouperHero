@@ -33,7 +33,7 @@ public class WaveAOE : AbilityAbstractClass
 
     public override void End()
     {
-        PlayerManager.instance.RemoveAbility(this);
+        //PlayerManager.instance.RemoveAbility(this);
     }
     
 }

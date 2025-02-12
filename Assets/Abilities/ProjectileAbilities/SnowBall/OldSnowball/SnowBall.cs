@@ -52,7 +52,7 @@ public class SnowBall : AbilityAbstractClass
             {
                 Destroy(_currentSnowBall);
             }
-            PlayerManager.instance.RemoveAbility(this);
+            //PlayerManager.instance.RemoveAbility(this);
         }
         else
         {

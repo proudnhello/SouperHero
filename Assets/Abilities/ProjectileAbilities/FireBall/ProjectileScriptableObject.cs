@@ -55,7 +55,7 @@ public class ProjectileScriptableObject : AbilityAbstractClass
 
     public override void End()
     {
-        PlayerManager.instance.RemoveAbility(this);
+        //PlayerManager.instance.RemoveAbility(this);
     }
 
 

@@ -43,7 +43,7 @@ public class TimerHelper : MonoBehaviour
     // Actual buffing/debuffing should be done in the Initialize() function calling this timer. 
     public void StartBuffTimer(AbilityAbstractClass ability, float duration)
     {
-        PlayerManager.instance.RemoveAbility(ability);
+        //PlayerManager.instance.RemoveAbility(ability);
         StartCoroutine(BuffTimer(ability, duration));
         
     }

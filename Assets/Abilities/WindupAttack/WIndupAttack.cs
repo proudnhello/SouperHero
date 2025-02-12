@@ -44,7 +44,7 @@ public class WindupAttack : AbilityAbstractClass
             player.SetDamage(player.GetDamage() - (int)damageBuff);
             player.SetAttackRadius(player.GetAttackRadius() - sizeIncreace);
 
-            PlayerManager.instance.RemoveAbility(this);
+            //PlayerManager.instance.RemoveAbility(this);
         }
         else
         {

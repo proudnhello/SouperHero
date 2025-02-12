@@ -45,7 +45,7 @@ public class MineAttack : AbilityAbstractClass
     public override void End()
     {
         Debug.Log("MineAttack ended");
-        PlayerManager.instance.RemoveAbility(this);
+        //PlayerManager.instance.RemoveAbility(this);
     }
 
 }

@@ -99,14 +99,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606e1cef5d5a34671ac4ea10cb4aeb0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
   maxHealth: 20
-  ingredient:
-    name: smallBoy
-    flavors:
-    - bitter
+  baseMoveSpeed: 0
+  baseAttackDamage: 0
+  statusEffects: []
+  statusText: {fileID: 0}
+  ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
   playerCollisionDamage: 10
   knockBackTime: 1
-  statusText: {fileID: 0}
   newMoveSpeed: 6
 --- !u!60 &62433673787859804
 PolygonCollider2D:
