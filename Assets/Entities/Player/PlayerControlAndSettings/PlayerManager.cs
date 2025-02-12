@@ -144,17 +144,22 @@ public class PlayerManager : Entity
 
     public static event Action DrinkPot;
 
-    // Drink the soup in the pot and activate the abilities that correspond to the soup.
-    // Switch this later to change spoons
-    public void Drink(int spoonNumber)
+    //// Drink the soup in the pot and activate the abilities that correspond to the soup.
+    //// Switch this later to change spoons
+    //public void Drink(int spoonNumber)
+    //{
+    //    // For testing, take the entire list of both types of ingredients and fill the pot with them
+    //    // Later on, this will be removed, and we'll do it all thru the UI
+    //    print("You used " + spoonNumber + " :)");
+    //    currentSpoon = spoonNumber;
+    //    FillPot(flavorInventory, abilityInventory, spoonNumber);
+    //    flavorInventory.Clear();
+    //    abilityInventory.Clear();
+    //}
+
+    public void SetCurrentSpoon(int spoonNumber)
     {
-        // For testing, take the entire list of both types of ingredients and fill the pot with them
-        // Later on, this will be removed, and we'll do it all thru the UI
-        print("You used " + spoonNumber + " :)");
         currentSpoon = spoonNumber;
-        FillPot(flavorInventory, abilityInventory, spoonNumber);
-        flavorInventory.Clear();
-        abilityInventory.Clear();
     }
 
     // This will fetch the abilities from the spoon and return them to the player
@@ -162,6 +167,7 @@ public class PlayerManager : Entity
     public List<AbilityAbstractClass> UseSpoon()
     {
         List<AbilityAbstractClass> abilities = spoons[currentSpoon].abilities;
+        spoons[currentSpoon].uses += 1;  // currently doesn't do anything
         return abilities;
     }
 
@@ -198,10 +204,11 @@ public class PlayerManager : Entity
     }
 
     public Transform InventoryContent;
+    public Transform CookingContent;
     public GameObject InventorySlot;
     public GameObject DraggableItem;
 
-    public void InventoryItems(String listType, Boolean clean = false)
+    public void InventoryItems(string listType, bool clean = false)
     {
         if (listType != "flavor" && listType != "ability")
         {
@@ -214,6 +221,14 @@ public class PlayerManager : Entity
             foreach (Transform item in InventoryContent)
             {
                 Destroy(item.gameObject);
+            }
+
+            foreach (Transform slot in CookingContent)
+            {
+                foreach (Transform item in slot)
+                {
+                    Destroy(item.gameObject);
+                }
             }
         }
 
