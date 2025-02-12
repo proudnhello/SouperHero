@@ -272,9 +272,9 @@ public class PlayerManager : Entity
                     return;
                 }
 
-                // Log the existing values before modifying them
-                Debug.Log($"Item Name Text Before: {itemName.text}");
-                Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
+                //// Log the existing values before modifying them
+                //Debug.Log($"Item Name Text Before: {itemName.text}");
+                //Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
 
                 // Update the UI components with ingredient values
                 itemName.text = ingredient.ingredientName;
@@ -285,9 +285,9 @@ public class PlayerManager : Entity
                 currentColor.a = 1f;
                 itemIcon.color = currentColor;
 
-                // Log the updated values
-                Debug.Log($"Item Name Text After: {itemName.text}");
-                Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
+                //// Log the updated values
+                //Debug.Log($"Item Name Text After: {itemName.text}");
+                //Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
             }
         }
         else if (listType == "ability")
@@ -341,9 +341,9 @@ public class PlayerManager : Entity
                     return;
                 }
 
-                // Log the existing values before modifying them
-                Debug.Log($"Item Name Text Before: {itemName.text}");
-                Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
+                //// Log the existing values before modifying them
+                //Debug.Log($"Item Name Text Before: {itemName.text}");
+                //Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
 
                 // Update the UI components with ingredient values
                 itemName.text = ingredient.ingredientName;
@@ -354,9 +354,9 @@ public class PlayerManager : Entity
                 currentColor.a = 1f;
                 itemIcon.color = currentColor;
 
-                // Log the updated values
-                Debug.Log($"Item Name Text After: {itemName.text}");
-                Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
+                //// Log the updated values
+                //Debug.Log($"Item Name Text After: {itemName.text}");
+                //Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
             }
         }
     }
