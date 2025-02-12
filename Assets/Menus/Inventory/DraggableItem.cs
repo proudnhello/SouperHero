@@ -9,6 +9,9 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Image image;
     public GameObject draggableItem;
     [HideInInspector] public Transform parentAfterDrag;
+    [HideInInspector] public string ingredientType;
+    [HideInInspector] public AbilityIngredient abilityIngredient = null;
+    [HideInInspector] public FlavorIngredient flavorIngredient = null;
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("Begin Drag");

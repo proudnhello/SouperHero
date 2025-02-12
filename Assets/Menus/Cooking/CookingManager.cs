@@ -13,7 +13,7 @@ public class CookingManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Singleton != null && Singleton != this) Destroy(this);
+        if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
     }
 

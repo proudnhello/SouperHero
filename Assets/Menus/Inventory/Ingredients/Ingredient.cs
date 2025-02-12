@@ -8,5 +8,6 @@ public class Ingredient : ScriptableObject
     public string ingredientName;
     public int value;
     public Sprite icon;
+    [HideInInspector] public string ingredientType;
 
 }
