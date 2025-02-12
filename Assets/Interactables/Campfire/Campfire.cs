@@ -35,7 +35,7 @@ public class Campfire : Interactable
 
     private void Cook()
     {
-        CursorManager.ShowCursor();
+        CursorManager.Singleton.ShowCursor();
         cookingPot.SetActive(true);
         CookingScreen.SetActive(true);
         SetPlayerMovement(false);
@@ -44,7 +44,7 @@ public class Campfire : Interactable
 
     private void StopCooking()
     {
-        CursorManager.HideCursor();
+        CursorManager.Singleton.HideCursor();
         SetPlayerMovement(true);
         cookingPot.SetActive(false);
         CookingScreen.SetActive(false);
