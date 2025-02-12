@@ -30,6 +30,13 @@ public class Collectable : Interactable
 
     private void Collect()
     {
+
+        if (ingredient == null)
+        {
+            Debug.LogError("Collect: ingredient is null! Make sure to check its defined in the inspector!");
+            return;
+        }
+
         PlayerManager.instance.AddToInventory(ingredient);
         SetInteractable(false);  //Cannot interact multiple times
         SetInteractablePrompt(false);  //Remove prompt

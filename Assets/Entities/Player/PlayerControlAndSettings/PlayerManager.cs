@@ -11,6 +11,7 @@ using Spoon = PlayerSoup.Spoon;
 using static UnityEditor.Progress;
 using UnityEditor;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerManager : Entity
 {
@@ -200,26 +201,162 @@ public class PlayerManager : Entity
         abilityInventory.Remove(ingredient);
     }
 
-    public Transform ItemContent;
-    public GameObject InventoryItem;
+    public Transform InventoryContent;
+    public GameObject InventorySlot;
+    public GameObject DraggableItem;
 
     public void ListItems(String listType)
     {
-        if (listType != "flavor" || listType != "ability")
+        if (listType != "flavor" && listType != "ability")
         {
-            Debug.LogError("Invalid List Type For ListItems()");
+            Debug.LogError($"Invalid List Type For ListItems(): {listType}");
         }
 
         if (listType == "flavor")
         {
             foreach (var ingredient in flavorInventory)
             {
-                GameObject obj = Instantiate(InventoryItem, ItemContent);
-                var itemName = obj.transform.Find("Item/ItemName").GetComponent<Text>();
-                var itemIcon = obj.transform.Find("Item/ItemName").GetComponent<UnityEngine.UI.Image>();
+                // Instantiate the InventorySlot prefab into InventoryContent
+                GameObject obj = Instantiate(InventorySlot, InventoryContent);
 
+                if (obj == null)
+                {
+                    Debug.LogError("Object instantiation failed.");
+                    return;
+                }
+
+                // Instantiate draggableItem as a child of the InventorySlot
+                GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
+
+                if (draggableInstance == null)
+                {
+                    Debug.LogError("Draggable item instantiation failed.");
+                    return;
+                }
+
+                // Find ItemName and ItemIcon transforms once
+                Transform itemIconTransform = obj.transform.Find("Item(Clone)");
+                if (itemIconTransform == null)
+                {
+                    Debug.LogError("Could not find ItemIcon in instantiated object.");
+                    return;
+                }
+
+                // Find the ItemName inside ItemIcon and ensure the components exist
+                Transform itemNameTransform = itemIconTransform.Find("ItemName");
+                if (itemNameTransform == null)
+                {
+                    Debug.LogError("Could not find ItemName inside ItemIcon.");
+                    return;
+                }
+
+                // Get the components from the found transforms
+                TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
+                UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
+
+                if (ingredient == null)
+                {
+                    Debug.LogError($"Ingredient from flavor inventory is null: check the inspector!!!");
+                    return;
+                }
+
+                if (itemName == null)
+                {
+                    Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
+                    return;
+                }
+
+                if (itemIcon == null)
+                {
+                    Debug.LogError("itemIcon is null, couldn't find the Image component.");
+                    return;
+                }
+
+                // Log the existing values before modifying them
+                Debug.Log($"Item Name Text Before: {itemName.text}");
+                Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
+
+                // Update the UI components with ingredient values
                 itemName.text = ingredient.ingredientName;
                 itemIcon.sprite = ingredient.icon;
+
+                // Change the Alpha
+                Color currentColor = itemIcon.color;
+                currentColor.a = 1f;
+                itemIcon.color = currentColor;
+
+                // Log the updated values
+                Debug.Log($"Item Name Text After: {itemName.text}");
+                Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
+            }
+        }
+        else if (listType == "ability")
+        {
+            foreach (var ingredient in abilityInventory)
+            {
+                // Instantiate the InventorySlot prefab into InventoryContent
+                GameObject obj = Instantiate(InventorySlot, InventoryContent);
+
+                if (obj == null)
+                {
+                    Debug.LogError("Object instantiation failed.");
+                    return;
+                }
+
+                // Find ItemName and ItemIcon transforms once
+                Transform itemIconTransform = obj.transform.Find("Item");
+                if (itemIconTransform == null)
+                {
+                    Debug.LogError("Could not find ItemIcon in instantiated object.");
+                    return;
+                }
+
+                // Find the ItemName inside ItemIcon and ensure the components exist
+                Transform itemNameTransform = itemIconTransform.Find("ItemName");
+                if (itemNameTransform == null)
+                {
+                    Debug.LogError("Could not find ItemName inside ItemIcon.");
+                    return;
+                }
+
+                // Get the components from the found transforms
+                TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
+                UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
+
+                if (ingredient == null)
+                {
+                    Debug.LogError($"Ingredient from flavor inventory is null: check the inspector!!!");
+                    return;
+                }
+
+                if (itemName == null)
+                {
+                    Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
+                    return;
+                }
+
+                if (itemIcon == null)
+                {
+                    Debug.LogError("itemIcon is null, couldn't find the Image component.");
+                    return;
+                }
+
+                // Log the existing values before modifying them
+                Debug.Log($"Item Name Text Before: {itemName.text}");
+                Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
+
+                // Update the UI components with ingredient values
+                itemName.text = ingredient.ingredientName;
+                itemIcon.sprite = ingredient.icon;
+
+                // Change the Alpha
+                Color currentColor = itemIcon.color;
+                currentColor.a = 1f;
+                itemIcon.color = currentColor;
+
+                // Log the updated values
+                Debug.Log($"Item Name Text After: {itemName.text}");
+                Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
             }
         }
     }
