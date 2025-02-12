@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Ingredient = FlavorIngredient;
 
 //Script for all collectable ingredients in the environment
 //Based off of the Chest.cs script
 public class Collectable : Interactable
 {
     [Header("Collectable")]
-    [SerializeField] private Ingredient ingredient;
+    [SerializeField] private FlavorIngredient ingredient;
     private bool collected = false;
     private Vector2 playerPosition;
     private float collectionSpeed = 6f;
