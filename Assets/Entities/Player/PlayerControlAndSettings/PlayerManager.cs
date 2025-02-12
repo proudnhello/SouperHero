@@ -217,161 +217,83 @@ public class PlayerManager : Entity
             }
         }
 
-        if (listType == "flavor")
+        List<Ingredient> currentInventory = listType == "flavor" ? flavorInventory.Cast<Ingredient>().ToList() : 
+                                             listType == "ability" ? abilityInventory.Cast<Ingredient>().ToList() : 
+                                             throw new ArgumentException($"Invalid list type: {listType}");
+
+        foreach (var ingredient in currentInventory)
         {
-            foreach (var ingredient in flavorInventory)
+            // Instantiate the InventorySlot prefab into InventoryContent
+            GameObject obj = Instantiate(InventorySlot, InventoryContent);
+
+            if (obj == null)
             {
-                // Instantiate the InventorySlot prefab into InventoryContent
-                GameObject obj = Instantiate(InventorySlot, InventoryContent);
-
-                if (obj == null)
-                {
-                    Debug.LogError("Object instantiation failed.");
-                    return;
-                }
-
-                // Instantiate draggableItem as a child of the InventorySlot
-                GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
-
-                if (draggableInstance == null)
-                {
-                    Debug.LogError("Draggable item instantiation failed.");
-                    return;
-                }
-
-                // Find ItemName and ItemIcon transforms once
-                Transform itemIconTransform = obj.transform.Find("Item(Clone)");
-                if (itemIconTransform == null)
-                {
-                    Debug.LogError("Could not find ItemIcon in instantiated object.");
-                    return;
-                }
-
-                // Find the ItemName inside ItemIcon and ensure the components exist
-                Transform itemNameTransform = itemIconTransform.Find("ItemName");
-                if (itemNameTransform == null)
-                {
-                    Debug.LogError("Could not find ItemName inside ItemIcon.");
-                    return;
-                }
-
-                // Get the components from the found transforms
-                TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
-                UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
-
-                if (ingredient == null)
-                {
-                    Debug.LogError($"Ingredient from flavor inventory is null: check the inspector!!!");
-                    return;
-                }
-
-                if (itemName == null)
-                {
-                    Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
-                    return;
-                }
-
-                if (itemIcon == null)
-                {
-                    Debug.LogError("itemIcon is null, couldn't find the Image component.");
-                    return;
-                }
-
-                //// Log the existing values before modifying them
-                //Debug.Log($"Item Name Text Before: {itemName.text}");
-                //Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
-
-                // Update the UI components with ingredient values
-                itemName.text = ingredient.ingredientName;
-                itemIcon.sprite = ingredient.icon;
-
-                // Change the Alpha
-                Color currentColor = itemIcon.color;
-                currentColor.a = 1f;
-                itemIcon.color = currentColor;
-
-                //// Log the updated values
-                //Debug.Log($"Item Name Text After: {itemName.text}");
-                //Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
+                Debug.LogError("Object instantiation failed.");
+                return;
             }
-        }
-        else if (listType == "ability")
-        {
-            foreach (var ingredient in abilityInventory)
+
+            // Instantiate draggableItem as a child of the InventorySlot
+            GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
+
+            if (draggableInstance == null)
             {
-                // Instantiate the InventorySlot prefab into InventoryContent
-                GameObject obj = Instantiate(InventorySlot, InventoryContent);
-
-                if (obj == null)
-                {
-                    Debug.LogError("Object instantiation failed.");
-                    return;
-                }
-
-                // Instantiate draggableItem as a child of the InventorySlot
-                GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
-
-                if (draggableInstance == null)
-                {
-                    Debug.LogError("Draggable item instantiation failed.");
-                    return;
-                }
-
-                // Find ItemName and ItemIcon transforms once
-                Transform itemIconTransform = obj.transform.Find("Item(Clone)");
-                if (itemIconTransform == null)
-                {
-                    Debug.LogError("Could not find ItemIcon in instantiated object.");
-                    return;
-                }
-
-                // Find the ItemName inside ItemIcon and ensure the components exist
-                Transform itemNameTransform = itemIconTransform.Find("ItemName");
-                if (itemNameTransform == null)
-                {
-                    Debug.LogError("Could not find ItemName inside ItemIcon.");
-                    return;
-                }
-
-                // Get the components from the found transforms
-                TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
-                UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
-
-                if (ingredient == null)
-                {
-                    Debug.LogError($"Ingredient from flavor inventory is null: check the inspector!!!");
-                    return;
-                }
-
-                if (itemName == null)
-                {
-                    Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
-                    return;
-                }
-
-                if (itemIcon == null)
-                {
-                    Debug.LogError("itemIcon is null, couldn't find the Image component.");
-                    return;
-                }
-
-                //// Log the existing values before modifying them
-                //Debug.Log($"Item Name Text Before: {itemName.text}");
-                //Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
-
-                // Update the UI components with ingredient values
-                itemName.text = ingredient.ingredientName;
-                itemIcon.sprite = ingredient.icon;
-
-                // Change the Alpha
-                Color currentColor = itemIcon.color;
-                currentColor.a = 1f;
-                itemIcon.color = currentColor;
-
-                //// Log the updated values
-                //Debug.Log($"Item Name Text After: {itemName.text}");
-                //Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
+                Debug.LogError("Draggable item instantiation failed.");
+                return;
             }
+
+            // Find ItemName and ItemIcon transforms once
+            Transform itemIconTransform = obj.transform.Find("Item(Clone)");
+            if (itemIconTransform == null)
+            {
+                Debug.LogError("Could not find ItemIcon in instantiated object.");
+                return;
+            }
+
+            // Find the ItemName inside ItemIcon and ensure the components exist
+            Transform itemNameTransform = itemIconTransform.Find("ItemName");
+            if (itemNameTransform == null)
+            {
+                Debug.LogError("Could not find ItemName inside ItemIcon.");
+                return;
+            }
+
+            // Get the components from the found transforms
+            TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
+            UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
+
+            if (ingredient == null)
+            {
+                Debug.LogError($"Ingredient from {listType} inventory is null: check the inspector!!!");
+                return;
+            }
+
+            if (itemName == null)
+            {
+                Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
+                return;
+            }
+
+            if (itemIcon == null)
+            {
+                Debug.LogError("itemIcon is null, couldn't find the Image component.");
+                return;
+            }
+
+            // Update the UI components with ingredient values
+            itemName.text = ingredient.ingredientName;
+            itemIcon.sprite = ingredient.icon;
+
+            // Set the ingredient reference in the draggable item
+            DraggableItem draggableItemComponent = draggableInstance.GetComponent<DraggableItem>();
+            if (draggableItemComponent != null)
+            {
+                draggableItemComponent.ingredient = ingredient; // Assuming DraggableItem has an 'ingredient' field
+            }
+
+            // Change the Alpha
+            Color currentColor = itemIcon.color;
+            currentColor.a = 1f;
+            itemIcon.color = currentColor;
         }
     }
 

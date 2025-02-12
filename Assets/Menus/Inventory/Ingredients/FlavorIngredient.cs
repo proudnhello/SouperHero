@@ -6,5 +6,5 @@ using UnityEngine;
 public class FlavorIngredient : Ingredient
 {
     public List<string> flavors;
-
+    [HideInInspector] public string ingredientType = "Flavor";
 }

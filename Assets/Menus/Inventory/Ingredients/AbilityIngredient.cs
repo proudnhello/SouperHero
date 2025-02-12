@@ -7,4 +7,5 @@ public class AbilityIngredient : Ingredient
 {
     public AbilityAbstractClass ability;
     public int uses;
+    [HideInInspector] public string ingredientType = "Ability";
 }
