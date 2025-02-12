@@ -47,10 +47,10 @@ public class CookingManager : MonoBehaviour
         potFlavorIngredients.Remove(ingredient);
     }
 
-    private int numSpoons = PlayerManager.instance.numberOfSpoons;
-    public void cookTheSoup()
-    {
+    //private int numSpoons = PlayerManager.instance.numberOfSpoons;
+    //public void cookTheSoup()
+    //{
 
-    }
+    //}
 
 }
