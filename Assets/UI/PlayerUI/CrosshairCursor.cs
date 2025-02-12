@@ -7,7 +7,7 @@ public class CrosshairCursor : MonoBehaviour
     // [Header("Configuration")]
 
     void Awake() {
-        CursorManager.Singleton.HideCursor();
+        //CursorManager.Singleton.HideCursor();
     }
 
     private void OnEnable()

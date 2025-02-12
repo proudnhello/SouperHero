@@ -29,6 +29,7 @@ public class PlayerSoup : MonoBehaviour
         public AbilityStats stats;
         public int uses;
         public int maxUsage;
+        public bool empty;
 
         public Spoon()
         {
@@ -37,6 +38,7 @@ public class PlayerSoup : MonoBehaviour
             stats = AbilityAbstractClass.NewAbilityStats();
             uses = -1;
             maxUsage = -1;
+            empty = true;
         }
 
         public void Refill()
@@ -44,11 +46,16 @@ public class PlayerSoup : MonoBehaviour
             uses = maxUsage;
         }
 
-        public void Empty()
+        public void MakeEmpty()
         {
             statusEffects.Clear();
             abilities.Clear();
             uses = maxUsage;
+            empty = true;
+        }
+
+        public bool IsEmpty(){
+            return empty;
         }
     }
 
@@ -84,7 +91,13 @@ public class PlayerSoup : MonoBehaviour
     // Convert a list of ingredients into a spoon that can be used
     public Spoon FillSpoon(List<FlavorIngredient> flavor, List<AbilityIngredient> ability, Spoon spoon)
     {
-        spoon.Empty();
+        if (ability == null || ability.Count == 0)
+        {
+            Debug.LogError("FillSpoon: Ability list is empty!");
+        }
+        
+        spoon.MakeEmpty();
+        spoon.empty = false;
         spoon.maxUsage = 0;
         List<(string, int)> pot = new List<(string, int)>();
         List<AbilityAbstractClass> added = new List<AbilityAbstractClass>();

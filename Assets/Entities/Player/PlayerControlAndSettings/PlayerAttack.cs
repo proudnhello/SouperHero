@@ -40,7 +40,10 @@ public class PlayerAttack : MonoBehaviour
             if (Input.GetKeyDown(currentKey))
             {
                 mostRecentPotUsed = i;
-                PlayerManager.instance.Drink(i);
+                // set current spoon
+                PlayerManager.instance.SetCurrentSpoon(i);
+                // use current spoon
+                PlayerManager.instance.UseSpoon();
             }
             currentKey++;
         }

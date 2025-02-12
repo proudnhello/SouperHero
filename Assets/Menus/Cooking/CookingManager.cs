@@ -11,6 +11,10 @@ public class CookingManager : MonoBehaviour
 {
     public static CookingManager Singleton { get; private set; }
 
+    public Transform CookingContent;
+    
+    [HideInInspector] public int selectedPotSpoon = 1;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -46,11 +50,53 @@ public class CookingManager : MonoBehaviour
     {
         potFlavorIngredients.Remove(ingredient);
     }
+    
+    public void ClearPotIngredients()
+    {
+        potFlavorIngredients.Clear();
+        potAbilityIngredients.Clear();
+    }
 
-    //private int numSpoons = PlayerManager.instance.numberOfSpoons;
-    //public void cookTheSoup()
-    //{
+    public void SetSelectedPotSpoon(int newSpoonNum)
+    {
+        selectedPotSpoon = newSpoonNum;
+        Debug.Log($"You just changed selectedPotSpoon to [{selectedPotSpoon}]");
+    }
 
-    //}
+    public void CookTheSoup()
+    {
+
+        if (potAbilityIngredients == null || potAbilityIngredients.Count == 0)
+        {
+            Debug.Log("FillSpoon: Ability list is empty!");
+            return;
+        }
+
+        // CHANGE THIS TO WHATEVER FUNCTION COOKS THE SOUP
+        PlayerManager.instance.FillPot(potFlavorIngredients, potAbilityIngredients, selectedPotSpoon);
+
+        // Slot Debug
+        Debug.Log($"You just cooked at {selectedPotSpoon} index");
+
+        foreach (var ingredient in potFlavorIngredients)
+        {
+            PlayerManager.instance.RemoveFromInventory(ingredient);
+        }
+
+        foreach (var ingredient in potAbilityIngredients)
+        {
+            PlayerManager.instance.RemoveFromInventory(ingredient);
+        }
+
+        ClearPotIngredients();
+
+        foreach (Transform slot in CookingContent)
+        {
+            foreach (Transform item in slot)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+    }
 
 }
