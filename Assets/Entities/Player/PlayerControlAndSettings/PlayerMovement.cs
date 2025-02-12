@@ -28,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Player Movement has been disabled.");
         rb.bodyType = RigidbodyType2D.Kinematic; // Prevent physics interactions
         rb.velocity = Vector2.zero; // Stop movement
+        rb.angularVelocity = 0f; // Stop rotation
 
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)
