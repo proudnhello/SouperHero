@@ -201,11 +201,20 @@ public class PlayerManager : Entity
     public GameObject InventorySlot;
     public GameObject DraggableItem;
 
-    public void InventoryItems(String listType)
+    public void InventoryItems(String listType, Boolean clean = false)
     {
         if (listType != "flavor" && listType != "ability")
         {
             Debug.LogError($"Invalid List Type For InventoryItems(): {listType}");
+        }
+
+        if (clean)
+        {
+            // clean before use
+            foreach (Transform item in InventoryContent)
+            {
+                Destroy(item.gameObject);
+            }
         }
 
         if (listType == "flavor")
@@ -299,8 +308,17 @@ public class PlayerManager : Entity
                     return;
                 }
 
+                // Instantiate draggableItem as a child of the InventorySlot
+                GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
+
+                if (draggableInstance == null)
+                {
+                    Debug.LogError("Draggable item instantiation failed.");
+                    return;
+                }
+
                 // Find ItemName and ItemIcon transforms once
-                Transform itemIconTransform = obj.transform.Find("Item");
+                Transform itemIconTransform = obj.transform.Find("Item(Clone)");
                 if (itemIconTransform == null)
                 {
                     Debug.LogError("Could not find ItemIcon in instantiated object.");

@@ -35,7 +35,8 @@ public class Campfire : Interactable
 
     private void Cook()
     {
-        PlayerManager.instance.InventoryItems("flavor");
+        PlayerManager.instance.InventoryItems("flavor", true);
+        PlayerManager.instance.InventoryItems("ability");
         CursorManager.Singleton.ShowCursor();
         cookingPot.SetActive(true);
         CookingScreen.SetActive(true);
