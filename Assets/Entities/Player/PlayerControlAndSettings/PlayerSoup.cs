@@ -52,20 +52,20 @@ public class PlayerSoup : MonoBehaviour
         }
     }
 
-    [Serializable]
-    public struct FlavorIngredient
-    {
-        public string name;
-        public List<string> flavors;
-    }
+    //[Serializable]
+    //public struct FlavorIngredient
+    //{
+    //    public string name;
+    //    public List<string> flavors;
+    //}
 
-    [Serializable]
-    public struct AbilityIngredient
-    {
-        public string name;
-        public AbilityAbstractClass ability;
-        public int uses;
-    }
+    //[Serializable]
+    //public struct AbilityIngredient
+    //{
+    //    public string name;
+    //    public AbilityAbstractClass ability;
+    //    public int uses;
+    //}
 
     // Add an ingredient to the player's inventory
     public void AddToInventory(FlavorIngredient ingredient)

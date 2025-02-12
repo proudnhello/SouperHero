@@ -2479,6 +2479,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8164715066139808346, guid: 8feea82c8e2650f4d8d03f06812213e3, type: 3}
+      propertyPath: ingredient
+      value: 
+      objectReference: {fileID: 11400000, guid: 516e13e6b0d5c3f4d8893043cf03fc40, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2613,7 +2617,6 @@ GameObject:
   - component: {fileID: 281491902}
   - component: {fileID: 281491901}
   - component: {fileID: 281491900}
-  - component: {fileID: 281491903}
   m_Layer: 0
   m_Name: Crosshair
   m_TagString: Untagged
@@ -2700,19 +2703,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &281491903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 281491899}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51f3aa4a9421224498d847c97ef1f04b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cursorObject: {fileID: 281491899}
 --- !u!224 &314064134 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7932816555790833573, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
@@ -3581,6 +3571,14 @@ PrefabInstance:
     - target: {fileID: 1168708127237467445, guid: 69961e90de1f42a469e3b8085d328c03, type: 3}
       propertyPath: m_Name
       value: Potato (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168708127237467445, guid: 69961e90de1f42a469e3b8085d328c03, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1366400623586275685, guid: 69961e90de1f42a469e3b8085d328c03, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2344125653567235359, guid: 69961e90de1f42a469e3b8085d328c03, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10906,6 +10904,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Leek (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5854243488706272828, guid: 8feea82c8e2650f4d8d03f06812213e3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6063786777005417206, guid: 8feea82c8e2650f4d8d03f06812213e3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.5535617
@@ -10944,6 +10946,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6063786777005417206, guid: 8feea82c8e2650f4d8d03f06812213e3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164715066139808346, guid: 8feea82c8e2650f4d8d03f06812213e3, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -11188,7 +11194,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4732919122290708663, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1683644726}
   m_SourcePrefab: {fileID: 100100000, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
 --- !u!4 &1447404133 stripped
 Transform:
@@ -12425,7 +12434,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -24.999939, y: 106}
+  m_AnchoredPosition: {x: -25, y: 106}
   m_SizeDelta: {x: 1727.99, y: 55.611}
   m_Pivot: {x: 0, y: 0}
 --- !u!4 &1644078368 stripped
@@ -12607,6 +12616,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1666633222}
   m_CullTransparentMesh: 1
+--- !u!1 &1683644716 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4732919122290708663, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+  m_PrefabInstance: {fileID: 1441965243}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1683644726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683644716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f3aa4a9421224498d847c97ef1f04b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cursorObject: {fileID: 281491899}
 --- !u!1001 &1688676664
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15158,6 +15185,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Potato
       objectReference: {fileID: 0}
+    - target: {fileID: 1366400623586275685, guid: 69961e90de1f42a469e3b8085d328c03, type: 3}
+      propertyPath: ingredient
+      value: 
+      objectReference: {fileID: 11400000, guid: d748b32973e9ad54c94528913e809e20, type: 2}
     - target: {fileID: 2344125653567235359, guid: 69961e90de1f42a469e3b8085d328c03, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.2947505
@@ -15198,6 +15229,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4930676555807544329, guid: 69961e90de1f42a469e3b8085d328c03, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 11400000, guid: d748b32973e9ad54c94528913e809e20, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

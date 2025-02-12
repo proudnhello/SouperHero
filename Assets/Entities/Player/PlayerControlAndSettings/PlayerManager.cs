@@ -8,8 +8,9 @@ using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
 using static Unity.VisualScripting.Member;
 using Spoon = PlayerSoup.Spoon;
-using FlavorIngredient = PlayerSoup.FlavorIngredient;
-using AbilityIngredient = PlayerSoup.AbilityIngredient;
+using static UnityEditor.Progress;
+using UnityEditor;
+using UnityEngine.UI;
 
 public class PlayerManager : Entity
 {
@@ -108,8 +109,10 @@ public class PlayerManager : Entity
     //[SerializeField] private int maxPotSize = 5;
     [SerializeField] private int numberofSpoons = 4;
     private int currentSpoon = 0;
-    private List<FlavorIngredient> flavorInventory = new List<FlavorIngredient>();
-    private List<AbilityIngredient> abilityInventory = new List<AbilityIngredient>();
+
+    [Header("Inventory")]
+    public List<FlavorIngredient> flavorInventory = new List<FlavorIngredient>();
+    public List<AbilityIngredient> abilityInventory = new List<AbilityIngredient>();
     public int GetNumberOfPots()
     {
         return numberofSpoons;
@@ -119,7 +122,17 @@ public class PlayerManager : Entity
 
     public void PrintIngredient(FlavorIngredient i)
     {
-        print(i.name + ", with flavors: " + String.Join(" ", i.flavors.ToArray()));
+        if (i == null)
+        {
+            Debug.LogError("PrintIngredient: FlavorIngredient is null!");
+            return;
+        }
+
+        Debug.Log($"Ingredient: {i}");
+        Debug.Log($"Ingredient Name: {i.ingredientName}");
+        Debug.Log($"Ingredient Flavors: {i.flavors}");
+
+        print(i.ingredientName + ", with flavors: " + String.Join(" ", i.flavors.ToArray()));
     }
 
     // Convert a list of ingredients into a pot of soup, controlled by the potNumber
@@ -163,6 +176,11 @@ public class PlayerManager : Entity
     // Add an ingredient to the player's inventory
     public void AddToInventory(FlavorIngredient ingredient)
     {
+        if (ingredient == null)
+        {
+            Debug.LogError("AddToInventory: ingredient is null!");
+            return;
+        }
         flavorInventory.Add(ingredient);
         PrintIngredient(ingredient);
     }
@@ -172,7 +190,40 @@ public class PlayerManager : Entity
         abilityInventory.Add(ingredient);
     }
 
-    //public static event Action<List<(string, int)>> SoupifyEnemy;
+    public void RemoveFromInventory(FlavorIngredient ingredient)
+    {
+        flavorInventory.Remove(ingredient);
+    }
+
+    public void RemoveFromInventory(AbilityIngredient ingredient)
+    {
+        abilityInventory.Remove(ingredient);
+    }
+
+    public Transform ItemContent;
+    public GameObject InventoryItem;
+
+    public void ListItems(String listType)
+    {
+        if (listType != "flavor" || listType != "ability")
+        {
+            Debug.LogError("Invalid List Type For ListItems()");
+        }
+
+        if (listType == "flavor")
+        {
+            foreach (var ingredient in flavorInventory)
+            {
+                GameObject obj = Instantiate(InventoryItem, ItemContent);
+                var itemName = obj.transform.Find("Item/ItemName").GetComponent<Text>();
+                var itemIcon = obj.transform.Find("Item/ItemName").GetComponent<UnityEngine.UI.Image>();
+
+                itemName.text = ingredient.ingredientName;
+                itemIcon.sprite = ingredient.icon;
+            }
+        }
+    }
+
 
 
     public void Heal(int healAmount)
