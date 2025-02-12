@@ -145,6 +145,7 @@ public class PlayerManager : Entity
     public static event Action DrinkPot;
 
     // Drink the soup in the pot and activate the abilities that correspond to the soup.
+    // Switch this later to change spoons
     public void Drink(int spoonNumber)
     {
         // For testing, take the entire list of both types of ingredients and fill the pot with them
@@ -154,11 +155,6 @@ public class PlayerManager : Entity
         FillPot(flavorInventory, abilityInventory, spoonNumber);
         flavorInventory.Clear();
         abilityInventory.Clear();
-    }
-
-    public void RemoveAbility(AbilityAbstractClass ability)
-    {
-        return;
     }
 
     // This will fetch the abilities from the spoon and return them to the player
