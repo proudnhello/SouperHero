@@ -27,7 +27,7 @@ public abstract class EnemyBaseClass : Entity
 
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
-        playerTransform = PlayerManager.instance.player.transform;
+        playerTransform = PlayerManager.Singleton.player.transform;
         _rigidbody = GetComponent<Rigidbody2D>();
         _initialColor = sprite.color;
         health = maxHealth;
@@ -125,11 +125,11 @@ public abstract class EnemyBaseClass : Entity
     }
 
     public void DamagePlayer(int damage) {
-        PlayerHealth playerHealth = PlayerManager.instance.player.GetComponent<PlayerHealth>();
+        PlayerHealth playerHealth = PlayerManager.Singleton.player.GetComponent<PlayerHealth>();
         
         // Check if enemy is not soupable and player is not invincible
         if (!soupable && !playerHealth.IsInvincible()) {
-            PlayerManager.instance.TakeDamage(damage, this.gameObject);
+            PlayerManager.Singleton.TakeDamage(damage, this.gameObject);
             playerHealth.StartCoroutine(playerHealth.TakeDamageAnimation());
         }
     }

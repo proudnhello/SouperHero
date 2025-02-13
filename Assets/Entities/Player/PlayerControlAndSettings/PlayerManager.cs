@@ -17,9 +17,9 @@ public class PlayerManager : Entity
 {
     private void Awake()
     {
-        if (instance == null)
+        if (Singleton == null)
         {
-            instance = this;
+            Singleton = this;
         }
         health = maxHealth;
         for (int i = 0; i < numberOfSpoons + 1; i++)
@@ -32,7 +32,7 @@ public class PlayerManager : Entity
         InitializeStats();
     }
 
-    public static PlayerManager instance;
+    public static PlayerManager Singleton;
     public GameObject player;
     public PlayerSoup soup;
 
@@ -50,12 +50,12 @@ public class PlayerManager : Entity
 
     public bool IsDead()
     {
-        return instance.dead;
+        return Singleton.dead;
     }
 
     public bool IsAlive()
     {
-        return !instance.dead;
+        return !Singleton.dead;
     }
 
     [SerializeField] private float attackSpeed = 3;
@@ -83,22 +83,22 @@ public class PlayerManager : Entity
     [SerializeField] private float attackRadius = 1.0f;
     public float GetAttackRadius()
     {
-        return instance.attackRadius;
+        return Singleton.attackRadius;
     }
     public float SetAttackRadius(float newRadius)
     {
-        instance.attackRadius = newRadius;
-        return instance.attackRadius;
+        Singleton.attackRadius = newRadius;
+        return Singleton.attackRadius;
     }
 
     public float GetSpeed()
     {
-        return instance.moveSpeed;
+        return Singleton.moveSpeed;
     }
 
     public void SetSpeed(float newSpeed)
     {
-        instance.moveSpeed = newSpeed;
+        Singleton.moveSpeed = newSpeed;
     }
 
     [Header("Abilities")]
@@ -173,7 +173,7 @@ public class PlayerManager : Entity
 
     public LayerMask GetEnemies()
     {
-        return instance.enemies;
+        return Singleton.enemies;
     }
 
     // Add an ingredient to the player's inventory
@@ -415,11 +415,11 @@ public class PlayerManager : Entity
 
     public void Heal(int healAmount)
     {
-        instance.health += healAmount;
+        Singleton.health += healAmount;
         Debug.Log("Healing");
-        if (instance.health > maxHealth)
+        if (Singleton.health > maxHealth)
         {
-            instance.health = maxHealth;
+            Singleton.health = maxHealth;
         }
     }
 
@@ -427,10 +427,10 @@ public class PlayerManager : Entity
     {
         
         player.GetComponent<PlayerHealth>().TakeDamage(damageAmount, source);
-        if (instance.health <= 0)
+        if (Singleton.health <= 0)
         {
-            instance.health = 0;
-            instance.dead = true;
+            Singleton.health = 0;
+            Singleton.dead = true;
             // Game over
             Debug.Log("Game Over womp womp");
         }
@@ -439,11 +439,11 @@ public class PlayerManager : Entity
     // Thoughtlessly reduces health, will not cause iframes or animation
     public override void TakeDamage(int damage)
     {
-        instance.health -= damage;
-        if (instance.health <= 0)
+        Singleton.health -= damage;
+        if (Singleton.health <= 0)
         {
-            instance.health = 0;
-            instance.dead = true;
+            Singleton.health = 0;
+            Singleton.dead = true;
             // Game over
             Debug.Log("Game Over womp womp");
         }

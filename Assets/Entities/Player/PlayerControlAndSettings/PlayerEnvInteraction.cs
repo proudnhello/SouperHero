@@ -35,7 +35,7 @@ public class PlayerEnvInteraction : MonoBehaviour
 
         if (currentInteractable != null && 
         currentInteractable.CanInteract() && 
-        Input.GetKeyDown(PlayerManager.instance.interactionKey) &&
+        Input.GetKeyDown(PlayerManager.Singleton.interactionKey) &&
         Time.frameCount != lastInteractionFrame)
         {
             // store last interaction frame so we aren't interacting multiple times in the same frame

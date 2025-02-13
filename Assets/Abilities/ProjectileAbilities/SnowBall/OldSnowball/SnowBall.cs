@@ -26,9 +26,9 @@ public class SnowBall : AbilityAbstractClass
     {
         
             // Instantiate snowball at player's position facing the same direction as the player
-            _currentSnowBall = Instantiate(snowBallPrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
-            _currentSnowBall.transform.up = PlayerManager.instance.player.transform.up;
-            _projectileDirection = PlayerManager.instance.player.transform.up;
+            _currentSnowBall = Instantiate(snowBallPrefab, PlayerManager.Singleton.player.transform.position, Quaternion.identity);
+            _currentSnowBall.transform.up = PlayerManager.Singleton.player.transform.up;
+            _projectileDirection = PlayerManager.Singleton.player.transform.up;
             Debug.Log("Making Snow Ball...");
 
             // Get its rigidbody component, and set its velocity to the direction it is facing multiplied by the projectile speed.

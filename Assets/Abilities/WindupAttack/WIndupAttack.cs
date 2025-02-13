@@ -13,7 +13,7 @@ public class WindupAttack : AbilityAbstractClass
 
     public override void Initialize(int soupVal)
     {
-        player = PlayerManager.instance;
+        player = PlayerManager.Singleton;
 
         int usageValue = Mathf.CeilToInt(soupVal / maxUsageMult);
 

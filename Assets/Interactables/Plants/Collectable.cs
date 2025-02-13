@@ -36,7 +36,7 @@ public class Collectable : Interactable
             return;
         }
 
-        PlayerManager.instance.AddToInventory(ingredient);
+        PlayerManager.Singleton.AddToInventory(ingredient);
         SetInteractable(false);  //Cannot interact multiple times
         SetInteractablePrompt(false);  //Remove prompt
 

@@ -73,19 +73,19 @@ public class CookingManager : MonoBehaviour
         }
 
         // CHANGE THIS TO WHATEVER FUNCTION COOKS THE SOUP
-        PlayerManager.instance.FillPot(potFlavorIngredients, potAbilityIngredients, selectedPotSpoon);
+        PlayerManager.Singleton.FillPot(potFlavorIngredients, potAbilityIngredients, selectedPotSpoon);
 
         // Slot Debug
         Debug.Log($"You just cooked at {selectedPotSpoon} index");
 
         foreach (var ingredient in potFlavorIngredients)
         {
-            PlayerManager.instance.RemoveFromInventory(ingredient);
+            PlayerManager.Singleton.RemoveFromInventory(ingredient);
         }
 
         foreach (var ingredient in potAbilityIngredients)
         {
-            PlayerManager.instance.RemoveFromInventory(ingredient);
+            PlayerManager.Singleton.RemoveFromInventory(ingredient);
         }
 
         ClearPotIngredients();

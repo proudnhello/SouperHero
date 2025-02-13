@@ -19,12 +19,12 @@ public class HealthCounter : MonoBehaviour
         foreach(GameObject heart in heartList) {
             heart.SetActive(false);
         }
-        playerHealth = PlayerManager.instance.GetHealth() / 10;
+        playerHealth = PlayerManager.Singleton.GetHealth() / 10;
         for (int i = 0; i < playerHealth; i++) {
             heartList[i].SetActive(true);
             heartCount++;
         }
-        healthText.text = PlayerManager.instance.GetHealth().ToString();
+        healthText.text = PlayerManager.Singleton.GetHealth().ToString();
         PlayerHealth.HealthChange += HealthChange;
     }
 
@@ -41,8 +41,8 @@ public class HealthCounter : MonoBehaviour
     }
 
     public void HealthChange() {
-        healthText.text = PlayerManager.instance.GetHealth().ToString();
-        playerHealth = PlayerManager.instance.GetHealth() / 10;
+        healthText.text = PlayerManager.Singleton.GetHealth().ToString();
+        playerHealth = PlayerManager.Singleton.GetHealth() / 10;
         if (heartCount < playerHealth - 1) {
             AddHealth();
         }

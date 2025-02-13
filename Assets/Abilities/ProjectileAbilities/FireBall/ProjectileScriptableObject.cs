@@ -27,9 +27,9 @@ public class ProjectileScriptableObject : AbilityAbstractClass
     public override void Active()
     {   
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
-        _currentProjectile = Instantiate(projectilePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
-        _currentProjectile.transform.up = PlayerManager.instance.player.transform.up;
-        _projectileDirection = PlayerManager.instance.player.transform.up;
+        _currentProjectile = Instantiate(projectilePrefab, PlayerManager.Singleton.player.transform.position, Quaternion.identity);
+        _currentProjectile.transform.up = PlayerManager.Singleton.player.transform.up;
+        _projectileDirection = PlayerManager.Singleton.player.transform.up;
         _currentProjectile.GetComponent<FireBallCollision>().stats = stats;
         _currentProjectile.GetComponent<FireBallCollision>().statusEffects = statusEffects;
 

@@ -33,7 +33,7 @@ public class Chest : Interactable
         }
 
         // add the ingredient to the player's inventory
-        PlayerManager.instance.AddToInventory(ingredient);
+        PlayerManager.Singleton.AddToInventory(ingredient);
         // set the interactable to false so the chest can't be opened multiple times
         SetInteractable(false);
         // remove the interactable prompt

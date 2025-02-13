@@ -20,8 +20,8 @@ public class WaveAOE : AbilityAbstractClass
         Debug.Log("current wave" + currentWave);
         if (currentWave == null)
         {
-            currentWave = Instantiate(wavePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
-            currentWave.transform.parent = PlayerManager.instance.player.transform;
+            currentWave = Instantiate(wavePrefab, PlayerManager.Singleton.player.transform.position, Quaternion.identity);
+            currentWave.transform.parent = PlayerManager.Singleton.player.transform;
             currentWave.transform.localScale = new Vector3(waveScale, waveScale, waveScale);
 
         }

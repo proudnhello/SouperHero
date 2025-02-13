@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerManager.instance.GetSpeed();
+        rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerManager.Singleton.GetSpeed();
     }
 
 

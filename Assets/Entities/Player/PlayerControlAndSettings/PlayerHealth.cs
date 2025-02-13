@@ -14,7 +14,7 @@ public class PlayerHealth : MonoBehaviour
     public static event Action HealthChange;
     void Start()
     {
-        PlayerManager.instance.SetHealth(PlayerManager.instance.GetMaxHealth());
+        PlayerManager.Singleton.SetHealth(PlayerManager.Singleton.GetMaxHealth());
     }
 
     void Update()
@@ -33,13 +33,13 @@ public class PlayerHealth : MonoBehaviour
         invincible = true;
 
         // take damage based on the enemy's collision damage
-        PlayerManager.instance.TakeDamage(amount);
+        PlayerManager.Singleton.TakeDamage(amount);
 
         // knock back the player
         KnockBack(source);
 
         // check if the player is still alive if so, go to game over screen
-        if (PlayerManager.instance.IsDead()){
+        if (PlayerManager.Singleton.IsDead()){
             GameManager.instance.DeathScreen();
         }
 
@@ -60,7 +60,7 @@ public class PlayerHealth : MonoBehaviour
     {
         // not functioning properly, need to fix
         // also not super necessary at the moment
-        GameObject player = PlayerManager.instance.player;
+        GameObject player = PlayerManager.Singleton.player;
         Vector3 direction = (player.transform.position - collider.transform.position).normalized;
         player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         player.GetComponent<Rigidbody2D>().AddForce(direction * 3, ForceMode2D.Impulse);
@@ -70,14 +70,14 @@ public class PlayerHealth : MonoBehaviour
 
         float maxFlashCycles = ((damageTime / 0.3f));
         int flashCycles = 0;
-        Color playerColor = PlayerManager.instance.player.GetComponent<SpriteRenderer>().color;
+        Color playerColor = PlayerManager.Singleton.player.GetComponent<SpriteRenderer>().color;
         HealthChange?.Invoke();
 
         while (maxFlashCycles > flashCycles)
         {
-            PlayerManager.instance.player.GetComponent<SpriteRenderer>().color = Color.red;
+            PlayerManager.Singleton.player.GetComponent<SpriteRenderer>().color = Color.red;
             yield return new WaitForSeconds(0.15f);
-            PlayerManager.instance.player.GetComponent<SpriteRenderer>().color = playerColor;
+            PlayerManager.Singleton.player.GetComponent<SpriteRenderer>().color = playerColor;
             yield return new WaitForSeconds(0.15f);
             flashCycles++;
         }
