@@ -682,6 +682,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8455956797067117637}
   - component: {fileID: 7709215253725050347}
+  - component: {fileID: 9128123998136047537}
   m_Layer: 0
   m_Name: Connector1
   m_TagString: Untagged
@@ -724,10 +725,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c493efabfd92176429bbab40f5b71025, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _blockWidth: 1
-  _blockHeight: 1
   _blockType: Connector
   west: 1
   east: 1
   south: 0
   north: 0
+--- !u!114 &9128123998136047537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5531008064354232718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227f6abed5d67fc43b1e3088dac03c0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockWidth: 1
+  _blockHeight: 1
+  blocks:
+  - {fileID: 7709215253725050347}

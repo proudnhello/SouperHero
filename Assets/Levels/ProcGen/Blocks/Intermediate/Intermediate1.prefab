@@ -934,6 +934,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8455956797067117637}
   - component: {fileID: 5308434903949795293}
+  - component: {fileID: 5554215172569249214}
+  - component: {fileID: 417468120194431891}
   m_Layer: 0
   m_Name: Intermediate1
   m_TagString: Untagged
@@ -980,13 +982,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c493efabfd92176429bbab40f5b71025, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _blockWidth: 2
-  _blockHeight: 1
   _blockType: Intermediate
+  connected: 0
   west: 1
   east: 1
   south: 1
   north: 1
+--- !u!114 &5554215172569249214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5531008064354232718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c493efabfd92176429bbab40f5b71025, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockType: Intermediate
+  connected: 0
+  west: 1
+  east: 1
+  south: 1
+  north: 1
+--- !u!114 &417468120194431891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5531008064354232718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227f6abed5d67fc43b1e3088dac03c0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockWidth: 2
+  _blockHeight: 1
+  blocks:
+  - {fileID: 5308434903949795293}
+  - {fileID: 5554215172569249214}
 --- !u!1 &5542357773197274784
 GameObject:
   m_ObjectHideFlags: 0

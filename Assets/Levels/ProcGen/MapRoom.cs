@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 public class MapRoom : MonoBehaviour
@@ -10,18 +11,20 @@ public class MapRoom : MonoBehaviour
     private int _blockHeight;
 
     // ORDERED FROM TOP LEFT TO BOTTOM RIGHT
-    [SerializeField]
     public List<Block> blocks = new List<Block>();
 
-    // Start is called before the first frame update
-    void Start()
+    public int BlockWidth()
     {
-        
+        return _blockWidth;
     }
 
-    // Update is called once per frame
-    void Update()
+    public int BlockHeight()
     {
-        
+        return _blockHeight;
+    }
+
+    public Block At(int row, int col)
+    {
+        return blocks[row * (_blockWidth - 1) + col];
     }
 }
