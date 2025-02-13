@@ -15,6 +15,9 @@ public class CookingManager : MonoBehaviour
     
     [HideInInspector] public int selectedPotSpoon = 1;
 
+    [Header("Debug")]
+    public TMP_Text SoupStatsText;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -105,6 +108,7 @@ public class CookingManager : MonoBehaviour
 
     public void DisplayPotStats(){
         string stats = PlayerManager.Singleton.GetSoupStats(potFlavorIngredients, potAbilityIngredients);
+        SoupStatsText.text = stats;
         Debug.Log(stats);
     }
 
