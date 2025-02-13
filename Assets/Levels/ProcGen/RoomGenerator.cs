@@ -1,11 +1,13 @@
 using DG.Tweening;
 using DG.Tweening.Plugins;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Unity.VisualScripting.Antlr3.Runtime.Tree.TreeWizard;
 
 public class RoomGenerator : MonoBehaviour
 {
@@ -839,6 +841,38 @@ public class RoomGenerator : MonoBehaviour
         return ret;
     }
 
+    private void openDoors()
+    {
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                Coordinate c = new Coordinate(i, j);
+                if (!checkForBlockAdvanced(c) && _map[c.row][c.col].BlockType() == "Intermediate")
+                {
+                    Block I = _map[c.row][c.col];
+                    string s = getConnectionsAtAdvanced(c.row, c.col);
+                    if(s.Contains('N') && I.northDoor)
+                    {
+                        I.northDoor.SetActive(false);
+                    }
+                    if (s.Contains('E') && I.eastDoor)
+                    {
+                        I.eastDoor.SetActive(false);
+                    }
+                    if (s.Contains('S') && I.southDoor)
+                    {
+                        I.southDoor.SetActive(false);
+                    }
+                    if (s.Contains('W') && I.westDoor)
+                    {
+                        I.westDoor.SetActive(false);
+                    }
+                }
+            }
+        }
+    }
+
     void GenerateRoom() {
         int midWidth = (_mapWidth - 1) / 2;
         int midHeight = (_mapHeight - 1) / 2;
@@ -927,9 +961,9 @@ public class RoomGenerator : MonoBehaviour
 
         firstSweepConnect();
 
-        // calculate start->right connector block
+        openDoors();
 
-        colorGrid();
+        //colorGrid();
     }
 
     private void colorGrid()

@@ -13,6 +13,13 @@ public class Block : MonoBehaviour
     public bool south;
     public bool north;
 
+    // ONLY INTERMEDIATES SHOULD HAVE DOORS. EVERYTHING ELSE (CONNECTORS, START/END) SHOULD BE DOOR-LESS
+    public GameObject northDoor;
+    public GameObject southDoor;
+    public GameObject eastDoor;
+    public GameObject westDoor;
+
+
     public string BlockType()
     {
         return _blockType;
