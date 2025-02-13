@@ -1,3 +1,5 @@
+using DG.Tweening.Plugins;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Unity.VisualScripting;
@@ -81,14 +83,14 @@ public class RoomGenerator : MonoBehaviour
     {
         for (int i = 0; i < numIntermediates; i++)
         {
-            int blockType = Random.Range(0, _intermediateBlocks.Count);
+            int blockType = UnityEngine.Random.Range(0, _intermediateBlocks.Count);
             Block b = Instantiate(_intermediateBlocks[blockType]).GetComponent<Block>();
 
             bool placed = false;
             while (!placed)
             {
-                int row = Random.Range(0, _mapWidth);
-                int col = Random.Range(0, _mapHeight);
+                int row = UnityEngine.Random.Range(0, _mapWidth);
+                int col = UnityEngine.Random.Range(0, _mapHeight);
 
                 b.gameObject.transform.rotation = Quaternion.identity;
                 if (row + b.BlockWidth() < _mapWidth && canPlaceIntermediate(row, col, b))
@@ -105,6 +107,12 @@ public class RoomGenerator : MonoBehaviour
     {
         Block b = _map[row][col];
         return b != null && b.BlockType() != "Connector";
+    }
+
+    private bool checkForBlockAdvanced(Coordinate c)
+    {
+
+        return _map[c.row][c.col] == null;
     }
 
     private string getConnectionsAt(int row, int col)
@@ -147,6 +155,122 @@ public class RoomGenerator : MonoBehaviour
         return s;
     }
 
+    private void pickAndPlaceDouble(int row, int col, string c)
+    {
+        float angle = 0.0f;
+        bool connectorType2Need = false;
+        switch (c)
+        {
+            case "NW":
+                break;
+            case "NE":
+                angle = -90.0f;
+                break;
+            case "NS":
+                angle = 90.0f;
+                connectorType2Need = true;
+                break;
+            case "SW":
+                angle = 90.0f;
+                break;
+            case "SE":
+                angle = 180.0f;
+                break;
+            case "EW":
+                connectorType2Need = true;
+                break;
+            default:
+                break;
+        }
+        Block b = null;
+        if (connectorType2Need)
+        {
+            b = Instantiate(connector2).GetComponent<Block>();
+        }
+        else
+        {
+            b = Instantiate(connector25).GetComponent<Block>();
+        }
+        b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
+        canPlaceIntermediate(row, col, b);
+        fillBlock(row, col, b);
+        _map[row][col] = b;
+    }
+
+    private void pickAndPlaceDoubleAlternate(int row, int col, string c)
+    {
+        float angle = 0.0f;
+        bool connectorType2Need = false;
+        switch (c)
+        {
+            case "EE":
+                connectorType2Need = true;
+                break;
+            case "WW":
+                connectorType2Need = true;
+                break;
+            case "NN":
+                connectorType2Need = true;
+                angle = 90.0f;
+                break;
+            case "SS":
+                connectorType2Need = true;
+                angle = 90.0f;
+                break;
+            case "EN":
+                break;
+            case "ES":
+                angle = 90.0f;
+                break;
+            case "EW":
+                connectorType2Need = true;
+                break;
+            case "NE":
+                angle = 180.0f;
+                break;
+            case "NW":
+                angle = 90.0f;
+                break;
+            case "NS":
+                connectorType2Need = true;
+                angle = 90.0f;
+                break;
+            case "WN":
+                angle = -90.0f;
+                break;
+            case "WE":
+                connectorType2Need = true;
+                break;
+            case "WS":
+                angle = 180.0f;
+                break;
+            case "SE":
+                angle = -90.0f;
+                break;
+            case "SW":
+                break;
+            case "SN":
+                connectorType2Need = true;
+                angle = 90.0f;
+                break;
+            default:
+                break;
+        }
+        Block b = null;
+        if (connectorType2Need)
+        {
+            b = Instantiate(connector2).GetComponent<Block>();
+        }
+        else
+        {
+            b = Instantiate(connector25).GetComponent<Block>();
+        }
+        b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
+        canPlaceIntermediate(row, col, b);
+        fillBlock(row, col, b);
+        _map[row][col] = b;
+    }
+
     private void firstSweepConnect()
     {
         for (int row = 0; row < _mapWidth; row++)
@@ -159,43 +283,7 @@ public class RoomGenerator : MonoBehaviour
                     switch (c.Length)
                     {
                         case 2:
-                            float angle = 0.0f;
-                            bool connectorType2Need = false;
-                            switch(c)
-                            {
-                                case "NW":
-                                    break;
-                                case "NE":
-                                    angle = -90.0f;
-                                    break;
-                                case "NS":
-                                    angle = 90.0f;
-                                    connectorType2Need = true;
-                                    break;
-                                case "SW":
-                                    angle = 90.0f;
-                                    break;
-                                case "SE":
-                                    angle = 180.0f;
-                                    break;
-                                case "EW":
-                                    connectorType2Need = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            Block b = null;
-                            if(connectorType2Need)
-                            {
-                                b = Instantiate(connector2).GetComponent<Block>();
-                            } else
-                            {
-                                b = Instantiate(connector25).GetComponent<Block>();
-                            }
-                            b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
-                            canPlaceIntermediate(row, col, b);
-                            fillBlock(row, col, b);
-                            _map[row][col] = b;
+                            pickAndPlaceDouble(row, col, c);
                             break;
                         case 3:
                             float angle2 = 0.0f;
@@ -233,6 +321,160 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+    private void pathFromString(int row, int col, string path)
+    {
+        if (path.Length <= 1)
+        {
+            Debug.Log("Something went wrong with path from string");
+        }
+        else
+        {
+            for (int i = 0; i < path.Length - 1; i++)
+            {
+                pickAndPlaceDoubleAlternate(row, col, path.Substring(i, 2));
+                char dir = path[i + 1];
+                switch (dir)
+                {
+                    case 'N':
+                        col++;
+                        break;
+                    case 'S':
+                        col--;
+                        break;
+                    case 'E':
+                        row++;
+                        break;
+                    case 'W':
+                        row--;
+                        break;
+                }
+            }
+        }
+    }
+
+    struct Coordinate
+    {
+        public int row;
+        public int col;
+
+        public Coordinate(int x, int y)
+        {
+            row = x;
+            col = y;
+        }
+
+        public override string ToString()
+        {
+            return row + ", " + col;
+        }
+    }
+
+    private string BFSPathFromStart(Coordinate start)
+    {
+        string path = "";
+        Dictionary<Coordinate, Tuple<Coordinate, char>> parents = new Dictionary<Coordinate, Tuple<Coordinate, char>>();
+        HashSet<Coordinate> visited = new HashSet<Coordinate>();
+        Queue<Coordinate> queue = new Queue<Coordinate>();
+
+        queue.Enqueue(start);
+        visited.Add(start);
+        parents[start] = new Tuple<Coordinate, char>(new Coordinate(-1, -1), ' ');
+        Coordinate closestIntermediate = new Coordinate(-1, -1);
+        while (queue.Count > 0)
+        {
+            Coordinate b = queue.Dequeue();
+            Coordinate rowPlus = new Coordinate(b.row + 1, b.col);
+            Coordinate rowMinus = new Coordinate(b.row - 1, b.col);
+            Coordinate colPlus = new Coordinate(b.row, b.col + 1);
+            Coordinate colMinus = new Coordinate(b.row, b.col - 1);
+
+            if (rowMinus.row >= 0)
+            {
+                if (checkForBlockAdvanced(rowMinus) && !visited.Contains(rowMinus))
+                {
+                    queue.Enqueue(rowMinus);
+                    visited.Add(rowMinus);
+                    parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
+                }
+                else
+                {
+                    if (!checkForBlockAdvanced(rowMinus) && _map[rowMinus.row][rowMinus.col].BlockType() == "Intermediate")
+                    {
+                        parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
+                        closestIntermediate = rowMinus;
+                        break;
+                    }
+                }
+            }
+            if (rowPlus.row < _mapWidth)
+            {
+                if (checkForBlockAdvanced(rowPlus) && !visited.Contains(rowPlus))
+                {
+                    queue.Enqueue(rowPlus);
+                    visited.Add(rowPlus);
+                    parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
+                }
+                else
+                {
+                    if (!checkForBlockAdvanced(rowPlus) && _map[rowPlus.row][rowPlus.col].BlockType() == "Intermediate")
+                    {
+                        parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
+                        closestIntermediate = rowPlus;
+                        break;
+                    }
+                }
+            }
+            if (colPlus.col < _mapHeight)
+            {
+                if (checkForBlockAdvanced(colPlus) && !visited.Contains(colPlus))
+                {
+                    queue.Enqueue(colPlus);
+                    visited.Add(colPlus);
+                    parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
+                }
+                else
+                {
+                    if (!checkForBlockAdvanced(colPlus) && _map[colPlus.row][colPlus.col].BlockType() == "Intermediate")
+                    {
+                        parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
+                        closestIntermediate = colPlus;
+                        break;
+                    }
+                }
+            }
+            if (colMinus.col >= 0)
+            {
+                if (checkForBlockAdvanced(colMinus) && !visited.Contains(colMinus))
+                {
+                    queue.Enqueue(colMinus);
+                    visited.Add(colMinus);
+                    parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
+                } else
+                {
+                    if (!checkForBlockAdvanced(colMinus) && _map[colMinus.row][colMinus.col].BlockType() == "Intermediate")
+                    {
+                        parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
+                        closestIntermediate = colMinus;
+                        break;
+                    }
+                }
+            }
+        }
+
+        while(closestIntermediate.row != -1 && closestIntermediate.col != -1)
+        {
+            path += parents[closestIntermediate].Item2;
+            closestIntermediate = parents[closestIntermediate].Item1;
+        }
+
+        char[] charArray = path.ToCharArray();
+        Array.Reverse(charArray);
+        string ret = new string(charArray);
+        ret = ret.Substring(1, ret.Length - 1);
+
+        return "E" + ret;
+    }
+
     void GenerateRoom() {
         // place start
         int midWidth = (_mapWidth - 1) / 2;
@@ -245,6 +487,13 @@ public class RoomGenerator : MonoBehaviour
         placeIntermediates(10);
 
         firstSweepConnect();
+
+        if (_map[midWidth + 1][midHeight] == null)
+        {
+            string path = BFSPathFromStart(new Coordinate(midWidth + 1, midHeight));
+            Debug.Log(path);
+            pathFromString(midWidth + 1, midHeight, path);
+        }
 
         for (int i = 0; i < _mapWidth; ++i)
         {
