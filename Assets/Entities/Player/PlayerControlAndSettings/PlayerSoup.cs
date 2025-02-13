@@ -155,62 +155,7 @@ public class PlayerSoup : MonoBehaviour
         // used so players can see possible spoons while they cook
 
         Spoon spoon = new Spoon();
-        if (ability == null)
-        {
-            Debug.LogError("FillSpoon: Ability list is null!");
-        }
-        
-        spoon.MakeEmpty();
-        spoon.empty = false;
-        spoon.maxUsage = 0;
-        List<(string, int)> pot = new List<(string, int)>();
-        List<AbilityAbstractClass> added = new List<AbilityAbstractClass>();
-
-        // First, compile the flavors in a format the lookuptable will use
-        foreach (FlavorIngredient ingredient in flavor)
-        {
-            PrintIngredient(ingredient);
-            foreach (string f in ingredient.flavors)
-            {
-                bool found = false;
-                for (int i = 0; i < pot.Count; i++)
-                {
-                    if (pot[i].Item1 == f)
-                    {
-                        pot[i] = (f, pot[i].Item2 + 1);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    pot.Add((f, 1));
-                }
-            }
-        }
-
-        // Then, lookup status effects and abilities
-        (List<StatusEffect>, AbilityStats) temp = lookup.GetStatusEffects(pot);
-        spoon.statusEffects = temp.Item1;
-        spoon.stats = temp.Item2;
-
-        // Then, add abilities to the spoon, applying the ability buffs as we go
-        foreach (AbilityIngredient a in ability)
-        {
-            spoon.maxUsage += a.uses;
-            // Because all of these ingredients ***should*** contain the same instance of the ability, we can check if we've already added it like this
-            // in b4 i make a duplicate of an instance for some fukin reason then get confused why it's not working
-            if (!added.Contains(a.ability))
-            {
-                AbilityAbstractClass newAbility = Instantiate(a.ability);
-                newAbility.SetStats(spoon.stats);
-                newAbility.SetStatusEffects(spoon.statusEffects);
-                spoon.abilities.Add(newAbility);
-                added.Add(a.ability);
-            }
-        }
-
-        spoon.uses = spoon.maxUsage;
+        spoon = FillSpoon(flavor, ability, spoon);
 
         string info = "Max Usage: " + spoon.maxUsage + "\n";
         info += "Abilities: \n";
@@ -218,11 +163,12 @@ public class PlayerSoup : MonoBehaviour
         {
             info += a._abilityName + "\n";
         }
-        info += "Status Effects: \n";
-        foreach (StatusEffect s in spoon.statusEffects)
-        {
-            info += s.ToString() + "\n";
-        }
+        info += "Stats: \n";
+        info += "Speed: " + spoon.stats.speed + "\n";
+        info += "Damage: " + spoon.stats.damage + "\n";
+        info += "Cooldown: " + spoon.stats.cooldown + "\n";
+        info += "Duration: " + spoon.stats.duration + "\n";
+        info += "Size: " + spoon.stats.size + "\n";
         return info;
     }
 
