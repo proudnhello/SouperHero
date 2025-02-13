@@ -12,6 +12,7 @@ public class CookingManager : MonoBehaviour
     public static CookingManager Singleton { get; private set; }
 
     public Transform CookingContent;
+    public GameObject spoon; 
     
     [HideInInspector] public int selectedPotSpoon = 1;
 
@@ -109,7 +110,13 @@ public class CookingManager : MonoBehaviour
     public void DisplayPotStats(){
         string stats = PlayerManager.Singleton.GetSoupStats(potFlavorIngredients, potAbilityIngredients);
         SoupStatsText.text = stats;
-        Debug.Log(stats);
+        UpdateSpoonColor();
+    }
+
+    private void UpdateSpoonColor(){
+        // Get color from lookup table when it's working
+        UnityEngine.UI.Image spoonImage = spoon.GetComponent<UnityEngine.UI.Image>();
+        spoonImage.color = Color.red;
     }
 
 }

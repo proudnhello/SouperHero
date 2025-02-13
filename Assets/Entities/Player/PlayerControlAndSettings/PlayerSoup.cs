@@ -151,24 +151,23 @@ public class PlayerSoup : MonoBehaviour
     }
 
     public string SoupInfo(List<FlavorIngredient> flavor, List<AbilityIngredient> ability){ 
-        // pretty much the same as FillSpoon, but instead of returning a spoon, it returns a string
         // used so players can see possible spoons while they cook
 
         Spoon spoon = new Spoon();
         spoon = FillSpoon(flavor, ability, spoon);
 
         string info = "Max Usage: " + spoon.maxUsage + "\n";
-        info += "Abilities: \n";
+        info += "Abilities:\n";
         foreach (AbilityAbstractClass a in spoon.abilities)
         {
-            info += a._abilityName + "\n";
+            info += "\t" + a._abilityName + "\n";
         }
-        info += "Stats: \n";
-        info += "Speed: " + spoon.stats.speed + "\n";
-        info += "Damage: " + spoon.stats.damage + "\n";
-        info += "Cooldown: " + spoon.stats.cooldown + "\n";
-        info += "Duration: " + spoon.stats.duration + "\n";
-        info += "Size: " + spoon.stats.size + "\n";
+        info += "\nStats: \n";
+        info += "\tSpeed: " + spoon.stats.speed + "\n";
+        info += "\tDamage: " + spoon.stats.damage + "\n";
+        info += "\tCooldown: " + spoon.stats.cooldown + "\n";
+        info += "\tDuration: " + spoon.stats.duration + "\n";
+        info += "\tSize: " + spoon.stats.size + "\n";
         return info;
     }
 
