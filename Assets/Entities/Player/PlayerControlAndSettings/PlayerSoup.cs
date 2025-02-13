@@ -162,7 +162,7 @@ public class PlayerSoup : MonoBehaviour
         {
             info += "\t" + a._abilityName + "\n";
         }
-        info += "\nStats: \n";
+        info += "Stats: \n";
         info += "\tSpeed: " + spoon.stats.speed + "\n";
         info += "\tDamage: " + spoon.stats.damage + "\n";
         info += "\tCooldown: " + spoon.stats.cooldown + "\n";
