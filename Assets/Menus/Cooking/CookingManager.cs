@@ -31,24 +31,28 @@ public class CookingManager : MonoBehaviour
     public void AddAbilityIngredient(AbilityIngredient ingredient)
     {
         potAbilityIngredients.Add(ingredient);
+        DisplayPotStats();
     }
 
     // Function to remove an Ability Ingredient
     public void RemoveAbilityIngredient(AbilityIngredient ingredient)
     {
         potAbilityIngredients.Remove(ingredient);
+        DisplayPotStats();
     }
 
     // Function to add a Flavor Ingredient
     public void AddFlavorIngredient(FlavorIngredient ingredient)
     {
         potFlavorIngredients.Add(ingredient);
+        DisplayPotStats();
     }
 
     // Function to remove a Flavor Ingredient
     public void RemoveFlavorIngredient(FlavorIngredient ingredient)
     {
         potFlavorIngredients.Remove(ingredient);
+        DisplayPotStats();
     }
     
     public void ClearPotIngredients()
@@ -97,6 +101,11 @@ public class CookingManager : MonoBehaviour
                 Destroy(item.gameObject);
             }
         }
+    }
+
+    public void DisplayPotStats(){
+        string stats = PlayerManager.Singleton.GetSoupStats(potFlavorIngredients, potAbilityIngredients);
+        Debug.Log(stats);
     }
 
 }

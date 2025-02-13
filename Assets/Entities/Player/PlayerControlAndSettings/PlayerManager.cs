@@ -142,6 +142,11 @@ public class PlayerManager : Entity
         soup.FillSpoon(flavors, abilities, spoons[spoonNumber]);
     }
 
+    // returns a string containing the stats for the soup a player is currently making
+    public string GetSoupStats(List<FlavorIngredient> flavors, List<AbilityIngredient> abilities){
+        return soup.SoupInfo(flavors, abilities);
+    }
+
     public static event Action DrinkPot;
 
     //// Drink the soup in the pot and activate the abilities that correspond to the soup.
