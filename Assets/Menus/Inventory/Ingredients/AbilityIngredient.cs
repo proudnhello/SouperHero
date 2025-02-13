@@ -7,4 +7,9 @@ public class AbilityIngredient : Ingredient
 {
     public AbilityAbstractClass ability;
     public int uses;
+
+    private void Awake()
+    {
+        ingredientType = "Ability";
+    }
 }

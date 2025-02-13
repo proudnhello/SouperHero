@@ -28,15 +28,15 @@ public class MineAttack : AbilityAbstractClass
 
         if (currentMine == null)
         {
-            currentMine = Instantiate(minePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
-            currentMine.transform.position = PlayerManager.instance.player.transform.position;
+            currentMine = Instantiate(minePrefab, PlayerManager.Singleton.player.transform.position, Quaternion.identity);
+            currentMine.transform.position = PlayerManager.Singleton.player.transform.position;
             currentMine.transform.localScale = new Vector3(sizeMult, sizeMult, sizeMult);
         }
 
         MineDamage mine = currentMine.GetComponent<MineDamage>();
         mine.despawnTime = mineLifespan;
         mine.explosionTime = explosionTime;
-        mine.explosionRadius = PlayerManager.instance.GetAttackRadius() * explosionRadiusMult;
+        mine.explosionRadius = PlayerManager.Singleton.GetAttackRadius() * explosionRadiusMult;
         mine.damageMult = damageMult;
 
         Debug.Log("MineAttack active");

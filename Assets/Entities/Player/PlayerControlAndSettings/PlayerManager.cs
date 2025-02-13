@@ -17,12 +17,12 @@ public class PlayerManager : Entity
 {
     private void Awake()
     {
-        if (instance == null)
+        if (Singleton == null)
         {
-            instance = this;
+            Singleton = this;
         }
         health = maxHealth;
-        for (int i = 0; i < numberofSpoons + 1; i++)
+        for (int i = 0; i < numberOfSpoons + 1; i++)
         {
             Spoon spoon = new Spoon();
             spoons.Add(spoon);
@@ -32,7 +32,7 @@ public class PlayerManager : Entity
         InitializeStats();
     }
 
-    public static PlayerManager instance;
+    public static PlayerManager Singleton;
     public GameObject player;
     public PlayerSoup soup;
 
@@ -50,12 +50,12 @@ public class PlayerManager : Entity
 
     public bool IsDead()
     {
-        return instance.dead;
+        return Singleton.dead;
     }
 
     public bool IsAlive()
     {
-        return !instance.dead;
+        return !Singleton.dead;
     }
 
     [SerializeField] private float attackSpeed = 3;
@@ -83,22 +83,22 @@ public class PlayerManager : Entity
     [SerializeField] private float attackRadius = 1.0f;
     public float GetAttackRadius()
     {
-        return instance.attackRadius;
+        return Singleton.attackRadius;
     }
     public float SetAttackRadius(float newRadius)
     {
-        instance.attackRadius = newRadius;
-        return instance.attackRadius;
+        Singleton.attackRadius = newRadius;
+        return Singleton.attackRadius;
     }
 
     public float GetSpeed()
     {
-        return instance.moveSpeed;
+        return Singleton.moveSpeed;
     }
 
     public void SetSpeed(float newSpeed)
     {
-        instance.moveSpeed = newSpeed;
+        Singleton.moveSpeed = newSpeed;
     }
 
     [Header("Abilities")]
@@ -108,7 +108,7 @@ public class PlayerManager : Entity
     [Header("Soup")]
     [SerializeField] private AbilityLookup lookup;
     //[SerializeField] private int maxPotSize = 5;
-    [SerializeField] private int numberofSpoons = 4;
+    [SerializeField] public int numberOfSpoons = 4;
     private int currentSpoon = 0;
 
     [Header("Inventory")]
@@ -116,7 +116,7 @@ public class PlayerManager : Entity
     public List<AbilityIngredient> abilityInventory = new List<AbilityIngredient>();
     public int GetNumberOfPots()
     {
-        return numberofSpoons;
+        return numberOfSpoons;
     }
 
     List<Spoon> spoons = new List<Spoon>();
@@ -142,19 +142,29 @@ public class PlayerManager : Entity
         soup.FillSpoon(flavors, abilities, spoons[spoonNumber]);
     }
 
+    // returns a string containing the stats for the soup a player is currently making
+    public string GetSoupStats(List<FlavorIngredient> flavors, List<AbilityIngredient> abilities){
+        return soup.SoupInfo(flavors, abilities);
+    }
+
     public static event Action DrinkPot;
 
-    // Drink the soup in the pot and activate the abilities that correspond to the soup.
-    // Switch this later to change spoons
-    public void Drink(int spoonNumber)
+    //// Drink the soup in the pot and activate the abilities that correspond to the soup.
+    //// Switch this later to change spoons
+    //public void Drink(int spoonNumber)
+    //{
+    //    // For testing, take the entire list of both types of ingredients and fill the pot with them
+    //    // Later on, this will be removed, and we'll do it all thru the UI
+    //    print("You used " + spoonNumber + " :)");
+    //    currentSpoon = spoonNumber;
+    //    FillPot(flavorInventory, abilityInventory, spoonNumber);
+    //    flavorInventory.Clear();
+    //    abilityInventory.Clear();
+    //}
+
+    public void SetCurrentSpoon(int spoonNumber)
     {
-        // For testing, take the entire list of both types of ingredients and fill the pot with them
-        // Later on, this will be removed, and we'll do it all thru the UI
-        print("You used " + spoonNumber + " :)");
         currentSpoon = spoonNumber;
-        FillPot(flavorInventory, abilityInventory, spoonNumber);
-        flavorInventory.Clear();
-        abilityInventory.Clear();
     }
 
     // This will fetch the abilities from the spoon and return them to the player
@@ -162,12 +172,13 @@ public class PlayerManager : Entity
     public List<AbilityAbstractClass> UseSpoon()
     {
         List<AbilityAbstractClass> abilities = spoons[currentSpoon].abilities;
+        spoons[currentSpoon].uses += 1;  // currently doesn't do anything
         return abilities;
     }
 
     public LayerMask GetEnemies()
     {
-        return instance.enemies;
+        return Singleton.enemies;
     }
 
     // Add an ingredient to the player's inventory
@@ -198,10 +209,11 @@ public class PlayerManager : Entity
     }
 
     public Transform InventoryContent;
+    public Transform CookingContent;
     public GameObject InventorySlot;
     public GameObject DraggableItem;
 
-    public void InventoryItems(String listType, Boolean clean = false)
+    public void InventoryItems(string listType, bool clean = false)
     {
         if (listType != "flavor" && listType != "ability")
         {
@@ -215,89 +227,22 @@ public class PlayerManager : Entity
             {
                 Destroy(item.gameObject);
             }
-        }
 
-        if (listType == "flavor")
-        {
-            foreach (var ingredient in flavorInventory)
+            foreach (Transform slot in CookingContent)
             {
-                // Instantiate the InventorySlot prefab into InventoryContent
-                GameObject obj = Instantiate(InventorySlot, InventoryContent);
-
-                if (obj == null)
+                foreach (Transform item in slot)
                 {
-                    Debug.LogError("Object instantiation failed.");
-                    return;
+                    Destroy(item.gameObject);
                 }
-
-                // Instantiate draggableItem as a child of the InventorySlot
-                GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
-
-                if (draggableInstance == null)
-                {
-                    Debug.LogError("Draggable item instantiation failed.");
-                    return;
-                }
-
-                // Find ItemName and ItemIcon transforms once
-                Transform itemIconTransform = obj.transform.Find("Item(Clone)");
-                if (itemIconTransform == null)
-                {
-                    Debug.LogError("Could not find ItemIcon in instantiated object.");
-                    return;
-                }
-
-                // Find the ItemName inside ItemIcon and ensure the components exist
-                Transform itemNameTransform = itemIconTransform.Find("ItemName");
-                if (itemNameTransform == null)
-                {
-                    Debug.LogError("Could not find ItemName inside ItemIcon.");
-                    return;
-                }
-
-                // Get the components from the found transforms
-                TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
-                UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
-
-                if (ingredient == null)
-                {
-                    Debug.LogError($"Ingredient from flavor inventory is null: check the inspector!!!");
-                    return;
-                }
-
-                if (itemName == null)
-                {
-                    Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
-                    return;
-                }
-
-                if (itemIcon == null)
-                {
-                    Debug.LogError("itemIcon is null, couldn't find the Image component.");
-                    return;
-                }
-
-                //// Log the existing values before modifying them
-                //Debug.Log($"Item Name Text Before: {itemName.text}");
-                //Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
-
-                // Update the UI components with ingredient values
-                itemName.text = ingredient.ingredientName;
-                itemIcon.sprite = ingredient.icon;
-
-                // Change the Alpha
-                Color currentColor = itemIcon.color;
-                currentColor.a = 1f;
-                itemIcon.color = currentColor;
-
-                //// Log the updated values
-                //Debug.Log($"Item Name Text After: {itemName.text}");
-                //Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
             }
         }
-        else if (listType == "ability")
+
+        if (listType == "ability")
         {
-            foreach (var ingredient in abilityInventory)
+
+            List<AbilityIngredient> currentInventory = abilityInventory;
+
+            foreach (var ingredient in currentInventory)
             {
                 // Instantiate the InventorySlot prefab into InventoryContent
                 GameObject obj = Instantiate(InventorySlot, InventoryContent);
@@ -339,7 +284,7 @@ public class PlayerManager : Entity
 
                 if (ingredient == null)
                 {
-                    Debug.LogError($"Ingredient from flavor inventory is null: check the inspector!!!");
+                    Debug.LogError($"Ingredient from {listType} inventory is null: check the inspector!!!");
                     return;
                 }
 
@@ -355,22 +300,118 @@ public class PlayerManager : Entity
                     return;
                 }
 
-                //// Log the existing values before modifying them
-                //Debug.Log($"Item Name Text Before: {itemName.text}");
-                //Debug.Log($"Item Icon Sprite Before: {itemIcon.sprite}");
-
                 // Update the UI components with ingredient values
                 itemName.text = ingredient.ingredientName;
                 itemIcon.sprite = ingredient.icon;
+
+                // Set the ingredient reference in the draggable item
+                DraggableItem draggableItemComponent = draggableInstance.GetComponent<DraggableItem>();
+                if (draggableItemComponent != null)
+                {
+                    draggableItemComponent.ingredientType = ingredient.ingredientType;
+                    if (draggableItemComponent.ingredientType == "Ability")
+                    {
+                        draggableItemComponent.abilityIngredient = ingredient;
+                    }
+                    else
+                    {
+                        Debug.LogError("Retrieved Wrong Ingredient Type");
+                    }
+
+                }
 
                 // Change the Alpha
                 Color currentColor = itemIcon.color;
                 currentColor.a = 1f;
                 itemIcon.color = currentColor;
+            }
+        } else if (listType == "flavor")
+        {
+            List<FlavorIngredient> currentInventory = flavorInventory;
 
-                //// Log the updated values
-                //Debug.Log($"Item Name Text After: {itemName.text}");
-                //Debug.Log($"Item Icon Sprite After: {itemIcon.sprite}");
+            foreach (var ingredient in currentInventory)
+            {
+                // Instantiate the InventorySlot prefab into InventoryContent
+                GameObject obj = Instantiate(InventorySlot, InventoryContent);
+
+                if (obj == null)
+                {
+                    Debug.LogError("Object instantiation failed.");
+                    return;
+                }
+
+                // Instantiate draggableItem as a child of the InventorySlot
+                GameObject draggableInstance = Instantiate(DraggableItem, obj.transform);
+
+                if (draggableInstance == null)
+                {
+                    Debug.LogError("Draggable item instantiation failed.");
+                    return;
+                }
+
+                // Find ItemName and ItemIcon transforms once
+                Transform itemIconTransform = obj.transform.Find("Item(Clone)");
+                if (itemIconTransform == null)
+                {
+                    Debug.LogError("Could not find ItemIcon in instantiated object.");
+                    return;
+                }
+
+                // Find the ItemName inside ItemIcon and ensure the components exist
+                Transform itemNameTransform = itemIconTransform.Find("ItemName");
+                if (itemNameTransform == null)
+                {
+                    Debug.LogError("Could not find ItemName inside ItemIcon.");
+                    return;
+                }
+
+                // Get the components from the found transforms
+                TextMeshProUGUI itemName = itemNameTransform.GetComponent<TextMeshProUGUI>();
+                UnityEngine.UI.Image itemIcon = itemIconTransform.GetComponent<UnityEngine.UI.Image>();
+
+                if (ingredient == null)
+                {
+                    Debug.LogError($"Ingredient from {listType} inventory is null: check the inspector!!!");
+                    return;
+                }
+
+                if (itemName == null)
+                {
+                    Debug.LogError("itemName is null, couldn't find the TextMeshProUGUI component.");
+                    return;
+                }
+
+                if (itemIcon == null)
+                {
+                    Debug.LogError("itemIcon is null, couldn't find the Image component.");
+                    return;
+                }
+
+                // Update the UI components with ingredient values
+                itemName.text = ingredient.ingredientName;
+                itemIcon.sprite = ingredient.icon;
+
+                // Set the ingredient reference in the draggable item
+                DraggableItem draggableItemComponent = draggableInstance.GetComponent<DraggableItem>();
+                if (draggableItemComponent != null)
+                {
+                    draggableItemComponent.ingredientType = ingredient.ingredientType;
+                    if (draggableItemComponent.ingredientType == "Flavor")
+                    {
+                        draggableItemComponent.flavorIngredient = ingredient;
+                    }
+                    else
+                    {
+                        Debug.LogError("Retrieved Wrong Ingredient Type");
+                    }
+
+
+                }
+
+                // Change the Alpha
+                Color currentColor = itemIcon.color;
+                currentColor.a = 1f;
+                itemIcon.color = currentColor;
             }
         }
     }
@@ -379,11 +420,11 @@ public class PlayerManager : Entity
 
     public void Heal(int healAmount)
     {
-        instance.health += healAmount;
+        Singleton.health += healAmount;
         Debug.Log("Healing");
-        if (instance.health > maxHealth)
+        if (Singleton.health > maxHealth)
         {
-            instance.health = maxHealth;
+            Singleton.health = maxHealth;
         }
     }
 
@@ -391,10 +432,10 @@ public class PlayerManager : Entity
     {
         
         player.GetComponent<PlayerHealth>().TakeDamage(damageAmount, source);
-        if (instance.health <= 0)
+        if (Singleton.health <= 0)
         {
-            instance.health = 0;
-            instance.dead = true;
+            Singleton.health = 0;
+            Singleton.dead = true;
             // Game over
             Debug.Log("Game Over womp womp");
         }
@@ -403,11 +444,11 @@ public class PlayerManager : Entity
     // Thoughtlessly reduces health, will not cause iframes or animation
     public override void TakeDamage(int damage)
     {
-        instance.health -= damage;
-        if (instance.health <= 0)
+        Singleton.health -= damage;
+        if (Singleton.health <= 0)
         {
-            instance.health = 0;
-            instance.dead = true;
+            Singleton.health = 0;
+            Singleton.dead = true;
             // Game over
             Debug.Log("Game Over womp womp");
         }

@@ -6,5 +6,8 @@ using UnityEngine;
 public class FlavorIngredient : Ingredient
 {
     public List<string> flavors;
-
+    private void Awake()
+    {
+        ingredientType = "Flavor";
+    }
 }

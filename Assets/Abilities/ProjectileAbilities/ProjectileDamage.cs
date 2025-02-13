@@ -11,7 +11,7 @@ public class ProjectileDamage : MonoBehaviour
     {
         if (collider.gameObject.layer == enemyLayer)
         {
-            collider.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
+            collider.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.Singleton.GetDamage(), this.gameObject);
             if (despawn)
             {
                 Destroy(this.gameObject);

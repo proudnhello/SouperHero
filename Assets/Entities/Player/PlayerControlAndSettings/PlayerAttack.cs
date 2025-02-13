@@ -16,7 +16,7 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         testAttack.SetActive(false); //Testing
-        foreach (AbilityAbstractClass ability in PlayerManager.instance.UseSpoon()) //Initialize all abilities in array
+        foreach (AbilityAbstractClass ability in PlayerManager.Singleton.UseSpoon()) //Initialize all abilities in array
         {
 
         }
@@ -24,36 +24,39 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(PlayerManager.instance.attackKey) || Input.GetKeyDown(PlayerManager.instance.altAttackKey))
+        if (Input.GetKeyDown(PlayerManager.Singleton.attackKey) || Input.GetKeyDown(PlayerManager.Singleton.altAttackKey))
         {
             Attack();
         }
-        if (Input.GetKeyDown(PlayerManager.instance.soupKey) || Input.GetKeyDown(PlayerManager.instance.altSoupKey))
+        if (Input.GetKeyDown(PlayerManager.Singleton.soupKey) || Input.GetKeyDown(PlayerManager.Singleton.altSoupKey))
         {
             SoupAttack();
         }
         KeyCode currentKey = KeyCode.Alpha1;
         // Due to how the key codes are arranged, adding 1 to Alpha1 will give us Alpha2, and so on
         // Things get icky if we have 10 or more pots, but ah well sure 
-        for (int i = 0; i < PlayerManager.instance.GetNumberOfPots(); i++)
+        for (int i = 0; i < PlayerManager.Singleton.GetNumberOfPots(); i++)
         {
             if (Input.GetKeyDown(currentKey))
             {
                 mostRecentPotUsed = i;
-                PlayerManager.instance.Drink(i);
+                // set current spoon
+                PlayerManager.Singleton.SetCurrentSpoon(i);
+                // use current spoon
+                PlayerManager.Singleton.UseSpoon();
             }
             currentKey++;
         }
 
-        attackRadius = PlayerManager.instance.GetAttackRadius();
+        attackRadius = PlayerManager.Singleton.GetAttackRadius();
         testAttack.transform.localScale = new Vector3(attackRadius, attackRadius, 1);
 
         if (isAttacking)
         {
-            Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
+            Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.Singleton.GetEnemies());
             foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
             {
-                enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.instance.GetDamage(), this.gameObject);
+                enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().TakeDamage(PlayerManager.Singleton.GetDamage(), this.gameObject);
             }
         }
     }
@@ -75,12 +78,12 @@ public class PlayerAttack : MonoBehaviour
         {
             return;
         }
-        Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.instance.GetEnemies());
+        Collider2D[] enemy = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRadius, PlayerManager.Singleton.GetEnemies());
         foreach (Collider2D enemyGameObject in enemy) //Check if enemy is in attackRadius
         {
             AbilityIngredient soup = enemyGameObject.gameObject.GetComponent<EnemyBaseClass>().Soupify();
             if(soup.ingredientName != "null") {
-                PlayerManager.instance.AddToInventory(soup);
+                PlayerManager.Singleton.AddToInventory(soup);
             }
         }
     }
@@ -88,14 +91,14 @@ public class PlayerAttack : MonoBehaviour
     IEnumerator TestDisplayPlayerAttack() //Display test attack radius
     {
         // Windup
-        yield return new WaitForSeconds(PlayerManager.instance.getAttackDelay());
+        yield return new WaitForSeconds(PlayerManager.Singleton.getAttackDelay());
         isAttacking = true;
 
         // Attack
         testAttack.SetActive(true);
         if (!souping)
         {
-            foreach (AbilityAbstractClass ability in PlayerManager.instance.UseSpoon().ToList()) //Activate all abilities in array
+            foreach (AbilityAbstractClass ability in PlayerManager.Singleton.UseSpoon().ToList()) //Activate all abilities in array
             {
                 ability.Active();
 
@@ -107,7 +110,7 @@ public class PlayerAttack : MonoBehaviour
         {
             print("Skipping Abilities b/c SOUP");
         }
-        yield return new WaitForSeconds(1f/PlayerManager.instance.GetAttackSpeed());
+        yield return new WaitForSeconds(1f/PlayerManager.Singleton.GetAttackSpeed());
         testAttack.SetActive(false);
         isAttacking = false;
         souping = false;

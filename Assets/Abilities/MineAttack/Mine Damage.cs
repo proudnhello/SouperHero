@@ -42,7 +42,7 @@ public class MineDamage : MonoBehaviour
         {
             EnemyBaseClass enemyBase = enemy.gameObject.GetComponent<EnemyBaseClass>();
             if(enemyBase != null){
-                enemyBase.TakeDamage((int)(PlayerManager.instance.GetDamage() * damageMult), this.gameObject);
+                enemyBase.TakeDamage((int)(PlayerManager.Singleton.GetDamage() * damageMult), this.gameObject);
             }
         }
 

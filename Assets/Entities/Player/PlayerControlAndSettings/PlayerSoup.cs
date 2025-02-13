@@ -29,6 +29,7 @@ public class PlayerSoup : MonoBehaviour
         public AbilityStats stats;
         public int uses;
         public int maxUsage;
+        public bool empty;
 
         public Spoon()
         {
@@ -37,6 +38,7 @@ public class PlayerSoup : MonoBehaviour
             stats = AbilityAbstractClass.NewAbilityStats();
             uses = -1;
             maxUsage = -1;
+            empty = true;
         }
 
         public void Refill()
@@ -44,11 +46,16 @@ public class PlayerSoup : MonoBehaviour
             uses = maxUsage;
         }
 
-        public void Empty()
+        public void MakeEmpty()
         {
             statusEffects.Clear();
             abilities.Clear();
             uses = maxUsage;
+            empty = true;
+        }
+
+        public bool IsEmpty(){
+            return empty;
         }
     }
 
@@ -84,7 +91,13 @@ public class PlayerSoup : MonoBehaviour
     // Convert a list of ingredients into a spoon that can be used
     public Spoon FillSpoon(List<FlavorIngredient> flavor, List<AbilityIngredient> ability, Spoon spoon)
     {
-        spoon.Empty();
+        if (ability == null || ability.Count == 0)
+        {
+            Debug.LogError("FillSpoon: Ability list is empty!");
+        }
+        
+        spoon.MakeEmpty();
+        spoon.empty = false;
         spoon.maxUsage = 0;
         List<(string, int)> pot = new List<(string, int)>();
         List<AbilityAbstractClass> added = new List<AbilityAbstractClass>();
@@ -135,6 +148,27 @@ public class PlayerSoup : MonoBehaviour
 
         spoon.uses = spoon.maxUsage;
         return spoon;
+    }
+
+    public string SoupInfo(List<FlavorIngredient> flavor, List<AbilityIngredient> ability){ 
+        // used so players can see possible spoons while they cook
+
+        Spoon spoon = new Spoon();
+        spoon = FillSpoon(flavor, ability, spoon);
+
+        string info = "Max Usage: " + spoon.maxUsage + "\n";
+        info += "Abilities:\n";
+        foreach (AbilityAbstractClass a in spoon.abilities)
+        {
+            info += "\t" + a._abilityName + "\n";
+        }
+        info += "Stats: \n";
+        info += "\tSpeed: " + spoon.stats.speed + "\n";
+        info += "\tDamage: " + spoon.stats.damage + "\n";
+        info += "\tCooldown: " + spoon.stats.cooldown + "\n";
+        info += "\tDuration: " + spoon.stats.duration + "\n";
+        info += "\tSize: " + spoon.stats.size + "\n";
+        return info;
     }
 
     public static event Action DrinkPot;

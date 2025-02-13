@@ -13,7 +13,7 @@ public class DamageBuff : AbilityAbstractClass
     
     public override void Initialize(int soupVal)
     {
-        player = PlayerManager.instance;
+        player = PlayerManager.Singleton;
         timerHelper = TimerHelper.instance;
         // TODO: make buffAmount based on soupValue
         // ex: buffAmount = Mathf.CeilToInt(PlayerManager.instance.soupVal / 25)
@@ -24,7 +24,7 @@ public class DamageBuff : AbilityAbstractClass
         if (player != null)
         {
             // buff player's damage by buff amount
-            player.SetDamage(buffAmount + PlayerManager.instance.GetDamage());
+            player.SetDamage(buffAmount + PlayerManager.Singleton.GetDamage());
             Debug.Log("setting damage");
         }
         else
@@ -46,7 +46,7 @@ public class DamageBuff : AbilityAbstractClass
     }
     public override void Active(){
         // active won't do much now for buffs
-        Debug.Log("using buff >:], buffed DMG = " + PlayerManager.instance.GetDamage());
+        Debug.Log("using buff >:], buffed DMG = " + PlayerManager.Singleton.GetDamage());
         
     }
     public override void End()
@@ -55,7 +55,7 @@ public class DamageBuff : AbilityAbstractClass
         // gets called at the end of the buff timer
         if (player != null)
         {
-            player.SetDamage(PlayerManager.instance.GetDamage() - buffAmount);
+            player.SetDamage(PlayerManager.Singleton.GetDamage() - buffAmount);
             //PlayerManager.instance.RemoveAbility(this);
             Debug.Log("Ending buff");
             //Debug.Log("DMG after debuff: " + PlayerManager.instance.GetDamage());

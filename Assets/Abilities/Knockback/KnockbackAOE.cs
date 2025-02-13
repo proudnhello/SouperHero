@@ -21,9 +21,9 @@ public class KnockbackAOE : AbilityAbstractClass
     {
         if (currentWave == null)
         {
-            currentWave = Instantiate(wavePrefab, PlayerManager.instance.player.transform.position, Quaternion.identity);
-            currentWave.transform.parent = PlayerManager.instance.player.transform;
-            float waveScale = PlayerManager.instance.GetAttackRadius() * playerAttackScale;
+            currentWave = Instantiate(wavePrefab, PlayerManager.Singleton.player.transform.position, Quaternion.identity);
+            currentWave.transform.parent = PlayerManager.Singleton.player.transform;
+            float waveScale = PlayerManager.Singleton.GetAttackRadius() * playerAttackScale;
             currentWave.transform.localScale = new Vector3(waveScale, waveScale, waveScale);
             KnockbackEnemy knockback = currentWave.GetComponent<KnockbackEnemy>();
             knockback.damageToKnockback = damageToKnockback;

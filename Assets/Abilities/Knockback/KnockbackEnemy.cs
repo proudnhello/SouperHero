@@ -14,7 +14,7 @@ public class KnockbackEnemy : MonoBehaviour
         if (collider.gameObject.layer == enemyLayer)
         {
             EnemyBaseClass enemy = collider.gameObject.GetComponent<EnemyBaseClass>();
-            enemy.TakeDamage((int)(PlayerManager.instance.GetDamage() * damageMult), this.gameObject, enemy.GetKnockBackTime() * PlayerManager.instance.GetDamage() * damageToKnockback);
+            enemy.TakeDamage((int)(PlayerManager.Singleton.GetDamage() * damageMult), this.gameObject, enemy.GetKnockBackTime() * PlayerManager.Singleton.GetDamage() * damageToKnockback);
             if (despawn)
             {
                 Destroy(this.gameObject);

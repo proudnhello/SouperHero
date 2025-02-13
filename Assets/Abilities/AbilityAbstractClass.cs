@@ -38,7 +38,7 @@ public abstract class AbilityAbstractClass : ScriptableObject
             cooldown = cooldown,
             size = size,
             speed = speed,
-            damage = PlayerManager.instance.GetDamage()
+            damage = PlayerManager.Singleton.GetDamage()
         };
     }
 
