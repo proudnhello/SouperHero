@@ -18,11 +18,13 @@ public class CookingManager : MonoBehaviour
 
     [Header("Debug")]
     public TMP_Text SoupStatsText;
+    public GameObject warningText;
 
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
+        warningText.SetActive(false);
     }
 
     [Header("What is Currently in The Pot")]
@@ -79,8 +81,11 @@ public class CookingManager : MonoBehaviour
         if (potAbilityIngredients == null || potAbilityIngredients.Count == 0)
         {
             Debug.Log("FillSpoon: Ability list is empty!");
+            warningText.SetActive(true);
             return;
         }
+
+        warningText.SetActive(false);
 
         // CHANGE THIS TO WHATEVER FUNCTION COOKS THE SOUP
         PlayerManager.Singleton.FillPot(potFlavorIngredients, potAbilityIngredients, selectedPotSpoon);
