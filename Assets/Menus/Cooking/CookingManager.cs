@@ -25,6 +25,8 @@ public class CookingManager : MonoBehaviour
         else Singleton = this;
     }
 
+    [Header("What is Currently in The Pot")]
+
     // Initialize Ability Ingredient List
     public List<AbilityIngredient> potAbilityIngredients = new();
 
