@@ -21,6 +21,10 @@ public class PlayerManager : Entity
         {
             Singleton = this;
         }
+        else
+        {
+            Destroy(gameObject);
+        }
         health = maxHealth;
         for (int i = 0; i < numberOfSpoons + 1; i++)
         {

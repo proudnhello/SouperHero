@@ -16,13 +16,13 @@ public abstract class EnemyBaseClass : Entity
     protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
     public int playerCollisionDamage = 10;
-    [SerializeField] protected float knockBackTime = 1.0f;
+    [SerializeField] protected float knockBackTime = 0.01f;
 
     [Header("Player Detection")]
-    private bool playerDetected = false;
-    private float detectionRadius = 4f;
-    private float detectionDelay = 0.3f;
-    private LayerMask playerLayermask;
+    protected bool playerDetected = false;
+    [SerializeField] protected float detectionRadius = 4f;
+    protected float detectionDelay = 0.3f;
+    protected LayerMask playerLayermask;
     
 
     protected void Start(){
@@ -82,7 +82,7 @@ public abstract class EnemyBaseClass : Entity
             {
                 Vector3 direction = (transform.position - source.transform.position).normalized;
                 _rigidbody.velocity = Vector3.zero;
-                _rigidbody.AddForce(direction * 6, ForceMode2D.Impulse);
+                _rigidbody.AddForce(direction * 10  , ForceMode2D.Impulse);
                 StartCoroutine("KnockBack", knockBackTime);
             }
         }
@@ -102,7 +102,7 @@ public abstract class EnemyBaseClass : Entity
             {
                 Vector3 direction = (transform.position - source.transform.position).normalized;
                 _rigidbody.velocity = Vector3.zero;
-                _rigidbody.AddForce(direction * 6, ForceMode2D.Impulse);
+                _rigidbody.AddForce(direction, ForceMode2D.Impulse);
                 StartCoroutine("KnockBack", knockback);
             }
         }
@@ -136,17 +136,11 @@ public abstract class EnemyBaseClass : Entity
 
     public IEnumerator KnockBack(float time)
     {
-        int maxFlashCycles = Mathf.CeilToInt((time / 0.3f));
-        int flashCycles = 0;
-        while(maxFlashCycles > flashCycles)
-        {
-            sprite.color = Color.red;
-            yield return new WaitForSeconds(0.15f);
-            sprite.color = _initialColor;
-            yield return new WaitForSeconds(0.15f);
-            flashCycles++;
-        }
+        sprite.color = Color.red;
+        yield return new WaitForSeconds(time);
+        sprite.color = _initialColor;
         takingDamage = false;
+        _rigidbody.velocity = Vector3.zero;
     }
 
     public AbilityIngredient Soupify(){

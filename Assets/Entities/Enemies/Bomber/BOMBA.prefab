@@ -163,7 +163,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790592411e6c2e04290c2823ab63558e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 25
   maxHealth: 25
+  baseMoveSpeed: 5
+  baseAttackDamage: 10
+  statusEffects: []
+  statusText: {fileID: 0}
   ingredient:
     name: bomba
     flavors:
@@ -171,7 +176,6 @@ MonoBehaviour:
     - megaSpicy
   playerCollisionDamage: 0
   knockBackTime: 1
-  statusText: {fileID: 0}
   _runSpeed: 5
   _walkSpeed: 1.5
   _chaseForSeconds: 5
