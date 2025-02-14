@@ -8,7 +8,6 @@ public abstract class EnemyBaseClass : Entity
 {
     [Header("Enemy Info")]
     [SerializeField] protected AbilityIngredient ingredient;
-    [SerializeField] protected float knockBackTime = 1.0f;
     public int playerCollisionDamage = 10;
 
     [Header("Player Detection")]
@@ -32,6 +31,7 @@ public abstract class EnemyBaseClass : Entity
         _initialColor = _sprite.color;
         _collider = GetComponent<Collider2D>();
         entityRenderer = new(this);
+        agent = GetComponent<NavMeshAgent>();
 
         StartCoroutine(DetectionCoroutine());
         InitEntity();
@@ -65,7 +65,7 @@ public abstract class EnemyBaseClass : Entity
     public override void ModifyHealth(int amount)
     {
         base.ModifyHealth(amount);
-        if (amount < 0)
+        if (GetHealth() <= 0)
         {
             BecomeSoupable();
         }

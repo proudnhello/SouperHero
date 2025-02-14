@@ -170,7 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseStats:
     maxHealth: 100
-    baseMoveSpeed: 10
+    baseMoveSpeed: 7
     invincibility: 1
   playerAttackPoint: {fileID: 5420586874744418633}
 --- !u!114 &4828791170773762287
@@ -198,7 +198,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpoons: 4
-  defaultSpoonIngredients: []
+  defaultSpoonIngredients:
+  - {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
 --- !u!212 &5557595635640825330
 SpriteRenderer:
   m_ObjectHideFlags: 0

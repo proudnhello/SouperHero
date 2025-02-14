@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class EnemyRanged : EnemyBaseClass
 {
-    [SerializeField]
-    private float newMoveSpeed = 1f;
 
     //[SerializeField] private float distanceToStop = 5f;
     [SerializeField] private float distanceToShoot; //Lo: Stop and shoot distance are currently the same

@@ -15,15 +15,16 @@ public class EntityRenderer
     {
         float maxFlashCycles = ((Entity.GetInvincibility() / 0.3f));
         int flashCycles = 0;
-        Color playerColor = spriteRenderer.color;
+        Color normalColor = spriteRenderer.color;
 
         while (maxFlashCycles > flashCycles)
         {
             spriteRenderer.color = Color.red;
             yield return new WaitForSeconds(0.15f);
-            spriteRenderer.color = playerColor;
+            spriteRenderer.color = normalColor;
             yield return new WaitForSeconds(0.15f);
             flashCycles++;
         }
+        spriteRenderer.color = normalColor;
     }
 }

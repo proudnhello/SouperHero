@@ -11,7 +11,6 @@ public class Inflictions
     static float burnInterval = 2f;
     static float burnIntervalDeviation = .25f;
     static float freezeTimeDeviation = .25f;
-    static float knockbackToTimeRatio = .25f;
     #endregion
 
     public static void Health(Infliction infliction, Entity entity)
@@ -21,10 +20,10 @@ public class Inflictions
 
     public static IEnumerator Damage(StatusEffectInstance instance)
     {
-        Debug.Log(Time.time + " Dealt " + -Mathf.CeilToInt(instance.amount) + " damage");
         instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
         instance.entity.StartCoroutine(instance.entity.entityRenderer.TakeDamageAnimation());
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
+        instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 
     public static IEnumerator Burn(StatusEffectInstance instance)
@@ -67,9 +66,10 @@ public class Inflictions
 
     public static IEnumerator Knockback(StatusEffectInstance instance, Rigidbody2D target, Transform source)
     {
-        float knockbackTime = knockbackToTimeRatio * instance.amount;
+        Debug.Log("adding " + instance.amount + " knockback to " + instance.entity.gameObject.name);
         Vector3 direction = (target.transform.position - source.transform.position).normalized;
         target.AddForce(direction * instance.amount, ForceMode2D.Impulse);
-        yield return new WaitForSeconds(knockbackTime);
+        yield return new WaitForSeconds(instance.entity.GetInvincibility());
+        instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 }

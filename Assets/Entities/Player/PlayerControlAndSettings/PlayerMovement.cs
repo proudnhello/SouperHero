@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector2 keyDirection = movementInput.ReadValue<Vector2>().normalized;
 
-        Vector2 direction = _useMouse || keyDirection == Vector2.zero ? new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y) : keyDirection;
+        Vector2 direction = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
 
         transform.up = direction;
 

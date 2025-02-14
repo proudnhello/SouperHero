@@ -33,10 +33,11 @@ public class EntityInflictionEffectHandler
             type = infliction.InflictionFlavor.inflictionType;
         }
 
-        public StatusEffectInstance(Entity entity, int amount)
+        public StatusEffectInstance(Entity entity, int amount, InflictionType type)
         {
             this.entity = entity;
             this.amount = amount;
+            this.type = type;
         }
 
         public void StartStatusEffect(IEnumerator method)
@@ -105,7 +106,7 @@ public class EntityInflictionEffectHandler
     {
         if (!activeStatuses.ContainsKey(InflictionType.SPIKY_Damage))
         {
-            StatusEffectInstance instance = new(entity, dmg);
+            StatusEffectInstance instance = new(entity, dmg, InflictionType.SPIKY_Damage);
             activeStatuses.Add(InflictionType.SPIKY_Damage, instance);
             instance.StartStatusEffect(Inflictions.Damage(instance));
         }

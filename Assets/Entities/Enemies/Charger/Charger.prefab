@@ -100,16 +100,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606e1cef5d5a34671ac4ea10cb4aeb0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0
-  maxHealth: 30
-  baseMoveSpeed: 5
-  baseAttackDamage: 5
-  statusEffects: []
-  statusText: {fileID: 0}
+  baseStats:
+    maxHealth: 40
+    baseMoveSpeed: 8
+    invincibility: 0.5
   ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
   playerCollisionDamage: 10
-  knockBackTime: 0.65
-  detectionRadius: 4
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!60 &62433673787859804
 PolygonCollider2D:
   m_ObjectHideFlags: 0
