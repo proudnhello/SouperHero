@@ -154,8 +154,8 @@ public abstract class EnemyBaseClass : Entity
 
     public AbilityIngredient Soupify(){
         if(soupable){
-
             Debug.Log("Enemy Is Soupable in Soupify");
+            AddToPot.Singleton.AddIngredient(Color.blue);
             Destroy(gameObject);
             return ingredient;
         }
