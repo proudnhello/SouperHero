@@ -55,16 +55,10 @@ public class CookingManager : MonoBehaviour
     public void CookTheSoup()
     {
 
-        if (cookingIngredients == null || cookingIngredients.Count == 0)
-        {
-            Debug.Log("FillSpoon: Ability list is empty!");
-            return;
-        }
-
         // Don't cook if there is no ability ingredient, return early
         if (HasAbilityIngredient())
         {
-            Debug.Log("Can't cook without an ability ingredient");
+            Debug.Log("FillSpoon: Ability list is empty! Can't cook without an ability ingredient");
             return;
         }
 
