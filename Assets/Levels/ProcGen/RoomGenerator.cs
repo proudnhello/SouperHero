@@ -1020,7 +1020,7 @@ public class RoomGenerator : MonoBehaviour
 
         openDoors();
 
-        colorGrid();
+        //colorGrid();
     }
 
     private void colorGrid()
