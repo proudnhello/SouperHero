@@ -8,8 +8,19 @@ public class AddToPot : MonoBehaviour
 
     [SerializeField] private GameObject ingredient; //Testing
     [SerializeField] private GameObject pot; //TODO: replace this
+    public static AddToPot Singleton;
     private float OffsetX = -50.0f; //Offset to spawn collected ingredient above the potUI
     private float OffsetY = 85.0f;
+
+    private void Awake()
+    {
+        if(Singleton != null)
+        {
+            Destroy(this);
+            return;
+        }
+        Singleton = this;
+    }
 
     void Start()
     {
