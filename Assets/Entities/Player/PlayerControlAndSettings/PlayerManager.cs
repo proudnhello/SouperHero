@@ -181,12 +181,13 @@ public class PlayerManager : Entity
             return;
         }
         flavorInventory.Add(ingredient);
-        PrintIngredient(ingredient);
+        AddToPot.Singleton.AddIngredient(Color.blue);
     }
 
     public void AddToInventory(AbilityIngredient ingredient)
     {
         abilityInventory.Add(ingredient);
+        AddToPot.Singleton.AddIngredient(Color.red);
     }
 
     public void RemoveFromInventory(FlavorIngredient ingredient)
