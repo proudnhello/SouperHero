@@ -173,30 +173,69 @@ public class RoomGenerator : MonoBehaviour
 
         if (colPlus.col < _mapHeight)
         {
-            if (!checkForBlockAdvanced(colPlus) && _map[colPlus.row][colPlus.col].south)
+            if (!checkForBlockAdvanced(colPlus))
             {
-                s += "N";
+                if (_map[colPlus.row][colPlus.col].BlockType() == "Connector")
+                {
+                    s += "N";
+                } else
+                {
+                    if(_map[colPlus.row][colPlus.col].south)
+                    {
+                        s += "N";
+                    }
+                }
             }
         }
         if (colMinus.col >= 0)
         {
-            if (!checkForBlockAdvanced(colMinus) && _map[colMinus.row][colMinus.col].north)
+            if (!checkForBlockAdvanced(colMinus))
             {
-                s += "S";
+                if (_map[colMinus.row][colMinus.col].BlockType() == "Connector")
+                {
+                    s += "S";
+                }
+                else
+                {
+                    if (_map[colMinus.row][colMinus.col].north)
+                    {
+                        s += "S";
+                    }
+                }
             }
         }
         if (rowPlus.row < _mapWidth)
         {
-            if (!checkForBlockAdvanced(rowPlus) && _map[rowPlus.row][rowPlus.col].west)
+            if (!checkForBlockAdvanced(rowPlus))
             {
-                s += "E";
+                if (_map[rowPlus.row][rowPlus.col].BlockType() == "Connector")
+                {
+                    s += "E";
+                }
+                else
+                {
+                    if (_map[rowPlus.row][rowPlus.col].west)
+                    {
+                        s += "E";
+                    }
+                }
             }
         }
         if (rowMinus.row >= 0)
         {
-            if (!checkForBlockAdvanced(rowMinus) && _map[rowMinus.row][rowMinus.col].east)
+            if (!checkForBlockAdvanced(rowMinus))
             {
-                s += "W";
+                if (_map[rowMinus.row][rowMinus.col].BlockType() == "Connector")
+                {
+                    s += "W";
+                }
+                else
+                {
+                    if (_map[rowMinus.row][rowMinus.col].east)
+                    {
+                        s += "W";
+                    }
+                }
             }
         }
         return s;
@@ -323,19 +362,10 @@ public class RoomGenerator : MonoBehaviour
                 if (!_map[row][col])
                 {
                     c = getConnectionsAt(row, col);
-                    if(c.Length <= 1)
-                    {
-                        continue;
-                    }
                 } else if (_map[row][col].BlockType() == "Connector")
                 {
 
                     c = getConnectionsAtAdvanced(row, col);
-                    if (c.Length <= 1)
-                    {
-                        continue;
-                    }
-                    Debug.Log("Destroying: " + row + ", " + col);
                     Destroy(_map[row][col].gameObject);
                 } else
                 {
@@ -345,7 +375,6 @@ public class RoomGenerator : MonoBehaviour
                 bool south = false;
                 bool east = false;
                 bool west = false;
-                Debug.Log(c);
                 switch (c.Length)
                 {
                     case 2:
@@ -396,7 +425,7 @@ public class RoomGenerator : MonoBehaviour
                             b = Instantiate(connector25).GetComponent<MapRoom>();
                         }
                         b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
-                        Debug.Log(canPlaceIntermediate(row, col, b));
+                        canPlaceIntermediate(row, col, b);
                         fillBlock(row, col, b);
                         _map[row][col] = b.At(0, 0);
                         b.At(0, 0).setDirections(north, south, east, west);
@@ -441,7 +470,7 @@ public class RoomGenerator : MonoBehaviour
                         canPlaceIntermediate(row, col, b3);
                         fillBlock(row, col, b3);
                         _map[row][col] = b3.At(0, 0);
-                        b3.At(0, 0).setDirections(north, south, east, west);
+                        b3.At(0, 0).setDirections(true, true, true, true);
                         break;
                     default:
                         break;
