@@ -47,7 +47,7 @@ public class SoupSpoon
     public int uses; // -1 = infinite
     public float cooldown;
 
-    // Constructor for the SoupSpoon class, initializes abilities and inflictions based on provided ingredients
+    // Makes a Soup Spoon
     public SoupSpoon(List<Ingredient> ingredients, bool infinite = false)
     {
         // Track abilities and inflictions using dictionaries
