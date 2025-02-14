@@ -46,14 +46,6 @@ public class FlavorIngredient : Ingredient
         public Operation operation;
         public int amount;
         public float statusEffectDuration;
-        internal bool isStatusEffect 
-        {
-            get
-            {
-                return inflictionType == InflictionType.SPICY_Burn ||
-                    inflictionType == InflictionType.FROSTY_Freeze;
-            }
-        }
     }
     public List<BuffFlavor> buffFlavors;
     public List<InflictionFlavor> inflictionFlavors;

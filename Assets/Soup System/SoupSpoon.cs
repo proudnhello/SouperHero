@@ -36,15 +36,8 @@ public class SoupSpoon
 
         public void AddIngredient(InflictionFlavor effect)
         {
-            if (effect.isStatusEffect)
-            {
-                add += effect.amount;
-            } 
-            else
-            {
-                if (effect.operation == InflictionFlavor.Operation.Add) add += effect.amount;
-                else mult += effect.amount;
-            }
+            if (effect.operation == InflictionFlavor.Operation.Add) add += effect.amount;
+            else mult += effect.amount;
         }
     }
 
