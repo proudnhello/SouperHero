@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class EnemyBaseClass : Entity
 {
@@ -14,7 +15,7 @@ public abstract class EnemyBaseClass : Entity
     private bool playerDetected = false;
     private float detectionRadius = 4f;
     private float detectionDelay = 0.3f;
-    [SerializeField] LayerMask playerLayer;
+    [SerializeField] protected LayerMask playerLayer;
     [SerializeField] LayerMask interactableLayer;
 
     protected bool soupable = false;
@@ -23,6 +24,7 @@ public abstract class EnemyBaseClass : Entity
     protected Transform _playerTransform;
     protected Color _initialColor;
     protected Collider2D _collider;
+    protected NavMeshAgent agent;
 
     protected void Start(){
         _sprite = GetComponent<SpriteRenderer>();

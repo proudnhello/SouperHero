@@ -17,7 +17,7 @@ public class Spacer : EnemyBaseClass
         playerWithinRange = false;
     }
     protected override void UpdateAI(){
-        Collider2D collider = Physics2D.OverlapCircle((Vector2)transform.position, attackRadius, playerLayermask);
+        Collider2D collider = Physics2D.OverlapCircle((Vector2)transform.position, attackRadius, playerLayer);
         if(collider != null){
             playerWithinRange = true;
         }   
@@ -32,7 +32,7 @@ public class Spacer : EnemyBaseClass
             agent.isStopped = false;
         }
 
-        agent.SetDestination(playerTransform.position);
+        agent.SetDestination(_playerTransform.position);
     }
 
     protected new void Update(){
