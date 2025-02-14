@@ -7,13 +7,11 @@ using UnityEngine.AI;
 
 public class Spacer : EnemyBaseClass
 {
-    private NavMeshAgent agent;
     [SerializeField] float attackRadius = 3.0f;
     [SerializeField] float timeBetweenAttacks = 1.0f;
     private bool playerWithinRange;
     protected new void Start(){
         base.Start();
-        agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         playerWithinRange = false;

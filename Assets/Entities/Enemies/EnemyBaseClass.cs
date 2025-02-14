@@ -5,6 +5,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class EnemyBaseClass : Entity
 {
@@ -23,7 +24,8 @@ public abstract class EnemyBaseClass : Entity
     [SerializeField] protected float detectionRadius = 4f;
     protected float detectionDelay = 0.3f;
     protected LayerMask playerLayermask;
-    
+
+    protected NavMeshAgent agent;
 
     protected void Start(){
         sprite = GetComponent<SpriteRenderer>();
@@ -32,6 +34,7 @@ public abstract class EnemyBaseClass : Entity
         _initialColor = sprite.color;
         health = maxHealth;
 
+        agent = GetComponent<NavMeshAgent>();
         playerLayermask = LayerMask.GetMask("Player");
         StartCoroutine(DetectionCoroutine());
         InitializeStats();
@@ -61,6 +64,12 @@ public abstract class EnemyBaseClass : Entity
     public float GetKnockBackTime()
     {
         return knockBackTime;
+    }
+
+    public override void SetMoveSpeed(float newSpeed)
+    {
+        base.SetMoveSpeed(newSpeed);
+        agent.speed = newSpeed;
     }
     protected abstract void UpdateAI();
     protected void BecomeSoupable(){
