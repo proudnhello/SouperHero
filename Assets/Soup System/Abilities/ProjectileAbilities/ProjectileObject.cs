@@ -26,13 +26,45 @@ public class ProjectileObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
+        Debug.Log($"Projectile hit: {collider.gameObject.name}");
+
+        if (CollisionLayers.Singleton == null)
+        {
+            Debug.LogError("CollisionLayers.Singleton is null!");
+            return;
+        }
+
+        bool isEnemy = CollisionLayers.Singleton.InEnemyLayer(collider.gameObject);
+        Debug.Log($"Is enemy? {isEnemy}");
+
+        if (isEnemy)
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();
+
+            if (entity == null)
+            {
+                Debug.LogError($"Entity component is missing on {collider.gameObject.name}!");
+                return;
+            }
+
+            Debug.Log($"Applying infliction to {collider.gameObject.name}");
+
+            if (inflictions == null)
+            {
+                Debug.LogError("Inflictions list is null!");
+                return;
+            }
+
+            // Apply the infliction to the enemy
             entity.ApplyInfliction(inflictions, gameObject.transform);
+            Debug.Log("Infliction applied successfully");
+
+            // Deactivate the projectile after hitting an enemy
             gameObject.SetActive(false);
+            Debug.Log("Projectile deactivated");
         }
     }
+
 
     private void FixedUpdate()
     {

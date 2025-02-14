@@ -86,6 +86,7 @@ public class CookingUI : MonoBehaviour
 
             // Set the ingredient reference in the draggable item
             DraggableItem draggableItemComponent = draggableInstance.GetComponent<DraggableItem>();
+            draggableItemComponent.ingredient = ingredient;
 
             // Change the Alpha
             Color currentColor = itemIcon.color;

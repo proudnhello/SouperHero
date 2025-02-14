@@ -42,7 +42,7 @@ public class Campfire : Interactable
         cooking = true;
     }
 
-    private void StopCooking()
+    public void StopCooking()
     {
         CursorManager.Singleton.HideCursor();
         SetPlayerMovement(true);

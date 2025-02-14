@@ -52,6 +52,16 @@ public class SoupSpoon
         Dictionary<AbilityAbstractClass, SpoonAbility> abilityTracker = new();
         Dictionary<InflictionType, SpoonInfliction> inflictionTracker = new();
 
+        //// Debugging statement printint the ingredients making the spoon
+        //if (ingredients == null)
+        //{
+        //    Debug.LogError("The ingredients list is null!");
+        //}
+        //Debug.Log($"Made a new soup spoon with the ingredients: {string.Join(", ", ingredients.Select(ingredient => ingredient.ingredientName))}");
+        //if (!ingredients.Any()) Debug.Log("The ingredients list is empty.");
+        //Debug.Log($"Number of abilities: {abilityTracker.Count}");
+        //Debug.Log($"Abilities: {string.Join(", ", abilityTracker.Keys.Select(a => a._abilityName))}");
+
         List<AbilityIngredient> abilityIngredients = ingredients.Where(x => x.GetType() == typeof(AbilityIngredient)).Cast<AbilityIngredient>().ToList();
         List<FlavorIngredient> flavorIngredients = ingredients.Where(x => x.GetType() == typeof(FlavorIngredient)).Cast<FlavorIngredient>().ToList();
 

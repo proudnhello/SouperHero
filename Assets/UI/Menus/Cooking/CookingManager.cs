@@ -35,7 +35,23 @@ public class CookingManager : MonoBehaviour
         cookingIngredients.Remove(ingredient);
     }
 
+    // Check if there is an ability ingredient in the pot
+    public bool HasAbilityIngredient()
+    {
+        bool hasAbility = false;
+        // Don't cook if there are no ability ingredients
+        foreach (Ingredient ingredient in cookingIngredients)
+        {
+            if (ingredient.ingredientType == Ingredient.IngredientType.Ability)
+            {
+                hasAbility = true;
+            }
+        }
 
+        return hasAbility;
+    }
+
+    // Call this to cook the soup
     public void CookTheSoup()
     {
 
@@ -45,11 +61,19 @@ public class CookingManager : MonoBehaviour
             return;
         }
 
-        // CHANGE THIS TO WHATEVER FUNCTION COOKS THE SOUP
+        // Don't cook if there is no ability ingredient, return early
+        if (HasAbilityIngredient())
+        {
+            Debug.Log("Can't cook without an ability ingredient");
+            return;
+        }
+
+        // Cook the soup with what is currently in the pot
         PlayerInventory.Singleton.CookSoup(cookingIngredients);
 
         cookingIngredients.Clear();
 
+        // Destroy the objects that were cooked
         foreach (Transform slot in CookingContent)
         {
             foreach (Transform item in slot)
