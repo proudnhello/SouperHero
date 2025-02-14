@@ -27,6 +27,8 @@ public class RoomGenerator : MonoBehaviour
     public GameObject connector3;
     public GameObject connector4;
 
+    public int numIntermediates = 10;
+
     void Start()
     {
         // Start the scene identifying where the player will spawn
@@ -53,18 +55,14 @@ public class RoomGenerator : MonoBehaviour
     private bool canPlaceIntermediate(int row, int col, MapRoom b)
     {
         b.gameObject.transform.position = getOffset(row, col, b);
-        for(int i = 0; i < b.BlockWidth(); ++i)
+        for (int i = 0; i < b.BlockWidth(); ++i)
         {
-            if(row + i >= _mapWidth || _map[row + i][col] != null)
+            for (int j = 0; j < b.BlockHeight(); ++j)
             {
-                return false;
-            }
-        }
-        for (int i = 0; i < b.BlockHeight(); ++i)
-        {
-            if (col + i >= _mapHeight || _map[row][col + i] != null)
-            {
-                return false;
+                if (row + i >= _mapWidth || col + j >= _mapHeight || _map[row + i][col + j] != null)
+                {
+                    return false;
+                }
             }
         }
         return true;
@@ -76,7 +74,7 @@ public class RoomGenerator : MonoBehaviour
         {
             for(int j = 0; j < b.BlockHeight(); j++) 
             {
-                _map[row + i][col] = b.At(i, j);
+                _map[row + i][col + j] = b.At(i, j);
             }
         }
     }
@@ -921,7 +919,7 @@ public class RoomGenerator : MonoBehaviour
         b.gameObject.transform.position = getOffset(midWidth, midHeight, b);
         _map[midWidth][midHeight] = b.At(0, 0);
 
-        placeIntermediates(10);
+        placeIntermediates(numIntermediates);
 
         firstSweepConnect();
 

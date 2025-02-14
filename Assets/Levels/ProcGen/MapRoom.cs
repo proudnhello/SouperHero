@@ -25,6 +25,6 @@ public class MapRoom : MonoBehaviour
 
     public Block At(int row, int col)
     {
-        return blocks[row * (_blockWidth - 1) + col];
+        return blocks[col * (_blockWidth) + row];
     }
 }
