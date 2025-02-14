@@ -323,10 +323,19 @@ public class RoomGenerator : MonoBehaviour
                 if (!_map[row][col])
                 {
                     c = getConnectionsAt(row, col);
+                    if(c.Length <= 1)
+                    {
+                        continue;
+                    }
                 } else if (_map[row][col].BlockType() == "Connector")
                 {
 
                     c = getConnectionsAtAdvanced(row, col);
+                    if (c.Length <= 1)
+                    {
+                        continue;
+                    }
+                    Debug.Log("Destroying: " + row + ", " + col);
                     Destroy(_map[row][col].gameObject);
                 } else
                 {
@@ -336,6 +345,7 @@ public class RoomGenerator : MonoBehaviour
                 bool south = false;
                 bool east = false;
                 bool west = false;
+                Debug.Log(c);
                 switch (c.Length)
                 {
                     case 2:
@@ -386,7 +396,7 @@ public class RoomGenerator : MonoBehaviour
                             b = Instantiate(connector25).GetComponent<MapRoom>();
                         }
                         b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
-                        canPlaceIntermediate(row, col, b);
+                        Debug.Log(canPlaceIntermediate(row, col, b));
                         fillBlock(row, col, b);
                         _map[row][col] = b.At(0, 0);
                         b.At(0, 0).setDirections(north, south, east, west);
@@ -833,6 +843,7 @@ public class RoomGenerator : MonoBehaviour
         if(path.Length == 0)
         {
             Debug.LogError("CANNOT FIND PATH FROM SOURCE TO DESTINATION!!");
+            return "";
         }
         char[] charArray = path.Substring(0, path.Length - 1).ToCharArray();
         Array.Reverse(charArray);
@@ -928,27 +939,46 @@ public class RoomGenerator : MonoBehaviour
 
         foreach (List<Coordinate> list in disconnectedGroups)
         {
-            if (list.Count == 0)
+            int iter = 0;
+            HashSet<Coordinate> visited = new HashSet<Coordinate>();
+            while (iter < list.Count)
             {
-                continue;
-            }
-            // find mind dist between intermediate from start group and list
-            float closestDistance = int.MaxValue;
-            Coordinate disconnectedCoordinate = new Coordinate(-1, -1);
-            foreach (Coordinate coord in list)
-            {
-                foreach (Coordinate inter in startIntermediates)
+                if (list.Count == 0)
                 {
-                    if (_map[inter.row][inter.col].BlockType() == "Intermediate" && coord.squaredDistanceTo(inter) < closestDistance)
+                    continue;
+                }
+                // find mind dist between intermediate from start group and list
+                float closestDistance = int.MaxValue;
+                Coordinate disconnectedCoordinate = new Coordinate(-1, -1);
+                Coordinate closestInter = new Coordinate(-1, -1);
+                foreach (Coordinate coord in list)
+                {
+                    foreach (Coordinate inter in startIntermediates)
                     {
-                        disconnectedCoordinate = coord;
+                        if(visited.Contains(inter))
+                        {
+                            continue;
+                        }
+                        if (_map[inter.row][inter.col].BlockType() == "Intermediate" && coord.squaredDistanceTo(inter) < closestDistance)
+                        {
+                            disconnectedCoordinate = coord;
+                            closestInter = inter;
+                            closestDistance = coord.squaredDistanceTo(inter);
+                        }
                     }
                 }
-            }
-            if (disconnectedCoordinate.row != -1)
-            {
-                string s = BFSPathFromIntermediate(disconnectedCoordinate, startIntermediates);
-                pathFromString(disconnectedCoordinate.row, disconnectedCoordinate.col, s);
+                if (disconnectedCoordinate.row != -1)
+                {
+                    string s = BFSPathFromIntermediate(disconnectedCoordinate, startIntermediates);
+                    if (s == "" || s.Length <= 1)
+                    {
+                        iter++;
+                        visited.Add(closestInter);
+                        continue;
+                    }
+                    pathFromString(disconnectedCoordinate.row, disconnectedCoordinate.col, s);
+                }
+                iter = list.Count;
             }
             foreach (Coordinate coord in list)
             {
@@ -963,7 +993,7 @@ public class RoomGenerator : MonoBehaviour
 
         openDoors();
 
-        //colorGrid();
+        colorGrid();
     }
 
     private void colorGrid()
