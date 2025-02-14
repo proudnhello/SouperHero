@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -5123221331809649190}
   - component: {fileID: 3994938834254621146}
   - component: {fileID: 3999536718259681931}
+  - component: {fileID: 7811131486726343811}
   m_Layer: 7
   m_Name: BOMBA
   m_TagString: Enemy
@@ -163,18 +164,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790592411e6c2e04290c2823ab63558e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 25
   maxHealth: 25
-  ingredient:
-    name: bomba
-    flavors:
-    - spicy
-    - megaSpicy
+  baseMoveSpeed: 5
+  baseAttackDamage: 10
+  statusEffects: []
+  statusText: {fileID: 0}
+  ingredient: {fileID: 0}
   playerCollisionDamage: 0
   knockBackTime: 1
-  statusText: {fileID: 0}
+  detectionRadius: 4
   _runSpeed: 5
   _walkSpeed: 1.5
   _chaseForSeconds: 5
+--- !u!195 &7811131486726343811
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4823484854343417924}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &6386168698906203722
 GameObject:
   m_ObjectHideFlags: 0

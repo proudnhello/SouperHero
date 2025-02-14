@@ -6,12 +6,14 @@ using StatusType = EntityStatusEffects.StatusType;
 using StatusEffect = EntityStatusEffects.StatusEffect;
 using static EntityStatusEffects;
 using Unity.VisualScripting;
+using UnityEngine.AI;
 
 public class Entity : MonoBehaviour
 {
     [Header("Health")]
     [SerializeField] protected int health;
     [SerializeField] protected int maxHealth;
+
     public int GetHealth()
     {
         return health;
@@ -66,7 +68,7 @@ public class Entity : MonoBehaviour
     {
         return moveSpeed;
     }
-    public void SetMoveSpeed(float newSpeed)
+    public virtual void SetMoveSpeed(float newSpeed)
     {
         moveSpeed = newSpeed;
     }

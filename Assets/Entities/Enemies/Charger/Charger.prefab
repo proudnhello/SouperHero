@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2528350703771062636}
   - component: {fileID: 62433673787859804}
   - component: {fileID: -5123221331809649190}
+  - component: {fileID: 3305171966944881834}
   m_Layer: 7
   m_Name: Charger
   m_TagString: Enemy
@@ -108,7 +109,7 @@ MonoBehaviour:
   ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
   playerCollisionDamage: 10
   knockBackTime: 0.65
-  newMoveSpeed: 5
+  detectionRadius: 4
 --- !u!60 &62433673787859804
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -184,3 +185,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!195 &3305171966944881834
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4823484854343417924}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 0.9
+  m_BaseOffset: 0.3
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

@@ -13,6 +13,12 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             GameObject dropped = eventData.pointerDrag;
             DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
 
+            if (draggableItem == null || draggableItem.parentAfterDrag == null)
+            {
+                Debug.Log("No Draggable Item Found!");
+                return;
+            }
+
             // check if the previous parent was a cooking slot: if so, remove it from pot ingredients
             if(draggableItem.parentAfterDrag.GetComponent<CookingSlot>() != null)
             {

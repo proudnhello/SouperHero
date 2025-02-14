@@ -21,6 +21,10 @@ public class PlayerManager : Entity
         {
             Singleton = this;
         }
+        else
+        {
+            Destroy(gameObject);
+        }
         health = maxHealth;
         for (int i = 0; i < numberOfSpoons + 1; i++)
         {
@@ -149,19 +153,6 @@ public class PlayerManager : Entity
 
     public static event Action DrinkPot;
 
-    //// Drink the soup in the pot and activate the abilities that correspond to the soup.
-    //// Switch this later to change spoons
-    //public void Drink(int spoonNumber)
-    //{
-    //    // For testing, take the entire list of both types of ingredients and fill the pot with them
-    //    // Later on, this will be removed, and we'll do it all thru the UI
-    //    print("You used " + spoonNumber + " :)");
-    //    currentSpoon = spoonNumber;
-    //    FillPot(flavorInventory, abilityInventory, spoonNumber);
-    //    flavorInventory.Clear();
-    //    abilityInventory.Clear();
-    //}
-
     public void SetCurrentSpoon(int spoonNumber)
     {
         currentSpoon = spoonNumber;
@@ -190,12 +181,13 @@ public class PlayerManager : Entity
             return;
         }
         flavorInventory.Add(ingredient);
-        PrintIngredient(ingredient);
+        AddToPot.Singleton.AddIngredient(Color.blue);
     }
 
     public void AddToInventory(AbilityIngredient ingredient)
     {
         abilityInventory.Add(ingredient);
+        AddToPot.Singleton.AddIngredient(Color.red);
     }
 
     public void RemoveFromInventory(FlavorIngredient ingredient)
