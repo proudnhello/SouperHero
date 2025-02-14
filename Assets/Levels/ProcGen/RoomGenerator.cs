@@ -19,7 +19,7 @@ public class RoomGenerator : MonoBehaviour
 
     private List<List<Block>> _map;
 
-    public List<Block> _startBlocks;
+    public GameObject _startBlock;
     public List<Block> _intermediateBlocks;
 
     public GameObject connector2;
@@ -31,8 +31,7 @@ public class RoomGenerator : MonoBehaviour
 
     void Start()
     {
-        // Start the scene identifying where the player will spawn
-        // Have a select number of rooms you want
+        // Need to create a new map full of nulls, placeholders for the Blocks and to determine if there is/isnt a block at a position
         _map = new List<List<Block>>();
         for(int i = 0; i < _mapWidth; i++)
         {
@@ -44,14 +43,17 @@ public class RoomGenerator : MonoBehaviour
                 _map[i].Add(null);
             }
         }
+        // After map is created, generate the rooms
         GenerateRoom();
     }
 
+    // Obtains the offset needed to position the room along grid lines given a row and column
     private Vector2 getOffset(int row, int col, MapRoom b)
     {
         return new Vector2((row + (b.BlockWidth() / 2.0f)) * TILE_WIDTH, (col + (b.BlockHeight() / 2.0f)) * TILE_HEIGHT);
     }
 
+    // Checks to see if an intermediate can be placed by checking bounds and if potential spot has blocks already there
     private bool canPlaceIntermediate(int row, int col, MapRoom b)
     {
         b.gameObject.transform.position = getOffset(row, col, b);
@@ -68,6 +70,7 @@ public class RoomGenerator : MonoBehaviour
         return true;
     }
 
+    // Fills map blocks to properly represent the room being placed
     private void fillBlock(int row, int col, MapRoom b)
     {
         for (int i = 0; i < b.BlockWidth(); ++i)
@@ -79,7 +82,7 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    // BFS Random Placement for intermediates // CHATGPT GAVE ME PSEUDO CODE
+    // BFS Random Placement for intermediates. CHATGPT GAVE ME PSEUDO CODE
     void placeIntermediates(int numIntermediates)
     {
         for (int i = 0; i < numIntermediates; i++)
@@ -104,22 +107,28 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+
+    // Checks for all blocks other than connectors
     private bool checkForBlock(int row, int col)
     {
         Block b = _map[row][col];
         return b != null && b.BlockType() != "Connector";
     }
+
+    // Checks for all blocks other than the start
     private bool checkForBlockAll(Coordinate c)
     {
         Block b = _map[c.row][c.col];
         return b != null && b.BlockType() != "Start";
     }
 
+    // Checks if a grid coordinate is empty (doesnt have a block)
     private bool checkForBlockAdvanced(Coordinate c)
     {
         return _map[c.row][c.col] == null;
     }
 
+    // Returns the string representation of the connections possible at a certain position
     private string getConnectionsAt(int row, int col)
     {
         int rowPlus = row + 1;
@@ -160,6 +169,8 @@ public class RoomGenerator : MonoBehaviour
         return s;
     }
 
+    // Alternate version of above, checks for connectors, intermediates, and other blocks
+    // Needed to use because of second pass connector updates - need to recgnize where other connectors are
     private string getConnectionsAtAdvanced(int row, int col)
     {
         Coordinate rowPlus = new Coordinate(row + 1, col);
@@ -239,6 +250,8 @@ public class RoomGenerator : MonoBehaviour
         return s;
     }
 
+    // Giiven a string of connections, represented in pairs (source direction_destination direction), selects
+    // the appropriate connector block and rotates it to properly connect its surroundings
     private void pickAndPlaceDoubleAlternate(int row, int col, string c)
     {
         float angle = 0.0f;
@@ -350,6 +363,10 @@ public class RoomGenerator : MonoBehaviour
         b.At(0, 0).setDirections(north, south, east, west);
     }
 
+    // Technically used for both first pass and second pass connecting
+    // Loops over all grid spaces, then finds adjacent blocks in the map
+    // Based on the number and direction of adjacent blocks, selects the appropriate connector block and rotates it
+    // NOTE: Second pass has connectors already placed. If it encounters a conector, it deletes and replaces it.
     private void firstSweepConnect()
     {
         for (int row = 0; row < _mapWidth; row++)
@@ -477,7 +494,8 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    private void pathFromStringStart(int row, int col, string path)
+    // Function to create the path from one block to another giiven a string path, that contains direction pairs
+    private void pathFromString(int row, int col, string path, bool isStart)
     {
         if (path.Length <= 1)
         {
@@ -485,7 +503,8 @@ public class RoomGenerator : MonoBehaviour
         }
         else
         {
-            switch (path[1])
+            int offset = isStart ? 0 : 1;
+            switch (path[offset])
             {
                 case 'N':
                     col++;
@@ -500,7 +519,7 @@ public class RoomGenerator : MonoBehaviour
                     row--;
                     break;
             }
-            for (int i = 1; i < path.Length - 1; i++)
+            for (int i = offset; i < path.Length - 1; i++)
             {
                 pickAndPlaceDoubleAlternate(row, col, path.Substring(i, 2));
                 char dir = path[i + 1];
@@ -523,52 +542,7 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    private void pathFromString(int row, int col, string path)
-    {
-        if (path.Length <= 1)
-        {
-            Debug.LogError("Something went wrong with path from string");
-        }
-        else
-        {
-            switch (path[0])
-            {
-                case 'N':
-                    col++;
-                    break;
-                case 'S':
-                    col--;
-                    break;
-                case 'E':
-                    row++;
-                    break;
-                case 'W':
-                    row--;
-                    break;
-            }
-            for (int i = 0; i < path.Length - 1; i++)
-            {
-                pickAndPlaceDoubleAlternate(row, col, path.Substring(i, 2));
-                char dir = path[i + 1];
-                switch (dir)
-                {
-                    case 'N':
-                        col++;
-                        break;
-                    case 'S':
-                        col--;
-                        break;
-                    case 'E':
-                        row++;
-                        break;
-                    case 'W':
-                        row--;
-                        break;
-                }
-            }
-        }
-    }
-
+    // Coordinate struct to make row and column passing easier
     struct Coordinate
     {
         public int row;
@@ -593,6 +567,7 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+    // Flood fill BFS from a source block that gets the path to the nearest intermediate
     private string BFSPathFromStart(Coordinate start)
     {
         string path = "";
@@ -699,8 +674,11 @@ public class RoomGenerator : MonoBehaviour
         return "E" + ret;
     }
 
+    // Contains the set of coordinates that are reachable from the start. Gets updated as the islands get joined
     HashSet<Coordinate> visitedStart = new HashSet<Coordinate>();
 
+    // Flood fill BFS to find islands of blocks
+    // Only goes in directions that are accepted by the surrounding blocks, i.e to go left, the block on the right must have its "EAST" connection open.
     private List<Coordinate> BFSGetGroup(Coordinate start)
     {
         Queue<Coordinate> queue = new Queue<Coordinate>();
@@ -762,6 +740,7 @@ public class RoomGenerator : MonoBehaviour
         return ret;
     }
 
+    // Another flood fill BFS that gets the path from an intermediate "start" to its closest other intermediate that is in the start island block group
     private string BFSPathFromIntermediate(Coordinate start, List<Coordinate> startIsland)
     {
         string path = "";
@@ -879,6 +858,8 @@ public class RoomGenerator : MonoBehaviour
         return ret;
     }
 
+    // Loop over all blocks to find which outlets lead to null
+    // If direction is valid and has another block with accepting opposite direction, then open the door (deactivate the gameobject)
     private void openDoors()
     {
         for (int i = 0; i < _mapWidth; i++)
@@ -911,24 +892,33 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+    // Main generation function
     void GenerateRoom() {
+
+        // Get mid width and height to place the start block
         int midWidth = (_mapWidth - 1) / 2;
         int midHeight = (_mapHeight - 1) / 2;
 
-        MapRoom b = Instantiate(_startBlocks[0]).GetComponent<MapRoom>();
+        MapRoom b = Instantiate(_startBlock).GetComponent<MapRoom>();
         b.gameObject.transform.position = getOffset(midWidth, midHeight, b);
         _map[midWidth][midHeight] = b.At(0, 0);
 
+        // Randomly sparse intermediate blocks
         placeIntermediates(numIntermediates);
 
+        // Connect all adjacent blocks together
         firstSweepConnect();
 
+        // If there is no connecting block already, the start needs to be hooked up
+        // So find the closest path from it to another intermediate and make the path
         if (_map[midWidth + 1][midHeight] == null)
         {
             string path = BFSPathFromStart(new Coordinate(midWidth + 1, midHeight));
-            pathFromStringStart(midWidth + 1, midHeight, path);
+            pathFromString(midWidth + 1, midHeight, path, true);
         }
 
+        // Create a 4-way connector to symbolize that anything can connect
+        // at the point right outside the start room
         MapRoom b2 = Instantiate(connector4).GetComponent<MapRoom>();
         if (canPlaceIntermediate(midWidth + 1, midHeight, b2))
         {
@@ -940,6 +930,7 @@ public class RoomGenerator : MonoBehaviour
             Destroy(b2.gameObject);
         }
 
+        // Get a list of all the intermediates that are in the starting "island"
         List<Coordinate> startIntermediates = new List<Coordinate>();
         List<Coordinate> startIsland = BFSGetGroup(new Coordinate(midWidth + 1, midHeight));
         foreach(Coordinate c in startIsland)
@@ -950,6 +941,7 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
+        // Now get all of the groups that are not connected to the start "island"
         List<List<Coordinate>> disconnectedGroups = new List<List<Coordinate>>();
 
         for (int i = 0; i < _mapWidth; i++)
@@ -964,6 +956,8 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
+        // For each disconnected group, loop over pairs between the disconnected group and the start group
+        // and check which path is shortest to connect the two. Keep trying until you have exhausted all possible connnections
         foreach (List<Coordinate> list in disconnectedGroups)
         {
             int iter = 0;
@@ -1003,7 +997,7 @@ public class RoomGenerator : MonoBehaviour
                         visited.Add(closestInter);
                         continue;
                     }
-                    pathFromString(disconnectedCoordinate.row, disconnectedCoordinate.col, s);
+                    pathFromString(disconnectedCoordinate.row, disconnectedCoordinate.col, s, false);
                 }
                 iter = list.Count;
             }
@@ -1016,10 +1010,14 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
+        // After all connectors have been placed, touch up the connectors by looping again
+        // and re-doing the connections with new adjacencies
         firstSweepConnect();
 
+        // Open the doors and cap the doors leading to nowhere
         openDoors();
 
+        // Debug purposes, color the grid with debug lines
         //colorGrid();
     }
 
