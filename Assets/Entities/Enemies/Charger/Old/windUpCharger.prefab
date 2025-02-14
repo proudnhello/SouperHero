@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 3477775123895350176}
   - component: {fileID: 2528350703771062636}
   - component: {fileID: 62433673787859804}
-  - component: {fileID: 5158286074045889100}
+  - component: {fileID: -5123221331809649190}
+  - component: {fileID: 2487995239149890554}
   m_Layer: 7
-  m_Name: bigBoy
+  m_Name: windUpCharger
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.37, y: 0.93, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0.99215686, g: 0.15294117, b: 0.76195794, a: 1}
+  m_Color: {r: 0.99215686, g: 0.9780151, b: 0.15294117, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -99,19 +100,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606e1cef5d5a34671ac4ea10cb4aeb0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseStats:
-    maxHealth: 0
-    baseMoveSpeed: 0
-  invincibility: 1
-  ingredient: {fileID: 11400000, guid: 20672cb06c3fb0f49b9c47981f32dce5, type: 2}
-  knockBackTime: 0.2
+  health: 100
+  maxHealth: 100
+  baseMoveSpeed: 5
+  baseAttackDamage: 10
+  statusEffects: []
+  statusText: {fileID: 0}
+  ingredient: {fileID: 0}
   playerCollisionDamage: 10
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 0
+  knockBackTime: 0.65
+  detectionRadius: 4
 --- !u!60 &62433673787859804
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -160,7 +158,7 @@ PolygonCollider2D:
       - {x: -0.5, y: -0.28866667}
       - {x: 0.5, y: -0.28866667}
   m_UseDelaunayMesh: 0
---- !u!50 &5158286074045889100
+--- !u!50 &-5123221331809649190
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -187,3 +185,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!195 &2487995239149890554
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4823484854343417924}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.4
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

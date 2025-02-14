@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4908519082844136015}
   - component: {fileID: 4656655801565701859}
   - component: {fileID: 8693255185381210213}
+  - component: {fileID: 3016403060554165878}
   m_Layer: 7
   m_Name: Ranger
   m_TagString: Enemy
@@ -100,19 +101,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d0ed89a70c02a43b97f7052c4df1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseStats:
-    maxHealth: 100
-    baseMoveSpeed: 10
-    invincibility: 0.25
+  health: 0
+  maxHealth: 50
+  baseMoveSpeed: 0
+  baseAttackDamage: 0
+  statusEffects: []
+  statusText: {fileID: 0}
   ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
-  knockBackTime: 0.5
   playerCollisionDamage: 10
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  knockBackTime: 0.5
+  detectionRadius: 4
   newMoveSpeed: 2
   distanceToShoot: 3
   firingPoint: {fileID: 4816195811675097778}
@@ -192,6 +190,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!195 &3016403060554165878
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 194351001181734395}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 0.9
+  m_BaseOffset: 0.3
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &297283407327360694
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,6 +15,12 @@ public class CookingSlot : InventorySlot, IDropHandler
         GameObject dropped = eventData.pointerDrag;
         DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
 
+        if (draggableItem == null)
+        {
+            Debug.Log("No Draggable Item Found!");
+            return;
+        }   
+
         // Get the Ingredient Type
 
         Debug.Log("Ingredient Drop Detected!");
