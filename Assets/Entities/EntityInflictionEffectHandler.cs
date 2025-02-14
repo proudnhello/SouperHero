@@ -29,8 +29,14 @@ public class EntityInflictionEffectHandler
         {
             this.entity = entity;
             amount = infliction.add * infliction.mult;
-            duration = infliction.InflictionFlavor.duration;
+            duration = infliction.InflictionFlavor.statusEffectDuration;
             type = infliction.InflictionFlavor.inflictionType;
+        }
+
+        public StatusEffectInstance(Entity entity, int amount)
+        {
+            this.entity = entity;
+            this.amount = amount;
         }
 
         public void StartStatusEffect(IEnumerator method)
@@ -54,10 +60,11 @@ public class EntityInflictionEffectHandler
         }
     }
 
-    public void ApplyInflictions(List<Infliction> spoonInflictions)
+    public void ApplyInflictions(List<Infliction> spoonInflictions, Transform source)
     {
         foreach (var infliction in spoonInflictions)
         {
+            Debug.Log("applying infliction " + infliction.InflictionFlavor.inflictionType);
             if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType)) 
                 activeStatuses[infliction.InflictionFlavor.inflictionType].WorsenStatusEffect(infliction);
             else
@@ -80,10 +87,34 @@ public class EntityInflictionEffectHandler
                 }
                 else if (infliction.InflictionFlavor.inflictionType == InflictionType.SPIKY_Damage)
                 {
-                    Inflictions.Damage(infliction, entity);
+                    StatusEffectInstance instance = new(entity, infliction);
+                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
+                    instance.StartStatusEffect(Inflictions.Damage(instance));
+                } 
+                else if (infliction.InflictionFlavor.inflictionType == InflictionType.GREASY_Knockback)
+                {
+                    StatusEffectInstance instance = new(entity, infliction);
+                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
+                    instance.StartStatusEffect(Inflictions.Knockback(instance, entity._rigidbody, source));
                 }
             }
         }                   
+    }
+
+    public void ApplyContactDamageInfliction(int dmg)
+    {
+        if (!activeStatuses.ContainsKey(InflictionType.SPIKY_Damage))
+        {
+            StatusEffectInstance instance = new(entity, dmg);
+            activeStatuses.Add(InflictionType.SPIKY_Damage, instance);
+            instance.StartStatusEffect(Inflictions.Damage(instance));
+        }
+
+    }
+
+    public bool IsAfflicted(InflictionType inflictionType)
+    {
+        return activeStatuses.ContainsKey(inflictionType);
     }
 
     public void EndStatusEffect(StatusEffectInstance instance)

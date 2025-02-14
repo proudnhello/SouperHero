@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        movementInput = PlayerInputAndAttackManager.Singleton.input.Player.Movement;
+        movementInput = PlayerEntityManager.Singleton.input.Player.Movement;
     }
 
     void OnEnable()

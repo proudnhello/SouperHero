@@ -18,27 +18,25 @@ public abstract class EnemyBaseClass : Entity
     [SerializeField] LayerMask interactableLayer;
 
     protected bool soupable = false;
-    protected bool takingDamage = false;
 
     internal SpriteRenderer _sprite;
     protected Transform _playerTransform;
-    protected Rigidbody2D _rigidbody;
     protected Color _initialColor;
     protected Collider2D _collider;
 
     protected void Start(){
         _sprite = GetComponent<SpriteRenderer>();
         _playerTransform = PlayerEntityManager.Singleton.gameObject.transform;
-        _rigidbody = GetComponent<Rigidbody2D>();
         _initialColor = _sprite.color;
         _collider = GetComponent<Collider2D>();
+        entityRenderer = new(this);
 
         StartCoroutine(DetectionCoroutine());
         InitEntity();
     }
 
     protected void Update(){
-        if(!soupable && !takingDamage)
+        if(!soupable)
         {
             if (playerDetected)
             {
@@ -58,64 +56,17 @@ public abstract class EnemyBaseClass : Entity
     protected abstract void UpdateAI();
     protected void BecomeSoupable(){
         soupable = true;
-        gameObject.layer = interactableLayer;
+        gameObject.layer = CollisionLayers.Singleton.GetInteractableLayer();
         _sprite.color = _sprite.color / 1.5f;
     }
 
-    #region OVERRIDE METHODS
-
-    public override void TakeDamage(int damage, GameObject source, float knockback)
+    public override void ModifyHealth(int amount)
     {
-        if (!takingDamage)
+        base.ModifyHealth(amount);
+        if (amount < 0)
         {
-            takingDamage = true;
-            base.TakeDamage(damage);
-            if (GetHealth() <= 0)
-            {
-                BecomeSoupable();
-            }
-            else
-            {
-                Vector3 direction = (transform.position - source.transform.position).normalized;
-                _rigidbody.velocity = Vector3.zero;
-                _rigidbody.AddForce(direction * knockback, ForceMode2D.Impulse);
-                StartCoroutine("KnockBack");
-            }
+            BecomeSoupable();
         }
-    }
-
-    public override void TakeDamage(int damage) {
-        if (!takingDamage)
-        {
-            takingDamage = true;
-            base.TakeDamage(damage);
-            if (GetHealth() <= 0)
-            {
-                BecomeSoupable();
-            }
-            else
-            {;
-                StartCoroutine("KnockBack");
-            }
-        }
-    }
-
-    #endregion
-
-
-    public IEnumerator KnockBack()
-    {
-        int maxFlashCycles = Mathf.CeilToInt((invincibility / 0.3f));
-        int flashCycles = 0;
-        while(maxFlashCycles > flashCycles)
-        {
-            _sprite.color = Color.red;
-            yield return new WaitForSeconds(0.15f);
-            _sprite.color = _initialColor;
-            yield return new WaitForSeconds(0.15f);
-            flashCycles++;
-        }
-        takingDamage = false;
     }
 
     public AbilityIngredient Soupify(){

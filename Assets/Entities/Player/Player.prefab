@@ -128,7 +128,6 @@ GameObject:
   - component: {fileID: 99970492126700294}
   - component: {fileID: 4828791170773762287}
   - component: {fileID: 7339678796142318859}
-  - component: {fileID: 467167525573778853}
   - component: {fileID: 5557595635640825330}
   - component: {fileID: 3811208658680137570}
   - component: {fileID: 2057006963319512167}
@@ -172,7 +171,8 @@ MonoBehaviour:
   baseStats:
     maxHealth: 100
     baseMoveSpeed: 10
-  invincibility: 1
+    invincibility: 1
+  playerAttackPoint: {fileID: 5420586874744418633}
 --- !u!114 &4828791170773762287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,25 +199,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpoons: 4
   defaultSpoonIngredients: []
---- !u!114 &467167525573778853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4732919122290708663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ffa147ca654102488cd40cef5daa9c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerAttackPoint: {fileID: 5420586874744418633}
-  collisionLayer:
-    serializedVersion: 2
-    m_Bits: 192
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!212 &5557595635640825330
 SpriteRenderer:
   m_ObjectHideFlags: 0

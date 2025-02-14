@@ -25,7 +25,7 @@ public class HealthCounter : MonoBehaviour
             heartCount++;
         }
         healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
-        PlayerHealth.HealthChange += HealthChange;
+        PlayerEntityManager.HealthChange += HealthChange;
     }
 
     // What did I say about not having duplicate copies of stats?
@@ -37,7 +37,7 @@ public class HealthCounter : MonoBehaviour
 
     private void OnDisable()
     {
-        PlayerHealth.HealthChange -= HealthChange;
+        PlayerEntityManager.HealthChange -= HealthChange;
     }
 
     public void HealthChange() {

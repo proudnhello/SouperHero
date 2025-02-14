@@ -19,7 +19,9 @@ public class SingleProjectile : AbilityAbstractClass
     {
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ProjectileObject proj = spawner.GetProjectile();
-        proj.Spawn(PlayerInputAndAttackManager.Singleton.playerAttackPoint.position,
+        stats.size *= SIZE_MULTIPLIER;
+        stats.speed *= SPEED_MULTIPLIER;
+        proj.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
             PlayerEntityManager.Singleton.gameObject.transform.up,
             stats, inflictions);
     }

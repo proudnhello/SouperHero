@@ -2,10 +2,15 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
 
+[CreateAssetMenu(menuName = "Abilities/Helper/ProjectileSpawner")]
 public class ProjectileSpawner : ScriptableObject
 {
     public GameObject projectilePrefab;
-    List<ProjectileObject> projectilePool = new();
+    List<ProjectileObject> projectilePool;
+    private void OnEnable()
+    {
+        projectilePool = new();
+    }
 
     public ProjectileObject GetProjectile()
     {
@@ -16,7 +21,6 @@ public class ProjectileSpawner : ScriptableObject
                 return projectilePool[i];
             }
         }
-
         ProjectileObject proj = Instantiate(projectilePrefab).GetComponent<ProjectileObject>();
         proj.gameObject.SetActive(false);
         projectilePool.Add(proj);

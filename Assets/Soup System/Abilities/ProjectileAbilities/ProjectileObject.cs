@@ -12,7 +12,7 @@ public class ProjectileObject : MonoBehaviour
     float persistenceTime;
 
 
-    public GameObject Spawn(Vector2 spawnPoint, Vector2 dir, AbilityStats stats, List<Infliction> inflictions)
+    public void Spawn(Vector2 spawnPoint, Vector2 dir, AbilityStats stats, List<Infliction> inflictions)
     {
         this.stats = stats;
         this.inflictions = inflictions;
@@ -22,16 +22,14 @@ public class ProjectileObject : MonoBehaviour
         transform.position = spawnPoint;
         rb.velocity = dir * stats.speed;
         transform.localScale = new Vector3(stats.size, stats.size, stats.size);
-        return gameObject;
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.layer == PlayerInputAndAttackManager.Singleton.collisionLayer.value)
+        if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();
-            entity.TakeDamage(Mathf.CeilToInt(stats.damage), this.gameObject, stats.knockback);
-            entity.ApplyInfliction(inflictions);
+            entity.ApplyInfliction(inflictions, gameObject.transform);
             gameObject.SetActive(false);
         }
     }

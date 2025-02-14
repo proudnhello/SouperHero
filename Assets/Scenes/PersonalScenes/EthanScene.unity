@@ -998,7 +998,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 240445041}
-  - component: {fileID: 240445040}
   m_Layer: 0
   m_Name: TimerHelper
   m_TagString: Untagged
@@ -1006,18 +1005,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &240445040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 240445039}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de393d2e8fd97eb45a3834e8e79337fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &240445041
 Transform:
   m_ObjectHideFlags: 0
@@ -2795,9 +2782,7 @@ GameObject:
   - component: {fileID: 641781926}
   - component: {fileID: 641781928}
   - component: {fileID: 641781925}
-  - component: {fileID: 641781924}
   - component: {fileID: 641781923}
-  - component: {fileID: 641781927}
   m_Layer: 5
   m_Name: CookingScreen
   m_TagString: Untagged
@@ -2822,29 +2807,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &641781924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 641781922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!223 &641781925
 Canvas:
   m_ObjectHideFlags: 0
@@ -2893,19 +2855,6 @@ RectTransform:
   m_AnchoredPosition: {x: 1050.3, y: 492.63}
   m_SizeDelta: {x: 2231.5, y: 1042.7}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &641781927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 641781922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51f3aa4a9421224498d847c97ef1f04b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cursorObject: {fileID: 0}
 --- !u!114 &641781928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2918,10 +2867,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27cbe195b72ea984293a3494ba39aa14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InventoryContent: {fileID: 0}
-  CookingContent: {fileID: 0}
-  InventorySlot: {fileID: 0}
-  DraggableItem: {fileID: 0}
+  InventoryContent: {fileID: 1827363787}
+  CookingContent: {fileID: 246522223}
+  InventorySlot: {fileID: 921813585561564762, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
+  DraggableItem: {fileID: 4355397582172902657, guid: b01282b0e468a7149b042976e6a88c97, type: 3}
 --- !u!1 &657595822
 GameObject:
   m_ObjectHideFlags: 0
@@ -6493,6 +6442,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 467167525573778853, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: collisionLayer.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 3416317420459383421, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: cursorObject
       value: 
@@ -6505,6 +6458,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7339678796142318859, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: defaultSpoonIngredients.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339678796142318859, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: defaultSpoonIngredients.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
     - target: {fileID: 9090454973021212795, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5675172
@@ -8254,11 +8215,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1949224954}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44efd803bea754d52b2e334c0d48aef6, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b8c9bd47101de440ae161494618bb11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  potAbilityIngredients: []
-  potFlavorIngredients: []
+  CookingContent: {fileID: 246522223}
+  cookingIngredients: []
 --- !u!1001 &1954363970
 PrefabInstance:
   m_ObjectHideFlags: 0

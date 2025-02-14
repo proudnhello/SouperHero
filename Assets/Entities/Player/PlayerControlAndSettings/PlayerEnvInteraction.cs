@@ -10,7 +10,7 @@ public class PlayerEnvInteraction : MonoBehaviour
 
     private void Start()
     {
-        PlayerInputAndAttackManager.Singleton.input.Player.Interact.started += Interact;
+        PlayerEntityManager.Singleton.input.Player.Interact.started += Interact;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

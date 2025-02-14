@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2257712471586236145}
+  - component: {fileID: 3999536718259681931}
   - component: {fileID: 3477775123895350176}
   - component: {fileID: -5123221331809649190}
   - component: {fileID: 3994938834254621146}
-  - component: {fileID: 3999536718259681931}
   m_Layer: 7
   m_Name: BOMBA
   m_TagString: Enemy
@@ -37,6 +37,34 @@ Transform:
   - {fileID: 335273002679886033}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3999536718259681931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4823484854343417924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 790592411e6c2e04290c2823ab63558e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseStats:
+    maxHealth: 100
+    baseMoveSpeed: 15
+    invincibility: 0.25
+  ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
+  knockBackTime: 1
+  playerCollisionDamage: 0
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _runSpeed: 5
+  _walkSpeed: 1.5
+  _chaseForSeconds: 5
 --- !u!212 &3477775123895350176
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -151,34 +179,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &3999536718259681931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4823484854343417924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 790592411e6c2e04290c2823ab63558e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseStats:
-    maxHealth: 0
-    baseMoveSpeed: 0
-  invincibility: 1
-  ingredient: {fileID: 0}
-  knockBackTime: 1
-  playerCollisionDamage: 0
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  _runSpeed: 5
-  _walkSpeed: 1.5
-  _chaseForSeconds: 5
 --- !u!1 &6386168698906203722
 GameObject:
   m_ObjectHideFlags: 0

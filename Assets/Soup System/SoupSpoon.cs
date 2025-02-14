@@ -32,7 +32,7 @@ public class SoupSpoon
         public int add;
         public float mult;
 
-        public SpoonInfliction(InflictionFlavor inflictionEffect) { InflictionFlavor = inflictionEffect; }
+        public SpoonInfliction(InflictionFlavor inflictionEffect) { InflictionFlavor = inflictionEffect; add = 0; mult = 1; }
 
         public void AddIngredient(InflictionFlavor effect)
         {
@@ -63,11 +63,12 @@ public class SoupSpoon
         List<FlavorIngredient> flavorIngredients = ingredients.Where(x => x.GetType() == typeof(FlavorIngredient)).Cast<FlavorIngredient>().ToList();
 
         List<BuffFlavor> buffFlavors = new();
-        flavorIngredients.ForEach(f => buffFlavors.Concat(f.buffFlavors));
+        flavorIngredients.ForEach(f => buffFlavors = buffFlavors.Concat(f.buffFlavors).ToList());
         buffFlavors = buffFlavors.OrderBy(x => x.operation).ToList();
 
         List<InflictionFlavor> inflictionFlavors = new();
-        flavorIngredients.ForEach(f => inflictionFlavors.Concat(f.inflictionFlavors));
+        flavorIngredients.ForEach(f => inflictionFlavors = inflictionFlavors.Concat(f.inflictionFlavors).ToList());
+        abilityIngredients.ForEach(f => inflictionFlavors = inflictionFlavors.Concat(f.inherentInflictionFlavors).ToList());
 
         uses = 0;
         cooldown = 0;
@@ -88,6 +89,7 @@ public class SoupSpoon
 
         spoonAbilities = abilityTracker.Values.ToList();
         spoonInflictions = inflictionTracker.Values.ToList();
+        Debug.Log("inflictions = " + spoonInflictions.Count);
     }
 
     float lastTimeUsed;
@@ -101,6 +103,6 @@ public class SoupSpoon
             ability.ability.UseAbility(ability.statsWithBuffs, spoonInflictions);
         }
 
-        uses--;
+        if (uses > 0) uses--;
     }
 }

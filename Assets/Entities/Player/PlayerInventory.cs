@@ -21,12 +21,13 @@ public class PlayerInventory : MonoBehaviour
         {
             new SoupSpoon(defaultSpoonIngredients, true)
         };
+        ingredientsHeld = new();
     }
 
     private void Start()
     {
-        PlayerInputAndAttackManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
-        PlayerInputAndAttackManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
+        PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
+        PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
     }
 
     public void CollectIngredient(Ingredient ingredient)

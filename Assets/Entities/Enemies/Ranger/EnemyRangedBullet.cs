@@ -25,7 +25,7 @@ public class EnemyRangedBullet : MonoBehaviour
     {
         if (collider.gameObject.tag == "Player")
         {
-            PlayerEntityManager.Singleton.TakeDamage(10);
+            PlayerEntityManager.Singleton.ModifyHealth(-10);
             Destroy(this.gameObject);
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "Ingredient/New Flavor Ingredient")]
 public class FlavorIngredient : Ingredient
 {
+    [Serializable]
     public class BuffFlavor
     {
         public enum BuffType
@@ -24,6 +26,7 @@ public class FlavorIngredient : Ingredient
         public Operation operation;
         public float amount;
     }
+    [Serializable]
     public class InflictionFlavor
     {
         public enum InflictionType
@@ -42,8 +45,15 @@ public class FlavorIngredient : Ingredient
         public InflictionType inflictionType;
         public Operation operation;
         public int amount;
-        public float duration;
-        public bool isStatusEffect;
+        public float statusEffectDuration;
+        internal bool isStatusEffect 
+        {
+            get
+            {
+                return inflictionType == InflictionType.SPICY_Burn ||
+                    inflictionType == InflictionType.FROSTY_Freeze;
+            }
+        }
     }
     public List<BuffFlavor> buffFlavors;
     public List<InflictionFlavor> inflictionFlavors;

@@ -15,6 +15,7 @@ public class Entity : MonoBehaviour
     {
         public int maxHealth;
         public float baseMoveSpeed;
+        public float invincibility;
     }
     public struct CurrentStats
     {
@@ -24,11 +25,14 @@ public class Entity : MonoBehaviour
 
     // ~~~ VARIABLES ~~~
     [SerializeField] BaseStats baseStats;
-    public float invincibility = 1.0f;   // time the player flashes red when taking damage
     CurrentStats currentStats;
     internal EntityInflictionEffectHandler inflictionHandler;
+    internal EntityRenderer entityRenderer;
+    internal Rigidbody2D _rigidbody;
+
     public void InitEntity()
     {
+        _rigidbody = GetComponent<Rigidbody2D>();
         inflictionHandler = new(this);
         ResetStats();
     }
@@ -39,16 +43,16 @@ public class Entity : MonoBehaviour
         currentStats.moveSpeed = baseStats.baseMoveSpeed;
     }
 
-    public void ApplyInfliction(List<Infliction> spoonInflictions)
+    public void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
     {
-        inflictionHandler.ApplyInflictions(spoonInflictions);
+        inflictionHandler.ApplyInflictions(spoonInflictions, source);
     }
 
     public int GetHealth()
     {
         return currentStats.health;
     }
-    public virtual void AddHealth(int amount)
+    public virtual void ModifyHealth(int amount)
     {
         currentStats.health += amount;
         currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
@@ -58,18 +62,6 @@ public class Entity : MonoBehaviour
     {
         return currentStats.health <= 0;
     }
-
-    public virtual void TakeDamage(int amount)
-    {
-        currentStats.health -= amount;
-        currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
-    }
-    public virtual void TakeDamage(int amount, GameObject source, float knockback)
-    {
-        currentStats.health -= amount;
-        currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
-    }
-
 
     public float GetMoveSpeed()
     {
@@ -83,6 +75,11 @@ public class Entity : MonoBehaviour
     public void ResetMoveSpeed()
     {
         currentStats.moveSpeed = baseStats.baseMoveSpeed;
+    }
+
+    public float GetInvincibility()
+    {
+        return baseStats.invincibility;
     }
 
 }

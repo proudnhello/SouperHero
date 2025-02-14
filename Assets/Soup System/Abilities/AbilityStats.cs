@@ -13,11 +13,9 @@ public struct AbilityStats
     public float crit;
     public float speed;
     public float cooldown;
-    public float damage;
-    public float knockback;
 
     AbilityStats EmptyStats(int stat) {
-        return new AbilityStats { duration = stat, cooldown = stat, size = stat, speed = stat, damage = stat, crit = stat, }; 
+        return new AbilityStats { duration = stat, cooldown = stat, size = stat, speed = stat, crit = stat}; 
     }
 
     public AbilityStats(AbilityStats baseStats, List<FlavorIngredient.BuffFlavor> buffs)
