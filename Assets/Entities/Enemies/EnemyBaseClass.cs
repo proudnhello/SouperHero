@@ -1,40 +1,40 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public abstract class EnemyBaseClass : Entity
 {
-    protected bool soupable = false;
-    protected bool takingDamage = false;
-    internal SpriteRenderer sprite;
-    protected Transform playerTransform;
-    [SerializeField] protected AbilityIngredient ingredient; 
-    protected Rigidbody2D _rigidbody;
-    protected Color _initialColor;
-    public int playerCollisionDamage = 10;
+    [Header("Enemy Info")]
+    [SerializeField] protected AbilityIngredient ingredient;
     [SerializeField] protected float knockBackTime = 1.0f;
+    public int playerCollisionDamage = 10;
 
     [Header("Player Detection")]
     private bool playerDetected = false;
     private float detectionRadius = 4f;
     private float detectionDelay = 0.3f;
-    private LayerMask playerLayermask;
-    
+    [SerializeField] LayerMask playerLayer;
+    [SerializeField] LayerMask interactableLayer;
+
+    protected bool soupable = false;
+    protected bool takingDamage = false;
+
+    internal SpriteRenderer _sprite;
+    protected Transform _playerTransform;
+    protected Rigidbody2D _rigidbody;
+    protected Color _initialColor;
+    protected Collider2D _collider;
 
     protected void Start(){
-        sprite = GetComponent<SpriteRenderer>();
-        playerTransform = PlayerManager.Singleton.player.transform;
+        _sprite = GetComponent<SpriteRenderer>();
+        _playerTransform = PlayerEntityManager.Singleton.gameObject.transform;
         _rigidbody = GetComponent<Rigidbody2D>();
-        _initialColor = sprite.color;
-        health = maxHealth;
+        _initialColor = _sprite.color;
+        _collider = GetComponent<Collider2D>();
 
-        playerLayermask = LayerMask.GetMask("Player");
         StartCoroutine(DetectionCoroutine());
-        InitializeStats();
+        InitEntity();
     }
 
     protected void Update(){
@@ -50,51 +50,27 @@ public abstract class EnemyBaseClass : Entity
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = 0.0f;
         }
-        if(Input.GetKeyDown(KeyCode.G)){
-            Debug.Log(Soupify());
-        }
     }
 
     public bool getSoupable(){
         return soupable;
     }
-    public float GetKnockBackTime()
-    {
-        return knockBackTime;
-    }
     protected abstract void UpdateAI();
     protected void BecomeSoupable(){
         soupable = true;
-        GetComponent<Collider2D>().isTrigger = true;
-        sprite.color = sprite.color / 1.5f;
-    }
-    public override void TakeDamage(int amount, GameObject source){
-        if (!takingDamage)
-        {
-            takingDamage = true;
-            health = Math.Clamp(health - amount, 0, maxHealth);
-            Debug.Log("final damage " + amount);
-            if (health == 0)
-            {
-                BecomeSoupable();
-            }
-            else
-            {
-                Vector3 direction = (transform.position - source.transform.position).normalized;
-                _rigidbody.velocity = Vector3.zero;
-                _rigidbody.AddForce(direction * 6, ForceMode2D.Impulse);
-                StartCoroutine("KnockBack", knockBackTime);
-            }
-        }
+        gameObject.layer = interactableLayer;
+        _sprite.color = _sprite.color / 1.5f;
     }
 
-    public void TakeDamage(int amount, GameObject source, float knockback)
+    #region OVERRIDE METHODS
+
+    public override void TakeDamage(int damage, GameObject source, float knockback)
     {
         if (!takingDamage)
         {
             takingDamage = true;
-            health = Math.Clamp(health - amount, 0, maxHealth);
-            if (health == 0)
+            base.TakeDamage(damage);
+            if (GetHealth() <= 0)
             {
                 BecomeSoupable();
             }
@@ -102,47 +78,40 @@ public abstract class EnemyBaseClass : Entity
             {
                 Vector3 direction = (transform.position - source.transform.position).normalized;
                 _rigidbody.velocity = Vector3.zero;
-                _rigidbody.AddForce(direction * 6, ForceMode2D.Impulse);
-                StartCoroutine("KnockBack", knockback);
+                _rigidbody.AddForce(direction * knockback, ForceMode2D.Impulse);
+                StartCoroutine("KnockBack");
             }
         }
     }
 
-    public override void TakeDamage(int amount) {
+    public override void TakeDamage(int damage) {
         if (!takingDamage)
         {
             takingDamage = true;
-            health = Math.Clamp(health - amount, 0, maxHealth);
-            if (health == 0)
+            base.TakeDamage(damage);
+            if (GetHealth() <= 0)
             {
                 BecomeSoupable();
             }
             else
             {;
-                StartCoroutine("KnockBack", knockBackTime);
+                StartCoroutine("KnockBack");
             }
         }
     }
 
-    public void DamagePlayer(int damage) {
-        PlayerHealth playerHealth = PlayerManager.Singleton.player.GetComponent<PlayerHealth>();
-        
-        // Check if enemy is not soupable and player is not invincible
-        if (!soupable && !playerHealth.IsInvincible()) {
-            PlayerManager.Singleton.TakeDamage(damage, this.gameObject);
-            playerHealth.StartCoroutine(playerHealth.TakeDamageAnimation());
-        }
-    }
+    #endregion
 
-    public IEnumerator KnockBack(float time)
+
+    public IEnumerator KnockBack()
     {
-        int maxFlashCycles = Mathf.CeilToInt((time / 0.3f));
+        int maxFlashCycles = Mathf.CeilToInt((invincibility / 0.3f));
         int flashCycles = 0;
         while(maxFlashCycles > flashCycles)
         {
-            sprite.color = Color.red;
+            _sprite.color = Color.red;
             yield return new WaitForSeconds(0.15f);
-            sprite.color = _initialColor;
+            _sprite.color = _initialColor;
             yield return new WaitForSeconds(0.15f);
             flashCycles++;
         }
@@ -173,7 +142,7 @@ public abstract class EnemyBaseClass : Entity
 
     protected void CheckDetection()
     {
-        Collider2D collider = Physics2D.OverlapCircle((Vector2)transform.position, detectionRadius, playerLayermask);
+        Collider2D collider = Physics2D.OverlapCircle((Vector2)transform.position, detectionRadius, playerLayer);
         if (collider != null)
         {
             playerDetected = true;

@@ -2,139 +2,87 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using StatusType = EntityStatusEffects.StatusType;
-using StatusEffect = EntityStatusEffects.StatusEffect;
-using static EntityStatusEffects;
+using static EntityInflictionEffectHandler;
 using Unity.VisualScripting;
+using System;
+using Infliction = SoupSpoon.SpoonInfliction;
 
 public class Entity : MonoBehaviour
 {
-    [Header("Health")]
-    [SerializeField] protected int health;
-    [SerializeField] protected int maxHealth;
+    // ~~~ DEFINITIONS ~~~
+    [Serializable]
+    public struct BaseStats
+    {
+        public int maxHealth;
+        public float baseMoveSpeed;
+    }
+    public struct CurrentStats
+    {
+        public int health;
+        public float moveSpeed;
+    }
+
+    // ~~~ VARIABLES ~~~
+    [SerializeField] BaseStats baseStats;
+    public float invincibility = 1.0f;   // time the player flashes red when taking damage
+    CurrentStats currentStats;
+    internal EntityInflictionEffectHandler inflictionHandler;
+    public void InitEntity()
+    {
+        inflictionHandler = new(this);
+        ResetStats();
+    }
+
+    public void ResetStats()
+    {
+        currentStats.health = baseStats.maxHealth;
+        currentStats.moveSpeed = baseStats.baseMoveSpeed;
+    }
+
+    public void ApplyInfliction(List<Infliction> spoonInflictions)
+    {
+        inflictionHandler.ApplyInflictions(spoonInflictions);
+    }
+
     public int GetHealth()
     {
-        return health;
+        return currentStats.health;
     }
-    public void SetHealth(int newHealth)
+    public virtual void AddHealth(int amount)
     {
-        health = newHealth;
+        currentStats.health += amount;
+        currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
     }
-    public void ChangeHealth(int amount)
+
+    public bool IsDead()
     {
-        health += amount;
-        if (health > maxHealth)
-        {
-            health = maxHealth;
-        }
-        if (health <= 0)
-        {
-            health = 0;
-        }
+        return currentStats.health <= 0;
     }
 
     public virtual void TakeDamage(int amount)
     {
-        health -= amount;
+        currentStats.health -= amount;
+        currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
     }
-    public virtual void TakeDamage(int amount, GameObject source)
+    public virtual void TakeDamage(int amount, GameObject source, float knockback)
     {
-        health -= amount;
+        currentStats.health -= amount;
+        currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
     }
 
-    public int GetMaxHealth()
-    {
-        return maxHealth;
-    }
-    public void SetMaxHealth(int newMaxHealth)
-    {
-        maxHealth = newMaxHealth;
-    }
-    public void ChangeMaxHealth(int amount)
-    {
-        maxHealth += amount;
-        ChangeHealth(amount);
-    }
 
-    [Header("Movement")]
-    [SerializeField] protected float baseMoveSpeed;
-    protected float moveSpeed;
-    public float GetBaseMoveSpeed() { 
-        return baseMoveSpeed;
-    }
     public float GetMoveSpeed()
     {
-        return moveSpeed;
+        return currentStats.moveSpeed;
     }
     public void SetMoveSpeed(float newSpeed)
     {
-        moveSpeed = newSpeed;
+        currentStats.moveSpeed = newSpeed;
     }
 
-    [Header("Attacks")]
-    [SerializeField] protected float baseAttackDamage;
-    protected int attackDamage;
-    public float GetBaseAttackDamage()
+    public void ResetMoveSpeed()
     {
-        return baseAttackDamage;
-    }
-    public int GetDamage()
-    {
-        return attackDamage;
-    }
-    public void SetDamage(int newDamage)
-    {
-        attackDamage = newDamage;
-    }
-
-    [Header("Status Effects")]
-    [SerializeField] List<StatusEffect> statusEffects = new List<StatusEffect>();
-    // initialize enemy status effect class
-    internal EntityStatusEffects statusEffect;
-    [SerializeField] TMP_Text statusText;
-    public void InitializeStats()
-    {
-        InitializeStatusEffects();
-        attackDamage = (int)baseAttackDamage;
-        moveSpeed = baseMoveSpeed;
-        health = maxHealth;
-    }
-    public void InitializeStatusEffects()
-    {
-        statusEffect = this.AddComponent<EntityStatusEffects>();
-        statusEffect.LinkToEntity(this);
-        for (int i = 0; i < statusEffects.Count; i++)
-        {
-            statusEffect.AddStatusEffect(statusEffects[i]);
-        }
-    }
-    public void AddStatusEffects(List<StatusEffect> effects)
-    {
-        for (int i = 0; i < effects.Count; i++)
-        {
-            statusEffect.AddStatusEffect(effects[i]);
-            // statusText.text += effects[i].statusType.ToString() + "\n";
-        }
-    }
-
-    public void AddStatusEffect(StatusEffect effect)
-    {
-        statusEffect.AddStatusEffect(effect);
-        // statusText.text += effect.statusType.ToString() + "\n";
-    }
-
-    public void RemoveStatusText()
-    {
-        // Search for the name of the status effect in the status text and remove it
-        for (int i = 0; i < statusEffects.Count; i++)
-        {
-            statusText.text = statusText.text.Replace(statusEffects[i].statusType.ToString() + "\n", "");
-        }
-    }
-
-    public void RemoveStatusEffect(StatusEffect effect)
-    {
-        statusEffect.RemoveStatusEffect(effect);
+        currentStats.moveSpeed = baseStats.baseMoveSpeed;
     }
 
 }

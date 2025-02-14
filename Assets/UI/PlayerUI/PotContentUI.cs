@@ -10,7 +10,7 @@ public class PotContentUI : MonoBehaviour
     {
         text = GetComponent<TMP_Text>();
         //PlayerManager.SoupifyEnemy += OnSoupifyEnemy;
-        PlayerManager.DrinkPot += () => text.text = "";
+        //PlayerEntityManager.DrinkPot += () => text.text = "";
     }
 
     //void OnSoupifyEnemy(List<(string, int)> pot)

@@ -24,14 +24,12 @@ public class EnemyRanged : EnemyBaseClass
     protected new void Start()
     {
         base.Start();
-        moveSpeed = newMoveSpeed;
-        health = maxHealth;
     }
     protected override void UpdateAI()
     {
         RotateTowardsPlayer();
         //Check if player is alive and within the attack distance
-        if (Vector2.Distance(playerTransform.position, transform.position) >= distanceToShoot)
+        if (Vector2.Distance(_playerTransform.position, transform.position) >= distanceToShoot)
         {
             Follow();
         } else
@@ -49,7 +47,7 @@ public class EnemyRanged : EnemyBaseClass
     private void Follow() //Code re-used from EnemyCharger script
     {
         targetDirection = targetDirection.normalized;
-        targetDirection *= moveSpeed;
+        targetDirection *= GetMoveSpeed();
         _rigidbody.velocity = targetDirection;
     }
 
@@ -67,7 +65,7 @@ public class EnemyRanged : EnemyBaseClass
 
     private void RotateTowardsPlayer()
     {
-        targetDirection = playerTransform.position - transform.position;
+        targetDirection = _playerTransform.position - transform.position;
         float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg - 90f;
         Quaternion q = Quaternion.Euler(new Vector3(0, 0, angle));
         transform.localRotation = Quaternion.Slerp(transform.localRotation, q, rotateSpeed);

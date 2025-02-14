@@ -100,15 +100,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d0ed89a70c02a43b97f7052c4df1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0
-  maxHealth: 50
-  baseMoveSpeed: 0
-  baseAttackDamage: 0
-  statusEffects: []
-  statusText: {fileID: 0}
+  baseStats:
+    maxHealth: 0
+    baseMoveSpeed: 0
+  invincibility: 1
   ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
-  playerCollisionDamage: 10
   knockBackTime: 0.5
+  playerCollisionDamage: 10
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 256
   newMoveSpeed: 2
   distanceToShoot: 3
   firingPoint: {fileID: 4816195811675097778}

@@ -12,9 +12,6 @@ public class UIManager : MonoBehaviour
     private static SpoonCounter spoonCounter;
     public int playerSpoons;
 
-    [Header("Soup")]
-    [SerializeField] private AbilityColorLookup colorLookup;
-    [SerializeField] private AbilityLookup abilityLookup;
     
     private void Awake()
     {
@@ -55,9 +52,9 @@ public class UIManager : MonoBehaviour
     }
 
     public void UpdateAbilities() {
-        int newSpoonCount = PlayerManager.Singleton.UseSpoon().Count;
-        List<AbilityAbstractClass> abilities = PlayerManager.Singleton.UseSpoon();
-        UpdateSpoons(newSpoonCount, abilities);
+        //int newSpoonCount = PlayerEntityManager.Singleton.UseSpoon().Count;
+        //List<AbilityAbstractClass> abilities = PlayerEntityManager.Singleton.UseSpoon();
+        //UpdateSpoons(newSpoonCount, abilities);
     }
 
 }

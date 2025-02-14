@@ -6,17 +6,13 @@ using UnityEngine;
 
 public class EnemyCharger : EnemyBaseClass
 {
-    [SerializeField]
-    private float newMoveSpeed = 1f;
     protected new void Start(){
         base.Start();
-        moveSpeed = newMoveSpeed;
-        health = maxHealth;
     }
     protected override void UpdateAI(){
-        Vector2 direction = playerTransform.position - transform.position;
+        Vector2 direction = _playerTransform.position - transform.position;
         direction = direction.normalized;
-        direction *= moveSpeed;
+        direction *= GetMoveSpeed();
         _rigidbody.velocity = direction;
     }
 

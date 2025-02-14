@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerEnvInteraction : MonoBehaviour
 {
     private Interactable currentInteractable = null;
     private int lastInteractionFrame = -1;
-    
+
+    private void Start()
+    {
+        PlayerInputAndAttackManager.Singleton.input.Player.Interact.started += Interact;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Interactable interactable = collision.GetComponent<Interactable>();
@@ -29,13 +35,11 @@ public class PlayerEnvInteraction : MonoBehaviour
 
     private int interactCounter = 0;
 
-    private void Update()
+    private void Interact(InputAction.CallbackContext ctx)
     {
-        //Debug.Log($"Update called at Frame: {Time.frameCount}");
 
         if (currentInteractable != null && 
         currentInteractable.CanInteract() && 
-        Input.GetKeyDown(PlayerManager.Singleton.interactionKey) &&
         Time.frameCount != lastInteractionFrame)
         {
             // store last interaction frame so we aren't interacting multiple times in the same frame

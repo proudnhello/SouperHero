@@ -13,7 +13,7 @@ public class CameraFollower : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = PlayerManager.Singleton.player;
+        player = PlayerEntityManager.Singleton.gameObject;
         _previousMousePosition = Input.mousePosition;
     }
 
