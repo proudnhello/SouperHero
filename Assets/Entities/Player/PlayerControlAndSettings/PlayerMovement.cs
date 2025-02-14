@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,12 +10,18 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     private bool _useMouse;
     private Vector2 _previousMousePosition;
+    InputAction movementInput;
 
     // Start is called before the first frame update
     void Awake()
     {
         _previousMousePosition = Input.mousePosition;
         rb = GetComponent<Rigidbody2D>();
+    }
+
+    private void Start()
+    {
+        movementInput = PlayerEntityManager.Singleton.input.Player.Movement;
     }
 
     void OnEnable()
@@ -53,19 +60,9 @@ public class PlayerMovement : MonoBehaviour
             _useMouse = false;
         }
 
-        Vector2 keyDirection = Vector2.zero;
-        if (Input.GetKey(KeyCode.UpArrow))
-            keyDirection += Vector2.up;
-        if (Input.GetKey(KeyCode.DownArrow))
-            keyDirection += Vector2.down;
-        if (Input.GetKey(KeyCode.LeftArrow))
-            keyDirection += Vector2.left;
-        if (Input.GetKey(KeyCode.RightArrow))
-            keyDirection += Vector2.right;
+        Vector2 keyDirection = movementInput.ReadValue<Vector2>().normalized;
 
-        keyDirection = keyDirection.normalized;
-
-        Vector2 direction = _useMouse || keyDirection == Vector2.zero ? new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y) : keyDirection;
+        Vector2 direction = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
 
         transform.up = direction;
 
@@ -76,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerManager.Singleton.GetSpeed();
+        rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerEntityManager.Singleton.GetMoveSpeed();
     }
 
 

@@ -25,9 +25,6 @@ public class SuicideBomberScript : EnemyBaseClass
     protected new void Start()
     {
         base.Start();
-        moveSpeed = _walkSpeed;
-        health = maxHealth;
-
         _state = BomberState.IDLING;
         _detectionRadius = transform.GetChild(0).gameObject;
         _explosionPNG = transform.GetChild(1).gameObject;
@@ -35,7 +32,7 @@ public class SuicideBomberScript : EnemyBaseClass
 
     protected override void UpdateAI()
     {
-        Vector2 direction = playerTransform.position - transform.position;
+        Vector2 direction = _playerTransform.position - transform.position;
         if (_state == BomberState.IDLING)
         {
             direction = direction.normalized;
@@ -73,9 +70,9 @@ public class SuicideBomberScript : EnemyBaseClass
         int flashCycles = 0;
         while (maxFlashCycles > flashCycles)
         {
-            sprite.color = Color.red;
+            _sprite.color = Color.red;
             yield return new WaitForSeconds(0.15f);
-            sprite.color = _initialColor;
+            _sprite.color = _initialColor;
             yield return new WaitForSeconds(0.15f);
             flashCycles++;
         }

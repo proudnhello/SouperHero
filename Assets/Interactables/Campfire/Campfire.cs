@@ -35,8 +35,6 @@ public class Campfire : Interactable
 
     private void Cook()
     {
-        PlayerManager.Singleton.InventoryItems("flavor", true);
-        PlayerManager.Singleton.InventoryItems("ability");
         CursorManager.Singleton.ShowCursor();
         cookingPot.SetActive(true);
         CookingScreen.SetActive(true);
@@ -70,10 +68,5 @@ public class Campfire : Interactable
         }
 
         movement.enabled = value;
-    }
-
-    private void Update()
-    {
-
     }
 }

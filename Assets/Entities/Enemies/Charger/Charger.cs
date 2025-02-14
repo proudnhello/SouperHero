@@ -13,7 +13,7 @@ public class Charger : EnemyBaseClass
         agent.updateUpAxis = false;
     }
     protected override void UpdateAI(){
-        agent.SetDestination(playerTransform.position);
+        agent.SetDestination(_playerTransform.position);
     }
 
     protected new void Update(){

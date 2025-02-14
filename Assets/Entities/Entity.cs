@@ -2,141 +2,84 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using StatusType = EntityStatusEffects.StatusType;
-using StatusEffect = EntityStatusEffects.StatusEffect;
-using static EntityStatusEffects;
+using static EntityInflictionEffectHandler;
 using Unity.VisualScripting;
-using UnityEngine.AI;
+using System;
+using Infliction = SoupSpoon.SpoonInfliction;
 
 public class Entity : MonoBehaviour
 {
-    [Header("Health")]
-    [SerializeField] protected int health;
-    [SerializeField] protected int maxHealth;
+    // ~~~ DEFINITIONS ~~~
+    [Serializable]
+    public struct BaseStats
+    {
+        public int maxHealth;
+        public float baseMoveSpeed;
+        public float invincibility;
+    }
+    public struct CurrentStats
+    {
+        public int health;
+        public float moveSpeed;
+    }
+
+    // ~~~ VARIABLES ~~~
+    [SerializeField] BaseStats baseStats;
+    CurrentStats currentStats;
+    internal EntityInflictionEffectHandler inflictionHandler;
+    internal EntityRenderer entityRenderer;
+    internal Rigidbody2D _rigidbody;
+
+    public void InitEntity()
+    {
+        _rigidbody = GetComponent<Rigidbody2D>();
+        inflictionHandler = new(this);
+        ResetStats();
+    }
+
+    public void ResetStats()
+    {
+        currentStats.health = baseStats.maxHealth;
+        currentStats.moveSpeed = baseStats.baseMoveSpeed;
+    }
+
+    public void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
+    {
+        inflictionHandler.ApplyInflictions(spoonInflictions, source);
+    }
 
     public int GetHealth()
     {
-        return health;
+        return currentStats.health;
     }
-    public void SetHealth(int newHealth)
+    public virtual void ModifyHealth(int amount)
     {
-        health = newHealth;
-    }
-    public void ChangeHealth(int amount)
-    {
-        health += amount;
-        if (health > maxHealth)
-        {
-            health = maxHealth;
-        }
-        if (health <= 0)
-        {
-            health = 0;
-        }
+        currentStats.health += amount;
+        currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
     }
 
-    public virtual void TakeDamage(int amount)
+    public bool IsDead()
     {
-        health -= amount;
-    }
-    public virtual void TakeDamage(int amount, GameObject source)
-    {
-        health -= amount;
+        return currentStats.health <= 0;
     }
 
-    public int GetMaxHealth()
-    {
-        return maxHealth;
-    }
-    public void SetMaxHealth(int newMaxHealth)
-    {
-        maxHealth = newMaxHealth;
-    }
-    public void ChangeMaxHealth(int amount)
-    {
-        maxHealth += amount;
-        ChangeHealth(amount);
-    }
-
-    [Header("Movement")]
-    [SerializeField] protected float baseMoveSpeed;
-    protected float moveSpeed;
-    public float GetBaseMoveSpeed() { 
-        return baseMoveSpeed;
-    }
     public float GetMoveSpeed()
     {
-        return moveSpeed;
+        return currentStats.moveSpeed;
     }
-    public virtual void SetMoveSpeed(float newSpeed)
+    public void SetMoveSpeed(float newSpeed)
     {
-        moveSpeed = newSpeed;
-    }
-
-    [Header("Attacks")]
-    [SerializeField] protected float baseAttackDamage;
-    protected int attackDamage;
-    public float GetBaseAttackDamage()
-    {
-        return baseAttackDamage;
-    }
-    public int GetDamage()
-    {
-        return attackDamage;
-    }
-    public void SetDamage(int newDamage)
-    {
-        attackDamage = newDamage;
+        currentStats.moveSpeed = newSpeed;
     }
 
-    [Header("Status Effects")]
-    [SerializeField] List<StatusEffect> statusEffects = new List<StatusEffect>();
-    // initialize enemy status effect class
-    internal EntityStatusEffects statusEffect;
-    [SerializeField] TMP_Text statusText;
-    public void InitializeStats()
+    public void ResetMoveSpeed()
     {
-        InitializeStatusEffects();
-        attackDamage = (int)baseAttackDamage;
-        moveSpeed = baseMoveSpeed;
-        health = maxHealth;
-    }
-    public void InitializeStatusEffects()
-    {
-        statusEffect = this.AddComponent<EntityStatusEffects>();
-        statusEffect.LinkToEntity(this);
-        for (int i = 0; i < statusEffects.Count; i++)
-        {
-            statusEffect.AddStatusEffect(statusEffects[i]);
-        }
-    }
-    public void AddStatusEffects(List<StatusEffect> effects)
-    {
-        for (int i = 0; i < effects.Count; i++)
-        {
-            statusEffect.AddStatusEffect(effects[i]);
-            // statusText.text += effects[i].statusType.ToString() + "\n";
-        }
+        currentStats.moveSpeed = baseStats.baseMoveSpeed;
     }
 
-    public void AddStatusEffect(StatusEffect effect)
+    public float GetInvincibility()
     {
-        statusEffect.AddStatusEffect(effect);
-        // statusText.text += effect.statusType.ToString() + "\n";
-    }
-
-    public void RemoveStatusText()
-    {
-        // Search for the name of the status effect in the status text and remove it
-        for (int i = 0; i < statusEffects.Count; i++)
-        {
-            statusText.text = statusText.text.Replace(statusEffects[i].statusType.ToString() + "\n", "");
-        }
-    }
-
-    public void RemoveStatusEffect(StatusEffect effect)
-    {
-        statusEffect.RemoveStatusEffect(effect);
+        return baseStats.invincibility;
     }
 
 }
