@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CollisionLayers", menuName = "Helper/CollisionLayers")]
-public class CollisionLayers : ScriptableObject
+public class CollisionLayers : MonoBehaviour
 {
     public static CollisionLayers Singleton { get; private set; }
     public LayerMask collisionLayer;
@@ -9,7 +9,7 @@ public class CollisionLayers : ScriptableObject
     public LayerMask destroyableLayer;
     public LayerMask enemyLayer;
 
-    private void OnEnable()
+    private void Awake()
     {
         Singleton = this;
     }
