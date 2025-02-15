@@ -8,11 +8,4 @@ public class Ingredient : ScriptableObject
     public int id;
     public string ingredientName;
     public Sprite icon;
-    public IngredientType ingredientType;
-
-    public enum IngredientType
-    {
-        Ability,
-        Flavor
-    }
 }

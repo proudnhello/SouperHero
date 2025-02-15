@@ -11,8 +11,4 @@ public class AbilityIngredient : Ingredient
     public AbilityStats baseStats;
     public List<InflictionFlavor> inherentInflictionFlavors;
     public int uses;
-
-    private void Awake() {
-        ingredientType = Ingredient.IngredientType.Ability;
-    }
 }

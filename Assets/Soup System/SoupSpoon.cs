@@ -98,9 +98,6 @@ public class SoupSpoon
         // Convert trackers to lists for use in abilities and inflictions
         spoonAbilities = abilityTracker.Values.ToList();
         spoonInflictions = inflictionTracker.Values.ToList();
-        
-        // Log the number of inflictions for debugging purposes
-        Debug.Log("inflictions = " + spoonInflictions.Count);
     }
 
     // Variable to track the last time the spoon was used

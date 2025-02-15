@@ -15,8 +15,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Ingredient ingredient = null;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("Begin Drag");
-
         // save the original parent
         parentAfterDrag = transform.parent;
 
@@ -31,16 +29,12 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("Dragging");
-
         // map item position to mouse position
         transform.position = Input.mousePosition;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("End Drag");
-
         // set the parent to the parent after drag
         transform.SetParent(parentAfterDrag);
 

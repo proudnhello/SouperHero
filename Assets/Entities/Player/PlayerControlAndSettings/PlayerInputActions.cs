@@ -56,7 +56,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""CycleSpoon"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Value"",
                     ""id"": ""96fdbac1-4e02-4d43-abaa-36acbc147db2"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",

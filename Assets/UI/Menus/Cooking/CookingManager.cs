@@ -38,25 +38,24 @@ public class CookingManager : MonoBehaviour
     // Check if there is an ability ingredient in the pot
     public bool HasAbilityIngredient()
     {
-        bool hasAbility = false;
         // Don't cook if there are no ability ingredients
         foreach (Ingredient ingredient in cookingIngredients)
         {
-            if (ingredient.ingredientType == Ingredient.IngredientType.Ability)
+            Debug.Log(ingredient.ingredientName);
+            if (ingredient.GetType() == typeof(AbilityIngredient))
             {
-                hasAbility = true;
+                return true;
             }
         }
 
-        return hasAbility;
+        return false;
     }
 
     // Call this to cook the soup
     public void CookTheSoup()
     {
-
         // Don't cook if there is no ability ingredient, return early
-        if (HasAbilityIngredient())
+        if (!HasAbilityIngredient())
         {
             Debug.Log("FillSpoon: Ability list is empty! Can't cook without an ability ingredient");
             return;
