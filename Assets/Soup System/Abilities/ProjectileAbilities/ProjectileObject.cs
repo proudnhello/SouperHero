@@ -36,6 +36,9 @@ public class ProjectileObject : MonoBehaviour
 
             // Deactivate the projectile after hitting an enemy
             gameObject.SetActive(false);
+        } else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
+        {
+            collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
         }
     }
 

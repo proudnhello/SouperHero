@@ -18,37 +18,11 @@ using UnityEngine.InputSystem.Utilities;
 public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
-
-    // This constructor initializes the PlayerInputActions class from a JSON string that defines the input actions and their bindings.
-    // The JSON structure includes:
-    // - "name": The name of the input action asset.
-    // - "maps": An array of action maps, each containing:
-    //   - "name": The name of the action map (e.g., "Player").
-    //   - "id": A unique identifier for the action map.
-    //   - "actions": An array of actions, each with:
-    //     - "name": The name of the action (e.g., "UseSpoon").
-    //     - "type": The type of action (e.g., "Button", "Value", "PassThrough").
-    //     - "id": A unique identifier for the action.
-    //     - "expectedControlType": The type of control expected (e.g., "Vector2", "Axis").
-    //     - "processors": Any processors applied to the action.
-    //     - "interactions": Any interactions associated with the action.
-    //     - "initialStateCheck": A boolean indicating if the initial state should be checked.
-    //   - "bindings": An array of bindings for the actions, each with:
-    //     - "name": The name of the binding (can be empty).
-    //     - "id": A unique identifier for the binding.
-    //     - "path": The control path (e.g., "<Mouse>/leftButton").
-    //     - "interactions": Any interactions associated with the binding.
-    //     - "processors": Any processors applied to the binding.
-    //     - "groups": The control groups the binding belongs to.
-    //     - "action": The name of the action this binding is associated with.
-    //     - "isComposite": A boolean indicating if the binding is part of a composite.
-    //     - "isPartOfComposite": A boolean indicating if the binding is part of a composite action.
     public @PlayerInputActions()
     {
-        asset = InputActionAsset.FromJson(
-        @"{
-        ""name"": ""PlayerInputActions"",
-        ""maps"": [
+        asset = InputActionAsset.FromJson(@"{
+    ""name"": ""PlayerInputActions"",
+    ""maps"": [
         {
             ""name"": ""Player"",
             ""id"": ""09c907ba-5e00-4d64-a25e-c7d5a21f8303"",
