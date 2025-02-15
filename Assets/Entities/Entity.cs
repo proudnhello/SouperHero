@@ -51,7 +51,7 @@ public class Entity : MonoBehaviour
     public int GetHealth()
     {
         return currentStats.health;
-    }
+    }  
     public virtual void ModifyHealth(int amount)
     {
         currentStats.health += amount;

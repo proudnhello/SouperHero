@@ -7,15 +7,17 @@ using UnityEngine;
 public class Collectable : Interactable
 {
     [Header("Collectable")]
-    [SerializeField] private FlavorIngredient ingredient;
+    [SerializeField] private Ingredient ingredient;
     private bool collected = false;
     private Vector2 playerPosition;
     private float collectionSpeed = 6f;
+    Collider2D _collider;
 
-    private void Start()
+    public void Spawn(Vector2 spawnPoint)
     {
         type = this.name;
         interactablePrompt.SetActive(false);  //Disable interactable prompt
+        _collider = GetComponent<Collider2D>();
     }
 
     public override void Interact()
@@ -29,18 +31,9 @@ public class Collectable : Interactable
 
     private void Collect()
     {
-
-        if (ingredient == null)
-        {
-            Debug.LogError("Collect: ingredient is null! Make sure to check its defined in the inspector!");
-            return;
-        }
-
         PlayerInventory.Singleton.CollectIngredient(ingredient);
         SetInteractable(false);  //Cannot interact multiple times
         SetInteractablePrompt(false);  //Remove prompt
-
-        Debug.Log("Foraged " + type);
     }
 
     private void FixedUpdate()
@@ -53,12 +46,12 @@ public class Collectable : Interactable
 
     private void CollectionAnimation()
     {
-        this.GetComponent<Collider2D>().enabled = false;
-        playerPosition = GameObject.FindGameObjectsWithTag("Player")[0].transform.position;
-        this.transform.position = Vector2.MoveTowards(transform.position, playerPosition, collectionSpeed * Time.deltaTime);
+        _collider.enabled = false;
+        playerPosition = PlayerEntityManager.Singleton.gameObject.transform.position;
+        transform.position = Vector2.MoveTowards(transform.position, playerPosition, collectionSpeed * Time.deltaTime);
         if (Vector2.Distance(transform.position, playerPosition) < 0.01f)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 }

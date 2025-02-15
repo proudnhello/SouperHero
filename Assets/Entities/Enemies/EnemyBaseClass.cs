@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public abstract class EnemyBaseClass : Entity
 {
     [Header("Enemy Info")]
-    [SerializeField] protected AbilityIngredient ingredient;
+    [SerializeField] protected Collectable ingredient;
     public int playerCollisionDamage = 10;
 
     [Header("Player Detection")]
@@ -17,15 +17,14 @@ public abstract class EnemyBaseClass : Entity
     [SerializeField] protected LayerMask playerLayer;
     [SerializeField] LayerMask interactableLayer;
 
-    protected bool soupable = false;
-
     internal SpriteRenderer _sprite;
     protected Transform _playerTransform;
     protected Color _initialColor;
     protected Collider2D _collider;
     protected NavMeshAgent agent;
 
-    protected void Start(){
+    protected void Start()
+    {
         _sprite = GetComponent<SpriteRenderer>();
         _playerTransform = PlayerEntityManager.Singleton.gameObject.transform;
         _initialColor = _sprite.color;
@@ -37,52 +36,28 @@ public abstract class EnemyBaseClass : Entity
         InitEntity();
     }
 
-    protected void Update(){
-        if(!soupable)
+    protected void Update()
+    {
+        if (playerDetected)
         {
-            if (playerDetected)
-            {
-                UpdateAI();
-            }
-            else Patrol();
-        } else if (soupable)
-        {
-            _rigidbody.velocity = Vector3.zero;
-            _rigidbody.angularVelocity = 0.0f;
+            UpdateAI();
         }
-    }
-
-    public bool getSoupable(){
-        return soupable;
+        else Patrol();
     }
     protected abstract void UpdateAI();
-    protected void BecomeSoupable(){
-        soupable = true;
-        gameObject.layer = CollisionLayers.Singleton.GetInteractableLayer();
+    protected void Die()
+    {
         _sprite.color = _sprite.color / 1.5f;
+        _collider.enabled = false;
+        GameObject drop = Instantiate(ingredient.gameObject);
     }
 
     public override void ModifyHealth(int amount)
     {
         base.ModifyHealth(amount);
-        if (GetHealth() <= 0)
+        if (IsDead())
         {
-            BecomeSoupable();
-        }
-    }
-
-    public AbilityIngredient Soupify(){
-        if(soupable){
-
-            Debug.Log("Enemy Is Soupable in Soupify");
-            Destroy(gameObject);
-            return ingredient;
-        }
-        else{
-            Debug.Log("Enemy Is Not Soupable in Soupify");
-            AbilityIngredient nullIngredient = new AbilityIngredient();
-            nullIngredient.name = "null";
-            return nullIngredient;
+            Die();
         }
     }
 
