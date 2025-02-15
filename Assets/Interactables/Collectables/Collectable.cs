@@ -4,7 +4,7 @@ using UnityEngine;
 
 //Script for all collectable ingredients in the environment
 //Based off of the Chest.cs script
-public class Collectable : Interactable
+public class Collectable : MonoBehavior
 {
     [Header("Collectable")]
     [SerializeField] private Ingredient ingredient;

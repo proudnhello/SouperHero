@@ -35,8 +35,8 @@ public class AddToPot : MonoBehaviour
 
     public void AddIngredient(Color ingredientColor)
     {
-        GameObject g = Instantiate(ingredient, new Vector2(pot.transform.position.x + OffsetX, pot.transform.position.y + OffsetY), Quaternion.identity, this.transform);
-        g.GetComponent<UnityEngine.UI.Image>().color = ingredientColor;
+        GameObject gameObj = Instantiate(ingredient, new Vector2(pot.transform.position.x + OffsetX, pot.transform.position.y + OffsetY), Quaternion.identity, this.transform);
+        gameObj.GetComponent<UnityEngine.UI.Image>().color = ingredientColor;
     }
 
     public void RemoveIngredient()
