@@ -13,16 +13,13 @@ public class CookingSlot : InventorySlot, IDropHandler
 
         // Get The Object Dropped On This One
         GameObject dropped = eventData.pointerDrag;
-        DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
-
-        if (draggableItem == null)
+        if (!dropped.TryGetComponent<DraggableItem>(out var draggableItem))
         {
             Debug.Log("No Draggable Item Found!");
             return;
         }   
 
         // Get the Ingredient Type
-
         Debug.Log("Ingredient Drop Detected!");
         CookingManager.Singleton.AddIngredient(draggableItem.ingredient);
     }

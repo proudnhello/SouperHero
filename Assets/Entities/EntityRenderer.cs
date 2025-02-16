@@ -27,4 +27,20 @@ public class EntityRenderer
         }
         spriteRenderer.color = normalColor;
     }
+
+    float deathAnimTime = 2.0f;
+    public IEnumerator EnemyDeathAnimation()
+    {
+        float timeProgressed = deathAnimTime;
+        Color normalColor = spriteRenderer.color;
+        while (timeProgressed > 0)
+        {
+            normalColor.a = timeProgressed / deathAnimTime;
+            spriteRenderer.color = normalColor;
+            timeProgressed -= Time.deltaTime;
+            yield return null;
+        }
+
+        Entity.Destroy(Entity);
+    }
 }

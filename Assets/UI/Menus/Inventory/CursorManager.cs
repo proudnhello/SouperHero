@@ -13,7 +13,6 @@ public class CursorManager : MonoBehaviour
 
     public void ShowCursor()
     {
-        Debug.Log("Show Cursor");
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None; // Unlock if it was locked
         cursorObject.SetActive(false);
@@ -21,7 +20,6 @@ public class CursorManager : MonoBehaviour
 
     public void HideCursor()
     {
-        Debug.Log("Hide Cursor");
         Cursor.visible = false;
         cursorObject.SetActive(true);
     }

@@ -6,6 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "Ingredient/New Flavor Ingredient")]
 public class FlavorIngredient : Ingredient
 {
+    
     [Serializable]
     public class BuffFlavor
     {

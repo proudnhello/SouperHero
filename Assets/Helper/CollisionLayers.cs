@@ -1,14 +1,15 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CollisionLayers", menuName = "Helper/CollisionLayers")]
-public class CollisionLayers : ScriptableObject
+public class CollisionLayers : MonoBehaviour
 {
     public static CollisionLayers Singleton { get; private set; }
     public LayerMask collisionLayer;
     public LayerMask interactableLayer;
+    public LayerMask destroyableLayer;
     public LayerMask enemyLayer;
 
-    private void OnEnable()
+    private void Awake()
     {
         Singleton = this;
     }
@@ -26,6 +27,11 @@ public class CollisionLayers : ScriptableObject
     public bool InInteractableLayer(GameObject source)
     {
         return (interactableLayer.value & (1 << source.layer)) != 0;
+    }
+
+    public bool InDestroyableLayer(GameObject source)
+    {
+        return (destroyableLayer.value & (1 << source.layer)) != 0;
     }
 
     public int GetInteractableLayer()

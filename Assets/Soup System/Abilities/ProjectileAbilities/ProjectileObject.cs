@@ -26,13 +26,22 @@ public class ProjectileObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
+        bool isEnemy = CollisionLayers.Singleton.InEnemyLayer(collider.gameObject);
+        if (isEnemy)
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();
+
+            // Apply the infliction to the enemy
             entity.ApplyInfliction(inflictions, gameObject.transform);
+
+            // Deactivate the projectile after hitting an enemy
             gameObject.SetActive(false);
+        } else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
+        {
+            collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
         }
     }
+
 
     private void FixedUpdate()
     {

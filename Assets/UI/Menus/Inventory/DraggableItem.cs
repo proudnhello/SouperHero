@@ -10,26 +10,35 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public GameObject draggableItem;
     [HideInInspector] public Transform parentAfterDrag;
     [HideInInspector] public string ingredientType;
-    [HideInInspector] public Ingredient ingredient = null;
+
+    [Header("Do Not Edit, Ingredient is Set In CookingUI's Enable()")]
+    public Ingredient ingredient = null;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("Begin Drag");
+        // save the original parent
         parentAfterDrag = transform.parent;
+
+        // bring the ingredient to the front of the scene while dragging
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
+
+        // set raycast off so that when you drop on the slot
+        // the drop system doesn't think you dropped it on itself
         image.raycastTarget = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("Dragging");
+        // map item position to mouse position
         transform.position = Input.mousePosition;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("End Drag");
+        // set the parent to the parent after drag
         transform.SetParent(parentAfterDrag);
+
+        // return raycast to true
         image.raycastTarget = true;
     }
 

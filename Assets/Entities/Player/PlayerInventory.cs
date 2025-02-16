@@ -67,6 +67,7 @@ public class PlayerInventory : MonoBehaviour
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         }
+        //Debug.Log("swap to spoon = " + currentSpoon + " of " + spoons.Count);
     }
 
     void UseSpoon(InputAction.CallbackContext ctx)
