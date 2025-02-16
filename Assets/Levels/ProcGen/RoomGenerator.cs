@@ -1,13 +1,10 @@
 using DG.Tweening;
-using DG.Tweening.Plugins;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using static Unity.VisualScripting.Antlr3.Runtime.Tree.TreeWizard;
+using UnityEngine.UIElements;
 
 public class RoomGenerator : MonoBehaviour
 {
@@ -21,6 +18,7 @@ public class RoomGenerator : MonoBehaviour
 
     public GameObject _startBlock;
     public List<Block> _intermediateBlocks;
+    public GameObject _endBlock;
 
     public GameObject connector2;
     public GameObject connector25;
@@ -162,6 +160,47 @@ public class RoomGenerator : MonoBehaviour
         if (rowMinus >= 0)
         {
             if (checkForBlock(rowMinus, col) && _map[rowMinus][col].east)
+            {
+                s += "W";
+            }
+        }
+        return s;
+    }
+
+    // Returns the string representation of the connections possible at a certain position
+    private string getConnectionsSelf(int row, int col)
+    {
+        Coordinate rowPlus = new Coordinate(row + 1, col);
+        Coordinate rowMinus = new Coordinate(row - 1, col);
+        Coordinate colPlus = new Coordinate(row, col + 1);
+        Coordinate colMinus = new Coordinate(row, col - 1);
+
+        string s = "";
+
+        if (colPlus.col < _mapHeight)
+        {
+            if (checkForBlockAdvanced(colPlus) && _map[row][col].northDoor.activeInHierarchy)
+            {
+                s += "N";
+            }
+        }
+        if (colMinus.col >= 0)
+        {
+            if (checkForBlockAdvanced(colMinus) && _map[row][col].southDoor.activeInHierarchy)
+            {
+                s += "S";
+            }
+        }
+        if (rowPlus.row < _mapWidth)
+        {
+            if (checkForBlockAdvanced(rowPlus) && _map[row][col].eastDoor.activeInHierarchy)
+            {
+                s += "E";
+            }
+        }
+        if (rowMinus.row >= 0)
+        {
+            if (checkForBlockAdvanced(rowMinus) && _map[row][col].westDoor.activeInHierarchy)
             {
                 s += "W";
             }
@@ -891,6 +930,62 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+    private void placeEnd(List<Coordinate> allIntermediates, Coordinate start)
+    {
+        List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.squaredDistanceTo(start)).ToList();
+        foreach (Coordinate c in sortedCoordinates)
+        {
+            string s = getConnectionsSelf(c.row, c.col);
+            float angle = 0.0f;
+            bool north = false;
+            bool south = false;
+            bool east = false;
+            bool west = false;
+            bool found = false;
+            Coordinate dstCoord = c;
+            if(s.Length == 0)
+            {
+                continue;
+            }
+            if (s.Contains('N'))
+            {
+                angle = 90.0f;
+                north = true;
+                found = true;
+                dstCoord.col++;
+                _map[c.row][c.col].northDoor.SetActive(false);
+            }
+            if (s.Contains('E') && !found)
+            {
+                east = true;
+                found = true;
+                dstCoord.row++;
+                _map[c.row][c.col].eastDoor.SetActive(false);
+            }
+            if (s.Contains('S') && !found)
+            {
+                angle = -90.0f;
+                south = true;
+                found = true;
+                dstCoord.col--;
+                _map[c.row][c.col].southDoor.SetActive(false);
+            }
+            if (s.Contains('W') && !found)
+            {
+                angle = 180.0f;
+                west = true;
+                _map[c.row][c.col].westDoor.SetActive(false);
+                dstCoord.row--;
+            }
+            MapRoom b = Instantiate(_endBlock).GetComponent<MapRoom>();
+            b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
+            canPlaceIntermediate(dstCoord.row, dstCoord.col, b);
+            _map[dstCoord.row][dstCoord.col] = b.At(0, 0);
+            b.At(0, 0).setDirections(north, south, east, west);
+            break;
+        }
+    }
+
     // Main generation function
     void GenerateRoom() {
 
@@ -1016,8 +1111,11 @@ public class RoomGenerator : MonoBehaviour
         // Open the doors and cap the doors leading to nowhere
         openDoors();
 
+        // Place the end block
+        placeEnd(startIntermediates, new Coordinate(midWidth, midHeight));
+
         // Debug purposes, color the grid with debug lines
-        //colorGrid();
+        colorGrid();
     }
 
     private void colorGrid()
@@ -1046,6 +1144,9 @@ public class RoomGenerator : MonoBehaviour
                             break;
                         case "Intermediate":
                             c = Color.cyan;
+                            break;
+                        case "End":
+                            c = new Color(1, 0.5f, 0f);
                             break;
                         default:
                             c = Color.magenta;
