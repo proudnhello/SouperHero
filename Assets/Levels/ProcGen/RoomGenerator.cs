@@ -379,7 +379,6 @@ public class RoomGenerator : MonoBehaviour
                     c = getConnectionsAt(row, col);
                 } else if (_map[row][col].BlockType() == "Connector")
                 {
-
                     c = getConnectionsAtAdvanced(row, col);
                     Destroy(_map[row][col].gameObject);
                 } else
@@ -503,7 +502,7 @@ public class RoomGenerator : MonoBehaviour
         }
         else
         {
-            int offset = isStart ? 0 : 1;
+            int offset = isStart ? 1 : 0;
             switch (path[offset])
             {
                 case 'N':
@@ -976,7 +975,7 @@ public class RoomGenerator : MonoBehaviour
                 {
                     foreach (Coordinate inter in startIntermediates)
                     {
-                        if(visited.Contains(inter))
+                        if (visited.Contains(inter))
                         {
                             continue;
                         }
