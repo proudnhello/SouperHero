@@ -83,7 +83,7 @@ public class CookingManager : MonoBehaviour
         }
     }
 
-    private void ResetStatsText()
+    public void ResetStatsText()
     {
         BuffText.text = "Buff Flavors:\n";
         InflictionText.text = "Infliction Flavors:\n";

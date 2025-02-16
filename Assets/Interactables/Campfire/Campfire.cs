@@ -40,6 +40,7 @@ public class Campfire : Interactable
         CookingScreen.SetActive(true);
         SetPlayerMovement(false);
         cooking = true;
+        CookingManager.Singleton.ResetStatsText();
     }
 
     public void StopCooking()
@@ -49,6 +50,7 @@ public class Campfire : Interactable
         cookingPot.SetActive(false);
         CookingScreen.SetActive(false);
         cooking = false;
+        CookingManager.Singleton.ResetStatsText();
     }
 
     private void SetPlayerMovement(bool value){
