@@ -1,10 +1,7 @@
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class RoomGenerator : MonoBehaviour
 {
@@ -24,6 +21,8 @@ public class RoomGenerator : MonoBehaviour
     public GameObject connector25;
     public GameObject connector3;
     public GameObject connector4;
+
+    public int mapSeed = -1;
 
     public int numIntermediates = 10;
 
@@ -988,6 +987,16 @@ public class RoomGenerator : MonoBehaviour
 
     // Main generation function
     void GenerateRoom() {
+        int seed = seed = UnityEngine.Random.Range(0, int.MaxValue);
+
+        if(mapSeed < 0) {
+            UnityEngine.Random.InitState(seed);
+            Debug.Log("SEED: " + seed);
+        } else
+        {
+            UnityEngine.Random.InitState(mapSeed);
+            Debug.Log("SEED: " + mapSeed);
+        }
 
         // Get mid width and height to place the start block
         int midWidth = (_mapWidth - 1) / 2;
