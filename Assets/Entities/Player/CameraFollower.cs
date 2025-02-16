@@ -25,7 +25,6 @@ public class CameraFollower : MonoBehaviour
         Vector3 targetDist = (mousePos - _player.position) / distanceMult;
 
         Vector3 targetPos = Vector3.ClampMagnitude(targetDist, maxDistance) + _player.position;
-        Debug.Log(mousePos + " " + targetDist + " " + targetPos);
         targetPos.z = 0;
 
         transform.position = targetPos;
