@@ -1,13 +1,7 @@
-using DG.Tweening;
-using DG.Tweening.Plugins;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
-using static Unity.VisualScripting.Antlr3.Runtime.Tree.TreeWizard;
 
 public class RoomGenerator : MonoBehaviour
 {
@@ -19,13 +13,30 @@ public class RoomGenerator : MonoBehaviour
 
     private List<List<Block>> _map;
 
+    [Header("START BLOCK")]
     public GameObject _startBlock;
+    [Header("INTERMEDIATE BLOCKS")]
     public List<Block> _intermediateBlocks;
+    [Header("END BLOCK")]
+    public GameObject _endBlock;
 
-    public GameObject connector2;
-    public GameObject connector25;
-    public GameObject connector3;
+    [Header("I CONNECTORS")]
+    public GameObject connectorEW;
+    public GameObject connectorNS;
+    [Header("L CONNECTORS")]
+    public GameObject connectorNW;
+    public GameObject connectorNE;
+    public GameObject connectorSE;
+    public GameObject connectorSW;
+    [Header("T CONNECTORS")]
+    public GameObject connectorNEW;
+    public GameObject connectorNSW;
+    public GameObject connectorSEW;
+    public GameObject connectorNSE;
+    [Header("+ CONNECTORS")]
     public GameObject connector4;
+
+    public int mapSeed = -1;
 
     public int numIntermediates = 10;
 
@@ -169,6 +180,47 @@ public class RoomGenerator : MonoBehaviour
         return s;
     }
 
+    // Returns the string representation of the connections possible at a certain position
+    private string getConnectionsSelf(int row, int col)
+    {
+        Coordinate rowPlus = new Coordinate(row + 1, col);
+        Coordinate rowMinus = new Coordinate(row - 1, col);
+        Coordinate colPlus = new Coordinate(row, col + 1);
+        Coordinate colMinus = new Coordinate(row, col - 1);
+
+        string s = "";
+
+        if (colPlus.col < _mapHeight)
+        {
+            if (checkForBlockAdvanced(colPlus) && _map[row][col].northDoor.activeInHierarchy)
+            {
+                s += "N";
+            }
+        }
+        if (colMinus.col >= 0)
+        {
+            if (checkForBlockAdvanced(colMinus) && _map[row][col].southDoor.activeInHierarchy)
+            {
+                s += "S";
+            }
+        }
+        if (rowPlus.row < _mapWidth)
+        {
+            if (checkForBlockAdvanced(rowPlus) && _map[row][col].eastDoor.activeInHierarchy)
+            {
+                s += "E";
+            }
+        }
+        if (rowMinus.row >= 0)
+        {
+            if (checkForBlockAdvanced(rowMinus) && _map[row][col].westDoor.activeInHierarchy)
+            {
+                s += "W";
+            }
+        }
+        return s;
+    }
+
     // Alternate version of above, checks for connectors, intermediates, and other blocks
     // Needed to use because of second pass connector updates - need to recgnize where other connectors are
     private string getConnectionsAtAdvanced(int row, int col)
@@ -254,113 +306,63 @@ public class RoomGenerator : MonoBehaviour
     // the appropriate connector block and rotates it to properly connect its surroundings
     private void pickAndPlaceDoubleAlternate(int row, int col, string c)
     {
-        float angle = 0.0f;
-        bool connectorType2Need = false;
-        bool north = false;
-        bool south = false;
-        bool east = false;
-        bool west = false;
+        MapRoom b = null;
         switch (c)
         {
             case "EE":
-                east = true;
-                west = true;
-                connectorType2Need = true;
+                b = Instantiate(connectorEW).GetComponent<MapRoom>();
                 break;
             case "WW":
-                east = true;
-                west = true;
-                connectorType2Need = true;
+                b = Instantiate(connectorEW).GetComponent<MapRoom>();
                 break;
             case "NN":
-                north = true;
-                south = true;
-                connectorType2Need = true;
-                angle = 90.0f;
+                b = Instantiate(connectorNS).GetComponent<MapRoom>();
                 break;
             case "SS":
-                north = true;
-                south = true;
-                connectorType2Need = true;
-                angle = 90.0f;
+                b = Instantiate(connectorNS).GetComponent<MapRoom>();
                 break;
             case "EN":
-                west = true;
-                north = true;
+                b = Instantiate(connectorNW).GetComponent<MapRoom>();
                 break;
             case "ES":
-                west = true;
-                south = true;
-                angle = 90.0f;
+                b = Instantiate(connectorSW).GetComponent<MapRoom>();
                 break;
             case "EW":
-                east = true;
-                west = true;
-                connectorType2Need = true;
+                b = Instantiate(connectorEW).GetComponent<MapRoom>();
                 break;
             case "NE":
-                south = true;
-                east = true;
-                angle = 180.0f;
+                b = Instantiate(connectorNE).GetComponent<MapRoom>();
                 break;
             case "NW":
-                south = true;
-                west = true;
-                angle = 90.0f;
+                b = Instantiate(connectorNW).GetComponent<MapRoom>();
                 break;
             case "NS":
-                south = true;
-                north = true;
-                connectorType2Need = true;
-                angle = 90.0f;
+                b = Instantiate(connectorNS).GetComponent<MapRoom>();
                 break;
             case "WN":
-                east = true;
-                north = true;
-                angle = -90.0f;
+                b = Instantiate(connectorNW).GetComponent<MapRoom>();
                 break;
             case "WE":
-                east = true;
-                west = true;
-                connectorType2Need = true;
+                b = Instantiate(connectorEW).GetComponent<MapRoom>();
                 break;
             case "WS":
-                east = true;
-                south = true;
-                angle = 180.0f;
+                b = Instantiate(connectorSW).GetComponent<MapRoom>();
                 break;
             case "SE":
-                north = true;
-                east = true;
-                angle = -90.0f;
+                b = Instantiate(connectorSE).GetComponent<MapRoom>();
                 break;
             case "SW":
-                north = true;
-                west = true;
+                b = Instantiate(connectorSW).GetComponent<MapRoom>();
                 break;
             case "SN":
-                north = true;
-                south = true;
-                connectorType2Need = true;
-                angle = 90.0f;
+                b = Instantiate(connectorNS).GetComponent<MapRoom>();
                 break;
             default:
                 break;
         }
-        MapRoom b = null;
-        if (connectorType2Need)
-        {
-            b = Instantiate(connector2).GetComponent<MapRoom>();
-        }
-        else
-        {
-            b = Instantiate(connector25).GetComponent<MapRoom>();
-        }
-        b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
         canPlaceIntermediate(row, col, b);
         fillBlock(row, col, b);
         _map[row][col] = b.At(0, 0);
-        b.At(0, 0).setDirections(north, south, east, west);
     }
 
     // Technically used for both first pass and second pass connecting
@@ -385,99 +387,57 @@ public class RoomGenerator : MonoBehaviour
                 {
                     continue;
                 }
-                bool north = false;
-                bool south = false;
-                bool east = false;
-                bool west = false;
                 switch (c.Length)
                 {
                     case 2:
-                        float angle = 0.0f;
-                        bool connectorType2Need = false;
+                        MapRoom b = null;
                         switch (c)
                         {
                             case "NW":
-                                north = true;
-                                west = true;
+                                b = Instantiate(connectorNW).GetComponent<MapRoom>();
                                 break;
                             case "NE":
-                                north = true;
-                                east = true;
-                                angle = -90.0f;
+                                b = Instantiate(connectorNE).GetComponent<MapRoom>();
                                 break;
                             case "NS":
-                                north = true;
-                                south = true;
-                                angle = 90.0f;
-                                connectorType2Need = true;
+                                b = Instantiate(connectorNS).GetComponent<MapRoom>();
                                 break;
                             case "SW":
-                                south = true;
-                                west = true;
-                                angle = 90.0f;
+                                b = Instantiate(connectorSW).GetComponent<MapRoom>();
                                 break;
                             case "SE":
-                                south = true;
-                                east = true;
-                                angle = 180.0f;
+                                b = Instantiate(connectorSE).GetComponent<MapRoom>();
                                 break;
                             case "EW":
-                                east = true;
-                                west = true;
-                                connectorType2Need = true;
+                                b = Instantiate(connectorEW).GetComponent<MapRoom>();
                                 break;
                             default:
                                 break;
                         }
-                        MapRoom b = null;
-                        if (connectorType2Need)
-                        {
-                            b = Instantiate(connector2).GetComponent<MapRoom>();
-                        }
-                        else
-                        {
-                            b = Instantiate(connector25).GetComponent<MapRoom>();
-                        }
-                        b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
                         canPlaceIntermediate(row, col, b);
                         fillBlock(row, col, b);
                         _map[row][col] = b.At(0, 0);
-                        b.At(0, 0).setDirections(north, south, east, west);
                         break;
                     case 3:
-                        float angle2 = 0.0f;
+                        MapRoom b2 = null;
                         switch(c)
                         {
                             case "NSE":
-                                north = true;
-                                south = true;
-                                east = true;
-                                angle2 = -90.0f;
+                                b2 = Instantiate(connectorNSE).GetComponent<MapRoom>();
                                 break;
                             case "NSW":
-                                north = true;
-                                south = true;
-                                west = true;
-                                angle2 = 90.0f;
+                                b2 = Instantiate(connectorNSW).GetComponent<MapRoom>();
                                 break;
                             case "SEW":
-                                south = true;
-                                east = true;
-                                west = true;
-                                angle2 = 180.0f;
+                                b2 = Instantiate(connectorSEW).GetComponent<MapRoom>();
                                 break;
                             case "NEW":
-                                north = true;
-                                east = true;
-                                west = true;
+                                b2 = Instantiate(connectorNEW).GetComponent<MapRoom>();
                                 break;
                         }
-                        MapRoom b2 = Instantiate(connector3).GetComponent<MapRoom>();
-                        b2.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle2));
                         canPlaceIntermediate(row, col, b2);
                         fillBlock(row, col, b2);
                         _map[row][col] = b2.At(0, 0);
-                        b2.At(0, 0).setDirections(north, south, east, west);
                         break;
                     case 4:
                         MapRoom b3 = Instantiate(connector4).GetComponent<MapRoom>();
@@ -891,8 +851,74 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+    private void placeEnd(List<Coordinate> allIntermediates, Coordinate start)
+    {
+        List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.squaredDistanceTo(start)).ToList();
+        foreach (Coordinate c in sortedCoordinates)
+        {
+            string s = getConnectionsSelf(c.row, c.col);
+            float angle = 0.0f;
+            bool north = false;
+            bool south = false;
+            bool east = false;
+            bool west = false;
+            bool found = false;
+            Coordinate dstCoord = c;
+            if(s.Length == 0)
+            {
+                continue;
+            }
+            if (s.Contains('N'))
+            {
+                angle = 90.0f;
+                north = true;
+                found = true;
+                dstCoord.col++;
+                _map[c.row][c.col].northDoor.SetActive(false);
+            }
+            if (s.Contains('E') && !found)
+            {
+                east = true;
+                found = true;
+                dstCoord.row++;
+                _map[c.row][c.col].eastDoor.SetActive(false);
+            }
+            if (s.Contains('S') && !found)
+            {
+                angle = -90.0f;
+                south = true;
+                found = true;
+                dstCoord.col--;
+                _map[c.row][c.col].southDoor.SetActive(false);
+            }
+            if (s.Contains('W') && !found)
+            {
+                angle = 180.0f;
+                west = true;
+                _map[c.row][c.col].westDoor.SetActive(false);
+                dstCoord.row--;
+            }
+            MapRoom b = Instantiate(_endBlock).GetComponent<MapRoom>();
+            b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
+            canPlaceIntermediate(dstCoord.row, dstCoord.col, b);
+            _map[dstCoord.row][dstCoord.col] = b.At(0, 0);
+            b.At(0, 0).setDirections(north, south, east, west);
+            break;
+        }
+    }
+
     // Main generation function
     void GenerateRoom() {
+        int seed = seed = UnityEngine.Random.Range(0, int.MaxValue);
+
+        if(mapSeed < 0) {
+            UnityEngine.Random.InitState(seed);
+            Debug.Log("SEED: " + seed);
+        } else
+        {
+            UnityEngine.Random.InitState(mapSeed);
+            Debug.Log("SEED: " + mapSeed);
+        }
 
         // Get mid width and height to place the start block
         int midWidth = (_mapWidth - 1) / 2;
@@ -1016,8 +1042,11 @@ public class RoomGenerator : MonoBehaviour
         // Open the doors and cap the doors leading to nowhere
         openDoors();
 
+        // Place the end block
+        placeEnd(startIntermediates, new Coordinate(midWidth, midHeight));
+
         // Debug purposes, color the grid with debug lines
-        //colorGrid();
+        colorGrid();
     }
 
     private void colorGrid()
@@ -1046,6 +1075,9 @@ public class RoomGenerator : MonoBehaviour
                             break;
                         case "Intermediate":
                             c = Color.cyan;
+                            break;
+                        case "End":
+                            c = new Color(1, 0.5f, 0f);
                             break;
                         default:
                             c = Color.magenta;

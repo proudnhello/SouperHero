@@ -55,7 +55,6 @@ public class PlayerInventory : MonoBehaviour
 
     void CycleSpoons(InputAction.CallbackContext ctx)
     {
-        Debug.Log("cycling");
         if (spoons.Count <= 1) return;
 
         if (ctx.ReadValue<float>() > 0)
@@ -68,7 +67,7 @@ public class PlayerInventory : MonoBehaviour
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         }
-        Debug.Log("swap to spoon = " + currentSpoon + " of " + spoons.Count);
+        //Debug.Log("swap to spoon = " + currentSpoon + " of " + spoons.Count);
     }
 
     void UseSpoon(InputAction.CallbackContext ctx)
