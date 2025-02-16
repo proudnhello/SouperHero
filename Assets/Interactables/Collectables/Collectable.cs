@@ -4,54 +4,22 @@ using UnityEngine;
 
 //Script for all collectable ingredients in the environment
 //Based off of the Chest.cs script
-public class Collectable : MonoBehavior
+public class Collectable : MonoBehaviour
 {
-    [Header("Collectable")]
-    [SerializeField] private Ingredient ingredient;
-    private bool collected = false;
-    private Vector2 playerPosition;
-    private float collectionSpeed = 6f;
-    Collider2D _collider;
+    [SerializeField] CollectableObject collectableObj;
+    [SerializeField] GameObject collectableUI;
 
+    //Spawn ingredient gameObject at position
     public void Spawn(Vector2 spawnPoint)
     {
-        type = this.name;
-        interactablePrompt.SetActive(false);  //Disable interactable prompt
-        _collider = GetComponent<Collider2D>();
+        collectableObj.Drop(spawnPoint);
     }
 
-    public override void Interact()
+    //
+    public void Collect()
     {
-        if (CanInteract())
-        {
-            Collect();
-            collected = true;
-        }
-    }
-
-    private void Collect()
-    {
-        PlayerInventory.Singleton.CollectIngredient(ingredient);
-        SetInteractable(false);  //Cannot interact multiple times
-        SetInteractablePrompt(false);  //Remove prompt
-    }
-
-    private void FixedUpdate()
-    {
-        if (collected)
-        {
-            CollectionAnimation();
-        }
-    }
-
-    private void CollectionAnimation()
-    {
-        _collider.enabled = false;
-        playerPosition = PlayerEntityManager.Singleton.gameObject.transform.position;
-        transform.position = Vector2.MoveTowards(transform.position, playerPosition, collectionSpeed * Time.deltaTime);
-        if (Vector2.Distance(transform.position, playerPosition) < 0.01f)
-        {
-            Destroy(gameObject);
-        }
+        collectableObj.gameObject.SetActive(false);
+        collectableUI.SetActive(true);
+        AddToPot.Singleton.AddIngredient(collectableUI);
     }
 }

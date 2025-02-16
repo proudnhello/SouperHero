@@ -47,9 +47,9 @@ public class PlayerEnvInteraction : MonoBehaviour
             currentInteractable.Interact();
 
             interactCounter++;
-            Debug.Log($"Interact if statement has been run {interactCounter} times");
+            //Debug.Log($"Interact if statement has been run {interactCounter} times");
 
-            Debug.Log("Interacted with " + currentInteractable.GetInteractableType() + $"at time: {Time.time}, Frame: {Time.frameCount}");
+            //Debug.Log("Interacted with " + currentInteractable.GetInteractableType() + $"at time: {Time.time}, Frame: {Time.frameCount}");
         }
     }
 }
