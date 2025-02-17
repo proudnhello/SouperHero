@@ -6,8 +6,8 @@ using Cinemachine;
 public class CameraFollower : MonoBehaviour
 {
     // Controls how much the camera follows the player and how much it follows the mouse
-    [SerializeField] float maxDistance;
-    [SerializeField] float distanceMult;
+    [SerializeField] Vector2 maxDistance;
+    [SerializeField] Vector2 distanceDivider;
 
     CinemachineVirtualCamera vcam;
     Transform _player;
@@ -22,10 +22,11 @@ public class CameraFollower : MonoBehaviour
     void Update()
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 targetDist = (mousePos - _player.position) / distanceMult;
+        Vector3 targetDist = (mousePos - _player.position) / distanceDivider;
 
-        Vector3 targetPos = Vector3.ClampMagnitude(targetDist, maxDistance) + _player.position;
-        targetPos.z = 0;
+        Vector3 targetPos = new Vector3(Mathf.Clamp(targetDist.x, -maxDistance.x, maxDistance.x),
+                                        Mathf.Clamp(targetDist.y, -maxDistance.y, maxDistance.y), 0)
+                                        + _player.position;
 
         transform.position = targetPos;
     }

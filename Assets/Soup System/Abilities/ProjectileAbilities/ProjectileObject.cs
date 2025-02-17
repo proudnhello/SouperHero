@@ -26,8 +26,7 @@ public class ProjectileObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        bool isEnemy = CollisionLayers.Singleton.InEnemyLayer(collider.gameObject);
-        if (isEnemy)
+        if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();
 
@@ -40,6 +39,7 @@ public class ProjectileObject : MonoBehaviour
         {
             collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
         }
+        gameObject.SetActive(false);
     }
 
 
