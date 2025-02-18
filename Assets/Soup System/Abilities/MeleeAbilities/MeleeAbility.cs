@@ -107,7 +107,7 @@ public class MeleeAbility : AbilityAbstractClass
             Debug.LogWarning("Circle GameObject is not assigned.");
         }
 
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.1f);
 
         circle.SetActive(false);
     }

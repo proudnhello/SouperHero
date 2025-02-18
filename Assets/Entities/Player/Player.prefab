@@ -90,7 +90,7 @@ MonoBehaviour:
     invincibility: 1
   playerAttackPoint: {fileID: 6670828410753148305}
   animations: {fileID: 11400000, guid: bf07f1b198392e9458fd9bd5aad1a318, type: 2}
-  circle: {fileID: 0}
+  circle: {fileID: 1459888560859293002}
   playerMovement: {fileID: 4828791170773762287}
 --- !u!114 &4828791170773762287
 MonoBehaviour:
@@ -481,11 +481,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Melee Attack
       objectReference: {fileID: 0}
+    - target: {fileID: 7607374964467746724, guid: 95955ed275ddc4848b233a779c365b71, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 95955ed275ddc4848b233a779c365b71, type: 3}
+--- !u!1 &1459888560859293002 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7607374964467746724, guid: 95955ed275ddc4848b233a779c365b71, type: 3}
+  m_PrefabInstance: {fileID: 9065820611466519278}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7184749418522654270 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2190183558626989264, guid: 95955ed275ddc4848b233a779c365b71, type: 3}
