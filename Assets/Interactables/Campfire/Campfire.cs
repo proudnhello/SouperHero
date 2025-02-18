@@ -37,6 +37,10 @@ public class Campfire : Interactable
     {
         CursorManager.Singleton.ShowCursor();
         cookingPot.SetActive(true);
+        if(CookingScreen == null)
+        {
+            CookingScreen = CookingManager.Singleton.CookingCanvas;
+        }
         CookingScreen.SetActive(true);
         SetPlayerMovement(false);
         cooking = true;

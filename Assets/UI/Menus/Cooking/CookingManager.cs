@@ -15,6 +15,7 @@ public class CookingManager : MonoBehaviour
     public TMP_Text BuffText;
     public TMP_Text InflictionText;
     public TMP_Text AbilitiesText;
+    public GameObject CookingCanvas;
     private SoupSpoon statSpoon;
     
     private void Awake()
