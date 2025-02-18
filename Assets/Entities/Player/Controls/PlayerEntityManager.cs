@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
-
 public class PlayerEntityManager : Entity
 {
     public static PlayerEntityManager Singleton { get; private set; }
@@ -11,6 +10,8 @@ public class PlayerEntityManager : Entity
     public PlayerInputActions input;
     public Transform playerAttackPoint;
     public PlayerAnimationHolder animations;
+    public GameObject circle;
+
 
     private void Awake()
     {
