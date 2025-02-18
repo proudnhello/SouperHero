@@ -28,6 +28,8 @@ public class DumbCharger : EnemyBaseClass
             UpdateAI();
         }
         else Patrol();
+
+        Debug.Log(agent.isOnNavMesh);
     }
     protected override void UpdateAI(){
         agent.SetDestination(_playerTransform.position);

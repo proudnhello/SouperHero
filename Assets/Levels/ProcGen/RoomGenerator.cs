@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NavMeshPlus.Components;
 using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
@@ -35,7 +36,9 @@ public class RoomGenerator : MonoBehaviour
     public GameObject connectorNSE;
     [Header("+ CONNECTORS")]
     public GameObject connector4;
-
+    [Header("NavMesh")]
+    public NavMeshSurface NavMesh;
+    [Header("Generation Parameters")]
     public int mapSeed = -1;
 
     public int numIntermediates = 10;
@@ -56,6 +59,7 @@ public class RoomGenerator : MonoBehaviour
         }
         // After map is created, generate the rooms
         GenerateRoom();
+        NavMesh.BuildNavMeshAsync();
     }
 
     // Obtains the offset needed to position the room along grid lines given a row and column
