@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5420586874744418633}
   m_Layer: 6
   m_Name: AttackPointSwivel
+  m_Name: AttackPointSwivel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,6 +26,7 @@ Transform:
   m_GameObject: {fileID: 4525903629897923446}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
@@ -67,7 +69,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6693234063144610310}
   - {fileID: 6868925890988487147}
   - {fileID: 5420586874744418633}
   m_Father: {fileID: 0}
@@ -88,6 +89,8 @@ MonoBehaviour:
     maxHealth: 100
     baseMoveSpeed: 7
     invincibility: 1
+  playerAttackPoint: {fileID: 6670828410753148305}
+  animations: {fileID: 11400000, guid: bf07f1b198392e9458fd9bd5aad1a318, type: 2}
   playerAttackPoint: {fileID: 6670828410753148305}
   animations: {fileID: 11400000, guid: bf07f1b198392e9458fd9bd5aad1a318, type: 2}
 --- !u!114 &4828791170773762287
@@ -159,6 +162,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 5
   m_Sprite: {fileID: -1336732016, guid: 5e481775ca0e9334ab3cc55e854887dc, type: 3}
+  m_Sprite: {fileID: -1336732016, guid: 5e481775ca0e9334ab3cc55e854887dc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -195,6 +199,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
+  m_Constraints: 4
   m_Constraints: 4
 --- !u!58 &8177800859328342747
 CircleCollider2D:
@@ -247,6 +252,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
+  m_IsActive: 0
   m_IsActive: 0
 --- !u!4 &6868925890988487147
 Transform:
@@ -342,11 +348,11 @@ Transform:
   m_GameObject: {fileID: 5370700651450078362}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.70000005, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.042, y: 0.374, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 9090454973021212795}
+  m_Father: {fileID: 5420586874744418633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &161947618192363161
 CircleCollider2D:
@@ -382,7 +388,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.7
+  m_Radius: 0.4
 --- !u!114 &7715286133171712994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +401,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8a7c1ce45e9140788922d5e42dd44ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &5689117321558880920
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6670828410753148305}
+  m_Layer: 6
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6670828410753148305
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5689117321558880920}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.39049911, z: -0.0108567}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5420586874744418633}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5689117321558880920
 GameObject:
   m_ObjectHideFlags: 0

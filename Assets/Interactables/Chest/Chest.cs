@@ -5,7 +5,8 @@ using UnityEngine;
 public class Chest : Interactable
 {
     [Header("Chest")]
-    [SerializeField] private FlavorIngredient ingredient;
+    //[SerializeField] private FlavorIngredient ingredient;
+    [SerializeField] protected List<Collectable> items;
 
     private void Start()
     {
@@ -25,15 +26,11 @@ public class Chest : Interactable
     }
 
     private void OpenChest(){
+        Vector3 offset = new Vector3(0, -0.75f, 0);
 
-        if (ingredient == null)
-        {
-            Debug.LogError("OpenChest: ingredient is null! Make sure to check its defined in the inspector!");
-            return;
-        }
+        Collectable collectable = items[Random.Range(0, items.Count)];  // choose a random item from the list
+        Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position + offset); //Spawn collectable when chest is opened
 
-        // add the ingredient to the player's inventory
-        PlayerInventory.Singleton.CollectIngredient(ingredient);
         // set the interactable to false so the chest can't be opened multiple times
         SetInteractable(false);
         // remove the interactable prompt
