@@ -10,13 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1761131533934906183}
   - component: {fileID: 2809030070861402311}
-  - component: {fileID: 8044866554995032770}
+  - component: {fileID: -5704359773098391079}
   - component: {fileID: 6920273806976612146}
   - component: {fileID: 8861274353524817884}
   - component: {fileID: 9008640461073123377}
   - component: {fileID: 5307198346894179568}
   m_Layer: 7
-  m_Name: Bonking Mushroom
+  m_Name: Hopshroom
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,11 +30,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 168831875005999359}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.32, y: -2.5, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 1398243100445356601}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2809030070861402311
@@ -75,10 +76,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1626352531
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7dcfa651e9128f04c8624f9af0486da8, type: 3}
+  m_Sprite: {fileID: 1541153362, guid: eeb291dc900b9994fa2c8b23bf2788df, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -89,7 +90,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8044866554995032770
+--- !u!114 &-5704359773098391079
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,23 +99,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 168831875005999359}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 606e1cef5d5a34671ac4ea10cb4aeb0f, type: 3}
+  m_Script: {fileID: 11500000, guid: 22d0ed89a70c02a43b97f7052c4df1a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   baseStats:
     maxHealth: 40
     baseMoveSpeed: 8
     invincibility: 0.5
-  collectable: {fileID: 8164715066139808346, guid: 0ba15ba2d64c9224fb33c9d3eea295a0, type: 3}
+  collectable: {fileID: 0}
   playerCollisionDamage: 10
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
-  detectionRadius: 4
-  followingRadius: 6
+  detectionRadius: 9
+  followingRadius: 12
+  shootingRadius: 6
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
+  timeToShoot: 0.4
+  timeAfterShoot: 0.1
+  timeBetweenShots: 2
+  firingPoint: {fileID: 1398243100445356601}
+  bullet: {fileID: 6867430482067145103, guid: 8736b60df83c03540bb5bc960fb10f04, type: 3}
 --- !u!50 &6920273806976612146
 Rigidbody2D:
   serializedVersion: 4
@@ -207,9 +214,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 168831875005999359}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a9e0fe0824914c04d968c3a8abec8291, type: 2}
+  m_Controller: {fileID: 9100000, guid: 065cde7eb730a8346b8a82753f1afff6, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -220,3 +227,34 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &3628500641113481724
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1398243100445356601}
+  m_Layer: 0
+  m_Name: Firing Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1398243100445356601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3628500641113481724}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.053, y: -0.031, z: -0.0016682781}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1761131533934906183}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
