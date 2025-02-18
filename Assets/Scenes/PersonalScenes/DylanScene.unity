@@ -1176,6 +1176,17 @@ MonoBehaviour:
   connector4: {fileID: 5531008064354232718, guid: d55c13b818053924490833914409fb47, type: 3}
   mapSeed: -1
   numIntermediates: 10
+--- !u!114 &325023023 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8008887023898342242, guid: f7d33bbb2c0724598a0b3fe44a2f5121, type: 3}
+  m_PrefabInstance: {fileID: 757645494}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02a5ca710d1d2448ab67a81f71a7cc20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &351240724
 GameObject:
   m_ObjectHideFlags: 0
@@ -3893,7 +3904,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 325023023}
         m_TargetAssemblyTypeName: Campfire, Assembly-CSharp
         m_MethodName: StopCooking
         m_Mode: 1
@@ -4268,6 +4279,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -1336732016, guid: 5e481775ca0e9334ab3cc55e854887dc, type: 3}
+    - target: {fileID: 7339678796142318859, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: defaultSpoonIngredients.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 20672cb06c3fb0f49b9c47981f32dce5, type: 2}
     - target: {fileID: 9090454973021212795, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 68
