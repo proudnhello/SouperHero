@@ -104,10 +104,10 @@ public class SoupSpoon
     float lastTimeUsed;
 
     // Method to use the spoon, applying abilities and managing uses
-    public void UseSpoon()
+    public bool UseSpoon()
     {
         // Check if the spoon is on cooldown
-        if ((Time.time - lastTimeUsed) < cooldown) return;
+        if ((Time.time - lastTimeUsed) < cooldown) return false;
         lastTimeUsed = Time.time;
 
         // Apply each ability using the spoon
@@ -118,5 +118,6 @@ public class SoupSpoon
 
         // Decrement uses if applicable
         if (uses > 0) uses--;
+        return true;
     }
 }

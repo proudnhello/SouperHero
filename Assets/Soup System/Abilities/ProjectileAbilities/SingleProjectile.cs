@@ -20,7 +20,7 @@ public class SingleProjectile : AbilityAbstractClass
         stats.size *= SIZE_MULTIPLIER;
         stats.speed *= SPEED_MULTIPLIER;
         proj.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
-            PlayerEntityManager.Singleton.gameObject.transform.up,
+            PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
             stats, inflictions);
     }
 }

@@ -5,7 +5,7 @@ using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Spacer : EnemyBaseClass
+public class SpacingCharger : EnemyBaseClass
 {
     [Header("Player Detection")]
     private bool playerDetected = false;
