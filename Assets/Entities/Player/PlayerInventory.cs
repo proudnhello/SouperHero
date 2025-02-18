@@ -34,6 +34,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void CollectIngredient(Ingredient ingredient)
     {
+        Debug.Log($"Collected Ingredient {ingredient}");
         ingredientsHeld.Add(ingredient);
     }
 

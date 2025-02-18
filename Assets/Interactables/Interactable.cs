@@ -6,8 +6,11 @@ public abstract class Interactable : MonoBehaviour
 {
     [Header("Info")]
     protected string type;
-    protected bool canInteract = true; //Always start object as interactable
 
+    [Header("Interactable (Do Not Edit)")]
+    [SerializeField] protected bool canInteract = true; //Always start object as interactable
+
+    [Header("Make Sure is Set")]
     [SerializeField] public GameObject interactablePrompt;
 
     public abstract void Interact();
