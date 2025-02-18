@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Singleton { get; private set; }
+    public static event Action UsedSpoon;
     public int maxSpoons = 4;
 
     [SerializeField] List<Ingredient> defaultSpoonIngredients;
@@ -74,6 +76,8 @@ public class PlayerInventory : MonoBehaviour
     {
         SoupSpoon spoon = spoons[currentSpoon];
         spoon.UseSpoon();
+        UsedSpoon?.Invoke();
+
         if (spoon.uses == 0)
         {
             spoons.RemoveAt(currentSpoon);

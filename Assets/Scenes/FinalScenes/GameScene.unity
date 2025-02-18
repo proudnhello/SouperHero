@@ -3336,7 +3336,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -25.000122, y: 106}
+  m_AnchoredPosition: {x: -25.000244, y: 106}
   m_SizeDelta: {x: 1727.99, y: 55.611}
   m_Pivot: {x: 0, y: 0}
 --- !u!1001 &1206354930
@@ -4036,6 +4036,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 99970492126700294, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: animations
+      value: 
+      objectReference: {fileID: 11400000, guid: bf07f1b198392e9458fd9bd5aad1a318, type: 2}
     - target: {fileID: 234655282318529072, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: vcam
       value: 
@@ -4056,6 +4060,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4879062663162897533, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5557595635640825330, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5557595635640825330, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: m_FlipY
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5557595635640825330, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1336732016, guid: 5e481775ca0e9334ab3cc55e854887dc, type: 3}
     - target: {fileID: 9090454973021212795, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 68
@@ -4096,7 +4116,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6250594306297385194, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1877849323348380097, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
     m_AddedGameObjects: []

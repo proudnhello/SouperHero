@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _previousMousePosition;
     InputAction movementInput;
 
+    internal float currrentMoveSpeed = 0;
+    internal Vector2 currentDirection;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -26,13 +29,11 @@ public class PlayerMovement : MonoBehaviour
 
     void OnEnable()
     {
-        Debug.Log("Player Movement has been enabled.");
         rb.bodyType = RigidbodyType2D.Dynamic;
     }
 
     void OnDisable()
     {
-        Debug.Log("Player Movement has been disabled.");
         rb.bodyType = RigidbodyType2D.Kinematic; // Prevent physics interactions
         rb.velocity = Vector2.zero; // Stop movement
         rb.angularVelocity = 0f; // Stop rotation
@@ -60,11 +61,9 @@ public class PlayerMovement : MonoBehaviour
             _useMouse = false;
         }
 
-        Vector2 keyDirection = movementInput.ReadValue<Vector2>().normalized;
+        currentDirection = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
 
-        Vector2 direction = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
-
-        transform.up = direction;
+        PlayerEntityManager.Singleton.playerAttackPoint.parent.transform.up = currentDirection; // swivel attack point around player
 
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
@@ -74,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerEntityManager.Singleton.GetMoveSpeed();
+        currrentMoveSpeed = rb.velocity.magnitude;
     }
 
 

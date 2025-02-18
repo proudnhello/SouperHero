@@ -16,12 +16,13 @@ public class ProjectileObject : MonoBehaviour
     {
         this.stats = stats;
         this.inflictions = inflictions;
-        gameObject.SetActive(true);
         persistenceTime = 0;
 
         transform.position = spawnPoint;
-        rb.velocity = dir * stats.speed;
         transform.localScale = new Vector3(stats.size, stats.size, stats.size);
+        gameObject.SetActive(true);
+        rb.velocity = dir * stats.speed;
+
     }
 
     private void OnTriggerEnter2D(Collider2D collider)

@@ -10,15 +10,16 @@ public class PlayerEntityManager : Entity
     public static event Action HealthChange;
     public PlayerInputActions input;
     public Transform playerAttackPoint;
+    public PlayerAnimationHolder animations;
 
     private void Awake()
     {
         if (Singleton == null) Singleton = this;
-        
-        entityRenderer = new PlayerRenderer(this);
+           
         InitEntity();
         input = new();
         input.Enable();
+        entityRenderer = new PlayerRenderer(this, animations);
     }
     public override void ModifyHealth(int amount)
     {

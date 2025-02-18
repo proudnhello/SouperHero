@@ -3,8 +3,8 @@ using System.Collections;
 
 public class EntityRenderer
 {
-    Entity Entity;
-    SpriteRenderer spriteRenderer;
+    protected Entity Entity;
+    protected SpriteRenderer spriteRenderer;
     public EntityRenderer(Entity entity)
     {
         Entity = entity;
