@@ -9,12 +9,6 @@ public abstract class EnemyBaseClass : Entity
     [Header("Enemy Info")]
     [SerializeField] protected Collectable collectable;
     public int playerCollisionDamage = 10;
-
-    [Header("Player Detection")]
-    private bool playerDetected = false;
-    private float detectionRadius = 4f;
-    private float detectionDelay = 0.3f;
-    [SerializeField] protected LayerMask playerLayer;
     [SerializeField] LayerMask interactableLayer;
 
     internal SpriteRenderer _sprite;
@@ -23,7 +17,7 @@ public abstract class EnemyBaseClass : Entity
     protected Collider2D _collider;
     protected NavMeshAgent agent;
 
-    protected void Start()
+    protected void initEnemy()
     {
         _sprite = GetComponent<SpriteRenderer>();
         _playerTransform = PlayerEntityManager.Singleton.gameObject.transform;
@@ -32,19 +26,7 @@ public abstract class EnemyBaseClass : Entity
         entityRenderer = new(this);
         agent = GetComponent<NavMeshAgent>();
 
-        StartCoroutine(DetectionCoroutine());
         InitEntity();
-    }
-
-    protected void Update()
-    {
-        if (IsDead()) return;
-
-        if (playerDetected)
-        {
-            UpdateAI();
-        }
-        else Patrol();
     }
     protected abstract void UpdateAI();
     protected void Die()
@@ -63,38 +45,5 @@ public abstract class EnemyBaseClass : Entity
         {
             Die();
         }
-    }
-
-    IEnumerator DetectionCoroutine()
-    {
-        yield return new WaitForSeconds(detectionDelay);
-        CheckDetection();
-        StartCoroutine(DetectionCoroutine());
-    }
-
-    protected void CheckDetection()
-    {
-        Collider2D collider = Physics2D.OverlapCircle((Vector2)transform.position, detectionRadius, playerLayer);
-        if (collider != null)
-        {
-            playerDetected = true;
-        } else
-        {
-            playerDetected = false;
-        }
-    }
-
-    protected void Patrol()
-    {
-        _rigidbody.velocity = Vector2.zero;
-    } 
-
-    private void OnDrawGizmos() //Testing only
-    {
-        //Lo: Toggle Gizmos on in game view to see radius
-        //Display detection radius on enemies
-        Gizmos.color = new Color(255, 0, 0, 0.25f);
-        if (playerDetected) Gizmos.color = new Color(0, 255, 0, 0.25f);
-        Gizmos.DrawSphere((Vector2)transform.position, detectionRadius);
     }
 }
