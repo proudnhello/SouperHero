@@ -22,17 +22,22 @@ public class MeleeAbility : AbilityAbstractClass
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
-        // visualizes the attack area
-        PlayerEntityManager.Singleton.StartCoroutine(SetCircle());
 
         Debug.Log("Use Melee Ability");
 
         Debug.Log($"Enemy Layer: {CollisionLayers.Singleton.GetEnemyLayer().value}");
         Debug.Log($"Destroyable Layer: {CollisionLayers.Singleton.GetDestroyableLayer().value}");
 
+        Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
+
+        Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (currentDirection * SIZE_MULTIPLIER);
+
+        // visualizes the attack area
+        PlayerEntityManager.Singleton.StartCoroutine(SetCircle(center));
+
         // Get all colliders in range for enemies and destroyables
         Collider2D[] hitObjects = Physics2D.OverlapCircleAll(
-            PlayerEntityManager.Singleton.playerAttackPoint.position,
+            center,
             size * SIZE_MULTIPLIER,
             CollisionLayers.Singleton.GetEnemyLayer() | CollisionLayers.Singleton.GetDestroyableLayer()
         );
@@ -48,7 +53,7 @@ public class MeleeAbility : AbilityAbstractClass
             Vector3 directionToObject = hitObject.transform.position - PlayerEntityManager.Singleton.playerAttackPoint.position;
             float distanceToObject = directionToObject.magnitude;
 
-            RaycastHit2D hit = Physics2D.Raycast(PlayerEntityManager.Singleton.playerAttackPoint.position, directionToObject.normalized, distanceToObject, CollisionLayers.Singleton.GetCollisionLayer());
+            RaycastHit2D hit = Physics2D.Raycast(PlayerEntityManager.Singleton.playerAttackPoint.position, directionToObject.normalized, distanceToObject, CollisionLayers.Singleton.GetEnvironmentLayer());
 
             // Check if the object is blocked by an obstacle
             if (hit.collider == null)
@@ -79,7 +84,7 @@ public class MeleeAbility : AbilityAbstractClass
     }
 
     // Function to set the circle's size and position to match the ability's physics sphere
-    private IEnumerator SetCircle()
+    private IEnumerator SetCircle(Vector2 center)
     {
 
         Debug.Log("Setting Attack UI");
@@ -89,7 +94,7 @@ public class MeleeAbility : AbilityAbstractClass
         if (circle != null)
         {
             // Set the position of the circle to match the player's attack point
-            circle.transform.position = PlayerEntityManager.Singleton.playerAttackPoint.position;
+            circle.transform.position = center;
 
             // Set the size of the circle (assuming the circle is a 2D object with a SpriteRenderer)
             float circleRadius = size;  // The radius of the circle matches the attack radius

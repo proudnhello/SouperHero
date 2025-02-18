@@ -11,7 +11,7 @@ public class PlayerEntityManager : Entity
     public Transform playerAttackPoint;
     public PlayerAnimationHolder animations;
     public GameObject circle;
-
+    public PlayerMovement playerMovement;
 
     private void Awake()
     {

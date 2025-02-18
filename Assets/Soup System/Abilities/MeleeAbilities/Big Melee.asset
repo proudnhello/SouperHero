@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a185cc953ce35a64d8887da9800b40b4, type: 3}
-  m_Name: Sherbert Beard
+  m_Script: {fileID: 11500000, guid: 28aeb0d5cdb52fa4687883e491cc655a, type: 3}
+  m_Name: Big Melee
   m_EditorClassIdentifier: 
-  id: 0
-  ingredientName: Sherbert Beard
-  icon: {fileID: 21300000, guid: eaa1e0218f8193545acb2b448eb864dc, type: 3}
-  ability: {fileID: 11400000, guid: be0f496806e27dd42b14b9e985fd4ed2, type: 2}
-  baseStats:
+  _abilityName: Bigger Melee
+  SIZE_MULTIPLIER: 1
+  CRIT_MULTIPLIER: 0.5
+  SPEED_MULTIPLIER: 0.5
+  ATTACK_RATE_MULTIPLIER: 0.5
+  segments: 36
+  stats:
     duration: 0
     size: 0
     crit: 0
     speed: 0
     cooldown: 0
-  inherentInflictionFlavors: []
-  uses: 10
