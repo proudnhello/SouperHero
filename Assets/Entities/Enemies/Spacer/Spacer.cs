@@ -7,11 +7,17 @@ using UnityEngine.AI;
 
 public class Spacer : EnemyBaseClass
 {
+    [Header("Player Detection")]
+    private bool playerDetected = false;
+    [SerializeField] private float detectionRadius = 4f;
+    [SerializeField] private float followingRadius = 6f;
+    private float detectionDelay = 0.3f;
+    [SerializeField] protected LayerMask playerLayer;
     [SerializeField] float attackRadius = 3.0f;
     [SerializeField] float timeBetweenAttacks = 1.0f;
     private bool playerWithinRange;
-    protected new void Start(){
-        base.Start();
+    protected void Start(){
+        initEnemy();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         playerWithinRange = false;
@@ -35,7 +41,13 @@ public class Spacer : EnemyBaseClass
         agent.SetDestination(_playerTransform.position);
     }
 
-    protected new void Update(){
-        base.Update();
+    protected void Update()
+    {
+        if (IsDead()) return;
+
+        if (playerDetected)
+        {
+            UpdateAI();
+        }
     }
 }

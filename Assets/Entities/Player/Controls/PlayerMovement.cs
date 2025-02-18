@@ -30,6 +30,11 @@ public class PlayerMovement : MonoBehaviour
     void OnEnable()
     {
         rb.bodyType = RigidbodyType2D.Dynamic;
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            col.enabled = true;
+        }
     }
 
     void OnDisable()

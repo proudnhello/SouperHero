@@ -632,7 +632,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 1886331527}
-  m_Horizontal: 1
+  m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
   m_Elasticity: 0.1
@@ -1136,10 +1136,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8c9bd47101de440ae161494618bb11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CookingContent: {fileID: 0}
-  BuffText: {fileID: 0}
-  InflictionText: {fileID: 0}
-  AbilitiesText: {fileID: 0}
+  CookingContent: {fileID: 351240725}
+  BuffText: {fileID: 616876937}
+  InflictionText: {fileID: 1430210150}
+  AbilitiesText: {fileID: 138029896}
+  CookingCanvas: {fileID: 2126423337}
   cookingIngredients: []
 --- !u!114 &324424344
 MonoBehaviour:
@@ -1159,9 +1160,12 @@ MonoBehaviour:
   _mapHeight: 10
   _startBlock: {fileID: 5531008064354232718, guid: 9c94621fa4c83a349b0e04733a2dc9df, type: 3}
   _intermediateBlocks:
-  - {fileID: 5308434903949795293, guid: ede97fe4af33096448ae5462e4ea501d, type: 3}
-  - {fileID: 5308434903949795293, guid: 62ebd2bee9c4334489a4be73453c0e94, type: 3}
-  - {fileID: 5308434903949795293, guid: 903f598d263cbff43baf27f737c50419, type: 3}
+  - {fileID: 7709215253725050347, guid: 88f8cf19d8d29ca4f90d935824a76f0b, type: 3}
+  - {fileID: 5308434903949795293, guid: d9264cc91d8698d4989c28117840be54, type: 3}
+  - {fileID: 5308434903949795293, guid: 9e399b3337b8cb149bae8e159ce33efd, type: 3}
+  - {fileID: 5308434903949795293, guid: 2a398b01334d40b40bc0c42ee5b035fb, type: 3}
+  - {fileID: 5308434903949795293, guid: 4913c3d3b5f46084ca5ae604d3134e6c, type: 3}
+  - {fileID: 5308434903949795293, guid: 1bf43aed03dfc3b4da87b99e69ef90ea, type: 3}
   _endBlock: {fileID: 5531008064354232718, guid: b9fb9d6ae9510ff4c88120f0229c07cf, type: 3}
   connectorEW: {fileID: 5531008064354232718, guid: 7308881fb13a11a409d5e6631433c862, type: 3}
   connectorNS: {fileID: 5531008064354232718, guid: ac87fccb23742ea498aa682aac7088bb, type: 3}
@@ -1174,6 +1178,7 @@ MonoBehaviour:
   connectorSEW: {fileID: 5531008064354232718, guid: 89778ebf4a3690d4aa8cd3c32f2f3b9b, type: 3}
   connectorNSE: {fileID: 5531008064354232718, guid: 232cc2a67e051cc43ac3f05b3b145bbd, type: 3}
   connector4: {fileID: 5531008064354232718, guid: d55c13b818053924490833914409fb47, type: 3}
+  NavMesh: {fileID: 1928317170}
   mapSeed: -1
   numIntermediates: 10
 --- !u!1 &351240724
@@ -2789,7 +2794,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 324424343}
         m_TargetAssemblyTypeName: CookingManager, Assembly-CSharp
         m_MethodName: CookTheSoup
         m_Mode: 1
@@ -2891,6 +2896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slot: 0
 --- !u!114 &1020262120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3336,7 +3342,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -25.000244, y: 106}
+  m_AnchoredPosition: {x: -25.000366, y: 106}
   m_SizeDelta: {x: 1727.99, y: 55.611}
   m_Pivot: {x: 0, y: 0}
 --- !u!1001 &1206354930
@@ -4922,6 +4928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slot: 0
 --- !u!114 &1693560871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5246,6 +5253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slot: 0
 --- !u!114 &1837384546
 MonoBehaviour:
   m_ObjectHideFlags: 0
