@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class SuicideBomberScript : EnemyBaseClass
 {
+    [Header("Player Detection")]
+    private bool playerDetected = false;
+    [SerializeField] private float detectionRadius = 4f;
+    [SerializeField] private float followingRadius = 6f;
+    private float detectionDelay = 0.3f;
+    [SerializeField] protected LayerMask playerLayer;
+
     [SerializeField]
     private float _runSpeed = 5f;
     [SerializeField]
@@ -22,9 +29,9 @@ public class SuicideBomberScript : EnemyBaseClass
     public float _chaseForSeconds = 2.0f;
     private GameObject _explosionPNG;
 
-    protected new void Start()
+    protected void Start()
     {
-        base.Start();
+        initEnemy();
         _state = BomberState.IDLING;
         _detectionRadius = transform.GetChild(0).gameObject;
         _explosionPNG = transform.GetChild(1).gameObject;
@@ -86,8 +93,13 @@ public class SuicideBomberScript : EnemyBaseClass
         DestroyImmediate(this.gameObject);
     }
 
-    protected new void Update()
+    protected void Update()
     {
-        base.Update();
+        if (IsDead()) return;
+
+        if (playerDetected)
+        {
+            UpdateAI();
+        }
     }
 }

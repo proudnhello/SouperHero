@@ -8,6 +8,12 @@ using UnityEngine;
 public class EnemyRanged : EnemyBaseClass
 {
 
+    [Header("Player Detection")]
+    private bool playerDetected = false;
+    [SerializeField] private float detectionRadius = 4f;
+    [SerializeField] private float followingRadius = 6f;
+    private float detectionDelay = 0.3f;
+    [SerializeField] protected LayerMask playerLayer;
     //[SerializeField] private float distanceToStop = 5f;
     [SerializeField] private float distanceToShoot; //Lo: Stop and shoot distance are currently the same
     private float fireRate = 0.5f;
@@ -19,9 +25,9 @@ public class EnemyRanged : EnemyBaseClass
     public GameObject EnemyBullet;
 
 
-    protected new void Start()
+    protected void Start()
     {
-        base.Start();
+        initEnemy();
     }
     protected override void UpdateAI()
     {
@@ -37,9 +43,14 @@ public class EnemyRanged : EnemyBaseClass
         }
     }
 
-    protected new void Update()
+    protected void Update()
     {
-        base.Update();
+        if (IsDead()) return;
+
+        if (playerDetected)
+        {
+            UpdateAI();
+        }
     }
 
     private void Follow() //Code re-used from EnemyCharger script
