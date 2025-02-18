@@ -26,8 +26,10 @@ public class Chest : Interactable
     }
 
     private void OpenChest(){
-        Collectable collectable = items[Random.Range(0, items.Count)];
-        Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
+        Vector3 offset = new Vector3(0, -0.75f, 0);
+
+        Collectable collectable = items[Random.Range(0, items.Count)];  // choose a random item from the list
+        Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position + offset); //Spawn collectable when chest is opened
 
         // set the interactable to false so the chest can't be opened multiple times
         SetInteractable(false);
