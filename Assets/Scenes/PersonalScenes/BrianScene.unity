@@ -6252,6 +6252,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1392923994}
     m_Modifications:
+    - target: {fileID: -5123221331809649190, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 62433673787859804, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 1.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 62433673787859804, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 0.82
+      objectReference: {fileID: 0}
     - target: {fileID: 62433673787859804, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
       value: 0.57
@@ -6329,6 +6341,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: a704f79a908609340a0bb0bffdab6c34, type: 3}
     - target: {fileID: 3477775123895350176, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3477775123895350176, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3477775123895350176, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3477775123895350176, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
@@ -6336,10 +6360,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flying Lettuce
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 62433673787859804, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4823484854343417924, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 1932023006}
     - targetCorrespondingSourceObject: {fileID: 4823484854343417924, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1932023005}
@@ -6359,7 +6387,7 @@ Animator:
   m_GameObject: {fileID: 1297564664}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a9e0fe0824914c04d968c3a8abec8291, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -6370,6 +6398,41 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!58 &1932023006
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1297564664}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.285
 --- !u!1 &2047461727
 GameObject:
   m_ObjectHideFlags: 0
