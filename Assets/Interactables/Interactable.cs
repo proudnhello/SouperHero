@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
@@ -9,6 +10,7 @@ public abstract class Interactable : MonoBehaviour
     protected bool canInteract = true; //Always start object as interactable
 
     [SerializeField] public GameObject interactablePrompt;
+    [SerializeField] public TextMeshPro interactablePromptText;
 
     public abstract void Interact();
 
@@ -18,7 +20,7 @@ public abstract class Interactable : MonoBehaviour
         return canInteract;
     }
 
-    public void SetInteractable(bool value)
+    public virtual void SetInteractable(bool value)
     {
         // set whether or not the interactable can be interacted with
         canInteract = value;

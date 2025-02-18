@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -12,6 +13,30 @@ public class CollectableObject : Interactable
     Collider2D _collider;
     private bool collected = false;
     // Start is called before the first frame update
+    public void Start()
+    {
+        string text = ingredient.name + "\n";
+        if(interactablePromptText != null)
+        {
+            if (ingredient.GetType() == typeof(AbilityIngredient))
+            {
+                AbilityIngredient ability = (AbilityIngredient)ingredient;
+                text += ability.ability._abilityName;
+            }else if (ingredient.GetType() == typeof(FlavorIngredient))
+            {
+                FlavorIngredient stat = (FlavorIngredient)ingredient;
+                foreach (var flavor in stat.buffFlavors)
+                {
+                    text += flavor.buffType.ToString() + "\n";
+                }
+                foreach (var flavor in stat.inflictionFlavors)
+                {
+                    text += flavor.inflictionType.ToString() + "\n";
+                }
+            }
+            interactablePromptText.text = text;
+        }
+    }
 
     public void Drop(Vector2 dropPoint)
     {
