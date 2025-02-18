@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Bullet class that is called when enemy bullet is instantiated from EnemyRanged
-public class HopshroomBullet : MonoBehaviour
+public class Bullet : MonoBehaviour
 {
     private float bulletLifeTime = 3f;
     private float bulletSpeed = 15f;
+    public Vector2 direction;
 
     private Rigidbody2D rb;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        Destroy(this.gameObject, bulletLifeTime);
+        Destroy(gameObject, bulletLifeTime);
     }
 
     private void FixedUpdate()
     {
-        rb.velocity = transform.up * bulletSpeed;
+        rb.velocity = direction * bulletSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D collider) //Lo: This is temporary until the DamagePlayer() function in EnemyBaseClass is complete
