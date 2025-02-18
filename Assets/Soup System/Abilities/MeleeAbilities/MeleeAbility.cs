@@ -14,11 +14,17 @@ public class MeleeAbility : AbilityAbstractClass
     [SerializeField] float CRIT_MULTIPLIER = 0.5f;
     [SerializeField] float SPEED_MULTIPLIER = 0.5f;
     [SerializeField] float ATTACK_RATE_MULTIPLIER = 0.5f;
+    private float size = 1;
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
         Debug.Log("Use Melee Ability");
-        //Collider[] hitEnemies = Physics.OverlapSphere(transform.position, attackRange, enemyLayer);
+        Collider[] hitEnemies = Physics.OverlapSphere(PlayerEntityManager.Singleton.playerAttackPoint.position,
+            size,
+            CollisionLayers.Singleton.GetEnemyLayer()
+            );
+
+        Debug.Log(hitEnemies);
     }
 
     

@@ -34,6 +34,20 @@ public class CollisionLayers : MonoBehaviour
         return (destroyableLayer.value & (1 << source.layer)) != 0;
     }
 
+    public LayerMask GetCollisionLayer()
+    {
+        return collisionLayer;
+    }
+    public LayerMask GetEnemyLayer()
+    {
+        return enemyLayer;
+    }
+
+    public LayerMask GetDestroyableLayer()
+    {
+        return destroyableLayer;
+    }
+
     public int GetInteractableLayer()
     {
         return LayerMask.NameToLayer("Interactable");
