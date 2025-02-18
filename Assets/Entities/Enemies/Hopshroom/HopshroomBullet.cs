@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Bullet class that is called when enemy bullet is instantiated from EnemyRanged
-public class EnemyRangedBullet : MonoBehaviour
+public class HopshroomBullet : MonoBehaviour
 {
     private float bulletLifeTime = 3f;
     private float bulletSpeed = 15f;
