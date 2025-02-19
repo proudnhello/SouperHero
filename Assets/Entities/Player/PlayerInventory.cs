@@ -3,11 +3,13 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using TMPro;
 
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Singleton { get; private set; }
     public static event Action UsedSpoon;
+    public static event Action<int> ChangedSpoon;
     public int maxSpoons = 4;
 
     [SerializeField] List<Ingredient> defaultSpoonIngredients;
@@ -55,10 +57,12 @@ public class PlayerInventory : MonoBehaviour
 
         spoons.Add(new SoupSpoon(ingredients));
         currentSpoon = spoons.Count - 1;
+        ChangedSpoon?.Invoke(currentSpoon);
         foreach (var ingredient in ingredients)
         {
             RemoveIngredient(ingredient);
         }
+
         return true;
     }
 
@@ -76,7 +80,7 @@ public class PlayerInventory : MonoBehaviour
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         }
-        //Debug.Log("swap to spoon = " + currentSpoon + " of " + spoons.Count);
+        ChangedSpoon?.Invoke(currentSpoon);
     }
 
     void UseSpoon(InputAction.CallbackContext ctx)
