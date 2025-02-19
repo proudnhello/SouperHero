@@ -62,17 +62,27 @@ public class CookingManager : MonoBehaviour
         return false;
     }
 
+    public void DisplayWarning()
+    {
+        WarningText.gameObject.SetActive(true);
+    }
+
+    public void HideWarning()
+    {
+        WarningText.gameObject.SetActive(false);
+    }
+
     // Call this to cook the soup
     public void CookTheSoup()
     {
         // Don't cook if there is no ability ingredient, return early
         if (!HasAbilityIngredient())
         {
-            WarningText.gameObject.SetActive(true);
+            DisplayWarning();
             return;
         } else
         {
-            WarningText.gameObject.SetActive(false);
+            HideWarning();
         }
 
         // Cook the soup with what is currently in the pot
