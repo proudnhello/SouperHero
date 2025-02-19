@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 2844131785019515430}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8403017016259235628}
@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 069c261416e037e4c827f4bee54c0cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canInteract: 1
   interactablePrompt: {fileID: 4765965439873593589}
   interactablePromptText: {fileID: 5413930851944274188}
   ingredient: {fileID: 11400000, guid: 516e13e6b0d5c3f4d8893043cf03fc40, type: 2}
@@ -95,7 +96,7 @@ SpriteRenderer:
   m_SortingLayerID: 326946545
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: -1829910908, guid: 7a8eb5167b35d184cadacc90f1bd0b29, type: 3}
   m_Color: {r: 0.3547521, g: 0.7924528, b: 0.28034887, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -139,7 +140,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 2.5, y: 2.5}
+  m_Size: {x: 1, y: 1}
   m_Direction: 0
 --- !u!1 &4765965439873593589
 GameObject:
@@ -167,8 +168,8 @@ Transform:
   m_GameObject: {fileID: 4765965439873593589}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.011, y: 1.54, z: 0}
-  m_LocalScale: {x: 2.3196616, y: 2.1472745, z: 1}
+  m_LocalPosition: {x: -0.01, y: 0.719, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5562530102075957782}
@@ -325,10 +326,10 @@ CapsuleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 32
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2007
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -342,11 +343,11 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 39.824318, y: 80.5}
+  m_Offset: {x: -1.0206652, y: 0.42586327}
+  m_Size: {x: 95.6215, y: 91.57238}
   m_Direction: 0
 --- !u!50 &850980839602373918
 Rigidbody2D:
@@ -395,7 +396,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: -1829910908, guid: 7a8eb5167b35d184cadacc90f1bd0b29, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -447,7 +448,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.8272759, y: -0.71718824}
+  m_AnchoredPosition: {x: 1.195, y: -0.707}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &3320692826140891997

@@ -66,6 +66,13 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
     }
 
+    // Goes to Death Scene
+    public void WinScreen()
+    {
+        SceneManager.LoadScene(3);
+        Cursor.visible = true;
+    }
+
     // Goes back to Main Menu
     public void MainMenu()
     {
