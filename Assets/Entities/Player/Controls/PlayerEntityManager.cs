@@ -22,6 +22,11 @@ public class PlayerEntityManager : Entity
         input.Enable();
         entityRenderer = new PlayerRenderer(this, animations);
     }
+
+    private void OnDisable()
+    {
+        ((PlayerRenderer)entityRenderer).Disable();
+    }
     public override void ModifyHealth(int amount)
     {
         base.ModifyHealth(amount);

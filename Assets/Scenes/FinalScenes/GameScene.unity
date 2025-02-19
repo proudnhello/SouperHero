@@ -1065,6 +1065,7 @@ GameObject:
   - component: {fileID: 324424342}
   - component: {fileID: 324424341}
   - component: {fileID: 324424344}
+  - component: {fileID: 324424345}
   m_Layer: 0
   m_Name: HelperScripts
   m_TagString: Untagged
@@ -1184,6 +1185,20 @@ MonoBehaviour:
   NavMesh: {fileID: 1928317170}
   mapSeed: -1
   numIntermediates: 10
+--- !u!114 &324424345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324424337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae14ebabf89b3c944b4ad2ea31ab35fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseScreen: {fileID: 0}
+  pauseKey: 27
 --- !u!1 &351240724
 GameObject:
   m_ObjectHideFlags: 0
@@ -4048,6 +4063,10 @@ PrefabInstance:
       propertyPath: animations
       value: 
       objectReference: {fileID: 11400000, guid: bf07f1b198392e9458fd9bd5aad1a318, type: 2}
+    - target: {fileID: 99970492126700294, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: baseStats.maxHealth
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 234655282318529072, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: vcam
       value: 
