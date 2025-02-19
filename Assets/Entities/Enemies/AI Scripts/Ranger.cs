@@ -67,13 +67,14 @@ public class Ranger : EnemyBaseClass
             _state = RangerState.IDLING;
         }
 
-        if(_state != RangerState.SHOOTING && agent.destination.x < transform.position.x){
-            _sprite.flipX = true;
+        if(_state != RangerState.SHOOTING){
+            if(agent.destination.x < transform.position.x){
+                _sprite.flipX = true;
+            }
+            else{
+                _sprite.flipX = false;
+            }   
         }
-        else{
-            _sprite.flipX = false;
-
-        }   
     }
 
     IEnumerator DetectionCoroutine()
