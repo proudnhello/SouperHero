@@ -9,7 +9,10 @@ public class Destroyables : MonoBehaviour
     public void RemoveDestroyable()
     {
         Destroy(this.gameObject);
-        GameObject gameObj = Instantiate(collectable.gameObject, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
-        gameObj.GetComponent<Collectable>().Spawn(this.transform.position);
+
+        if (collectable != null) {
+            GameObject gameObj = Instantiate(collectable.gameObject, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
+            gameObj.GetComponent<Collectable>().Spawn(this.transform.position);
+        }
     }
 }
