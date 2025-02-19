@@ -32,6 +32,11 @@ public class PlayerRenderer : EntityRenderer
         entity.StartCoroutine(Update());
     }
 
+    public void Disable()
+    {
+        PlayerInventory.UsedSpoon -= Swing;
+    }
+
     public void ChangeState(int index)
     {
         if (currentState.priority <= states[index].priority)
@@ -52,7 +57,7 @@ public class PlayerRenderer : EntityRenderer
 
     public IEnumerator Update()
     {
-        while (true)
+        while (Entity.gameObject.activeInHierarchy)
         {
             spriteRenderer.flipX = _playerMovement.currentDirection.x > 0;
             

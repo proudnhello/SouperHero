@@ -1065,6 +1065,7 @@ GameObject:
   - component: {fileID: 324424342}
   - component: {fileID: 324424341}
   - component: {fileID: 324424344}
+  - component: {fileID: 324424345}
   m_Layer: 0
   m_Name: HelperScripts
   m_TagString: Untagged
@@ -1111,6 +1112,9 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+  environmentLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &324424342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1181,6 +1185,20 @@ MonoBehaviour:
   NavMesh: {fileID: 1928317170}
   mapSeed: -1
   numIntermediates: 10
+--- !u!114 &324424345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324424337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae14ebabf89b3c944b4ad2ea31ab35fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseScreen: {fileID: 0}
+  pauseKey: 27
 --- !u!1 &351240724
 GameObject:
   m_ObjectHideFlags: 0
@@ -2896,7 +2914,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1020262120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4046,6 +4063,10 @@ PrefabInstance:
       propertyPath: animations
       value: 
       objectReference: {fileID: 11400000, guid: bf07f1b198392e9458fd9bd5aad1a318, type: 2}
+    - target: {fileID: 99970492126700294, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: baseStats.maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 234655282318529072, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: vcam
       value: 
@@ -4141,7 +4162,7 @@ GameObject:
   - component: {fileID: 1458056401}
   - component: {fileID: 1458056400}
   m_Layer: 5
-  m_Name: Spacebar
+  m_Name: Interact
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4186,7 +4207,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Obtain Abilities after Souping @ Campfire
+  m_text: '[E] to Interact'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4633,7 +4654,7 @@ GameObject:
   - component: {fileID: 1545188821}
   - component: {fileID: 1545188820}
   m_Layer: 5
-  m_Name: Left Click
+  m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4928,7 +4949,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1693560871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5253,7 +5273,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1837384546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5732,7 +5751,7 @@ GameObject:
   - component: {fileID: 1920735326}
   - component: {fileID: 1920735325}
   m_Layer: 5
-  m_Name: Right Click
+  m_Name: Cycle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5777,7 +5796,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '[RMB] to Soup Enemies'
+  m_text: '[Scroll Wheel] to Cycle Spoon'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
