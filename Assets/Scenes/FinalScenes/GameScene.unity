@@ -1111,6 +1111,9 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+  environmentLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &324424342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2896,7 +2899,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1020262120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4141,7 +4143,7 @@ GameObject:
   - component: {fileID: 1458056401}
   - component: {fileID: 1458056400}
   m_Layer: 5
-  m_Name: Spacebar
+  m_Name: Interact
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4186,7 +4188,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Obtain Abilities after Souping @ Campfire
+  m_text: '[E] to Interact'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4633,7 +4635,7 @@ GameObject:
   - component: {fileID: 1545188821}
   - component: {fileID: 1545188820}
   m_Layer: 5
-  m_Name: Left Click
+  m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4928,7 +4930,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1693560871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5253,7 +5254,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1837384546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5732,7 +5732,7 @@ GameObject:
   - component: {fileID: 1920735326}
   - component: {fileID: 1920735325}
   m_Layer: 5
-  m_Name: Right Click
+  m_Name: Cycle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5777,7 +5777,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '[RMB] to Soup Enemies'
+  m_text: '[Scroll Wheel] to Cycle Spoon'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
