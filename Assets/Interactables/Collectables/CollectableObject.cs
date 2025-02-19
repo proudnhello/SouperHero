@@ -36,6 +36,9 @@ public class CollectableObject : Interactable
             }
             interactablePromptText.text = text;
         }
+        _collider = GetComponent<Collider2D>();
+        type = this.name;
+        interactablePrompt.SetActive(false);
     }
 
     public void Drop(Vector2 dropPoint)
