@@ -17,9 +17,10 @@ public class CookingManager : MonoBehaviour
     public TMP_Text InflictionText;
     public TMP_Text AbilitiesText;
     public TMP_Text UsesText;
-    public TMP_Text WarningText;
+    [SerializeField] private TMP_Text WarningText;
     public GameObject CookingCanvas;
     public Campfire CurrentCampfire;
+    public GameObject itemStatsScreen;
     private SoupSpoon statSpoon;
     
     private void Awake()
@@ -60,6 +61,16 @@ public class CookingManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void DisplayItemStats()
+    {
+        itemStatsScreen.SetActive(true);
+    }
+
+    public void HideItemStats()
+    {
+        itemStatsScreen.SetActive(false);
     }
 
     public void DisplayWarning()
