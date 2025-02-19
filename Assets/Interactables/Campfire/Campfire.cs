@@ -37,6 +37,7 @@ public class Campfire : Interactable
 
     private void Cook()
     {
+        CookingManager.Singleton.CurrentCampfire = this;
         CursorManager.Singleton.ShowCursor();
         cookingPot.SetActive(true);
         if(CookingScreen == null)
