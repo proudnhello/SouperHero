@@ -32,7 +32,8 @@ public class CookingManager : MonoBehaviour
     // Initialize Ingredient List
     public List<Ingredient> cookingIngredients = new();
 
-    Campfire CurrentCampfire;
+    private Campfire CurrentCampfire;
+
     public void EnterCooking(Campfire source)
     {
         CurrentCampfire = source;
@@ -56,6 +57,13 @@ public class CookingManager : MonoBehaviour
             PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
         }
     }
+    
+    // No Parameters For the Exit Button
+    public void ExitCooking()
+    {
+        ExitCooking(default);
+    }
+
 
     private void OnDisable()
     {
