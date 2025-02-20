@@ -1149,7 +1149,7 @@ MonoBehaviour:
     m_Bits: 128
   environmentLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
 --- !u!114 &324424342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4658,6 +4658,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -1336732016, guid: 5e481775ca0e9334ab3cc55e854887dc, type: 3}
+    - target: {fileID: 7339678796142318859, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: defaultSpoonIngredients.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
     - target: {fileID: 9090454973021212795, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 68
@@ -7843,7 +7847,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 8.4375
+  orthographic size: 9.25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
