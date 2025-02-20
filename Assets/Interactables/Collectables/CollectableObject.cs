@@ -33,7 +33,14 @@ public class CollectableObject : Interactable
     public override void Interact()
     {
         SetInteractable(false);  //Cannot interact multiple times
+        SetHighlighted(false);
         StartCoroutine (CollectionAnimation());
+    }
+
+    public override void SetHighlighted(bool isHighlighted)
+    {
+        toolTipText.gameObject.SetActive(isHighlighted);
+        base.SetHighlighted(isHighlighted);
     }
 
     private IEnumerator CollectionAnimation()
