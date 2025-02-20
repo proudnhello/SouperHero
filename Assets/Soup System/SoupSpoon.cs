@@ -104,6 +104,17 @@ public class SoupSpoon
     // Variable to track the last time the spoon was used
     float lastTimeUsed;
 
+    public float GetCoolDownRatio()
+    {
+        if ((Time.time - lastTimeUsed) < cooldown)
+        {
+            return (Time.time - lastTimeUsed) / cooldown;
+        } else
+        {
+            return 1;
+        }
+    }
+
     // Method to use the spoon, applying abilities and managing uses
     public bool UseSpoon()
     {
