@@ -7,7 +7,6 @@ public class ZoneArea : MonoBehaviour
 {
     public List<Infliction> inflictions;
     public List<GameObject> gameObjectsEffected;
-    PlayerCenteredZone playerCenteredZone;
 
     private void OnTriggerEnter2D(Collider2D collider)
     {

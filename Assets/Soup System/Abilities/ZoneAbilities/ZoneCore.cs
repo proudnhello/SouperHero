@@ -26,6 +26,10 @@ public class ZoneCore : MonoBehaviour
         zoneArea.inflictions = inflictions;
         stuckToPlayer = onPlayer;
         playerCenteredZone = ability;
+        if(!stuckToPlayer)
+        {
+            rb.velocity = dir * stats.speed;
+        }
         print("Spawned zone with stats " + stats.duration.ToString());
     }
 
@@ -33,8 +37,7 @@ public class ZoneCore : MonoBehaviour
     {
         if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject))
         {
-            print("fick");
-            enabled = false;
+            gameObject.SetActive(false);
         }
     }
 
