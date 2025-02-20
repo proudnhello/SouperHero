@@ -132,7 +132,7 @@ public class CookingManager : MonoBehaviour
         // Clear the text except for the headers
         BuffText.text = "";
         InflictionText.text = "";
-        AbilitiesText.text = "Abilities: ";
+        AbilitiesText.text = "Abilities:\n";
         UsesText.text = "Uses: ";
         statSpoon = new SoupSpoon(cookingIngredients);
         float totalDuration = 0;
