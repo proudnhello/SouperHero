@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4532211051022117658}
   - component: {fileID: 5196658541464306761}
-  - component: {fileID: 5277798447908139224}
+  - component: {fileID: 4106461460990227034}
   - component: {fileID: 6808612831671540774}
   - component: {fileID: 1540533104275772497}
   - component: {fileID: 6857497994059370591}
@@ -89,7 +89,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5277798447908139224
+--- !u!114 &4106461460990227034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,23 +98,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 7249368151804887405}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 606e1cef5d5a34671ac4ea10cb4aeb0f, type: 3}
+  m_Script: {fileID: 11500000, guid: d368c4b43714abb4c8021feca1e6ad61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   baseStats:
-    maxHealth: 40
-    baseMoveSpeed: 8
+    maxHealth: 30
+    baseMoveSpeed: 7
     invincibility: 0.5
   collectable: {fileID: 165481585712337600, guid: 3ba5f77c66053314293d2aaeb9b96b90, type: 3}
   playerCollisionDamage: 10
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
-  detectionRadius: 10
-  followingRadius: 15
+  detectionRadius: 9
+  followingRadius: 12
+  attackingRadius: 3
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
+  timeToAttack: 0.5
+  timeAfterAttack: 0.3
+  timeBetweenAttacks: 2
+  lungeDistance: 2
 --- !u!50 &6808612831671540774
 Rigidbody2D:
   serializedVersion: 4
@@ -209,7 +214,7 @@ Animator:
   m_GameObject: {fileID: 7249368151804887405}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a9e0fe0824914c04d968c3a8abec8291, type: 2}
+  m_Controller: {fileID: 9100000, guid: 09418f54b4a0661448f99aa67c037297, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

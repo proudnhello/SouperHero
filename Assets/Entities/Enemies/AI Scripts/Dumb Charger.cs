@@ -18,6 +18,7 @@ public class DumbCharger : EnemyBaseClass
         initEnemy();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        agent.speed = GetMoveSpeed();
         StartCoroutine(DetectionCoroutine());
     }
     void Update(){

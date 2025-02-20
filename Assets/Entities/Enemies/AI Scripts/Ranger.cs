@@ -40,6 +40,7 @@ public class Ranger : EnemyBaseClass
         initEnemy();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        agent.speed = GetMoveSpeed();
         _state = RangerState.IDLING;
         animator = GetComponent<Animator>();
         StartCoroutine(DetectionCoroutine());
