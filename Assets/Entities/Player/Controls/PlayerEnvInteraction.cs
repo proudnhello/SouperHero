@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Progress;
 
 public class PlayerEnvInteraction : MonoBehaviour
 {
     private Interactable currentInteractable = null;
-    private int lastInteractionFrame = -1;
+    List<Interactable> withinRange;
 
     private void Start()
     {
         PlayerEntityManager.Singleton.input.Player.Interact.started += Interact;
+        withinRange = new();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -18,38 +20,84 @@ public class PlayerEnvInteraction : MonoBehaviour
         Interactable interactable = collision.GetComponent<Interactable>();
         if (interactable != null && interactable.CanInteract())
         {
-            currentInteractable = interactable;
-            interactable.SetInteractablePrompt(true);
+            withinRange.Add(interactable);
+            ChangeInteractableListContents();
+        }
+    }
+
+    void ChangeInteractableListContents()
+    {
+        if (withinRange.Count == 0) currentInteractable = null;
+        else if (withinRange.Count == 1) {
+            currentInteractable = withinRange[0];
+            currentInteractable.SetHighlighted(true);
+        } else
+        {
+            float closestDist = Mathf.Infinity;
+            int closestIndex = 0;
+            for (int i = 0; i < withinRange.Count; i++)
+            {
+                withinRange[0].SetHighlighted(false);
+                float newDist = Vector2.Distance(withinRange[i].transform.position, PlayerEntityManager.Singleton.transform.position);
+                if (newDist < closestDist)
+                {
+                    closestDist = newDist;
+                    closestIndex = i;
+                }
+            }
+            currentInteractable = withinRange[closestIndex];
+            currentInteractable.SetHighlighted(true);
+        }
+        string t = "within range length = " + withinRange.Count;
+        if (currentInteractable != null) t += " currentInteractable = " + currentInteractable.name;
+        Debug.Log(t);
+    }
+
+    // continuously check to see what's the closest interactable
+    private void Update()
+    {
+        foreach (var item in withinRange)
+        {
+            if (item == currentInteractable) continue;
+
+            if (Vector2.Distance(item.transform.position, PlayerEntityManager.Singleton.transform.position) <
+                Vector2.Distance(currentInteractable.transform.position, PlayerEntityManager.Singleton.transform.position))
+            {
+                currentInteractable.SetHighlighted(false);
+                currentInteractable = item;
+                currentInteractable.SetHighlighted(true);
+                return;
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         Interactable interactable = collision.GetComponent<Interactable>();
-        if (interactable != null && interactable == currentInteractable)
+        if (interactable != null && withinRange.Contains(interactable))
         {
-            currentInteractable = null;
-            interactable.SetInteractablePrompt(false);
+            interactable.SetHighlighted(false);
+            withinRange.Remove(interactable);
+            if (currentInteractable == interactable) currentInteractable = null;
+            ChangeInteractableListContents();
         }
     }
 
-    private int interactCounter = 0;
 
+    private int lastInteractionFrame = -1;
     private void Interact(InputAction.CallbackContext ctx)
     {
 
         if (currentInteractable != null && 
-        currentInteractable.CanInteract() && 
         Time.frameCount != lastInteractionFrame)
         {
             // store last interaction frame so we aren't interacting multiple times in the same frame
             lastInteractionFrame = Time.frameCount;
+            withinRange.Remove(currentInteractable);
             currentInteractable.Interact();
+            currentInteractable = null;
+            ChangeInteractableListContents();
 
-            interactCounter++;
-            //Debug.Log($"Interact if statement has been run {interactCounter} times");
-
-            //Debug.Log("Interacted with " + currentInteractable.GetInteractableType() + $"at time: {Time.time}, Frame: {Time.frameCount}");
         }
     }
 }
