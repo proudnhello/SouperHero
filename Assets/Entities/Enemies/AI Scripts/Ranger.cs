@@ -53,6 +53,21 @@ public class Ranger : EnemyBaseClass
         {
             UpdateAI();
         }
+
+        switch(_state){
+            case RangerState.IDLING:
+                animator.Play("Idle");
+                break;
+            case RangerState.CHASING:
+                animator.Play("Walk");
+                break;
+            case RangerState.PREPARING:
+                animator.Play("Walk");
+                break;
+            case RangerState.SHOOTING:
+                animator.Play("Attack");
+                break;
+        }
     }
     protected override void UpdateAI()
     {
@@ -110,7 +125,6 @@ public class Ranger : EnemyBaseClass
         // Play shooting animation and set state
         _state = RangerState.SHOOTING;
         agent.isStopped = true;
-        animator.Play("Attack Animation");
         float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
 
         // wait til animation is finshed then make bullet       
@@ -119,7 +133,6 @@ public class Ranger : EnemyBaseClass
         temp.direction = (_playerTransform.position - transform.position).normalized;
 
         // clean up
-        animator.Play("Walk Animation");
         agent.isStopped = false;
         _state = RangerState.CHASING;
     }

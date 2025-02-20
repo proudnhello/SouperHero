@@ -13,7 +13,7 @@ public class EntityRenderer
 
     public IEnumerator TakeDamageAnimation()
     {
-        float maxFlashCycles = ((Entity.GetInvincibility() / 0.3f));
+        float maxFlashCycles = (Entity.GetInvincibility() / 0.3f);
         int flashCycles = 0;
         Color normalColor = spriteRenderer.color;
 
