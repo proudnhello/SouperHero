@@ -12,7 +12,6 @@ public class CollectableObject : Interactable
     private Vector2 playerPosition;
     private float collectionSpeed = 6f;
     Collider2D _collider;
-    private bool collected = false;
     Collectable _Collectable;
     // Start is called before the first frame update
     public void Init(Collectable col)
@@ -34,7 +33,6 @@ public class CollectableObject : Interactable
     public override void Interact()
     {
         SetInteractable(false);  //Cannot interact multiple times
-        _collider.enabled = false;
         StartCoroutine (CollectionAnimation());
     }
 

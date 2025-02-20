@@ -6,9 +6,8 @@ using UnityEngine;
 public class Campfire : Interactable
 {
     [Header("Campfire")]
-    [SerializeField] private GameObject CookingScreen; 
-    private float cookSpeed = 8f;
-    private bool cooking = false;
+    [SerializeField] float playerDistanceToCancelCooking = 3f;
+    bool isCooking;
 
     // Start is called before the first frame update
     private void Start()
@@ -19,58 +18,34 @@ public class Campfire : Interactable
 
     public override void Interact()
     {
-
-        if (CanInteract() && cooking == false)
-        {
-            Debug.Log("Exit Cooking");
+        if (CanInteract() && !isCooking)
+        {       
             Cook();
         } 
-        else if (CanInteract() && cooking == true)
-        {
-            Debug.Log("Enter Cooking");
-            StopCooking();
-        }
     }
 
     private void Cook()
     {
-        CookingManager.Singleton.CurrentCampfire = this;
-        CursorManager.Singleton.ShowCursor();
-        if(CookingScreen == null)
-        {
-            CookingScreen = CookingManager.Singleton.CookingCanvas;
-        }
-        CookingScreen.SetActive(true);
-        SetPlayerMovement(false);
-        cooking = true;
-        CookingManager.Singleton.ResetStatsText();
+        CookingManager.Singleton.EnterCooking(this);
+        isCooking = true;
+        StartCoroutine(TrackPlayerDistance());
     }
 
     public void StopCooking()
     {
-        CursorManager.Singleton.HideCursor();
-        SetPlayerMovement(true);
-        CookingScreen.SetActive(false);
-        cooking = false;
-        CookingManager.Singleton.ResetStatsText();
+        isCooking = false;
     }
 
-    private void SetPlayerMovement(bool value){
-        GameObject player = GameObject.FindWithTag("Player"); // More efficient lookup
-
-
-        if (player == null)
+    IEnumerator TrackPlayerDistance()
+    {
+        while (isCooking)
         {
-            return;
+            Debug.Log(Vector2.Distance(PlayerEntityManager.Singleton.transform.position, transform.position));
+            if (Vector2.Distance(PlayerEntityManager.Singleton.transform.position, transform.position) > playerDistanceToCancelCooking)
+            {
+                CookingManager.Singleton.ExitCooking();
+            }
+            yield return null;
         }
-
-        PlayerMovement movement = player.GetComponent<PlayerMovement>();
-
-        if (movement == null)
-        {
-            return;
-        }
-
-        movement.enabled = value;
     }
 }
