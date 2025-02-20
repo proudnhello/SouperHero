@@ -48,9 +48,6 @@ public class PlayerEnvInteraction : MonoBehaviour
             currentInteractable = withinRange[closestIndex];
             currentInteractable.SetHighlighted(true);
         }
-        string t = "within range length = " + withinRange.Count;
-        if (currentInteractable != null) t += " currentInteractable = " + currentInteractable.name;
-        Debug.Log(t);
     }
 
     // continuously check to see what's the closest interactable
@@ -93,11 +90,14 @@ public class PlayerEnvInteraction : MonoBehaviour
         {
             // store last interaction frame so we aren't interacting multiple times in the same frame
             lastInteractionFrame = Time.frameCount;
-            withinRange.Remove(currentInteractable);
             currentInteractable.Interact();
-            currentInteractable = null;
-            ChangeInteractableListContents();
-
+            Debug.Log(currentInteractable);
+            if (!currentInteractable.CanInteract())
+            {
+                withinRange.Remove(currentInteractable);
+                currentInteractable = null;
+                ChangeInteractableListContents();
+            }
         }
     }
 }
