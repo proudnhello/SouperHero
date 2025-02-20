@@ -96,7 +96,13 @@ public class PlayerInventory : MonoBehaviour
     void UseSpoon(InputAction.CallbackContext ctx)
     {
         SoupSpoon spoon = spoons[currentSpoon];
-        spoon.UseSpoon();
+        bool notOnCD = spoon.UseSpoon();
+
+        if (!notOnCD)
+        {
+            return;
+        }
+
         UsedSpoon?.Invoke();
 
         if (spoon.uses == 0)
