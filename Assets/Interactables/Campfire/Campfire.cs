@@ -22,12 +22,12 @@ public class Campfire : Interactable
 
         if (CanInteract() && cooking == false)
         {
-            Debug.Log("Exit Cooking");
+            Debug.Log("Enter Cooking");
             Cook();
         } 
         else if (CanInteract() && cooking == true)
         {
-            Debug.Log("Enter Cooking");
+            Debug.Log("Exit Cooking");
             StopCooking();
         }
     }
