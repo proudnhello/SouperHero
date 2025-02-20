@@ -99,6 +99,9 @@ public class SoupSpoon
         // Convert trackers to lists for use in abilities and inflictions
         spoonAbilities = abilityTracker.Values.ToList();
         spoonInflictions = inflictionTracker.Values.ToList();
+        
+        // set initial lastTimeUsed to cooldown to get atk right away
+        lastTimeUsed = Time.time - cooldown;
     }
 
     // Variable to track the last time the spoon was used
