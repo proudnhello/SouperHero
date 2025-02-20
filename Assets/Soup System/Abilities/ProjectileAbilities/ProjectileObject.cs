@@ -6,11 +6,12 @@ using Infliction = SoupSpoon.SpoonInfliction;
 public class ProjectileObject : MonoBehaviour
 {
     [SerializeField] Rigidbody2D rb;
+    [SerializeField] ProjectileArea projectileArea;
 
     AbilityStats stats;
     List<Infliction> inflictions;
     float persistenceTime;
-
+    float PLAYER_SAFTY_DELAY = 0.2f;
 
     public void Spawn(Vector2 spawnPoint, Vector2 dir, AbilityStats stats, List<Infliction> inflictions)
     {
@@ -19,32 +20,21 @@ public class ProjectileObject : MonoBehaviour
         persistenceTime = 0;
 
         transform.position = spawnPoint;
-        transform.localScale = new Vector3(stats.size, stats.size, stats.size);
+        projectileArea.transform.localScale = new Vector3(stats.size, stats.size, stats.size);
+        projectileArea.inflictions = inflictions;
         gameObject.SetActive(true);
+        projectileArea.StartCoroutine(projectileArea.PlayerDelay(PLAYER_SAFTY_DELAY));
         rb.velocity = dir * stats.speed;
 
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
+        if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject))
         {
-            Entity entity = collider.gameObject.GetComponent<Entity>();
-
-            // Apply the infliction to the enemy
-            entity.ApplyInfliction(inflictions, gameObject.transform);
-
-            // Deactivate the projectile
-            gameObject.SetActive(false);
+            BounceOff(collider);
         }
-        else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
-        {
-            collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
-            gameObject.SetActive(false);
-        }
-
-        // If it hit something that wasn't a destructable or an enemy, deflect the projectile
-        BounceOff(collider);
+        print("ProjectileObject collided with " + collider.gameObject.name);
     }
 
     private void BounceOff(Collider2D collider)
