@@ -9,7 +9,6 @@ public abstract class Interactable : MonoBehaviour
 
     [Header("Make Sure is Set")]
     protected SpriteRenderer interactableSpriteRenderer;
-    [SerializeField] public TextMeshPro interactablePromptText;
 
     int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
     void Awake()
