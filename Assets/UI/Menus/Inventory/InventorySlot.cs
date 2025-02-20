@@ -29,7 +29,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             draggableItem.parentAfterDrag = transform;
 
             // resize the dropped object to this object
-            draggableItem.transform.localScale = inventorySlot.transform.localScale;
+            draggableItem.transform.localScale = inventorySlot.transform.lossyScale;
 
         }
     }
