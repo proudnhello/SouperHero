@@ -20,9 +20,9 @@ public class SpoonUses : MonoBehaviour
         SoupSpoon spoon = PlayerInventory.Singleton.GetSpoons()[spoonNum];
         if (spoon.uses >= 0)
         {
-            text.text = "Current Spoon = " + spoon.uses;
+            text.text = "Uses = " + spoon.uses;
         } else if (spoon.uses == -1){
-            text.text = "Current Spoon = ∞";
+            text.text = "Uses = ∞";
         }
         else
         {
