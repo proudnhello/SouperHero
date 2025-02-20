@@ -12,10 +12,14 @@ public class PlayerCenteredZone : AbilityAbstractClass
     [SerializeField] float SIZE_MULTIPLIER = 0.5f;
     [SerializeField] float CRIT_MULTIPLIER = 0.5f;
     [SerializeField] float SPEED_MULTIPLIER = 0.5f;
+    bool active = false;
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
-
+        if(active == true)
+        {
+            return;
+        }
         Debug.Log($"Is spawner null?: {spawner}");
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();
@@ -23,6 +27,12 @@ public class PlayerCenteredZone : AbilityAbstractClass
         stats.speed *= SPEED_MULTIPLIER;
         proj.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
             PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
-            stats, inflictions, true);
+            stats, inflictions, true, this);
+        active = true;
+    }
+
+    public void Deactivate()
+    {
+        active = false;
     }
 }
