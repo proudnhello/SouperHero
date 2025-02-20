@@ -7,8 +7,9 @@ public class BasketUI : MonoBehaviour
 {
 
     public static BasketUI Singleton;
-    private float OffsetX = -50.0f; //Offset to spawn collected ingredient above the potUI
-    private float OffsetY = 85.0f;
+    [SerializeField] Transform SpawnPoint;
+    [SerializeField] float offsetYSpawn = 85;
+    [SerializeField] Vector2 dropForceRange = new Vector2(90, 110);
 
     private void Awake()
     {
@@ -20,12 +21,12 @@ public class BasketUI : MonoBehaviour
         Singleton = this;
     }
 
-    public void AddIngredient(GameObject ingredient)
+    public void AddIngredient(Collectable collectable)
     {
-        //GameObject gameObj = Instantiate(ingredient, new Vector2(pot.transform.position.x + OffsetX, pot.transform.position.y + OffsetY), Quaternion.identity, this.transform);
         //TODO: Set parent of leek to pot
-        ingredient.transform.SetParent(this.transform);
-        ingredient.transform.position = new Vector2(transform.position.x + OffsetX, transform.position.y + OffsetY);
+        collectable.transform.SetParent(this.transform, false);
+        collectable.collectableUI.transform.position = new Vector2(SpawnPoint.position.x, SpawnPoint.position.y + offsetYSpawn);
+        collectable.collectableUI.rb.velocity = new Vector2(0, -Random.Range(dropForceRange.x, dropForceRange.y));
     }
 
     public void RemoveIngredient()
