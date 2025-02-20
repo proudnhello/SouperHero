@@ -30,7 +30,7 @@ public class MeleeAbility : AbilityAbstractClass
 
         Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
 
-        Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (currentDirection * SIZE_MULTIPLIER);
+        Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (size * SIZE_MULTIPLIER * currentDirection) - (currentDirection / 2);
 
         // visualizes the attack area
         PlayerEntityManager.Singleton.StartCoroutine(SetCircle(center));
