@@ -5,15 +5,18 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
-    [Header("Info")]
-    protected string type;
-
-    [Header("Interactable (Do Not Edit)")]
-    [SerializeField] protected bool canInteract = true; //Always start object as interactable
+    protected bool canInteract = true; //Always start object as interactable
 
     [Header("Make Sure is Set")]
-    [SerializeField] public GameObject interactablePrompt;
+    protected SpriteRenderer interactableSpriteRenderer;
     [SerializeField] public TextMeshPro interactablePromptText;
+
+    int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
+    void Awake()
+    {
+        interactableSpriteRenderer = GetComponent<SpriteRenderer>();
+        SetHighlighted(false);
+    }
 
     public abstract void Interact();
 
@@ -29,15 +32,9 @@ public abstract class Interactable : MonoBehaviour
         canInteract = value;
     }
 
-    public string GetInteractableType()
-    {
-        // return the type of the interactable
-        return type;
-    }
-
-    public void SetInteractablePrompt(bool value)
+    public void SetHighlighted(bool isHighlighted)
     {
         // set the interactable prompt to be active or not
-        interactablePrompt.SetActive(value);
+        interactableSpriteRenderer.material.SetFloat(_OutlineThickness, isHighlighted ? 1 : 0);
     }
 }

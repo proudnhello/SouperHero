@@ -6,7 +6,6 @@ using UnityEngine;
 public class Campfire : Interactable
 {
     [Header("Campfire")]
-    [SerializeField] private GameObject cookingPot; 
     [SerializeField] private GameObject CookingScreen; 
     private float cookSpeed = 8f;
     private bool cooking = false;
@@ -14,10 +13,8 @@ public class Campfire : Interactable
     // Start is called before the first frame update
     private void Start()
     {
-        type = this.name;
         SetInteractable(true);
-        SetInteractablePrompt(false);
-        cookingPot.SetActive(false);
+        SetHighlighted(false);
     }
 
     public override void Interact()
@@ -39,7 +36,6 @@ public class Campfire : Interactable
     {
         CookingManager.Singleton.CurrentCampfire = this;
         CursorManager.Singleton.ShowCursor();
-        cookingPot.SetActive(true);
         if(CookingScreen == null)
         {
             CookingScreen = CookingManager.Singleton.CookingCanvas;
@@ -54,7 +50,6 @@ public class Campfire : Interactable
     {
         CursorManager.Singleton.HideCursor();
         SetPlayerMovement(true);
-        cookingPot.SetActive(false);
         CookingScreen.SetActive(false);
         cooking = false;
         CookingManager.Singleton.ResetStatsText();

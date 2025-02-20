@@ -37,15 +37,12 @@ public class CollectableObject : Interactable
             interactablePromptText.text = text;
         }
         _collider = GetComponent<Collider2D>();
-        type = this.name;
-        interactablePrompt.SetActive(false);
     }
 
     public void Drop(Vector2 dropPoint)
     {
         transform.position = dropPoint;
-        type = this.name;
-        interactablePrompt.SetActive(false);
+        SetHighlighted(false);
         _collider = GetComponent<Collider2D>();
     }
 
@@ -53,7 +50,6 @@ public class CollectableObject : Interactable
     {
         PlayerInventory.Singleton.CollectIngredient(ingredient);
         SetInteractable(false);  //Cannot interact multiple times
-        SetInteractablePrompt(false);  //Remove prompt
         _collider.enabled = false;
         StartCoroutine (CollectionAnimation());
     }

@@ -53,4 +53,9 @@ public class PlayerEntityManager : Entity
         }
     }
 
+    public Vector2 GetPlayerPosition()
+    {
+        return transform.position;
+    }
+
 }
