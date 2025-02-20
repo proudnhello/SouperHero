@@ -57,9 +57,18 @@ public class PlayerInventory : MonoBehaviour
         BasketUI.Singleton.AddIngredient(collectable);
     }
 
-    public void RemoveIngredient(Ingredient ingredient)
+    public void RemoveIngredient(Ingredient ingredient, bool reverse = false)
     {
-        ingredientsHeld.Remove(ingredient);
+        if (!reverse)
+        {
+            ingredientsHeld.Remove(ingredient);
+            BasketUI.Singleton.RemoveIngredient(ingredient);
+        }
+        else
+        {
+            ingredientsHeld.Remove(ingredient);
+            BasketUI.Singleton.RemoveIngredient(ingredient, reverse);
+        }
     }
 
     public bool CookSoup(List<Ingredient> ingredients)

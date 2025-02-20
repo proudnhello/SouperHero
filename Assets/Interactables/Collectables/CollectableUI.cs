@@ -10,4 +10,10 @@ public class CollectableUI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         _Collectable = col;
     }
+
+    public Collectable GetCollectable()
+    {
+        return _Collectable;
+    }
+
 }
