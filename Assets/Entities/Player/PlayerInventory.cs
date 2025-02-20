@@ -28,6 +28,16 @@ public class PlayerInventory : MonoBehaviour
         ingredientsHeld = new();
     }
 
+    public List<SoupSpoon> GetSpoons()
+    {
+        return spoons;
+    }
+
+    public int GetCurrentSpoon()
+    {
+        return currentSpoon;
+    }
+
     private void Start()
     {
         PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
@@ -95,5 +105,10 @@ public class PlayerInventory : MonoBehaviour
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         } 
+    }
+
+    public void UpdateSpooon()
+    {
+        ChangedSpoon?.Invoke(currentSpoon);
     }
 }

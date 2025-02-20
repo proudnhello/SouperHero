@@ -33,15 +33,30 @@ public class ProjectileObject : MonoBehaviour
 
             // Apply the infliction to the enemy
             entity.ApplyInfliction(inflictions, gameObject.transform);
-
-            // Deactivate the projectile after hitting an enemy
-            gameObject.SetActive(false);
-        } else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
+        }
+        else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {
             collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
         }
-        gameObject.SetActive(false);
+
+        // Reflect the projectile instead of deactivating it
+        BounceOff(collider);
     }
+
+    private void BounceOff(Collider2D collider)
+    {
+        if (rb == null) return;
+
+        // Find the closest point on the collider
+        Vector2 collisionPoint = collider.ClosestPoint(transform.position);
+
+        // Approximate the collision normal
+        Vector2 normal = ((Vector2)transform.position - collisionPoint).normalized;
+
+        // Reflect the velocity along the normal
+        rb.velocity = Vector2.Reflect(rb.velocity, normal);
+    }
+
 
 
     private void FixedUpdate()
