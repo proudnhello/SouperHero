@@ -48,9 +48,6 @@ public class PlayerEnvInteraction : MonoBehaviour
             currentInteractable = withinRange[closestIndex];
             currentInteractable.SetHighlighted(true);
         }
-        string t = "within range length = " + withinRange.Count;
-        if (currentInteractable != null) t += " currentInteractable = " + currentInteractable.name;
-        Debug.Log(t);
     }
 
     // continuously check to see what's the closest interactable

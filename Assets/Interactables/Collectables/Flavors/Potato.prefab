@@ -46,8 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a51c79d69a0aa4e9f039927f214b99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ingredient: {fileID: 11400000, guid: d748b32973e9ad54c94528913e809e20, type: 2}
   collectableObj: {fileID: 3222139629860469984}
-  collectableUI: {fileID: 7228067640751096621}
+  collectableUI: {fileID: 8425149405383221421}
 --- !u!1 &3654858875705681930
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,9 +229,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7614257497626713522}
+  - component: {fileID: 3222139629860469984}
   - component: {fileID: 4110178050384978265}
   - component: {fileID: 7959456811287664754}
-  - component: {fileID: 3222139629860469984}
   m_Layer: 8
   m_Name: PotatoInGame
   m_TagString: Untagged
@@ -254,6 +255,19 @@ Transform:
   - {fileID: 1163362721993411510}
   m_Father: {fileID: 2344125653567235359}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3222139629860469984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3869259795046748416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 069c261416e037e4c827f4bee54c0cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toolTipText: {fileID: 2002720145555385192}
 --- !u!212 &4110178050384978265
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -341,20 +355,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &3222139629860469984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3869259795046748416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 069c261416e037e4c827f4bee54c0cd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactablePromptText: {fileID: 2002720145555385192}
-  ingredient: {fileID: 11400000, guid: d748b32973e9ad54c94528913e809e20, type: 2}
 --- !u!1 &7228067640751096621
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,6 +368,7 @@ GameObject:
   - component: {fileID: 5986060157056378073}
   - component: {fileID: 2050182500115671999}
   - component: {fileID: 6135780888996332449}
+  - component: {fileID: 8425149405383221421}
   m_Layer: 5
   m_Name: PotatoUI
   m_TagString: Untagged
@@ -494,3 +495,15 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7228067640751096621}
   m_CullTransparentMesh: 1
+--- !u!114 &8425149405383221421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7228067640751096621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3840ada9edf0af45a838800545b7415, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

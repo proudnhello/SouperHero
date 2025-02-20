@@ -50,10 +50,11 @@ public class PlayerInventory : MonoBehaviour
         PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
     }
 
-    public void CollectIngredient(Ingredient ingredient)
+    public void CollectIngredient(Collectable collectable)
     {
-        Debug.Log($"Collected Ingredient {ingredient}");
-        ingredientsHeld.Add(ingredient);
+        Debug.Log($"Collected Ingredient {collectable.ingredient}");
+        ingredientsHeld.Add(collectable.ingredient);
+        BasketUI.Singleton.AddIngredient(collectable.collectableUI.gameObject);
     }
 
     public void RemoveIngredient(Ingredient ingredient)
