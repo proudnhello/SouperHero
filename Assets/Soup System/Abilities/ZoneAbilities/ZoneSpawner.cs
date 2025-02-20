@@ -2,17 +2,17 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
 
-[CreateAssetMenu(menuName = "Abilities/Helper/ProjectileSpawner")]
-public class ProjectileSpawner : ScriptableObject
+[CreateAssetMenu(menuName = "Abilities/Helper/ZoneSpawner")]
+public class ZoneSpawner : ScriptableObject
 {
     public GameObject projectilePrefab;
-    List<ProjectileObject> projectilePool;
+    List<ZoneCore> projectilePool;
     private void OnEnable()
     {
         projectilePool = new();
     }
 
-    public ProjectileObject GetProjectile()
+    public ZoneCore GetProjectile()
     {
         for (int i = 0; i < projectilePool.Count; i++)
         {
@@ -21,18 +21,9 @@ public class ProjectileSpawner : ScriptableObject
                 return projectilePool[i];
             }
         }
-        ProjectileObject proj = Instantiate(projectilePrefab).GetComponent<ProjectileObject>();
+        ZoneCore proj = Instantiate(projectilePrefab).GetComponent<ZoneCore>();
         proj.gameObject.SetActive(false);
         projectilePool.Add(proj);
         return proj;
-    }
-
-    public void ClearPool()
-    {
-        for (int i = 0; i < projectilePool.Count; i++)
-        {
-            Destroy(projectilePool[i].gameObject);
-        }
-        projectilePool.Clear();
     }
 }
