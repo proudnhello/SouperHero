@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI.Table;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 using Infliction = SoupSpoon.SpoonInfliction;
 
 // To create a projectile scriptable object, just go to the project overview, right click, click "create", and
@@ -20,7 +23,23 @@ public class FiredZone : AbilityAbstractClass
         ZoneCore proj = spawner.GetProjectile();
         stats.size *= SIZE_MULTIPLIER;
         stats.speed *= SPEED_MULTIPLIER;
-        proj.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
+
+        Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
+        
+        //proj.transform.localScale = new Vector3(stats.size, stats.size, stats.size);
+        SpriteRenderer spriteRenderer = proj.GetZoneArea().GetComponent<SpriteRenderer>();
+        //Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
+        float radius = spriteRenderer.sprite.bounds.extents.x * stats.size / 2;
+
+        //Debug.Log($"radius {radius}");
+        //Debug.Log($"extents x {spriteRenderer.sprite.bounds.extents.x}");
+        //Debug.Log($"lossyscale x {proj.transform.lossyScale.x}");
+        //Debug.Log($"localscale x {proj.transform.localScale.x}");
+
+        Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (radius * currentDirection);
+
+        Debug.Log($"Zone Size Stats in Fired Zone {stats.size}");
+        proj.Spawn(center,
             PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
             stats, inflictions, false, null);
     }

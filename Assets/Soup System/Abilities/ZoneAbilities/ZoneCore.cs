@@ -14,14 +14,15 @@ public class ZoneCore : MonoBehaviour
     float persistenceTime;
     bool stuckToPlayer = true;
 
-    public void Spawn(Vector2 spawnPoint, Vector2 dir, AbilityStats stats, List<Infliction> inflictions, bool onPlayer, PlayerCenteredZone ability)
+    public void Spawn(Vector2 spawnPoint, Vector2 dir, AbilityStats passedStats, List<Infliction> inflictions, bool onPlayer, PlayerCenteredZone ability)
     {
-        this.stats = stats;
+        this.stats = passedStats;
         this.inflictions = inflictions;
         persistenceTime = 0;
 
         transform.position = spawnPoint;
-        zoneArea.transform.localScale = new Vector3(stats.size, stats.size, stats.size);
+        Debug.Log($"Zone Size Stats in Spawn Zone {passedStats.size}");
+        zoneArea.transform.localScale = new Vector3(passedStats.size, passedStats.size, passedStats.size);
         gameObject.SetActive(true);
         zoneArea.inflictions = inflictions;
         stuckToPlayer = onPlayer;
@@ -31,6 +32,11 @@ public class ZoneCore : MonoBehaviour
             rb.velocity = dir * stats.speed;
         }
         print("Spawned zone with stats " + stats.duration.ToString());
+    }
+
+    public ZoneArea GetZoneArea()
+    {
+        return zoneArea;
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
