@@ -6,20 +6,42 @@ using UnityEngine;
 //Based off of the Chest.cs script
 public class Collectable : MonoBehaviour
 {
-    [SerializeField] CollectableObject collectableObj;
-    [SerializeField] GameObject collectableUI;
+    public Ingredient ingredient;
+    public CollectableObject collectableObj;
+    public CollectableUI collectableUI;
+    internal string promptText;
 
-    //Spawn ingredient gameObject at position
     public void Spawn(Vector2 spawnPoint)
     {
+        promptText = ingredient.name + "\n";
+
+        if (ingredient.GetType() == typeof(AbilityIngredient))
+        {
+            AbilityIngredient ability = (AbilityIngredient)ingredient;
+            promptText += ability.ability._abilityName;
+        }
+        else if (ingredient.GetType() == typeof(FlavorIngredient))
+        {
+            FlavorIngredient stat = (FlavorIngredient)ingredient;
+            foreach (var flavor in stat.buffFlavors)
+            {
+                promptText += flavor.buffType.ToString() + "\n";
+            }
+            foreach (var flavor in stat.inflictionFlavors)
+            {
+                promptText += flavor.inflictionType.ToString() + "\n";
+            }
+        }
+
+        collectableObj.Init(this);
+        collectableUI.Init(this);
         collectableObj.Drop(spawnPoint);
     }
 
-    //
     public void Collect()
     {
         collectableObj.gameObject.SetActive(false);
-        collectableUI.SetActive(true);
-        AddToPot.Singleton.AddIngredient(collectableUI);
+        collectableUI.gameObject.SetActive(true);
+        PlayerInventory.Singleton.CollectIngredient(this);
     }
 }

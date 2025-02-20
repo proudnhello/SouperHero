@@ -6,35 +6,20 @@ using UnityEngine;
 
 public class CollectableObject : Interactable
 {
-    [Header("Collectable")]
-    [SerializeField] private Ingredient ingredient;
+    [Header("Collectable")]   
+    [SerializeField] public TextMeshPro toolTipText;
+
     private Vector2 playerPosition;
     private float collectionSpeed = 6f;
     Collider2D _collider;
-    private bool collected = false;
+    Collectable _Collectable;
     // Start is called before the first frame update
-    public void Start()
+    public void Init(Collectable col)
     {
-        string text = ingredient.name + "\n";
-        if(interactablePromptText != null)
+        _Collectable = col;
+        if(toolTipText != null)
         {
-            if (ingredient.GetType() == typeof(AbilityIngredient))
-            {
-                AbilityIngredient ability = (AbilityIngredient)ingredient;
-                text += ability.ability._abilityName;
-            }else if (ingredient.GetType() == typeof(FlavorIngredient))
-            {
-                FlavorIngredient stat = (FlavorIngredient)ingredient;
-                foreach (var flavor in stat.buffFlavors)
-                {
-                    text += flavor.buffType.ToString() + "\n";
-                }
-                foreach (var flavor in stat.inflictionFlavors)
-                {
-                    text += flavor.inflictionType.ToString() + "\n";
-                }
-            }
-            interactablePromptText.text = text;
+            toolTipText.text = _Collectable.promptText;
         }
         _collider = GetComponent<Collider2D>();
     }
@@ -43,14 +28,11 @@ public class CollectableObject : Interactable
     {
         transform.position = dropPoint;
         SetHighlighted(false);
-        _collider = GetComponent<Collider2D>();
     }
 
     public override void Interact()
     {
-        PlayerInventory.Singleton.CollectIngredient(ingredient);
         SetInteractable(false);  //Cannot interact multiple times
-        _collider.enabled = false;
         StartCoroutine (CollectionAnimation());
     }
 

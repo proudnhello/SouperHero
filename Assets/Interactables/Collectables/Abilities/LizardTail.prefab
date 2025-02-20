@@ -270,8 +270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 069c261416e037e4c827f4bee54c0cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactablePromptText: {fileID: 2263063492953968526}
-  ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
+  interactablePromptText: {fileID: 0}
+  toolTipText: {fileID: 2263063492953968526}
 --- !u!60 &6898838396895430631
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -301,7 +301,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -333,6 +333,7 @@ GameObject:
   - component: {fileID: 155414985996046896}
   - component: {fileID: 7855966722942875405}
   - component: {fileID: 1152078203828340505}
+  - component: {fileID: 6834714729904923402}
   m_Layer: 0
   m_Name: TailUI
   m_TagString: Untagged
@@ -473,6 +474,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6834714729904923402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3388838937524246683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3840ada9edf0af45a838800545b7415, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5854243488706272828
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,5 +532,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a51c79d69a0aa4e9f039927f214b99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ingredient: {fileID: 11400000, guid: fdfb8d40a4ce6ce45960df161fd5dc50, type: 2}
   collectableObj: {fileID: 2114876611178202012}
-  collectableUI: {fileID: 3388838937524246683}
+  collectableUI: {fileID: 6834714729904923402}
