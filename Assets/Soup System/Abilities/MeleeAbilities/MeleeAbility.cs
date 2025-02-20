@@ -15,13 +15,14 @@ public class MeleeAbility : AbilityAbstractClass
     [SerializeField] float CRIT_MULTIPLIER = 0.5f;
     [SerializeField] float SPEED_MULTIPLIER = 0.5f;
     [SerializeField] float ATTACK_RATE_MULTIPLIER = 0.5f;
-    private float size = 1;
     public int segments = 36;
-    [SerializeField] AbilityStats stats;
+    private AbilityStats stats;
     [SerializeField] List<Infliction> inflictions;
 
-    public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
+    public override void UseAbility(AbilityStats passedStats, List<Infliction> inflictions)
     {
+
+        this.stats = passedStats;
 
         // Debug.Log("Use Melee Ability");
 
@@ -30,7 +31,7 @@ public class MeleeAbility : AbilityAbstractClass
 
         Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
 
-        Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (size * SIZE_MULTIPLIER * currentDirection) - (currentDirection / 2);
+        Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (this.stats.size * SIZE_MULTIPLIER * currentDirection) - (currentDirection / 2);
 
         // visualizes the attack area
         PlayerEntityManager.Singleton.StartCoroutine(SetCircle(center));
@@ -38,7 +39,7 @@ public class MeleeAbility : AbilityAbstractClass
         // Get all colliders in range for enemies and destroyables
         Collider2D[] hitObjects = Physics2D.OverlapCircleAll(
             center,
-            size * SIZE_MULTIPLIER,
+            this.stats.size * SIZE_MULTIPLIER,
             CollisionLayers.Singleton.GetEnemyLayer() | CollisionLayers.Singleton.GetDestroyableLayer()
         );
 
@@ -97,7 +98,7 @@ public class MeleeAbility : AbilityAbstractClass
             circle.transform.position = center;
 
             // Set the size of the circle (assuming the circle is a 2D object with a SpriteRenderer)
-            float circleRadius = size;  // The radius of the circle matches the attack radius
+            float circleRadius = this.stats.size;  // The radius of the circle matches the attack radius
 
             // Adjust the scale of the circle based on the size multiplier
             circle.transform.localScale = new Vector3(circleRadius * SIZE_MULTIPLIER, circleRadius * SIZE_MULTIPLIER, 1f);

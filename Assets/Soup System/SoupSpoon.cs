@@ -18,6 +18,7 @@ public class SoupSpoon
         {
             ability = ingredient.ability;
             statsWithBuffs = new(ingredient.baseStats, buffs);
+            Debug.Log($"SIZE STATS WITH BUFFS {statsWithBuffs.size}");
         }
 
         public bool Use()
