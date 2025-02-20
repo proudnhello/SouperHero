@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 //The ranged enemy follows player constantly until they are in range, at which point they freeze and fire bullets
 //Code tutorial for ranged enemy found at: https://www.youtube.com/watch?v=bwi4lteomic
 
-public class Ranger : EnemyBaseClass
+public class HopShroomAI : EnemyBaseClass
 {
     [Header("Player Detection")]
     private bool playerDetected = false;
@@ -23,7 +23,7 @@ public class Ranger : EnemyBaseClass
     [SerializeField] private float timeAfterShoot = 0.3f;
     [SerializeField] private float timeBetweenShots = 2.0f;
     public Transform firingPoint;
-    public Bullet bullet;
+    public HopShroomSpore bullet;
     private Animator animator;
 
     private enum RangerState
@@ -130,7 +130,7 @@ public class Ranger : EnemyBaseClass
 
         // wait til animation is finshed then make bullet       
         yield return new WaitForSecondsRealtime(animationLength);
-        Bullet temp = Instantiate(bullet, firingPoint.position, firingPoint.rotation);
+        HopShroomSpore temp = Instantiate(bullet, firingPoint.position, firingPoint.rotation);
         temp.direction = (_playerTransform.position - transform.position).normalized;
 
         // clean up
