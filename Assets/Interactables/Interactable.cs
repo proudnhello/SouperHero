@@ -32,7 +32,7 @@ public abstract class Interactable : MonoBehaviour
         canInteract = value;
     }
 
-    public void SetHighlighted(bool isHighlighted)
+    public virtual void SetHighlighted(bool isHighlighted)
     {
         // set the interactable prompt to be active or not
         interactableSpriteRenderer.material.SetFloat(_OutlineThickness, isHighlighted ? 1 : 0);
