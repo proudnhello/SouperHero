@@ -23,10 +23,10 @@ public class MeleeAbility : AbilityAbstractClass
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
 
-        Debug.Log("Use Melee Ability");
+        // Debug.Log("Use Melee Ability");
 
-        Debug.Log($"Enemy Layer: {CollisionLayers.Singleton.GetEnemyLayer().value}");
-        Debug.Log($"Destroyable Layer: {CollisionLayers.Singleton.GetDestroyableLayer().value}");
+        // Debug.Log($"Enemy Layer: {CollisionLayers.Singleton.GetEnemyLayer().value}");
+        // Debug.Log($"Destroyable Layer: {CollisionLayers.Singleton.GetDestroyableLayer().value}");
 
         Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
 
@@ -42,11 +42,11 @@ public class MeleeAbility : AbilityAbstractClass
             CollisionLayers.Singleton.GetEnemyLayer() | CollisionLayers.Singleton.GetDestroyableLayer()
         );
 
-        Debug.Log("Hit Objects: " + string.Join(", ", hitObjects.Select(hit => hit.name)));
+        // Debug.Log("Hit Objects: " + string.Join(", ", hitObjects.Select(hit => hit.name)));
 
-        Debug.Log(hitObjects);
+        // Debug.Log(hitObjects);
 
-        Debug.Log("Length of hit Objects: " + hitObjects.Length);
+        // Debug.Log("Length of hit Objects: " + hitObjects.Length);
 
         foreach (Collider2D hitObject in hitObjects)
         {

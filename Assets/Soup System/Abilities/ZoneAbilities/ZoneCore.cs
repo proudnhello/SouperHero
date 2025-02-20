@@ -7,13 +7,14 @@ public class ZoneCore : MonoBehaviour
 {
     [SerializeField] Rigidbody2D rb;
     [SerializeField] ZoneArea zoneArea;
+    PlayerCenteredZone playerCenteredZone;
 
     AbilityStats stats;
     List<Infliction> inflictions;
     float persistenceTime;
     bool stuckToPlayer = true;
 
-    public void Spawn(Vector2 spawnPoint, Vector2 dir, AbilityStats stats, List<Infliction> inflictions, bool onPlayer)
+    public void Spawn(Vector2 spawnPoint, Vector2 dir, AbilityStats stats, List<Infliction> inflictions, bool onPlayer, PlayerCenteredZone ability)
     {
         this.stats = stats;
         this.inflictions = inflictions;
@@ -24,6 +25,11 @@ public class ZoneCore : MonoBehaviour
         gameObject.SetActive(true);
         zoneArea.inflictions = inflictions;
         stuckToPlayer = onPlayer;
+        playerCenteredZone = ability;
+        if(!stuckToPlayer)
+        {
+            rb.velocity = dir * stats.speed;
+        }
         print("Spawned zone with stats " + stats.duration.ToString());
     }
 
@@ -31,7 +37,7 @@ public class ZoneCore : MonoBehaviour
     {
         if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject))
         {
-            enabled = false;
+            gameObject.SetActive(false);
         }
     }
 
@@ -51,6 +57,10 @@ public class ZoneCore : MonoBehaviour
         }
         else
         {
+            if(stuckToPlayer && playerCenteredZone)
+            {
+                playerCenteredZone.Deactivate();
+            }
             gameObject.SetActive(false);
         }
     }
