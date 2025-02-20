@@ -33,13 +33,17 @@ public class ProjectileObject : MonoBehaviour
 
             // Apply the infliction to the enemy
             entity.ApplyInfliction(inflictions, gameObject.transform);
+
+            // Deactivate the projectile
+            gameObject.SetActive(false);
         }
         else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {
             collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            gameObject.SetActive(false);
         }
 
-        // Reflect the projectile instead of deactivating it
+        // If it hit something that wasn't a destructable or an enemy, deflect the projectile
         BounceOff(collider);
     }
 
@@ -56,7 +60,6 @@ public class ProjectileObject : MonoBehaviour
         // Reflect the velocity along the normal
         rb.velocity = Vector2.Reflect(rb.velocity, normal);
     }
-
 
 
     private void FixedUpdate()
