@@ -31,6 +31,7 @@ public class DumbCharger : EnemyBaseClass
         else Patrol();
     }
     protected override void UpdateAI(){
+        if(IsDead()) return;
         agent.SetDestination(_playerTransform.position);
 
         if(agent.destination.x < transform.position.x){
