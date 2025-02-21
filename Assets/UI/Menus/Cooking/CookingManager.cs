@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor.Playables;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static SoupSpoon;
 
 
@@ -19,7 +20,6 @@ public class CookingManager : MonoBehaviour
     public TMP_Text UsesText;
     [SerializeField] private TMP_Text WarningText;
     public GameObject CookingCanvas;
-    public Campfire CurrentCampfire;
     public GameObject itemStatsScreen;
     private SoupSpoon statSpoon;
     
@@ -32,6 +32,43 @@ public class CookingManager : MonoBehaviour
     // Initialize Ingredient List
     public List<Ingredient> cookingIngredients = new();
 
+    private Campfire CurrentCampfire;
+
+    public void EnterCooking(Campfire source)
+    {
+        CurrentCampfire = source;
+        CursorManager.Singleton.ShowCursor();
+        ResetStatsText();
+        CookingCanvas.SetActive(true);
+        PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
+
+    }
+
+
+    public void ExitCooking(InputAction.CallbackContext ctx = default)
+    {
+        if (CurrentCampfire != null)
+        {
+            CurrentCampfire.StopCooking();
+            CurrentCampfire = null;
+            CursorManager.Singleton.HideCursor();
+            CookingCanvas.SetActive(false);
+            ResetStatsText();
+            PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
+        }
+    }
+    
+    // No Parameters For the Exit Button
+    public void ExitCooking()
+    {
+        ExitCooking(default);
+    }
+
+
+    private void OnDisable()
+    {
+        PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
+    }
 
     // Function to add an Ability Ingredient
     public void AddIngredient(Ingredient ingredient)
@@ -119,20 +156,14 @@ public class CookingManager : MonoBehaviour
         AbilitiesText.text = "Abilities:\n";
     }
 
-    public void ExitCooking()
-    {
-        if (CurrentCampfire != null)
-        {
-            CurrentCampfire.StopCooking();
-        }
-    }
+
 
     public void UpdateStatsText()
     {
         // Clear the text except for the headers
         BuffText.text = "";
         InflictionText.text = "";
-        AbilitiesText.text = "Abilities: ";
+        AbilitiesText.text = "Abilities:\n";
         UsesText.text = "Uses: ";
         statSpoon = new SoupSpoon(cookingIngredients);
         float totalDuration = 0;

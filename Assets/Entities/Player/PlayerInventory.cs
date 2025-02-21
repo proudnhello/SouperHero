@@ -50,15 +50,25 @@ public class PlayerInventory : MonoBehaviour
         PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
     }
 
-    public void CollectIngredient(Ingredient ingredient)
+    public void CollectIngredient(Collectable collectable)
     {
-        Debug.Log($"Collected Ingredient {ingredient}");
-        ingredientsHeld.Add(ingredient);
+        Debug.Log($"Collected Ingredient {collectable.ingredient}");
+        ingredientsHeld.Add(collectable.ingredient);
+        BasketUI.Singleton.AddIngredient(collectable);
     }
 
-    public void RemoveIngredient(Ingredient ingredient)
+    public void RemoveIngredient(Ingredient ingredient, bool reverse = false)
     {
-        ingredientsHeld.Remove(ingredient);
+        if (!reverse)
+        {
+            ingredientsHeld.Remove(ingredient);
+            BasketUI.Singleton.RemoveIngredient(ingredient);
+        }
+        else
+        {
+            ingredientsHeld.Remove(ingredient);
+            BasketUI.Singleton.RemoveIngredient(ingredient, reverse);
+        }
     }
 
     public bool CookSoup(List<Ingredient> ingredients)
@@ -96,7 +106,13 @@ public class PlayerInventory : MonoBehaviour
     void UseSpoon(InputAction.CallbackContext ctx)
     {
         SoupSpoon spoon = spoons[currentSpoon];
-        spoon.UseSpoon();
+        bool notOnCD = spoon.UseSpoon();
+
+        if (!notOnCD)
+        {
+            return;
+        }
+
         UsedSpoon?.Invoke();
 
         if (spoon.uses == 0)

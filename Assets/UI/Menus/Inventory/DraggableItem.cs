@@ -47,7 +47,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log($"Mouse entered UI element {ingredient.ingredientName}!");
+        //Debug.Log($"Mouse entered UI element {ingredient.ingredientName}!");
 
         CookingManager.Singleton.DisplayItemStats();
         GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
@@ -266,7 +266,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log($"Mouse exited UI element {ingredient.ingredientName}!");
+        //Debug.Log($"Mouse exited UI element {ingredient.ingredientName}!");
         CookingManager.Singleton.HideItemStats();
 
         GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
