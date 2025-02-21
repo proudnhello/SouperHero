@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -23,6 +22,7 @@ public class DumbCharger : EnemyBaseClass
     }
     void Update(){
         if (IsDead()) return;
+        print(agent.destination);
 
         if (playerDetected)
         {

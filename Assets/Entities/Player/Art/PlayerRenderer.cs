@@ -6,7 +6,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-using static UnityEditorInternal.VersionControl.ListControl;
 
 public class PlayerRenderer : EntityRenderer
 {

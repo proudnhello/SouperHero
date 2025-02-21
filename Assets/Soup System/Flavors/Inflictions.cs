@@ -4,6 +4,8 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using StatusEffectInstance = EntityInflictionEffectHandler.StatusEffectInstance;
 using Infliction = SoupSpoon.SpoonInfliction;
+using UnityEngine.AI;
+using Unity.VisualScripting.FullSerializer;
 
 public class Inflictions
 {
@@ -67,9 +69,21 @@ public class Inflictions
     public static IEnumerator Knockback(StatusEffectInstance instance, Rigidbody2D target, Transform source)
     {
         Debug.Log("adding " + instance.amount + " knockback to " + instance.entity.gameObject.name);
+        NavMeshAgent agent = target.GetComponent<NavMeshAgent>();
+        if (agent)
+        {
+            agent.updatePosition = false;
+        }
+        target.velocity = Vector3.zero;
         Vector3 direction = (target.transform.position - source.transform.position).normalized;
         target.AddForce(direction * instance.amount, ForceMode2D.Impulse);
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
         instance.entity.inflictionHandler.EndStatusEffect(instance);
+        if (agent)
+        {
+            agent.nextPosition = target.transform.position;
+            agent.updatePosition = true;
+        }
+        target.velocity = Vector3.zero;
     }
 }
