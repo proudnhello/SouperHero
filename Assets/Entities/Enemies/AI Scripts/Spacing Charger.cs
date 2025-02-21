@@ -65,6 +65,10 @@ public class SpacingCharger : EnemyBaseClass
     }
     protected override void UpdateAI()
     {
+        if (!agent.enabled)
+        {
+            return;
+        }
         float distance = Vector2.Distance(_playerTransform.position, transform.position);
         if(distance < followingRadius){
             agent.SetDestination(_playerTransform.position);
