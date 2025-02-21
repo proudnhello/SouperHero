@@ -19,7 +19,12 @@ public class RoomGenerator : MonoBehaviour
     [Header("INTERMEDIATE BLOCKS")]
     public List<Block> _intermediateBlocks;
     [Header("END BLOCK")]
-    public GameObject _endBlock;
+    public GameObject _endBlockLeft;
+    public GameObject _endBlockRight;
+    public GameObject _endBlockUp;
+    public GameObject _endBlockDown;
+
+
 
     [Header("I CONNECTORS")]
     public GameObject connectorEW;
@@ -868,6 +873,7 @@ public class RoomGenerator : MonoBehaviour
             bool west = false;
             bool found = false;
             Coordinate dstCoord = c;
+            MapRoom b = null;
             if(s.Length == 0)
             {
                 continue;
@@ -879,6 +885,7 @@ public class RoomGenerator : MonoBehaviour
                 found = true;
                 dstCoord.col++;
                 _map[c.row][c.col].northDoor.SetActive(false);
+                b = Instantiate(_endBlockDown).GetComponent<MapRoom>();
             }
             if (s.Contains('E') && !found)
             {
@@ -886,6 +893,7 @@ public class RoomGenerator : MonoBehaviour
                 found = true;
                 dstCoord.row++;
                 _map[c.row][c.col].eastDoor.SetActive(false);
+                b = Instantiate(_endBlockLeft).GetComponent<MapRoom>();
             }
             if (s.Contains('S') && !found)
             {
@@ -894,6 +902,7 @@ public class RoomGenerator : MonoBehaviour
                 found = true;
                 dstCoord.col--;
                 _map[c.row][c.col].southDoor.SetActive(false);
+                b = Instantiate(_endBlockUp).GetComponent<MapRoom>();
             }
             if (s.Contains('W') && !found)
             {
@@ -901,8 +910,8 @@ public class RoomGenerator : MonoBehaviour
                 west = true;
                 _map[c.row][c.col].westDoor.SetActive(false);
                 dstCoord.row--;
+                b = Instantiate(_endBlockRight).GetComponent<MapRoom>();
             }
-            MapRoom b = Instantiate(_endBlock).GetComponent<MapRoom>();
             b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
             canPlaceIntermediate(dstCoord.row, dstCoord.col, b);
             _map[dstCoord.row][dstCoord.col] = b.At(0, 0);
