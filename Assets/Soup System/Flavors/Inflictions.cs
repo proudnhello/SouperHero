@@ -79,7 +79,8 @@ public class Inflictions
         target.AddForce(direction * instance.amount, ForceMode2D.Impulse);
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
         instance.entity.inflictionHandler.EndStatusEffect(instance);
-        if (agent)
+        // If the agent is dead, don't bother making it move again
+        if (agent && !target.GetComponent<Entity>().IsDead())
         {
             agent.nextPosition = target.transform.position;
             agent.updatePosition = true;
