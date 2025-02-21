@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
+//using Microsoft.Unity.VisualStudio.Editor;
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
 
@@ -55,8 +56,15 @@ public class HealthCounter : MonoBehaviour
     }
 
     void AddHealth() {
-        heartList[heartCount-1].SetActive(true);
+        //heartList[heartCount-1].SetActive(true);
+
+        //Set heart to be fully opaque
+        Color newColor = heartList[heartCount - 1].gameObject.GetComponent<Image>().color;
+        newColor.a = 1f;
+        heartList[heartCount - 1].gameObject.GetComponent<Image>().color = newColor;
+
         heartCount++;
+
 
     }
 
@@ -67,7 +75,13 @@ public class HealthCounter : MonoBehaviour
             return;
         }
 
-        heartList[heartCount-1].SetActive(false);
+        //heartList[heartCount-1].SetActive(false);
+
+        //Set heart container to be slightly translucent
+        Color newColor = heartList[heartCount - 1].gameObject.GetComponent<Image>().color;
+        newColor.a = 0.3f;
+        heartList[heartCount - 1].gameObject.GetComponent<Image>().color = newColor;
+
         heartCount--;
 
     }
