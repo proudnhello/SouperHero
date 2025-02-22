@@ -12,6 +12,7 @@ public class HabaperroAI : EnemyBaseClass
     private float detectionDelay = 0.3f;
     [SerializeField] protected LayerMask playerLayer;
     private Animator animator;
+    [SerializeField] private Explosion explosion;
 
     private enum HabaperroState
     {
@@ -112,6 +113,7 @@ public class HabaperroAI : EnemyBaseClass
 
     IEnumerator ExplodingCoroutine(){
         agent.isStopped = true;
+        agent.speed = 0;
         _state = HabaperroState.PREPARING;
         animator.Play("Sit");
         float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
@@ -119,12 +121,13 @@ public class HabaperroAI : EnemyBaseClass
 
         _state = HabaperroState.ATTACKING;  
         animator.Play("Ignite");
-        animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        animationLength = animator.GetCurrentAnimatorStateInfo(0).length+1;
         yield return new WaitForSecondsRealtime(animationLength);
 
         _state = HabaperroState.BOOM;  
         animator.Play("Boom");
         animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        Instantiate(explosion).transform.position = transform.position;
         yield return new WaitForSecondsRealtime(animationLength);
 
         Destroy(gameObject);
