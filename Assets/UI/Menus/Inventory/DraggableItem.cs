@@ -65,6 +65,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Debug.Log(rt.rect.size);
         Debug.Log(this.transform.position);
 
+        // bring to the front
+        itemStatsScreen.transform.SetParent(transform.root);
+        itemStatsScreen.transform.SetAsLastSibling();
+
 
         // set text
         TextMeshProUGUI headerText = header.GetComponent<TextMeshProUGUI>();
@@ -280,6 +284,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Transform itemStatsScreenTrasnform = this.transform.Find("IngredientStats");
         if (itemStatsScreenTrasnform != null)
         {
+            CookingManager.Singleton.HideItemStats();
             GameObject CookingCanvas = CookingManager.Singleton.CookingCanvas;
             itemStatsScreenTrasnform.SetParent(CookingManager.Singleton.CookingCanvas.transform);
         } 
