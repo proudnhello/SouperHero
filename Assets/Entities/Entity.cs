@@ -48,6 +48,11 @@ public class Entity : MonoBehaviour
         inflictionHandler.ApplyInflictions(spoonInflictions, source);
     }
 
+    public BaseStats GetBaseStats()
+    {
+        return baseStats;
+    }
+
     public int GetHealth()
     {
         return currentStats.health;
