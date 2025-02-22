@@ -866,7 +866,6 @@ public class RoomGenerator : MonoBehaviour
         foreach (Coordinate c in sortedCoordinates)
         {
             string s = getConnectionsSelf(c.row, c.col);
-            float angle = 0.0f;
             bool north = false;
             bool south = false;
             bool east = false;
@@ -880,7 +879,6 @@ public class RoomGenerator : MonoBehaviour
             }
             if (s.Contains('N'))
             {
-                angle = 90.0f;
                 north = true;
                 found = true;
                 dstCoord.col++;
@@ -897,7 +895,6 @@ public class RoomGenerator : MonoBehaviour
             }
             if (s.Contains('S') && !found)
             {
-                angle = -90.0f;
                 south = true;
                 found = true;
                 dstCoord.col--;
@@ -906,13 +903,11 @@ public class RoomGenerator : MonoBehaviour
             }
             if (s.Contains('W') && !found)
             {
-                angle = 180.0f;
                 west = true;
                 _map[c.row][c.col].westDoor.SetActive(false);
                 dstCoord.row--;
                 b = Instantiate(_endBlockRight).GetComponent<MapRoom>();
             }
-            b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
             canPlaceIntermediate(dstCoord.row, dstCoord.col, b);
             _map[dstCoord.row][dstCoord.col] = b.At(0, 0);
             b.At(0, 0).setDirections(north, south, east, west);
