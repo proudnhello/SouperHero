@@ -19,6 +19,10 @@ public class Block : MonoBehaviour
     public GameObject eastDoor;
     public GameObject westDoor;
 
+    public GameObject northDoorOpen;
+    public GameObject southDoorOpen;
+    public GameObject eastDoorOpen;
+    public GameObject westDoorOpen;
 
     public string BlockType()
     {
