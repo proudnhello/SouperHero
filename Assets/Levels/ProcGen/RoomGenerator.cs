@@ -842,18 +842,22 @@ public class RoomGenerator : MonoBehaviour
                     if(s.Contains('N') && I.northDoor)
                     {
                         I.northDoor.SetActive(false);
+                        I.northDoorOpen.SetActive(true);
                     }
                     if (s.Contains('E') && I.eastDoor)
                     {
                         I.eastDoor.SetActive(false);
+                        I.eastDoorOpen.SetActive(true);
                     }
                     if (s.Contains('S') && I.southDoor)
                     {
                         I.southDoor.SetActive(false);
+                        I.southDoorOpen.SetActive(true);
                     }
                     if (s.Contains('W') && I.westDoor)
                     {
                         I.westDoor.SetActive(false);
+                        I.westDoorOpen.SetActive(true);
                     }
                 }
             }
@@ -883,6 +887,7 @@ public class RoomGenerator : MonoBehaviour
                 found = true;
                 dstCoord.col++;
                 _map[c.row][c.col].northDoor.SetActive(false);
+                _map[c.row][c.col].northDoorOpen.SetActive(true);
                 b = Instantiate(_endBlockDown).GetComponent<MapRoom>();
             }
             if (s.Contains('E') && !found)
@@ -891,6 +896,7 @@ public class RoomGenerator : MonoBehaviour
                 found = true;
                 dstCoord.row++;
                 _map[c.row][c.col].eastDoor.SetActive(false);
+                _map[c.row][c.col].eastDoorOpen.SetActive(true);
                 b = Instantiate(_endBlockLeft).GetComponent<MapRoom>();
             }
             if (s.Contains('S') && !found)
@@ -899,12 +905,14 @@ public class RoomGenerator : MonoBehaviour
                 found = true;
                 dstCoord.col--;
                 _map[c.row][c.col].southDoor.SetActive(false);
+                _map[c.row][c.col].southDoorOpen.SetActive(true);
                 b = Instantiate(_endBlockUp).GetComponent<MapRoom>();
             }
             if (s.Contains('W') && !found)
             {
                 west = true;
                 _map[c.row][c.col].westDoor.SetActive(false);
+                _map[c.row][c.col].westDoorOpen.SetActive(true);
                 dstCoord.row--;
                 b = Instantiate(_endBlockRight).GetComponent<MapRoom>();
             }
