@@ -19,7 +19,12 @@ public class RoomGenerator : MonoBehaviour
     [Header("INTERMEDIATE BLOCKS")]
     public List<Block> _intermediateBlocks;
     [Header("END BLOCK")]
-    public GameObject _endBlock;
+    public GameObject _endBlockLeft;
+    public GameObject _endBlockRight;
+    public GameObject _endBlockUp;
+    public GameObject _endBlockDown;
+
+
 
     [Header("I CONNECTORS")]
     public GameObject connectorEW;
@@ -861,24 +866,24 @@ public class RoomGenerator : MonoBehaviour
         foreach (Coordinate c in sortedCoordinates)
         {
             string s = getConnectionsSelf(c.row, c.col);
-            float angle = 0.0f;
             bool north = false;
             bool south = false;
             bool east = false;
             bool west = false;
             bool found = false;
             Coordinate dstCoord = c;
+            MapRoom b = null;
             if(s.Length == 0)
             {
                 continue;
             }
             if (s.Contains('N'))
             {
-                angle = 90.0f;
                 north = true;
                 found = true;
                 dstCoord.col++;
                 _map[c.row][c.col].northDoor.SetActive(false);
+                b = Instantiate(_endBlockDown).GetComponent<MapRoom>();
             }
             if (s.Contains('E') && !found)
             {
@@ -886,24 +891,23 @@ public class RoomGenerator : MonoBehaviour
                 found = true;
                 dstCoord.row++;
                 _map[c.row][c.col].eastDoor.SetActive(false);
+                b = Instantiate(_endBlockLeft).GetComponent<MapRoom>();
             }
             if (s.Contains('S') && !found)
             {
-                angle = -90.0f;
                 south = true;
                 found = true;
                 dstCoord.col--;
                 _map[c.row][c.col].southDoor.SetActive(false);
+                b = Instantiate(_endBlockUp).GetComponent<MapRoom>();
             }
             if (s.Contains('W') && !found)
             {
-                angle = 180.0f;
                 west = true;
                 _map[c.row][c.col].westDoor.SetActive(false);
                 dstCoord.row--;
+                b = Instantiate(_endBlockRight).GetComponent<MapRoom>();
             }
-            MapRoom b = Instantiate(_endBlock).GetComponent<MapRoom>();
-            b.gameObject.transform.Rotate(new Vector3(0.0f, 0.0f, angle));
             canPlaceIntermediate(dstCoord.row, dstCoord.col, b);
             _map[dstCoord.row][dstCoord.col] = b.At(0, 0);
             b.At(0, 0).setDirections(north, south, east, west);
@@ -929,8 +933,9 @@ public class RoomGenerator : MonoBehaviour
         int midHeight = (_mapHeight - 1) / 2;
 
         MapRoom b = Instantiate(_startBlock).GetComponent<MapRoom>();
-        b.gameObject.transform.position = getOffset(midWidth, midHeight, b);
-        _map[midWidth][midHeight] = b.At(0, 0);
+        b.gameObject.transform.position = getOffset(midWidth - 1, midHeight, b);
+        _map[midWidth - 1][midHeight] = b.At(0, 0);
+        _map[midWidth][midHeight] = b.At(1, 0);
 
         // Randomly sparse intermediate blocks
         placeIntermediates(numIntermediates);
