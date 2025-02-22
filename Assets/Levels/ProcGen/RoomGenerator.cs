@@ -933,8 +933,9 @@ public class RoomGenerator : MonoBehaviour
         int midHeight = (_mapHeight - 1) / 2;
 
         MapRoom b = Instantiate(_startBlock).GetComponent<MapRoom>();
-        b.gameObject.transform.position = getOffset(midWidth, midHeight, b);
-        _map[midWidth][midHeight] = b.At(0, 0);
+        b.gameObject.transform.position = getOffset(midWidth - 1, midHeight, b);
+        _map[midWidth - 1][midHeight] = b.At(0, 0);
+        _map[midWidth][midHeight] = b.At(1, 0);
 
         // Randomly sparse intermediate blocks
         placeIntermediates(numIntermediates);
