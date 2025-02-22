@@ -22,7 +22,7 @@ public class DumbCharger : EnemyBaseClass
     }
     void Update(){
         if (IsDead()) return;
-        print(agent.destination);
+        //print(agent.destination);
 
         if (playerDetected)
         {
@@ -31,6 +31,7 @@ public class DumbCharger : EnemyBaseClass
         else Patrol();
     }
     protected override void UpdateAI(){
+        if(IsDead()) return;
         agent.SetDestination(_playerTransform.position);
 
         if(agent.destination.x < transform.position.x){
