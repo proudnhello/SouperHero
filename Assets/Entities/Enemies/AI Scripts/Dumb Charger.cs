@@ -22,7 +22,7 @@ public class DumbCharger : EnemyBaseClass
     }
     void Update(){
         if (IsDead()) return;
-        print(agent.destination);
+        //print(agent.destination);
 
         if (playerDetected)
         {
