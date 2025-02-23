@@ -27,4 +27,9 @@ public class MapRoom : MonoBehaviour
     {
         return blocks[col * (_blockWidth) + row];
     }
+
+    public void enableAllEnemies()
+    {
+        this.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+    }
 }

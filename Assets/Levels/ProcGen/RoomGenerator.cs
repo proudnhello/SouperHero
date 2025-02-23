@@ -13,6 +13,7 @@ public class RoomGenerator : MonoBehaviour
     public int _mapHeight;
 
     private List<List<Block>> _map;
+    private List<MapRoom> _intermediateRooms;
 
     [Header("START BLOCK")]
     public GameObject _startBlock;
@@ -52,6 +53,7 @@ public class RoomGenerator : MonoBehaviour
     {
         // Need to create a new map full of nulls, placeholders for the Blocks and to determine if there is/isnt a block at a position
         _map = new List<List<Block>>();
+        _intermediateRooms = new List<MapRoom>();
         for(int i = 0; i < _mapWidth; i++)
         {
             _map.Add(new List<Block>());
@@ -64,7 +66,12 @@ public class RoomGenerator : MonoBehaviour
         }
         // After map is created, generate the rooms
         GenerateRoom();
-        NavMesh.BuildNavMeshAsync();
+        NavMesh.BuildNavMesh();
+
+        foreach(MapRoom room in _intermediateRooms)
+        {
+            room.enableAllEnemies();
+        }
     }
 
     // Obtains the offset needed to position the room along grid lines given a row and column
@@ -102,6 +109,8 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+
+
     // BFS Random Placement for intermediates. CHATGPT GAVE ME PSEUDO CODE
     void placeIntermediates(int numIntermediates)
     {
@@ -124,6 +133,7 @@ public class RoomGenerator : MonoBehaviour
                     Vector2 offset = getOffset(row, col, b);
                 }
             }
+            _intermediateRooms.Add(b);
         }
     }
 
@@ -941,6 +951,7 @@ public class RoomGenerator : MonoBehaviour
         int midHeight = (_mapHeight - 1) / 2;
 
         MapRoom b = Instantiate(_startBlock).GetComponent<MapRoom>();
+        _intermediateRooms.Add(b);
         b.gameObject.transform.position = getOffset(midWidth - 1, midHeight, b);
         _map[midWidth - 1][midHeight] = b.At(0, 0);
         _map[midWidth][midHeight] = b.At(1, 0);
