@@ -61,9 +61,9 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         RectTransform rt = GetComponent<RectTransform>();
         Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
         itemStatsScreen.transform.position = new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2(actualSize.x / 2, -actualSize.y / 2);
-        Debug.Log(itemStatsScreen.transform.position);
-        Debug.Log(rt.rect.size);
-        Debug.Log(this.transform.position);
+        //Debug.Log(itemStatsScreen.transform.position);
+        //Debug.Log(rt.rect.size);
+        //Debug.Log(this.transform.position);
 
         // bring to the front
         itemStatsScreen.transform.SetParent(transform.root);

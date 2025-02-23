@@ -22,6 +22,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             // check if the previous parent was a cooking slot: if so, remove it from pot ingredients
             if(draggableItem.parentAfterDrag.GetComponent<CookingSlot>() != null)
             {
+                Debug.Log($"Parent after drag is a cooking slot: {draggableItem.parentAfterDrag}");
                 CookingManager.Singleton.RemoveIngredient(draggableItem.ingredient);
             }
 

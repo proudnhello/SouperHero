@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "CollisionLayers", menuName = "Helper/CollisionLayers")]
+//[CreateAssetMenu(fileName = "CollisionLayers", menuName = "Helper/CollisionLayers")]
 public class CollisionLayers : MonoBehaviour
 {
     public static CollisionLayers Singleton { get; private set; }

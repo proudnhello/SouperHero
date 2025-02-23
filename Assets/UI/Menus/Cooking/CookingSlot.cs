@@ -9,7 +9,7 @@ public class CookingSlot : InventorySlot, IDropHandler
     public new void OnDrop(PointerEventData eventData)
     {
         // Call old drop
-        base.OnDrop(eventData);
+        //base.OnDrop(eventData);
 
         // Get The Object Dropped On This One
         GameObject dropped = eventData.pointerDrag;

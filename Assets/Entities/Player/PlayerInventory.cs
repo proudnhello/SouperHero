@@ -13,7 +13,10 @@ public class PlayerInventory : MonoBehaviour
     public int maxSpoons = 4;
 
     [SerializeField] List<Ingredient> defaultSpoonIngredients;
+
+    [SerializeField]
     internal List<Ingredient> ingredientsHeld;
+
     List<SoupSpoon> spoons;
 
     int currentSpoon = 0;

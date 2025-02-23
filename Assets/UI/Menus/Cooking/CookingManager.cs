@@ -72,6 +72,8 @@ public class CookingManager : MonoBehaviour
     // Function to add an Ability Ingredient
     public void AddIngredient(Ingredient ingredient)
     {
+
+        Debug.Log($"Added Ingredient: {ingredient}");
         cookingIngredients.Add(ingredient);
         UpdateStatsText();
     }
@@ -79,6 +81,7 @@ public class CookingManager : MonoBehaviour
     // Function to remove an Ability Ingredient
     public void RemoveIngredient(Ingredient ingredient)
     {
+        Debug.Log($"Removed Ingredient: {ingredient}");
         cookingIngredients.Remove(ingredient);
         UpdateStatsText();
     }
