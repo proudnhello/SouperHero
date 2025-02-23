@@ -118,6 +118,11 @@ public class EntityInflictionEffectHandler
         return activeStatuses.ContainsKey(inflictionType);
     }
 
+    public Dictionary<InflictionType, StatusEffectInstance> GetActiveStatuses()
+    {
+        return activeStatuses;
+    }
+
     public void EndStatusEffect(StatusEffectInstance instance)
     {
         if (activeStatuses.ContainsKey(instance.type)) activeStatuses.Remove(instance.type);

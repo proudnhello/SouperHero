@@ -217,12 +217,12 @@ RectTransform:
   m_LocalScale: {x: 2.041, y: 2.041, z: 2.041}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7217637047413565867}
+  m_Father: {fileID: 7654269996622849466}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3.78, y: -31.6}
-  m_SizeDelta: {x: 82.09, y: 21.22}
+  m_AnchoredPosition: {x: -0.51, y: -34.01}
+  m_SizeDelta: {x: 153.48, y: 23.59}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6547820774379115906
 CanvasRenderer:
@@ -279,8 +279,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 6
+  m_fontSizeBase: 6
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -484,7 +484,6 @@ RectTransform:
   m_LocalScale: {x: 0.007, y: 0.007, z: 0.007}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 558176008032131498}
   - {fileID: 7654269996622849466}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -624,6 +623,7 @@ RectTransform:
   - {fileID: 6096730305246249918}
   - {fileID: 7771148359206339271}
   - {fileID: 2983251409552672680}
+  - {fileID: 558176008032131498}
   m_Father: {fileID: 7217637047413565867}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -644,7 +644,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
-  debugText: {fileID: 428271555399737358}
+  healthText: {fileID: 428271555399737358}
+  statusText: {fileID: 1322446226523530750}
 --- !u!114 &2871501057764063509
 MonoBehaviour:
   m_ObjectHideFlags: 0
