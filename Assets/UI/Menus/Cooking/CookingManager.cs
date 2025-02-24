@@ -229,18 +229,18 @@ public class CookingManager : MonoBehaviour
         }
 
         // update buff text
-        BuffText.text += "Sour (Duration): " + totalDuration + "\n";
-        BuffText.text += "Bitter (Size): " + totalSize + "\n";
-        BuffText.text += "Salty (Critical Strike): " + totalCrit + "\n";
-        BuffText.text += "Sweet (Speed): " + totalSpeed + "\n";
-        BuffText.text += "Cooldown: " + totalCooldown + "\n";
+        BuffText.text += "<color=yellow>Sour (Duration):</color> " + totalDuration + "\n";
+        BuffText.text += "<color=#00FF00>Bitter (Size):</color> " + totalSize + "\n";
+        BuffText.text += "<color=orange>Salty (Crit):</color> " + totalCrit + "\n";
+        BuffText.text += "<color=purple>Sweet (Speed):</color> " + totalSpeed + "\n";
+        BuffText.text += "<color=blue>Cooldown:</color> " + totalCooldown + "\n";
 
         // update infliction text
-        InflictionText.text += "Spicy (Burn):" + "\n" + "| Add "+ totalAddBurn + " | Mult " + totalMultBurn + " |\n";
-        InflictionText.text += "Frosty (Freeze):" + "\n" + "| Add " + totalAddFreeze + " | Mult " + totalMultFreeze + " |\n";
-        InflictionText.text += "Hearty (Healing):" + "\n" + "| Add " + totalAddHealing + " | Mult " + totalMultHealing + " |\n";
-        InflictionText.text += "Spiky (Damage):" + "\n" + "| Add " + totalAddDamage + " | Mult " + totalMultDamage + " |\n";
-        InflictionText.text += "Greasy (Knockback):" + "\n" + "| Add " + totalAddKnockback + " | Mult " + totalMultKnockback + " |\n";
+        InflictionText.text += "<color=red>Spicy (Burn):</color>" + "\n" + "| Add "+ totalAddBurn + " | Mult " + totalMultBurn + " |\n";
+        InflictionText.text += "<color=#00FFFF>Frosty (Freeze):</color>" + "\n" + "| Add " + totalAddFreeze + " | Mult " + totalMultFreeze + " |\n";
+        InflictionText.text += "<color=green>Hearty (Healing):</color>" + "\n" + "| Add " + totalAddHealing + " | Mult " + totalMultHealing + " |\n";
+        InflictionText.text += "<color=#FF00FF>Spiky (Damage):</color>" + "\n" + "| Add " + totalAddDamage + " | Mult " + totalMultDamage + " |\n";
+        InflictionText.text += "<color=#8B4513>Greasy (Knockback):</color>" + "\n" + "| Add " + totalAddKnockback + " | Mult " + totalMultKnockback + " |\n";
     }
 
 }
