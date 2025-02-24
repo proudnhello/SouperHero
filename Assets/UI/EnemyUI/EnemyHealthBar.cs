@@ -34,7 +34,7 @@ public class EnemyHealthBar : MonoBehaviour
         statusText.text = "";
         foreach (var key in enemy.inflictionHandler.GetActiveStatuses().Keys)
         {
-            statusText.text += key + ", ";
+            statusText.text += key.ToString().Split('_')[1] + ", ";
         }
 
         // deactivate if health is 0
