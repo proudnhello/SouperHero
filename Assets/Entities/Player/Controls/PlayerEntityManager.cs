@@ -25,6 +25,7 @@ public class PlayerEntityManager : Entity
 
     private void OnDisable()
     {
+        input.Disable();
         ((PlayerRenderer)entityRenderer).Disable();
     }
     public override void ModifyHealth(int amount)
