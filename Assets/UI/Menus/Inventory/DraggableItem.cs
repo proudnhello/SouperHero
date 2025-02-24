@@ -79,7 +79,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (ingredient.GetType() == typeof(AbilityIngredient))
         {
             AbilityIngredient abilityIngredient = ingredient as AbilityIngredient;
-            bodyText.text = $"Ability Ingredient\nType: {abilityIngredient.ability._abilityName}\n\n";
+            bodyText.text = $"<color=purple>Ability Ingredient</color>\nType: {abilityIngredient.ability._abilityName}\n\n";
 
             foreach (InflictionFlavor inflictionFlavor in abilityIngredient.inherentInflictionFlavors)
             {
@@ -147,7 +147,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         } else if (ingredient.GetType() == typeof(FlavorIngredient))
         {
             FlavorIngredient flavorIngredient = ingredient as FlavorIngredient;
-            bodyText.text = "Flavor Ingredient\n\n";
+            bodyText.text = "<color=yellow>Flavor Ingredient</color>\n\n";
 
             foreach (InflictionFlavor inflictionFlavor in flavorIngredient.inflictionFlavors)
             {
