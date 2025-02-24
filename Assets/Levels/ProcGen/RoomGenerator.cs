@@ -831,7 +831,7 @@ public class RoomGenerator : MonoBehaviour
 
         if(path.Length == 0)
         {
-            Debug.LogError("CANNOT FIND PATH FROM SOURCE TO DESTINATION!!");
+            Debug.LogWarning("CANNOT FIND PATH FROM SOURCE TO DESTINATION!!");
             return "";
         }
         char[] charArray = path.Substring(0, path.Length - 1).ToCharArray();
@@ -1049,7 +1049,7 @@ public class RoomGenerator : MonoBehaviour
                 if (disconnectedCoordinate.row != -1)
                 {
                     string s = BFSPathFromIntermediate(disconnectedCoordinate, startIntermediates);
-                    if (s == "" || s.Length <= 1)
+                    if (s.Length <= 1)
                     {
                         iter++;
                         visited.Add(closestInter);
