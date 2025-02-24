@@ -666,6 +666,11 @@ public class RoomGenerator : MonoBehaviour
             return ret;
         }
 
+        if (checkForBlockAll(start))
+        {
+            ret.Add(start);
+        }
+
         queue.Enqueue(start);
         visitedStart.Add(start);
         Coordinate closestIntermediate = new Coordinate(-1, -1);
