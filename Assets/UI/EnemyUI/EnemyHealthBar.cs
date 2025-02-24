@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,7 +9,8 @@ public class EnemyHealthBar : MonoBehaviour
 {
     private Slider slider;
     [SerializeField] private EnemyBaseClass enemy;
-    [SerializeField] private TMP_Text debugText;
+    [SerializeField] private TMP_Text healthText;
+    [SerializeField] private TMP_Text statusText;
 
     private EnemyBaseClass enemyClass;
     // private float enemyHealth;
@@ -19,10 +21,26 @@ public class EnemyHealthBar : MonoBehaviour
     }
     void Update()
     {
-        debugText.text = enemyClass.GetHealth().ToString();
-        slider.value = enemyClass.GetHealth() / 100f;
+
+        // calculate health ratio
+        healthText.text = enemyClass.GetHealth().ToString();
+
+        // set value to health ratio
+        float oldValue = slider.value;
+        slider.value = (float) enemyClass.GetHealth() / enemyClass.GetBaseStats().maxHealth;
+        float newValue = slider.value;
+
+        // display status's
+        statusText.text = "";
+        foreach (var key in enemy.inflictionHandler.GetActiveStatuses().Keys)
+        {
+            statusText.text += key + ", ";
+        }
+
+        // deactivate if health is 0
         if (enemy.GetHealth() == 0) {
             gameObject.SetActive(false);
+            statusText.enabled = false;
         }
     }
 

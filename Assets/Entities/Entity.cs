@@ -43,9 +43,14 @@ public class Entity : MonoBehaviour
         currentStats.moveSpeed = baseStats.baseMoveSpeed;
     }
 
-    public void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
+    public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
     {
         inflictionHandler.ApplyInflictions(spoonInflictions, source);
+    }
+
+    public BaseStats GetBaseStats()
+    {
+        return baseStats;
     }
 
     public int GetHealth()
