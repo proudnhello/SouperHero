@@ -21,7 +21,8 @@ public class CookingManager : MonoBehaviour
     public GameObject CookingCanvas;
     public GameObject itemStatsScreen;
     private SoupSpoon statSpoon;
-    
+    bool isCooking = false;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -39,6 +40,7 @@ public class CookingManager : MonoBehaviour
         CursorManager.Singleton.ShowCursor();
         ResetStatsText();
         CookingCanvas.SetActive(true);
+        isCooking = true;
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
 
     }
@@ -53,6 +55,7 @@ public class CookingManager : MonoBehaviour
             CursorManager.Singleton.HideCursor();
             CookingCanvas.SetActive(false);
             ResetStatsText();
+            isCooking = false;
             PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
         }
     }
@@ -61,6 +64,11 @@ public class CookingManager : MonoBehaviour
     public void ExitCooking()
     {
         ExitCooking(default);
+    }
+
+    public bool IsCooking()
+    {
+        return isCooking;
     }
 
 

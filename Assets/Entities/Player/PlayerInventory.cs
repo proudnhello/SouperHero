@@ -108,6 +108,12 @@ public class PlayerInventory : MonoBehaviour
 
     void UseSpoon(InputAction.CallbackContext ctx)
     {
+
+        if (CookingManager.Singleton.IsCooking())
+        {
+            return;
+        }
+
         SoupSpoon spoon = spoons[currentSpoon];
         bool notOnCD = spoon.UseSpoon();
 
