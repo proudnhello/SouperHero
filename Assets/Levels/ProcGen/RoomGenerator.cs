@@ -401,7 +401,7 @@ public class RoomGenerator : MonoBehaviour
                 } else if (_map[row][col].BlockType() == "Connector")
                 {
                     c = getConnectionsAtAdvanced(row, col);
-                    DestroyImmediate(_map[row][col].gameObject);
+                    Destroy(_map[row][col].gameObject);
                 } else
                 {
                     continue;
@@ -985,7 +985,7 @@ public class RoomGenerator : MonoBehaviour
             b2.At(0, 0).setDirections(true, true, true, true);
         } else
         {
-            DestroyImmediate(b2.gameObject);
+            Destroy(b2.gameObject);
         }
 
         // Get a list of all the intermediates that are in the starting "island"
