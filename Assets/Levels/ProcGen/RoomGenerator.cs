@@ -66,12 +66,12 @@ public class RoomGenerator : MonoBehaviour
         }
         // After map is created, generate the rooms
         GenerateRoom();
-        NavMesh.BuildNavMesh();
+        NavMesh.BuildNavMeshAsync();
 
-        foreach(MapRoom room in _intermediateRooms)
-        {
-            room.enableAllEnemies();
-        }
+        //foreach(MapRoom room in _intermediateRooms)
+        //{
+        //    room.enableAllEnemies();
+        //}
     }
 
     // Obtains the offset needed to position the room along grid lines given a row and column
