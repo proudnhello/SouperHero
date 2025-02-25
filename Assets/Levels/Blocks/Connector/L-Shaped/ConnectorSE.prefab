@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5018337728845108572}
   - component: {fileID: 4668681649690428287}
   - component: {fileID: 3694044821447103554}
+  - component: {fileID: 8723951144146383787}
   m_Layer: 10
   m_Name: Walls
   m_TagString: Untagged
@@ -821,6 +822,22 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
   m_CompositeGameObject: {fileID: 2765893818436591889}
+--- !u!114 &8723951144146383787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2765893818436591889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &3765395639160068794
 GameObject:
   m_ObjectHideFlags: 0
@@ -832,6 +849,7 @@ GameObject:
   - component: {fileID: 135356340236084606}
   - component: {fileID: 8023877866196285491}
   - component: {fileID: 2978931051172212675}
+  - component: {fileID: 144246580317925156}
   m_Layer: 10
   m_Name: Ground0
   m_TagString: Untagged
@@ -1907,6 +1925,22 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &144246580317925156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3765395639160068794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 0
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &5531008064354232718
 GameObject:
   m_ObjectHideFlags: 0
@@ -1965,6 +1999,10 @@ MonoBehaviour:
   southDoor: {fileID: 0}
   eastDoor: {fileID: 0}
   westDoor: {fileID: 0}
+  northDoorOpen: {fileID: 0}
+  southDoorOpen: {fileID: 0}
+  eastDoorOpen: {fileID: 0}
+  westDoorOpen: {fileID: 0}
 --- !u!114 &2368741200638305371
 MonoBehaviour:
   m_ObjectHideFlags: 0

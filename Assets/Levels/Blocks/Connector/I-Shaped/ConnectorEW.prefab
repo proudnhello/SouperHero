@@ -179,6 +179,7 @@ GameObject:
   - component: {fileID: 355230486314470966}
   - component: {fileID: 5909897038582181739}
   - component: {fileID: 2272547422399463534}
+  - component: {fileID: 1016266657649425063}
   m_Layer: 10
   m_Name: Ground0
   m_TagString: Untagged
@@ -1204,6 +1205,22 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &1016266657649425063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3487083242197030406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 0
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &5531008064354232718
 GameObject:
   m_ObjectHideFlags: 0
@@ -1264,6 +1281,10 @@ MonoBehaviour:
   southDoor: {fileID: 0}
   eastDoor: {fileID: 0}
   westDoor: {fileID: 0}
+  northDoorOpen: {fileID: 0}
+  southDoorOpen: {fileID: 0}
+  eastDoorOpen: {fileID: 0}
+  westDoorOpen: {fileID: 0}
 --- !u!114 &9128123998136047537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1306,6 +1327,7 @@ GameObject:
   - component: {fileID: 7130832491590797192}
   - component: {fileID: 5318634119186432436}
   - component: {fileID: 8479646670582992331}
+  - component: {fileID: 1083060465945784272}
   m_Layer: 10
   m_Name: Walls
   m_TagString: Untagged
@@ -2147,3 +2169,19 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
   m_CompositeGameObject: {fileID: 5990336386778024464}
+--- !u!114 &1083060465945784272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5990336386778024464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
