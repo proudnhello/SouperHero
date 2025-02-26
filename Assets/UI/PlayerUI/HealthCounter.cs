@@ -59,10 +59,7 @@ public class HealthCounter : MonoBehaviour
     }
 
     void AddHealth(int heart, int pHealth) {
-        //heartList[heartCount-1].SetActive(true);
 
-        Debug.Log("phealth in Add: " + pHealth);
-        Debug.Log("heart in Add: " + heart);
         //Set heart to be fully opaque
         int heartCounter = heart;
         while (heartCounter <= pHealth)
@@ -76,11 +73,6 @@ public class HealthCounter : MonoBehaviour
             heartCounter++;
         }
 
-        //Color newColor = heartList[heartCount - 1].gameObject.GetComponent<Image>().color;
-        //newColor.a = 1f;
-        //heartList[heartCount - 1].gameObject.GetComponent<Image>().color = newColor;
-        //heartCount++;
-
         heartCount = pHealth;
 
 
@@ -93,13 +85,10 @@ public class HealthCounter : MonoBehaviour
             return;
         }
 
-        Debug.Log("Remove health called!");
-
         //Set heart to be fully opaque
         int heartCounter = heart;
         while (heartCounter > pHealth)
         {
-            Debug.Log("HeartCounter In Remove While :" + heartCounter);
             Color newColor = heartList[heartCounter - 1].GetComponent<Image>().color;
             newColor.a = 0.3f;
             heartList[heartCounter - 1].GetComponent<Image>().color = newColor;
@@ -108,13 +97,6 @@ public class HealthCounter : MonoBehaviour
         }
 
         heartCount = pHealth;
-
-        ////Set heart container to be slightly translucent
-        //Color newColor = heartList[heartCount - 1].gameObject.GetComponent<Image>().color;
-        //newColor.a = 0.3f;
-        //heartList[heartCount - 1].gameObject.GetComponent<Image>().color = newColor;
-
-        //heartCount--;
 
     }
 }
