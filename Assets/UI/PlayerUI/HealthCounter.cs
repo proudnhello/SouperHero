@@ -32,12 +32,12 @@ public class HealthCounter : MonoBehaviour
         PlayerEntityManager.HealthChange += HealthChange;
     }
 
-    // What did I say about not having duplicate copies of stats?
-    // Hacky fix to make sure the health is updated
-    public void FixedUpdate()
-    {
-        HealthChange();
-    }
+    //// What did I say about not having duplicate copies of stats?
+    //// Hacky fix to make sure the health is updated
+    //public void FixedUpdate()
+    //{
+    //    HealthChange();
+    //}
 
     private void OnDisable()
     {
@@ -46,43 +46,75 @@ public class HealthCounter : MonoBehaviour
 
     public void HealthChange() {
         healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
-        playerHealth = PlayerEntityManager.Singleton.GetHealth() / 10;
+        playerHealth = Mathf.CeilToInt(PlayerEntityManager.Singleton.GetHealth() / 10f);
+        Debug.Log("PLAYER HEALTH Normalized: " + playerHealth);
+        Debug.Log("HEART COUNT: " + heartCount);
+        Debug.Log("Player health real: " + PlayerEntityManager.Singleton.GetHealth());
         if (heartCount < playerHealth) {
-            AddHealth();
+            AddHealth(heartCount, playerHealth);
         }
         if (heartCount > playerHealth && heartCount > 0) {
-            RemoveHealth();
+            RemoveHealth(heartCount, playerHealth);
         }
     }
 
-    void AddHealth() {
+    void AddHealth(int heart, int pHealth) {
         //heartList[heartCount-1].SetActive(true);
 
+        Debug.Log("phealth in Add: " + pHealth);
+        Debug.Log("heart in Add: " + heart);
         //Set heart to be fully opaque
-        Color newColor = heartList[heartCount - 1].gameObject.GetComponent<Image>().color;
-        newColor.a = 1f;
-        heartList[heartCount - 1].gameObject.GetComponent<Image>().color = newColor;
+        int heartCounter = heart;
+        while (heartCounter <= pHealth)
+        {
+            Debug.Log("HeartCounter In Add While: " + heartCounter);
 
-        heartCount++;
+            Color newColor = heartList[heartCounter - 1].GetComponent<Image>().color;
+            newColor.a = 1f;
+            heartList[heartCounter - 1].GetComponent<Image>().color = newColor;
+
+            heartCounter++;
+        }
+
+        //Color newColor = heartList[heartCount - 1].gameObject.GetComponent<Image>().color;
+        //newColor.a = 1f;
+        //heartList[heartCount - 1].gameObject.GetComponent<Image>().color = newColor;
+        //heartCount++;
+
+        heartCount = pHealth;
 
 
     }
 
-    void RemoveHealth() {
+    void RemoveHealth(int heart, int pHealth) {
         if (heartCount-1 < 0)
         {
             Debug.Log("Error: heartCount is already 0!!!");
             return;
         }
 
-        //heartList[heartCount-1].SetActive(false);
+        Debug.Log("Remove health called!");
 
-        //Set heart container to be slightly translucent
-        Color newColor = heartList[heartCount - 1].gameObject.GetComponent<Image>().color;
-        newColor.a = 0.3f;
-        heartList[heartCount - 1].gameObject.GetComponent<Image>().color = newColor;
+        //Set heart to be fully opaque
+        int heartCounter = heart;
+        while (heartCounter > pHealth)
+        {
+            Debug.Log("HeartCounter In Remove While :" + heartCounter);
+            Color newColor = heartList[heartCounter - 1].GetComponent<Image>().color;
+            newColor.a = 0.3f;
+            heartList[heartCounter - 1].GetComponent<Image>().color = newColor;
 
-        heartCount--;
+            heartCounter--;
+        }
+
+        heartCount = pHealth;
+
+        ////Set heart container to be slightly translucent
+        //Color newColor = heartList[heartCount - 1].gameObject.GetComponent<Image>().color;
+        //newColor.a = 0.3f;
+        //heartList[heartCount - 1].gameObject.GetComponent<Image>().color = newColor;
+
+        //heartCount--;
 
     }
 }
