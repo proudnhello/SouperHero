@@ -281,13 +281,24 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDestroy()
     {
-        Transform itemStatsScreenTrasnform = this.transform.Find("IngredientStats");
-        if (itemStatsScreenTrasnform != null)
+        Transform itemStatsScreenTransform = this.transform.Find("IngredientStats");
+        if (itemStatsScreenTransform != null)
         {
             CookingManager.Singleton.HideItemStats();
             GameObject CookingCanvas = CookingManager.Singleton.CookingCanvas;
-            itemStatsScreenTrasnform.SetParent(CookingManager.Singleton.CookingCanvas.transform);
+            itemStatsScreenTransform.SetParent(CookingManager.Singleton.CookingCanvas.transform);
         } 
+    }
+
+    public void OnDisable()
+    {
+        Transform itemStatsScreenTransform = this.transform.Find("IngredientStats");
+        if (itemStatsScreenTransform != null)
+        {
+            CookingManager.Singleton.HideItemStats();
+            GameObject CookingCanvas = CookingManager.Singleton.CookingCanvas;
+            itemStatsScreenTransform.SetParent(CookingManager.Singleton.CookingCanvas.transform);
+        }
     }
 
 }

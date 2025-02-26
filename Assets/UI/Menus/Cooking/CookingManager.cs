@@ -57,6 +57,15 @@ public class CookingManager : MonoBehaviour
             CookingCanvas.SetActive(false);
             ResetStatsText();
             isCooking = false;
+
+            Transform itemStatsScreenTransform = itemStatsScreen.transform;
+            if (itemStatsScreenTransform != null)
+            {
+                HideItemStats();
+                GameObject cCanvas = CookingCanvas;
+                itemStatsScreenTransform.SetParent(cCanvas.transform);
+            }
+
             PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
         }
     }
@@ -73,10 +82,11 @@ public class CookingManager : MonoBehaviour
     }
 
 
-    private void OnDisable()
-    {
-        PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
-    }
+    //private void OnDisable()
+    //{
+
+    //    PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
+    //}
 
     // Function to add an Ability Ingredient
     public void AddIngredient(Ingredient ingredient)
