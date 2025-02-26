@@ -22,6 +22,7 @@ public class CookingManager : MonoBehaviour
     public GameObject itemStatsScreen;
     private SoupSpoon statSpoon;
     bool isCooking = false;
+    [SerializeField] private GameObject campfireWarning;
 
     private void Awake()
     {
@@ -130,6 +131,16 @@ public class CookingManager : MonoBehaviour
         WarningText.gameObject.SetActive(false);
     }
 
+    public void ShowCampfireWarning()
+    {
+        campfireWarning.SetActive(true);
+    }
+
+    public void HideCampfireWarning()
+    {
+        campfireWarning.SetActive(false);
+    }
+
     // Call this to cook the soup
     public void CookTheSoup()
     {
@@ -141,6 +152,12 @@ public class CookingManager : MonoBehaviour
         } else
         {
             HideWarning();
+        }
+
+        if (!PlayerEntityManager.Singleton.HasCooked())
+        {
+            ShowCampfireWarning();
+            PlayerEntityManager.Singleton.SetCooked(true);
         }
 
         // Cook the soup with what is currently in the pot

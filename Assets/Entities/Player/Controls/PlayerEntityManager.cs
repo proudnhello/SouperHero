@@ -12,6 +12,7 @@ public class PlayerEntityManager : Entity
     public PlayerAnimationHolder animations;
     public GameObject circle;
     public PlayerMovement playerMovement;
+    private bool cooked = false;
 
     private void Awake()
     {
@@ -41,6 +42,16 @@ public class PlayerEntityManager : Entity
             }
         }
         HealthChange?.Invoke();
+    }
+
+    public bool HasCooked()
+    {
+        return cooked;
+    }
+
+    public void SetCooked(bool cook)
+    {
+        cooked = cook;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

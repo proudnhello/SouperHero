@@ -34,6 +34,7 @@ public class Campfire : Interactable
     public void StopCooking()
     {
         isCooking = false;
+        SetInteractable(false);
     }
 
     IEnumerator TrackPlayerDistance()
