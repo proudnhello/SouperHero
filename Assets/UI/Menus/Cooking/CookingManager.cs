@@ -160,6 +160,9 @@ public class CookingManager : MonoBehaviour
             PlayerEntityManager.Singleton.SetCooked(true);
         }
 
+        // turn off interactable after cooking once
+        CurrentCampfire.SetInteractable(false);
+
         // Cook the soup with what is currently in the pot
         PlayerInventory.Singleton.CookSoup(cookingIngredients);
 
