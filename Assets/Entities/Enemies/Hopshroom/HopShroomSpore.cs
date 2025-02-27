@@ -23,7 +23,7 @@ public class HopShroomSpore : MonoBehaviour
     {
         if (collider.gameObject.tag == "Player")
         {
-            PlayerEntityManager.Singleton.ModifyHealth(-10);        
+            PlayerEntityManager.Singleton.DealDamage(10);       
         }
         else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {
