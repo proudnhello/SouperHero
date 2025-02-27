@@ -102,7 +102,7 @@ public class EntityInflictionEffectHandler
         }                   
     }
 
-    public void ApplyContactDamageInfliction(int dmg)
+    public void DealDamage(int dmg)
     {
         if (!activeStatuses.ContainsKey(InflictionType.SPIKY_Damage))
         {

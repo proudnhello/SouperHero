@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static FlavorIngredient.InflictionFlavor;
+using BuffFlavor = FlavorIngredient.BuffFlavor;
+using InflictionFlavor = FlavorIngredient.InflictionFlavor;
+using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
 public abstract class EnemyBaseClass : Entity
 {
@@ -51,12 +55,24 @@ public abstract class EnemyBaseClass : Entity
             if (anim != null)
             {
                 // Who the fuck at unity made *this* the way of checking if an animator has an animation?
+                // Not that it works, anyway
                 if (anim.HasState(anim.GetLayerIndex("Base Layer"), Animator.StringToHash("Walk"))){
                     anim.Play("Walk");
                 }
             }
         }
         base.ApplyInfliction(spoonInflictions, source);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // check if the collision is with an enemy and if the player is not invincible
+        Entity player = collision.gameObject.GetComponent<Entity>();
+        if (collision.gameObject.tag == "Player" &&
+            player != null)
+        {
+            player.DealDamage(playerCollisionDamage);
+        }
     }
 
     public override void ModifyHealth(int amount)
