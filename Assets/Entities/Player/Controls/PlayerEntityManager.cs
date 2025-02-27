@@ -12,6 +12,7 @@ public class PlayerEntityManager : Entity
     public PlayerAnimationHolder animations;
     public GameObject circle;
     public PlayerMovement playerMovement;
+    public PlayerAudio playerAudio;
     private bool cooked = false;
 
     private void Awake()
@@ -22,6 +23,7 @@ public class PlayerEntityManager : Entity
         input = new();
         input.Enable();
         entityRenderer = new PlayerRenderer(this, animations);
+        playerAudio = new();
     }
 
     private void OnDisable()
