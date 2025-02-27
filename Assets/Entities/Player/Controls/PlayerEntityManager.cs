@@ -56,17 +56,6 @@ public class PlayerEntityManager : Entity
         cooked = cook;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        // check if the collision is with an enemy and if the player is not invincible
-        if (collision.gameObject.tag == "Enemy" && 
-            CollisionLayers.Singleton.InEnemyLayer(collision.gameObject) &&
-            !inflictionHandler.IsAfflicted(InflictionType.SPIKY_Damage))
-        {
-            inflictionHandler.ApplyContactDamageInfliction(collision.gameObject.GetComponent<EnemyBaseClass>().playerCollisionDamage);
-        }
-    }
-
     public Vector2 GetPlayerPosition()
     {
         return transform.position;
