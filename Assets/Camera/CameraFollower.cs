@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
 
 public class CameraFollower : MonoBehaviour
 {
@@ -9,13 +6,10 @@ public class CameraFollower : MonoBehaviour
     [SerializeField] Vector2 maxDistance;
     [SerializeField] Vector2 distanceDivider;
 
-    CinemachineVirtualCamera vcam;
     Transform _player;
 
     void Start()
     {
-        vcam = Camera.main.gameObject.GetComponent<CinemachineVirtualCamera>();
-        vcam.Follow = transform;
         _player = PlayerEntityManager.Singleton.gameObject.transform;
     }
 
