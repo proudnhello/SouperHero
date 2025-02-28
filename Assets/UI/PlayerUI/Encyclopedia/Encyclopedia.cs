@@ -31,7 +31,7 @@ public class Encyclopedia : MonoBehaviour
 
     void PressEncyclopediaButton(InputAction.CallbackContext ctx)
     {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(Input.mousePosition, Vector2.zero, 0, ClickableLayers);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0, ClickableLayers);
         foreach (var hit in hits)
         {
             if (hit.collider.gameObject.CompareTag("Ingredient"))
