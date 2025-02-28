@@ -5,6 +5,11 @@ using UnityEngine;
 public class Ingredient : ScriptableObject
 {
     [Header("Ingredient Info")]
-    public string ingredientName;
-    public Sprite icon;
+    public string IngredientName;
+    public Sprite Icon;
+
+    [Header("Encyclopedia")]
+    public Sprite EncyclopediaImage;
+    public string Source;
+
 }

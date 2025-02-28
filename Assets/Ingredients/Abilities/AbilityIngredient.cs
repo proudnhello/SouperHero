@@ -6,9 +6,6 @@ using static FlavorIngredient;
 [CreateAssetMenu(fileName = "New Item", menuName = "Ingredient/Create New Ability Ingredient")]
 public class AbilityIngredient : Ingredient
 {
-    [Header("Encyclopedia")]
-    public Sprite Image;
-    public string Location;
     public string AbilityDescription;
 
     [Header("Ability Info")]
