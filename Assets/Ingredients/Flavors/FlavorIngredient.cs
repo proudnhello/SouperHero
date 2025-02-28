@@ -6,6 +6,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "Ingredient/New Flavor Ingredient")]
 public class FlavorIngredient : Ingredient
 {
+    [Header("Encyclopedia")]
+    public Sprite EncyclopediaEntry;
+    public string Location;
+    public string FlavorProfile;
     
     [Serializable]
     public class BuffFlavor
@@ -48,6 +52,7 @@ public class FlavorIngredient : Ingredient
         public int amount;
         public float statusEffectDuration;
     }
+    [Header("Flavors")]
     public List<BuffFlavor> buffFlavors;
     public List<InflictionFlavor> inflictionFlavors;
 }
