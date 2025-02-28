@@ -10,7 +10,8 @@ public class BasketUI : MonoBehaviour
     public static BasketUI Singleton;
     [SerializeField] Transform SpawnPoint;
     [SerializeField] float offsetYSpawn = 85;
-    [SerializeField] Vector2 dropForceRange = new Vector2(90, 110);
+    [SerializeField] Vector2 dropForceRangeX= new Vector2(0, 0);
+    [SerializeField] Vector2 dropForceRangeY = new Vector2(2, 8);
 
     [SerializeField] List<Collectable> basketCollectables = new List<Collectable>();
 
@@ -31,7 +32,7 @@ public class BasketUI : MonoBehaviour
         //TODO: Set parent of collectable to pot
         collectable.transform.SetParent(this.transform, false);
         collectable.collectableUI.transform.position = new Vector2(SpawnPoint.position.x, SpawnPoint.position.y + offsetYSpawn);
-        collectable.collectableUI.rb.velocity = new Vector2(0, -Random.Range(dropForceRange.x, dropForceRange.y));
+        collectable.collectableUI.rb.velocity = new Vector2(Random.Range(dropForceRangeX.x, dropForceRangeX.y), -Random.Range(dropForceRangeY.x, dropForceRangeY.y));
 
         // Add collectable to list
         basketCollectables.Add(collectable);
