@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Infliction = SoupSpoon.SpoonInfliction;
 
-public class Charge : MonoBehaviour
+[CreateAssetMenu(menuName = "Abilities/Charge")]
+
+public class Charge : AbilityAbstractClass
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] float CRIT_MULTIPLIER = 0.5f;
+    [SerializeField] float SPEED_MULTIPLIER = 100f;
 
-    // Update is called once per frame
-    void Update()
+    public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
-        
+        PlayerEntityManager.Singleton.Charge(stats, inflictions);
     }
 }
