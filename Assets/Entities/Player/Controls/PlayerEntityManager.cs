@@ -23,7 +23,11 @@ public class PlayerEntityManager : Entity
         input = new();
         input.Enable();
         entityRenderer = new PlayerRenderer(this, animations);
-        playerAudio = new();
+    }
+
+    private void Start()
+    {
+        playerAudio = new PlayerAudio();
     }
 
     private void OnDisable()
