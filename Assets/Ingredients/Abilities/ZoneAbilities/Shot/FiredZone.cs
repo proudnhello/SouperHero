@@ -31,11 +31,6 @@ public class FiredZone : AbilityAbstractClass
         //Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
         float radius = spriteRenderer.sprite.bounds.extents.x * stats.size / 2;
 
-        //Debug.Log($"radius {radius}");
-        //Debug.Log($"extents x {spriteRenderer.sprite.bounds.extents.x}");
-        //Debug.Log($"lossyscale x {proj.transform.lossyScale.x}");
-        //Debug.Log($"localscale x {proj.transform.localScale.x}");
-
         Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (radius * currentDirection);
 
         Debug.Log($"Zone Size Stats in Fired Zone {stats.size}");
