@@ -20,18 +20,18 @@ public class DumbCharger : EnemyBaseClass
         agent.speed = GetMoveSpeed();
         StartCoroutine(DetectionCoroutine());
     }
-    void Update(){
+    protected override void Update(){
+        base.Update();
         if (IsDead()) return;
         //print(agent.destination);
-
-        if (playerDetected)
-        {
-            UpdateAI();
-        }
-        else Patrol();
     }
     protected override void UpdateAI(){
         if(IsDead()) return;
+
+        if (!playerDetected)
+        {
+            return;
+        }
         agent.SetDestination(_playerTransform.position);
 
         if(agent.destination.x < transform.position.x){

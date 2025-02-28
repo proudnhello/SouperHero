@@ -35,15 +35,9 @@ public class HabaperroAI : EnemyBaseClass
         StartCoroutine(DetectionCoroutine());
     }
 
-    void Update()
+    protected override void Update()
     {
-        if (IsDead()) return;
-
-        if (playerDetected)
-        {
-            UpdateAI();
-        }
-
+        base.Update();
         switch(_state){
             case HabaperroState.IDLING:
                 animator.Play("Idle");
@@ -56,6 +50,10 @@ public class HabaperroAI : EnemyBaseClass
 
     protected override void UpdateAI()
     {
+        if (!playerDetected)
+        {
+            return;
+        }
         if (!agent.enabled)
         {
             return;

@@ -39,16 +39,11 @@ public class SpacingCharger : EnemyBaseClass
         StartCoroutine(DetectionCoroutine());
     }
 
-    protected void Update()
+    protected override void Update()
     {
-        if (IsDead()) return;
+        base.Update();
 
-        if (playerDetected)
-        {
-            UpdateAI();
-        }
-
-        switch(_state){
+        switch (_state){
             case SpacingChargerState.IDLING:
                 animator.Play("Idle");
                 break;
@@ -65,6 +60,10 @@ public class SpacingCharger : EnemyBaseClass
     }
     protected override void UpdateAI()
     {
+        if (!playerDetected)
+        {
+            return;
+        }
         float distance = Vector2.Distance(_playerTransform.position, transform.position);
         if(distance < followingRadius){
             agent.SetDestination(_playerTransform.position);

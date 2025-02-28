@@ -45,14 +45,9 @@ public class HopShroomAI : EnemyBaseClass
         StartCoroutine(DetectionCoroutine());
     }
 
-    protected void Update()
+    protected override void Update()
     {
-        if (IsDead()) return;
-
-        if (playerDetected)
-        {
-            UpdateAI();
-        }
+        base.Update();
 
         switch(_state){
             case RangerState.IDLING:
@@ -71,6 +66,10 @@ public class HopShroomAI : EnemyBaseClass
     }
     protected override void UpdateAI()
     {
+        if (!playerDetected)
+        {
+            return;
+        }
         float distance = Vector2.Distance(_playerTransform.position, transform.position);
         if(distance < followingRadius){
             agent.SetDestination(_playerTransform.position);

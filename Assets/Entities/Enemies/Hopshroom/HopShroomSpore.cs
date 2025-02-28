@@ -5,8 +5,9 @@ using UnityEngine;
 //Bullet class that is called when enemy bullet is instantiated from EnemyRanged
 public class HopShroomSpore : MonoBehaviour
 {
-    private float bulletLifeTime = 3f;
-    private float bulletSpeed = 15f;
+    public float bulletLifeTime = 3f;
+    public float bulletSpeed = 15f;
+    public int bulletDamage = 10;
     public Vector2 direction;
 
     private Rigidbody2D rb;
@@ -23,7 +24,7 @@ public class HopShroomSpore : MonoBehaviour
     {
         if (collider.gameObject.tag == "Player")
         {
-            PlayerEntityManager.Singleton.DealDamage(10);       
+            PlayerEntityManager.Singleton.DealDamage((int)bulletDamage);       
         }
         else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {

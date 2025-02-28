@@ -75,6 +75,12 @@ public abstract class EnemyBaseClass : Entity
         }
     }
 
+    protected virtual void Update()
+    {
+        if (IsDead()) return;
+        UpdateAI();
+    }
+
     public override void ModifyHealth(int amount)
     {
         base.ModifyHealth(amount);
