@@ -81,8 +81,8 @@ public class CookingUI : MonoBehaviour
             }
 
             // Update the UI components with ingredient values
-            itemName.text = ingredient.ingredientName;
-            itemIcon.sprite = ingredient.icon;
+            itemName.text = ingredient.IngredientName;
+            itemIcon.sprite = ingredient.Icon;
 
             // Set the ingredient reference in the draggable item
             DraggableItem draggableItemComponent = draggableInstance.GetComponent<DraggableItem>();

@@ -6,9 +6,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "Ingredient/New Flavor Ingredient")]
 public class FlavorIngredient : Ingredient
 {
-    [Header("Encyclopedia")]
-    public Sprite EncyclopediaEntry;
-    public string Location;
     public string FlavorProfile;
     
     [Serializable]

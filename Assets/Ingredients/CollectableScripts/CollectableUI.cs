@@ -11,12 +11,7 @@ public class CollectableUI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         _Collectable = col;
     }
-
-    private void OnMouseDown()
-    {
-        Debug.Log("clicked on " + name);
-    }
-
+    
     public Collectable GetCollectable()
     {
         return _Collectable;

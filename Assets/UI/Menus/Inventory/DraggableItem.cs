@@ -72,7 +72,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         // set text
         TextMeshProUGUI headerText = header.GetComponent<TextMeshProUGUI>();
-        headerText.text = ingredient.ingredientName;  
+        headerText.text = ingredient.IngredientName;  
 
         TextMeshProUGUI bodyText = body.GetComponent<TextMeshProUGUI>();
 

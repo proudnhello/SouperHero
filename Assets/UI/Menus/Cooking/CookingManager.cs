@@ -111,7 +111,7 @@ public class CookingManager : MonoBehaviour
         // Don't cook if there are no ability ingredients
         foreach (Ingredient ingredient in cookingIngredients)
         {
-            Debug.Log(ingredient.ingredientName);
+            Debug.Log(ingredient.IngredientName);
             if (ingredient.GetType() == typeof(AbilityIngredient))
             {
                 return true;
