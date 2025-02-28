@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
+using Infliction = SoupSpoon.SpoonInfliction;
 
 public class PlayerEntityManager : Entity
 {
@@ -65,4 +67,43 @@ public class PlayerEntityManager : Entity
         return transform.position;
     }
 
+    public override void DealDamage(int damage)
+    {
+        // If we're charging, don't take damage
+        if (!playerMovement.charging)
+        {
+            base.DealDamage(damage);
+        }
+    }
+
+    // Because charge is handled by collisions with the player, the damage has to be handled in the player entity
+    // Annoying it can't be fit in the charge script, but ah well
+    List<Infliction> chargeInflictions = new List<Infliction>();
+    public void Charge(AbilityStats stats, List<Infliction> inflictions)
+    {
+        chargeInflictions = inflictions;
+        playerMovement.StartCoroutine(playerMovement.Charge(stats.duration, stats.speed));
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // If we're charging and we hit an enemy, apply the inflictions
+        if (CollisionLayers.Singleton.InEnemyLayer(collision.gameObject) && playerMovement.charging)
+        {
+            Entity enemy = collision.gameObject.GetComponent<Entity>();
+            if (enemy != null)
+            {
+                enemy.ApplyInfliction(chargeInflictions, transform);
+            }
+        }
+
+        if(CollisionLayers.Singleton.InDestroyableLayer(collision.gameObject) && playerMovement.charging)
+        {
+            Destroyables destroyable = collision.gameObject.GetComponent<Destroyables>();
+            if (destroyable != null)
+            {
+                destroyable.RemoveDestroyable();
+            }
+        }
+    }
 }

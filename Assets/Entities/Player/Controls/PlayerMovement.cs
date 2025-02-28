@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _previousMousePosition;
     InputAction movementInput;
 
+    public bool charging = false;
+
     internal float currrentMoveSpeed = 0;
     internal Vector2 currentDirection;
 
@@ -50,8 +52,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
-
     // Update is called once per frame
     void Update()
     {
@@ -77,9 +77,21 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerEntityManager.Singleton.GetMoveSpeed();
-        currrentMoveSpeed = rb.velocity.magnitude;
+        // If the player is charging, don't allow movement, but still allow the player to rotate
+        if (!charging)
+        {
+            rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerEntityManager.Singleton.GetMoveSpeed();
+            currrentMoveSpeed = rb.velocity.magnitude;
+        }
     }
 
+    public IEnumerator Charge(float chargeTime, float chargeStrength)
+    {
+        rb.velocity = Vector2.zero;
+        charging = true;
+        rb.AddForce(currentDirection.normalized * chargeStrength, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(chargeTime);
+        charging = false;
+    }
 
 }
