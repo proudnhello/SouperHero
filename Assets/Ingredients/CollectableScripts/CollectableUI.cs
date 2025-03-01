@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 public class CollectableUI : MonoBehaviour
@@ -16,5 +17,4 @@ public class CollectableUI : MonoBehaviour
     {
         return _Collectable;
     }
-
 }
