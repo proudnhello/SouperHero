@@ -146,6 +146,7 @@ public class RingerAI : EnemyBaseClass
         public override void Enter(RingerAI ringer)
         {
             waitTillShoot = ringer.timeToShoot;
+            ringer.StartCoroutine(ringer.ShootingCoroutine());
             ringer.agent.speed = ringer.GetMoveSpeed()/4;
             ringer.agent.isStopped = true;
         }
@@ -154,6 +155,7 @@ public class RingerAI : EnemyBaseClass
         {
             ringer.agent.speed = ringer.GetMoveSpeed();
             ringer.agent.isStopped = false;
+            ringer._sprite.color = Color.white;
         }
 
         public override void Update(RingerAI ringer, float deltaT)
@@ -205,6 +207,17 @@ public class RingerAI : EnemyBaseClass
         yield return new WaitForSeconds(detectionDelay);
         CheckDetection();
         StartCoroutine(DetectionCoroutine());
+    }
+
+    IEnumerator ShootingCoroutine()
+    {
+        int blinks = (int)(timeToShoot / 0.1f);
+        for (int i = 0; i < blinks; i++)
+        {
+            yield return new WaitForSeconds(0.1f);
+            _sprite.color = _sprite.color == Color.white ? Color.green : Color.white;
+        }
+        _sprite.color = Color.white;
     }
 
     bool canShoot()
