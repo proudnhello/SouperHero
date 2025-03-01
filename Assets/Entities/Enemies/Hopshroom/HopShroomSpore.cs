@@ -19,6 +19,16 @@ public class HopShroomSpore : MonoBehaviour
         rb.velocity = direction * bulletSpeed;
     }
 
+    public void SetDirection(Vector2 d)
+    {
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+        }
+        rb.velocity = Vector2.zero;
+        direction = d.normalized;
+        rb.velocity = direction * bulletSpeed;
+    }
 
     private void OnTriggerEnter2D(Collider2D collider) //Lo: This is temporary until the DamagePlayer() function in EnemyBaseClass is complete
     {

@@ -24,6 +24,7 @@ public class RingerAI : EnemyBaseClass
     [SerializeField] private float timeToShoot = 0.5f;
     [SerializeField] private float timeAfterShoot = 0.5f;
     [SerializeField] private float timeBetweenShots = 2.0f;
+    [SerializeField] private int numberOfShots = 18;
     public Transform firingPoint;
     public HopShroomSpore bullet;
     private Animator animator;
@@ -69,43 +70,68 @@ public class RingerAI : EnemyBaseClass
 
     public class ChasingState : RingerState
     {
-        float waitTillShoot = 0.0f;
+        int rotationDirection = 1;
         public override void Enter(RingerAI ringer)
         {
-            waitTillShoot = ringer.timeBetweenShots;
+            rotationDirection = 0;
             ringer.agent.isStopped = false;
         }
 
         public override void Exit(RingerAI ringer)
         {
+            rotationDirection = 0;
             ringer.agent.isStopped = true;
         }
 
         public override void Update(RingerAI ringer, float deltaT)
         {
-            waitTillShoot -= deltaT;
             float distance = Vector2.Distance(ringer.transform.position, PlayerEntityManager.Singleton.GetPlayerPosition());
-            if(distance < ringer.shootingRadius && waitTillShoot <= 0)
+            // If the player is out of range, go back to idle
+            if(distance > ringer.followingRadius)
             {
-                waitTillShoot = ringer.timeBetweenShots;
-                //ringer.currentState.Exit(ringer);
-                //ringer.currentState = ringer.shooting;
-                //ringer.currentState.Enter(ringer);
-            }
-            else if(distance > ringer.followingRadius)
-            {
+                rotationDirection = 0;
                 ringer.currentState.Exit(ringer);
                 ringer.currentState = ringer.idle;
                 ringer.currentState.Enter(ringer);
             }
+            // If the player is too close, flee
             else if (distance < ringer.fleeRadius)
             {
-                ringer.agent.speed = ringer.GetMoveSpeed() * 2;
+                rotationDirection = 0;
+                ringer.agent.speed = ringer.GetMoveSpeed();
                 Vector2 holder = ringer.transform.position;
                 Vector2 awayFromPlayer = holder - PlayerEntityManager.Singleton.GetPlayerPosition();
                 awayFromPlayer.Normalize();
                 ringer.agent.SetDestination(holder + (awayFromPlayer * 3));
             }
+            // If the player is in range, enter the shooting state
+            else if (distance < ringer.shootingRadius)
+            {
+                if(rotationDirection == 0)
+                {
+                    if(Random.Range(0, 2) == 0)
+                    {
+                        rotationDirection = 1;
+                    }
+                    else
+                    {
+                        rotationDirection = -1;
+                    }
+                }
+                Vector2 holder = ringer.transform.position;
+                Vector2 awayFromPlayer = holder - PlayerEntityManager.Singleton.GetPlayerPosition();
+                awayFromPlayer.Normalize();
+                Vector2 perpendicular = new Vector2(awayFromPlayer.y, -awayFromPlayer.x) * rotationDirection;
+                ringer.agent.speed = ringer.GetMoveSpeed();
+                ringer.agent.SetDestination(holder + (perpendicular * 1));
+                if(ringer.canShoot())
+                {
+                    ringer.currentState.Exit(ringer);
+                    ringer.currentState = ringer.shooting;
+                    ringer.currentState.Enter(ringer);
+                }
+            }
+            // Otherwise, chase the player
             else
             {
                 ringer.agent.speed = ringer.GetMoveSpeed();
@@ -120,35 +146,36 @@ public class RingerAI : EnemyBaseClass
         public override void Enter(RingerAI ringer)
         {
             waitTillShoot = ringer.timeToShoot;
+            ringer.agent.speed = ringer.GetMoveSpeed()/4;
             ringer.agent.isStopped = true;
         }
 
         public override void Exit(RingerAI ringer)
         {
+            ringer.agent.speed = ringer.GetMoveSpeed();
             ringer.agent.isStopped = false;
         }
 
         public override void Update(RingerAI ringer, float deltaT)
         {
-            print("IMMA FIRING MY LAZERS");
-            return;
             waitTillShoot -= deltaT;
-            if(waitTillShoot <= 0)
+            if (waitTillShoot <= 0)
             {
-                // ringer.Shoot();
-                waitTillShoot = ringer.timeBetweenShots;
-            }
-            float distance = Vector2.Distance(ringer.transform.position, PlayerEntityManager.Singleton.GetPlayerPosition());
-            if(distance > ringer.shootingRadius)
-            {
+                ringer.Shoot();
+                float angle = 360 / ringer.numberOfShots;
+                for(float i = 0; i <= 360; i += angle)
+                {
+                    HopShroomSpore bullet = Instantiate(ringer.bullet, ringer.firingPoint.position, Quaternion.Euler(0, 0, i));
+                    bullet.SetDirection(new Vector2(Mathf.Cos(i * Mathf.Deg2Rad), Mathf.Sin(i * Mathf.Deg2Rad)));
+                }
                 ringer.currentState.Exit(ringer);
                 ringer.currentState = ringer.chasing;
                 ringer.currentState.Enter(ringer);
             }
         }
     }
-    
 
+    float shootTimer;
     protected void Start()
     {
         initEnemy();
@@ -161,12 +188,14 @@ public class RingerAI : EnemyBaseClass
         shooting = new ShootingState();
 
         currentState = idle;
+        shootTimer = timeBetweenShots;
 
         StartCoroutine(DetectionCoroutine());
     }
 
     protected override void UpdateAI()
     {
+        shootTimer -= Time.deltaTime;
         print(currentState.GetType());
         currentState.Update(this, Time.deltaTime);
     }
@@ -176,6 +205,16 @@ public class RingerAI : EnemyBaseClass
         yield return new WaitForSeconds(detectionDelay);
         CheckDetection();
         StartCoroutine(DetectionCoroutine());
+    }
+
+    bool canShoot()
+    {
+        return shootTimer <= 0;
+    }
+
+    void Shoot()
+    {
+        shootTimer = timeBetweenShots;
     }
 
     protected void CheckDetection()

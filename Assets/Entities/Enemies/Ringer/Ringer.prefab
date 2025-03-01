@@ -102,7 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseStats:
     maxHealth: 20
-    baseMoveSpeed: 2
+    baseMoveSpeed: 3
     invincibility: 0.5
   collectable: {fileID: 165481585712337600, guid: aa12e03f8133b59429f683b494cb2d83, type: 3}
   playerCollisionDamage: 10
@@ -112,12 +112,14 @@ MonoBehaviour:
   detectionRadius: 9
   followingRadius: 12
   shootingRadius: 6
+  fleeRadius: 3
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
   timeToShoot: 1
   timeAfterShoot: 1
   timeBetweenShots: 2
+  numberOfShots: 12
   firingPoint: {fileID: 2308621309380939610}
   bullet: {fileID: 6867430482067145103, guid: fa2448d84ab9bee46abdf52a482ce66c, type: 3}
 --- !u!195 &114311671412169719
@@ -131,12 +133,12 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 4
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 15
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1
   m_BaseOffset: 0.5
