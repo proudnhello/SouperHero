@@ -22,7 +22,6 @@ public class RingerAI : EnemyBaseClass
     [SerializeField] protected LayerMask playerLayer;
     //[SerializeField] private float distanceToStop = 5f;
     [SerializeField] private float timeToShoot = 0.5f;
-    [SerializeField] private float timeAfterShoot = 0.5f;
     [SerializeField] private float timeBetweenShots = 2.0f;
     [SerializeField] private int numberOfShots = 18;
     public Transform firingPoint;
