@@ -25,7 +25,6 @@ public class ProjectileObject : MonoBehaviour
         gameObject.SetActive(true);
         projectileArea.StartCoroutine(projectileArea.PlayerDelay(PLAYER_SAFTY_DELAY));
         rb.velocity = dir * stats.speed;
-
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
