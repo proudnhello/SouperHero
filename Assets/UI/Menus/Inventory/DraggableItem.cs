@@ -11,7 +11,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     public Image image;
     public GameObject draggableItem;
-    public GameObject draggableCopy;
+    //public GameObject draggableCopy;
     [HideInInspector] public Transform parentAfterDrag;
     [HideInInspector] public string ingredientType;
 
@@ -19,20 +19,18 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Ingredient ingredient = null;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // save the original parent
         parentAfterDrag = transform.parent.transform.parent;
 
-        // bring the ingredient to the front of the scene while dragging
-        //transform.SetParent(transform.root);
+        GameObject content = GameObject.Find("Content");
+        transform.parent.transform.SetParent(content.transform, true);
+        transform.parent.transform.SetParent(transform.parent.transform.root, true);
         transform.parent.transform.SetAsLastSibling();
 
-        draggableCopy = Instantiate(this.gameObject, transform.parent.transform);
-        Rigidbody2D rb = draggableCopy.GetComponent<Rigidbody2D>();
+        //draggableCopy = Instantiate(this.gameObject, transform.parent.transform);
+        Rigidbody2D rb = gameObject.GetComponent<Rigidbody2D>();
         rb.isKinematic = true;
-        draggableCopy.GetComponent<Collider2D>().enabled = false;
+        gameObject.GetComponent<Collider2D>().enabled = false;
 
-        // set raycast off so that when you drop on the slot
-        // the drop system doesn't think you dropped it on itself
         image.raycastTarget = false;
     }
 
@@ -45,245 +43,248 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         out Vector3 worldPos
         );
 
-        // map item position to mouse position
-        draggableCopy.transform.position = worldPos;
+        gameObject.transform.position = worldPos;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        transform.parent.transform.position = draggableCopy.transform.position;
-        Destroy(draggableCopy);
+        //transform.parent.transform.position = draggableCopy.transform.position;
+        //Destroy(draggableCopy);
 
         // set the parent to the parent after drag
         transform.parent.transform.SetParent(parentAfterDrag);
+        transform.parent.transform.localScale = Vector3.one;
 
         // return raycast to true
         image.raycastTarget = true;
     }
 
-    //public void OnPointerEnter(PointerEventData eventData)
-    //{
-    //    ingredient = transform.parent.GetComponent<Collectable>().ingredient;
-    //    //Debug.Log($"Mouse entered UI element {ingredient.ingredientName}!");
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        ingredient = transform.parent.GetComponent<Collectable>().ingredient;
+        //Debug.Log($"Mouse entered UI element {ingredient.ingredientName}!");
 
-    //    CookingManager.Singleton.DisplayItemStats();
-    //    GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
+        CookingManager.Singleton.DisplayItemStats();
+        GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
 
-    //    Transform background = itemStatsScreen.transform.Find("Background");
-    //    Transform header = background.transform.Find("Header");
-    //    Transform body = background.transform.Find("Body");
+        Transform background = itemStatsScreen.transform.Find("Background");
+        Transform header = background.transform.Find("Header");
+        Transform body = background.transform.Find("Body");
 
-    //    // move the screen
-    //    itemStatsScreen.transform.SetParent(this.transform);
-    //    RectTransform rt = GetComponent<RectTransform>();
-    //    Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
-    //    itemStatsScreen.transform.position = new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2(actualSize.x / 2, -actualSize.y / 2);
-    //    //Debug.Log(itemStatsScreen.transform.position);
-    //    //Debug.Log(rt.rect.size);
-    //    //Debug.Log(this.transform.position);
+        // move the screen
+        itemStatsScreen.transform.SetParent(this.transform);
+        RectTransform rt = GetComponent<RectTransform>();
+        Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
+        itemStatsScreen.transform.position = new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2(actualSize.x / 2, -actualSize.y / 2);
+        //Debug.Log(itemStatsScreen.transform.position);
+        //Debug.Log(rt.rect.size);
+        //Debug.Log(this.transform.position);
 
-    //    // bring to the front
-    //    itemStatsScreen.transform.SetParent(transform.root);
-    //    itemStatsScreen.transform.SetAsLastSibling();
+        // bring to the front
+        itemStatsScreen.transform.SetParent(transform.root);
+        itemStatsScreen.transform.SetAsLastSibling();
 
 
-    //    // set text
-    //    TextMeshProUGUI headerText = header.GetComponent<TextMeshProUGUI>();
-    //    headerText.text = ingredient.IngredientName;  
+        // set text
+        TextMeshProUGUI headerText = header.GetComponent<TextMeshProUGUI>();
+        headerText.text = ingredient.IngredientName;
 
-    //    TextMeshProUGUI bodyText = body.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI bodyText = body.GetComponent<TextMeshProUGUI>();
 
-    //    if (ingredient.GetType() == typeof(AbilityIngredient))
-    //    {
-    //        AbilityIngredient abilityIngredient = ingredient as AbilityIngredient;
-    //        bodyText.text = $"<color=purple>Ability Ingredient</color>\nType: {abilityIngredient.ability._abilityName}\n\n";
+        if (ingredient.GetType() == typeof(AbilityIngredient))
+        {
+            AbilityIngredient abilityIngredient = ingredient as AbilityIngredient;
+            bodyText.text = $"<color=purple>Ability Ingredient</color>\nType: {abilityIngredient.ability._abilityName}\n\n";
 
-    //        foreach (InflictionFlavor inflictionFlavor in abilityIngredient.inherentInflictionFlavors)
-    //        {
-    //            switch (inflictionFlavor.inflictionType)
-    //            {
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Spicy (Burn):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Spicy (Burn):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Frosty (Freeze):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Frosty (Freeze):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Hearty (Healing):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Hearty (Healing):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Spiky (Damage):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Spiky (Damage):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Greasy (Knockback):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Greasy (Knockback):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //            }
-    //        }
+            foreach (InflictionFlavor inflictionFlavor in abilityIngredient.inherentInflictionFlavors)
+            {
+                switch (inflictionFlavor.inflictionType)
+                {
+                    case FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Spicy (Burn):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Spicy (Burn):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Frosty (Freeze):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Frosty (Freeze):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Hearty (Healing):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Hearty (Healing):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Spiky (Damage):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Spiky (Damage):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Greasy (Knockback):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Greasy (Knockback):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                }
+            }
 
-    //        bodyText.text += "Sour (Duration): " + abilityIngredient.baseStats.duration + "\n";
-    //        bodyText.text += "Bitter (Size): " + abilityIngredient.baseStats.size + "\n";
-    //        bodyText.text += "Salty (Critical Strike): " + abilityIngredient.baseStats.crit + "\n";
-    //        bodyText.text += "Sweet (Speed): " + abilityIngredient.baseStats.speed + "\n";
-    //        bodyText.text += "Cooldown: " + abilityIngredient.baseStats.cooldown + "\n";
+            bodyText.text += "Sour (Duration): " + abilityIngredient.baseStats.duration + "\n";
+            bodyText.text += "Bitter (Size): " + abilityIngredient.baseStats.size + "\n";
+            bodyText.text += "Salty (Critical Strike): " + abilityIngredient.baseStats.crit + "\n";
+            bodyText.text += "Sweet (Speed): " + abilityIngredient.baseStats.speed + "\n";
+            bodyText.text += "Cooldown: " + abilityIngredient.baseStats.cooldown + "\n";
 
-    //    } else if (ingredient.GetType() == typeof(FlavorIngredient))
-    //    {
-    //        FlavorIngredient flavorIngredient = ingredient as FlavorIngredient;
-    //        bodyText.text = "<color=yellow>Flavor Ingredient</color>\n\n";
+        }
+        else if (ingredient.GetType() == typeof(FlavorIngredient))
+        {
+            FlavorIngredient flavorIngredient = ingredient as FlavorIngredient;
+            bodyText.text = "<color=yellow>Flavor Ingredient</color>\n\n";
 
-    //        foreach (InflictionFlavor inflictionFlavor in flavorIngredient.inflictionFlavors)
-    //        {
-    //            switch (inflictionFlavor.inflictionType)
-    //            {
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Spicy (Burn):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Spicy (Burn):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Frosty (Freeze):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Frosty (Freeze):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Hearty (Healing):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Hearty (Healing):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Spiky (Damage):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Spiky (Damage):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback:
-    //                    if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Greasy (Knockback):" + " Add " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Greasy (Knockback):" + " Mult " + inflictionFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //            }
-    //        }
+            foreach (InflictionFlavor inflictionFlavor in flavorIngredient.inflictionFlavors)
+            {
+                switch (inflictionFlavor.inflictionType)
+                {
+                    case FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Spicy (Burn):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Spicy (Burn):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Frosty (Freeze):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Frosty (Freeze):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Hearty (Healing):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Hearty (Healing):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Spiky (Damage):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Spiky (Damage):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback:
+                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Greasy (Knockback):" + " Add " + inflictionFlavor.amount + "\n";
+                        }
+                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Greasy (Knockback):" + " Mult " + inflictionFlavor.amount + "\n";
+                        }
+                        break;
+                }
+            }
 
-    //        foreach (BuffFlavor buffFlavor in flavorIngredient.buffFlavors)
-    //        {
-    //            switch (buffFlavor.buffType)
-    //            {
-    //                case FlavorIngredient.BuffFlavor.BuffType.BITTER_Size:
-    //                    if (buffFlavor.operation == BuffFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Bitter (Size):" + " Add " + buffFlavor.amount + "\n";
-    //                    }
-    //                    else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Bitter (Size):" + " Mult " + buffFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.BuffFlavor.BuffType.SALTY_CriticalStrike:
-    //                    if (buffFlavor.operation == BuffFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Salty (Critical Strike):" + " Add " + buffFlavor.amount + "\n";
-    //                    }
-    //                    else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Salty (Critical Strike):" + " Mult " + buffFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.BuffFlavor.BuffType.SOUR_Duration:
-    //                    if (buffFlavor.operation == BuffFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Sour (Duration):" + " Add " + buffFlavor.amount + "\n";
-    //                    }
-    //                    else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Sour (Duration):" + " Mult " + buffFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.BuffFlavor.BuffType.UMAMI_Vampirism:
-    //                    if (buffFlavor.operation == BuffFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Cooldown:" + " Add " + buffFlavor.amount + "\n";
-    //                    }
-    //                    else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Cooldown:" + " Mult " + buffFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //                case FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed:
-    //                    if (buffFlavor.operation == BuffFlavor.Operation.Add)
-    //                    {
-    //                        bodyText.text += "Sweet (Speed):" + " Add " + buffFlavor.amount + "\n";
-    //                    }
-    //                    else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-    //                    {
-    //                        bodyText.text += "Sweet (Speed):" + " Mult " + buffFlavor.amount + "\n";
-    //                    }
-    //                    break;
-    //            }
-    //        }
-    //    } else
-    //    {
-    //        Debug.LogError("Invalid Ingredient Type");
-    //    }
+            foreach (BuffFlavor buffFlavor in flavorIngredient.buffFlavors)
+            {
+                switch (buffFlavor.buffType)
+                {
+                    case FlavorIngredient.BuffFlavor.BuffType.BITTER_Size:
+                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Bitter (Size):" + " Add " + buffFlavor.amount + "\n";
+                        }
+                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Bitter (Size):" + " Mult " + buffFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.BuffFlavor.BuffType.SALTY_CriticalStrike:
+                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Salty (Critical Strike):" + " Add " + buffFlavor.amount + "\n";
+                        }
+                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Salty (Critical Strike):" + " Mult " + buffFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.BuffFlavor.BuffType.SOUR_Duration:
+                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Sour (Duration):" + " Add " + buffFlavor.amount + "\n";
+                        }
+                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Sour (Duration):" + " Mult " + buffFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.BuffFlavor.BuffType.UMAMI_Vampirism:
+                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Cooldown:" + " Add " + buffFlavor.amount + "\n";
+                        }
+                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Cooldown:" + " Mult " + buffFlavor.amount + "\n";
+                        }
+                        break;
+                    case FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed:
+                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
+                        {
+                            bodyText.text += "Sweet (Speed):" + " Add " + buffFlavor.amount + "\n";
+                        }
+                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+                        {
+                            bodyText.text += "Sweet (Speed):" + " Mult " + buffFlavor.amount + "\n";
+                        }
+                        break;
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("Invalid Ingredient Type");
+        }
 
-    //}
+    }
 
     //public void OnPointerExit(PointerEventData eventData)
     //{

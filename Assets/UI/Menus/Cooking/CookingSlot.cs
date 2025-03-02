@@ -21,6 +21,6 @@ public class CookingSlot : InventorySlot, IDropHandler
 
         // Get the Ingredient Type
         Debug.Log("Ingredient Drop Detected!");
-        CookingManager.Singleton.AddIngredient(draggableItem.ingredient);
+        CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
     }
 }
