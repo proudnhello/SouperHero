@@ -332,6 +332,7 @@ GameObject:
   - component: {fileID: 7855966722942875405}
   - component: {fileID: 1152078203828340505}
   - component: {fileID: 6834714729904923402}
+  - component: {fileID: 1819369428465106503}
   - component: {fileID: 6576907335942605320}
   m_Layer: 5
   m_Name: TailUI
@@ -436,6 +437,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3840ada9edf0af45a838800545b7415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1819369428465106503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3388838937524246683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d3cd119d040944aaf6ba2e1586d4c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 1152078203828340505}
+  draggableItem: {fileID: 0}
+  parentAfterDrag: {fileID: 0}
+  ingredientType: 
+  ingredient: {fileID: 0}
 --- !u!58 &6576907335942605320
 CircleCollider2D:
   m_ObjectHideFlags: 0

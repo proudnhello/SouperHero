@@ -27,9 +27,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.parent.transform.SetAsLastSibling();
 
         //draggableCopy = Instantiate(this.gameObject, transform.parent.transform);
-        Rigidbody2D rb = gameObject.GetComponent<Rigidbody2D>();
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
         rb.isKinematic = true;
-        gameObject.GetComponent<Collider2D>().enabled = false;
+        rb.velocity = Vector3.zero;
+        GetComponent<Collider2D>().enabled = false;
 
         image.raycastTarget = false;
     }
@@ -43,7 +44,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         out Vector3 worldPos
         );
 
-        gameObject.transform.position = worldPos;
+        transform.position = worldPos;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -52,8 +53,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //Destroy(draggableCopy);
 
         // set the parent to the parent after drag
-        transform.parent.transform.SetParent(parentAfterDrag);
+        transform.parent.transform.SetParent(parentAfterDrag, true);
+
+        transform.parent.transform.localPosition = Vector3.zero;
         transform.parent.transform.localScale = Vector3.one;
+
+        GetComponent<RectTransform>().localPosition = Vector3.zero;
+        GetComponent<RectTransform>().localRotation = Quaternion.identity;
 
         // return raycast to true
         image.raycastTarget = true;
