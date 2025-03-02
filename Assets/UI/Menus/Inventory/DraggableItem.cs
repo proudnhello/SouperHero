@@ -34,6 +34,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         // map item position to mouse position
         transform.position = Input.mousePosition;
+        Debug.Log(transform.position);
     }
 
     public void OnEndDrag(PointerEventData eventData)
