@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 public class InventorySlot : MonoBehaviour, IDropHandler
 {
     public GameObject inventorySlot;
+    public bool basketDrop = false;
+    public bool worldDrop = false;
     public void OnDrop(PointerEventData eventData)
     {
         if (transform.childCount == 0)
@@ -28,6 +30,16 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
             // set the parent of the dropped object to this object
             draggableItem.parentAfterDrag = transform;
+
+            if(basketDrop)
+            {
+                draggableItem.parentAfterDrag = transform.root;
+                draggableItem.needsBasketDrop = true;
+            } else if (worldDrop)
+            {
+                draggableItem.parentAfterDrag = transform.root;
+                draggableItem.needsWorldDrop = true;
+            }
 
             // resize the dropped object to this object
             draggableItem.transform.localScale = inventorySlot.transform.localScale;

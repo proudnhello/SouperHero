@@ -57,7 +57,7 @@ public class PlayerInventory : MonoBehaviour
     {
         Debug.Log($"Collected Ingredient {collectable.ingredient}");
         ingredientsHeld.Add(collectable.ingredient);
-        BasketUI.Singleton.AddIngredient(collectable);
+        BasketUI.Singleton.AddIngredient(collectable, true);
     }
 
     public void RemoveIngredient(Ingredient ingredient, bool reverse = false)

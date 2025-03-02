@@ -11,9 +11,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     public Image image;
     public GameObject draggableItem;
-    //public GameObject draggableCopy;
     [HideInInspector] public Transform parentAfterDrag;
     [HideInInspector] public string ingredientType;
+    public bool needsBasketDrop;
+    public bool needsWorldDrop;
 
     [Header("Do Not Edit, Ingredient is Set In CookingUI's Enable()")]
     public Ingredient ingredient = null;
@@ -26,9 +27,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.parent.transform.SetParent(transform.parent.transform.root, true);
         transform.parent.transform.SetAsLastSibling();
 
-        //draggableCopy = Instantiate(this.gameObject, transform.parent.transform);
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        rb.isKinematic = true;
+        rb.simulated = false;
         rb.velocity = Vector3.zero;
         GetComponent<Collider2D>().enabled = false;
 
@@ -49,17 +49,32 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //transform.parent.transform.position = draggableCopy.transform.position;
-        //Destroy(draggableCopy);
 
         // set the parent to the parent after drag
         transform.parent.transform.SetParent(parentAfterDrag, true);
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
         transform.parent.transform.localPosition = Vector3.zero;
         transform.parent.transform.localScale = Vector3.one;
 
         GetComponent<RectTransform>().localPosition = Vector3.zero;
         GetComponent<RectTransform>().localRotation = Quaternion.identity;
+
+        if(needsBasketDrop)
+        {
+            needsBasketDrop = false;
+            rb.simulated = true;
+            GetComponent<Collider2D>().enabled = true;
+            BasketUI.Singleton.AddIngredient(transform.parent.gameObject.GetComponent<Collectable>(), false);
+        } else if (needsWorldDrop)
+        {
+            rb.isKinematic = false;
+            rb.simulated = true;
+            GetComponent<Collider2D>().enabled = true;
+            needsWorldDrop = false;
+            transform.parent.transform.GetChild(0).gameObject.SetActive(true);
+            gameObject.SetActive(false);
+        }
 
         // return raycast to true
         image.raycastTarget = true;
