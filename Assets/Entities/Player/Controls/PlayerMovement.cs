@@ -11,11 +11,17 @@ public class PlayerMovement : MonoBehaviour
     private bool _useMouse;
     private Vector2 _previousMousePosition;
     InputAction movementInput;
-
     public bool charging = false;
 
     internal float currrentMoveSpeed = 0;
     internal Vector2 currentDirection;
+
+    private bool canDash = true;
+    private bool isDashing = false;
+    [SerializeField] private float dashDuration = 0.3f;
+    [SerializeField] public float dashSpeed = 15f;
+    [SerializeField] public float dashCooldown = 1f;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -26,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        PlayerEntityManager.Singleton.input.Player.Dash.started += Dash;
         movementInput = PlayerEntityManager.Singleton.input.Player.Movement;
     }
 
@@ -50,11 +57,17 @@ public class PlayerMovement : MonoBehaviour
         {
             col.enabled = false; // Completely disable collisions
         }
+
+        PlayerEntityManager.Singleton.input.Player.Dash.started -= Dash;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(isDashing)
+        {
+            return;
+        }
         // This code is duplicated in CameraFollower.cs. We should consolidate the two into a singleton.
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -77,6 +90,10 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(isDashing)
+        {
+            return;
+        }
         // If the player is charging, don't allow movement, but still allow the player to rotate
         if (!charging)
         {
@@ -85,13 +102,33 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void Dash(InputAction.CallbackContext ctx)
+    {
+            StartCoroutine(Dashing());
+    }
+
     public IEnumerator Charge(float chargeTime, float chargeStrength)
     {
         rb.velocity = Vector2.zero;
         charging = true;
-        rb.AddForce(currentDirection.normalized * chargeStrength, ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(horizontal, vertical).normalized * chargeStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(chargeTime);
         charging = false;
+    }
+
+    public IEnumerator Dashing()
+    {
+        if (canDash)
+        {
+            canDash = false;
+            isDashing = true;
+            rb.velocity = new Vector2(horizontal, vertical).normalized * dashSpeed;
+
+            yield return new WaitForSeconds(dashDuration);
+            isDashing = false;
+            yield return new WaitForSeconds(dashCooldown);
+            canDash = true;
+        }
     }
 
 }
