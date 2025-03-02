@@ -43,7 +43,6 @@ public class MeleeAbility : AbilityAbstractClass
             RaycastHit2D wall = Physics2D.Raycast(PlayerEntityManager.Singleton.gameObject.transform.position,
                 rayDir, length, CollisionLayers.Singleton.GetEnvironmentLayer());
             float rayLength = wall.collider != null ? Vector2.Distance(wall.point, PlayerEntityManager.Singleton.gameObject.transform.position) : length;
-            Debug.Log(rayLength);
             RaycastHit2D[] hits = Physics2D.RaycastAll(PlayerEntityManager.Singleton.gameObject.transform.position,
                 rayDir, rayLength, CollisionLayers.Singleton.GetEnemyLayer() | CollisionLayers.Singleton.GetDestroyableLayer());
             Debug.DrawRay(PlayerEntityManager.Singleton.gameObject.transform.position,
