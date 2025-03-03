@@ -11,7 +11,7 @@ public class SingleProjectile : AbilityAbstractClass
     [Header("Projectile")]
     [SerializeField] ProjectileSpawner spawner;
     [SerializeField] float SIZE_MULTIPLIER = 0.5f;
-    [SerializeField] float CRIT_MULTIPLIER = 0.5f;
+    //[SerializeField] float CRIT_MULTIPLIER = 0.5f;
     [SerializeField] float SPEED_MULTIPLIER = 0.5f;
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)

@@ -12,9 +12,6 @@ public class MeleeAbility : AbilityAbstractClass
     [Header("Melee")]
     //[SerializeField] ProjectileSpawner spawner;
     [SerializeField] float SIZE_MULTIPLIER = 2f;
-    [SerializeField] float CRIT_MULTIPLIER = 0.5f;
-    [SerializeField] float SPEED_MULTIPLIER = 0.5f;
-    [SerializeField] float ATTACK_RATE_MULTIPLIER = 0.5f;
     [SerializeField, Range(2, 100)] int RayCastNum = 36;
     [SerializeField] float RayCastAngleRad = .4f;
 

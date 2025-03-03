@@ -17,7 +17,8 @@ public class FlavorIngredient : Ingredient
             SALTY_CriticalStrike,
             BITTER_Size,
             SWEET_Speed,
-            UMAMI_Vampirism
+            UMAMI_Vampirism,
+            REFRESHING_Cooldown,
         }
         public enum Operation
         {
