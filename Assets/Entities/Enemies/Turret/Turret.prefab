@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2308621309380939610}
   - component: {fileID: 1188324690679176484}
-  - component: {fileID: 8598471011294089468}
   - component: {fileID: 114311671412169719}
   - component: {fileID: 6931330501110685399}
   - component: {fileID: 4810343062406600075}
+  - component: {fileID: 8563248886766643163}
   m_Layer: 7
-  m_Name: Ringer
+  m_Name: Turret
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 52.45, y: 70.9, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7364293318301084351}
@@ -75,11 +75,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 326946545
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -89,39 +89,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8598471011294089468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 558365570551301719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd1d088d12a0cd940b4c43343231b2d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseStats:
-    maxHealth: 50
-    baseMoveSpeed: 3
-    invincibility: 0.5
-  collectable: {fileID: 165481585712337600, guid: e86ad66de4338cf46930d1e534e6fab4, type: 3}
-  playerCollisionDamage: 10
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  detectionRadius: 9
-  followingRadius: 12
-  shootingRadius: 6
-  fleeRadius: 3
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  timeToShoot: 1
-  timeBetweenShots: 4
-  numberOfShots: 12
-  firingPoint: {fileID: 2308621309380939610}
-  bullet: {fileID: 6867430482067145103, guid: fa2448d84ab9bee46abdf52a482ce66c, type: 3}
 --- !u!195 &114311671412169719
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -206,6 +173,38 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &8563248886766643163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 558365570551301719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 584b74c98d03c0e44b0f5bd119f1bf81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseStats:
+    maxHealth: 20
+    baseMoveSpeed: 0
+    invincibility: 0.5
+  collectable: {fileID: 165481585712337600, guid: aa12e03f8133b59429f683b494cb2d83, type: 3}
+  playerCollisionDamage: 10
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  shootingRadius: 9
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  emergeTime: 1
+  hideTime: 2
+  timeBetweenShots: 0.3
+  numberOfShots: 3
+  hideAlphaMultiplier: 0.1
+  firingPoint: {fileID: 2308621309380939610}
+  bullet: {fileID: 6867430482067145103, guid: 6ba6e3b9ccdd54741981009e0c197fce, type: 3}
 --- !u!1001 &151164596077888276
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -217,7 +216,7 @@ PrefabInstance:
     - target: {fileID: 3526728725937435231, guid: b690481935ca75e4fa4e30abbcd9178a, type: 3}
       propertyPath: enemy
       value: 
-      objectReference: {fileID: 8598471011294089468}
+      objectReference: {fileID: 8563248886766643163}
     - target: {fileID: 4672806445818235602, guid: b690481935ca75e4fa4e30abbcd9178a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
