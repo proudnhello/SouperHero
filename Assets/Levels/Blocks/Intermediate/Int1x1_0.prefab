@@ -5744,6 +5744,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
+  index: -1
 --- !u!1 &2601895187808059018
 GameObject:
   m_ObjectHideFlags: 0
@@ -7878,7 +7879,7 @@ Transform:
   m_Children:
   - {fileID: 1977096419097451980}
   - {fileID: 9049500313677817093}
-  m_Father: {fileID: 2360999360273346918}
+  m_Father: {fileID: 8455956797067117637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5297361551431022361
 GameObject:
@@ -8358,7 +8359,7 @@ Transform:
   m_Children:
   - {fileID: 4961220858753742099}
   - {fileID: 175793515393259763}
-  m_Father: {fileID: 2360999360273346918}
+  m_Father: {fileID: 8455956797067117637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5531008064354232718
 GameObject:
@@ -8372,6 +8373,7 @@ GameObject:
   - component: {fileID: 7709215253725050347}
   - component: {fileID: 3032510617050503536}
   - component: {fileID: 5502538560727424515}
+  - component: {fileID: 594626197933681395}
   m_Layer: 10
   m_Name: Int1x1_0
   m_TagString: Untagged
@@ -8392,7 +8394,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2360999360273346918}
+  - {fileID: 2150169809477671691}
+  - {fileID: 7934726750388965421}
   - {fileID: 2785434477430554137}
   - {fileID: 6860102638008412882}
   - {fileID: 1585228897826584362}
@@ -8452,6 +8455,44 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!114 &594626197933681395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5531008064354232718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43326c26db3d4307aaacc13ad8e8248, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  difficulty: 2
+  lootLevel: 2
+  possibleEnemies:
+  - enemy: {fileID: 726252843407693719, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+    weight: 1
+    difficulty: 1
+    index: -1
+  - enemy: {fileID: 726252843407693719, guid: fd1d663560a90a148956dd111aee0ab2, type: 3}
+    weight: 1
+    difficulty: 1
+    index: -1
+  enemySpawns:
+  - {fileID: 5939160046997797958}
+  - {fileID: 9141323387628014166}
+  possibleForagables:
+  - foragable: {fileID: 18193000329964728, guid: c071c5cf307ac458293b677cafc4ec4c, type: 3}
+    weight: 1
+    value: 1
+    index: -1
+  - foragable: {fileID: 18193000329964728, guid: c071c5cf307ac458293b677cafc4ec4c, type: 3}
+    weight: 1
+    value: 1
+    index: -1
+  foragableSpawns:
+  - {fileID: 4559299939418985455}
+  - {fileID: 2072545216580603596}
 --- !u!1 &5671148669172458123
 GameObject:
   m_ObjectHideFlags: 0
@@ -8497,74 +8538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
---- !u!1 &6810443651632097643
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2360999360273346918}
-  - component: {fileID: 5887973473588229242}
-  m_Layer: 0
-  m_Name: EntityManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2360999360273346918
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6810443651632097643}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2150169809477671691}
-  - {fileID: 7934726750388965421}
-  m_Father: {fileID: 8455956797067117637}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5887973473588229242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6810443651632097643}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a43326c26db3d4307aaacc13ad8e8248, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  difficulty: 2
-  lootLevel: 2
-  possibleEnemies:
-  - enemy: {fileID: 726252843407693719, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
-    weight: 10
-    difficulty: 1
-  - enemy: {fileID: 726252843407693719, guid: fd1d663560a90a148956dd111aee0ab2, type: 3}
-    weight: 1
-    difficulty: 1
-  enemySpawns:
-  - {fileID: 5939160046997797958}
-  - {fileID: 9141323387628014166}
-  possibleForagables:
-  - foragable: {fileID: 18193000329964728, guid: c071c5cf307ac458293b677cafc4ec4c, type: 3}
-    weight: 1
-    value: 1
-  - foragable: {fileID: 18193000329964728, guid: c071c5cf307ac458293b677cafc4ec4c, type: 3}
-    weight: 1
-    value: 1
-  foragableSpawns:
-  - {fileID: 4559299939418985455}
-  - {fileID: 2072545216580603596}
+  index: -1
 --- !u!1 &7473521872611607418
 GameObject:
   m_ObjectHideFlags: 0

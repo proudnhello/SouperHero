@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using static FlavorIngredient.InflictionFlavor;
@@ -20,6 +21,7 @@ public abstract class EnemyBaseClass : Entity
     protected Color _initialColor;
     protected Collider2D _collider;
     protected NavMeshAgent agent;
+    private EnemySpawnLocation spawn;
 
     private bool hasDied = false;
 
@@ -43,6 +45,9 @@ public abstract class EnemyBaseClass : Entity
         agent.updatePosition = false;
         Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
         StartCoroutine(entityRenderer.EnemyDeathAnimation());
+        if(spawn != null){
+            spawn.enemy = null;
+        }
     }
 
     public override void ApplyInfliction(List<SoupSpoon.SpoonInfliction> spoonInflictions, Transform source)
@@ -91,5 +96,9 @@ public abstract class EnemyBaseClass : Entity
             hasDied = true;
             Die();
         }
+    }
+
+    public void setSpawn(EnemySpawnLocation s){
+        spawn = s;
     }
 }

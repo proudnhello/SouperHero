@@ -15,6 +15,7 @@ public class EntityManager : MonoBehaviour
         public GameObject enemy;
         public int weight = 1;
         public int difficulty = 1;
+        public int index = -1;
     }
     [Header("Enemies")] 
     public List<SpawnableEnemy> possibleEnemies;
@@ -27,6 +28,8 @@ public class EntityManager : MonoBehaviour
         public GameObject foragable;
         public int weight = 1;
         public int value = 1;
+        // DO NOT CHANGE INDEX IN EDITOR
+        public int index = -1;
     }
     [Header("Foragables")] 
     public List<SpawnableForagable> possibleForagables;
@@ -43,7 +46,7 @@ public class EntityManager : MonoBehaviour
         createForagables();
     }
 
-    void buildEnemyDictionary()
+    public void buildEnemyDictionary()
     {
         totalEnemyWeight = 0;
         for(int i = 0; i < possibleEnemies.Count; i++)
@@ -60,6 +63,7 @@ public class EntityManager : MonoBehaviour
         enemyDict = new Dictionary<int, SpawnableEnemy>();
         for(int i = 0; i < possibleEnemies.Count; i++)
         {
+            possibleEnemies[i].index = i;
             for(int j = 0; j < possibleEnemies[i].weight; j++)
             {
                 enemyDict.Add(count, possibleEnemies[i]);
@@ -68,19 +72,42 @@ public class EntityManager : MonoBehaviour
         }
     }
 
-    void createEnemies(){
+    public void createEnemies(){
         int difficultyCounter = 0;
         while(difficultyCounter < difficulty && totalEnemies < enemySpawns.Count){
+            // Generate a random enemy using the weighted dictionary
             int x = UnityEngine.Random.Range(0, totalEnemyWeight);
             GameObject enemy = Instantiate(enemyDict[x].enemy, enemySpawns[totalEnemies].transform);
+            
+            // Handle initial properties of the new enemy
             enemy.transform.position = enemySpawns[totalEnemies].transform.position;
+            enemy.GetComponent<EnemyBaseClass>().setSpawn(enemySpawns[totalEnemies]);
+
+            // Update state of the entity manager
             enemySpawns[totalEnemies].enemy = enemy;
+            enemySpawns[totalEnemies].index = enemyDict[x].index;
             difficultyCounter += enemyDict[x].difficulty;
             totalEnemies++;
         }
     }
 
-    void buildForagableDictionary()
+    public String exportEnemies(){
+        String ret = "";
+        for(int i = 0; i < enemySpawns.Count; i++){
+            if(enemySpawns[i].enemy != null){
+                ret += enemySpawns[i].index;
+            }
+            else{
+                ret += "-1";
+            }
+            if(i < enemySpawns.Count - 1){
+                ret += ",";
+            }
+        }
+        return ret;
+    }
+
+    public void buildForagableDictionary()
     {
         totalForagableWeight = 0;
         for(int i = 0; i < possibleForagables.Count; i++)
@@ -105,7 +132,7 @@ public class EntityManager : MonoBehaviour
         }
     }
 
-    void createForagables(){
+    public void createForagables(){
         int lootCounter = 0;
         while(lootCounter < lootLevel && totalForagables < foragableSpawns.Count){
             int x = UnityEngine.Random.Range(0, totalForagableWeight);
@@ -120,6 +147,6 @@ public class EntityManager : MonoBehaviour
 
     void Update()
     {
-        
+        Debug.Log(exportEnemies());
     }
 }
