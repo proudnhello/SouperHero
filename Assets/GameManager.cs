@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+//TODO: Don't pause game while cooking
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
     [Header("Configuration")]
-    private bool isPaused = false;
+    private static bool isPaused = false;
     public GameObject pauseScreen;
 
     [Header("Keybinds")]
@@ -17,16 +19,17 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(pauseKey))
+        if (Input.GetKeyDown(pauseKey) && pauseScreen != null)
         {
             isPaused = !isPaused;
-        }
-        if (isPaused) {
-            PauseGame();
-        }
-        else
-        {
-            ResumeGame();
+            if (isPaused)
+            {
+                PauseGame();
+            }
+            else
+            {
+                ResumeGame();
+            }
         }
     }
     private void Awake()
@@ -35,23 +38,20 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
+
+        pauseScreen.SetActive(false);
     }
 
     void PauseGame() {
-        // For possible view of inventory
-        if(pauseScreen != null)
-        {
-            Time.timeScale = 0;
-            pauseScreen.SetActive(true);
-        }
+        Debug.Log("**GAME PAUSED**");
+        Time.timeScale = 0;
+        pauseScreen.SetActive(true);
     }
 
     void ResumeGame() {
-        if (pauseScreen != null)
-        {
-            Time.timeScale = 1;
-            pauseScreen.SetActive(false);
-        }
+        Debug.Log("**GAME RESUMED**");
+        Time.timeScale = 1;
+        pauseScreen.SetActive(false);
     }
 
     public void LoadGameLevel()
