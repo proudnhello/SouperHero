@@ -197,7 +197,6 @@ public class RingerAI : EnemyBaseClass
     protected override void UpdateAI()
     {
         shootTimer -= Time.deltaTime;
-        print(currentState.GetType());
         currentState.Update(this, Time.deltaTime);
     }
 

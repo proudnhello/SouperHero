@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Infliction = SoupSpoon.SpoonInfliction;
 
 [CreateAssetMenu(menuName = "Abilities/Melee")]
@@ -16,23 +17,19 @@ public class MeleeAbility : AbilityAbstractClass
     [SerializeField] float ATTACK_RATE_MULTIPLIER = 0.5f;
     [SerializeField, Range(2, 100)] int RayCastNum = 36;
     [SerializeField] float RayCastAngleRad = .4f;
-    [SerializeField] List<Infliction> inflictions;
+
+    [Header("Melee Anim")]
+    [SerializeField] Sprite[] MeleeVFXFrames;
+    [SerializeField] AbilityVFXSpawner Spawner;
 
     public override void UseAbility(AbilityStats passedStats, List<Infliction> inflictions)
     {
-
-
-        // Debug.Log("Use Melee Ability");
-
-        // Debug.Log($"Enemy Layer: {CollisionLayers.Singleton.GetEnemyLayer().value}");
-        // Debug.Log($"Destroyable Layer: {CollisionLayers.Singleton.GetDestroyableLayer().value}");
-
+        Debug.Log(Time.time + " used ability");
         Vector2 playerDir = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
         float playerAngle = Mathf.Atan2(playerDir.y, playerDir.x);
 
         HashSet<Collider2D> hitColliders = new();
 
-        Debug.Log(passedStats.size + " " + SIZE_MULTIPLIER);
         float length = passedStats.size * SIZE_MULTIPLIER;
 
         for (float angle = -RayCastAngleRad; angle <= RayCastAngleRad; angle += 2*RayCastAngleRad/(RayCastNum-1))
@@ -68,81 +65,23 @@ public class MeleeAbility : AbilityAbstractClass
                 destroyableObject.RemoveDestroyable();
             }
         }
-
-        // Get all colliders in range for enemies and destroyables
-        //Collider2D[] hitObjects = Physics2D.OverlapCircleAll(
-        //    center,
-        //    this.stats.size * SIZE_MULTIPLIER,
-        //    CollisionLayers.Singleton.GetEnemyLayer() | CollisionLayers.Singleton.GetDestroyableLayer()
-        //);
-
-        // Debug.Log("Hit Objects: " + string.Join(", ", hitObjects.Select(hit => hit.name)));
-
-        // Debug.Log(hitObjects);
-
-        // Debug.Log("Length of hit Objects: " + hitObjects.Length);
-
-        //foreach (Collider2D hitObject in hitObjects)
-        //{
-        //    Vector3 directionToObject = hitObject.transform.position - PlayerEntityManager.Singleton.playerAttackPoint.position;
-        //    float distanceToObject = directionToObject.magnitude;
-        //    RaycastHit2D hit = Physics2D.Raycast(PlayerEntityManager.Singleton.playerAttackPoint.position, directionToObject.normalized, distanceToObject, CollisionLayers.Singleton.GetEnvironmentLayer());
-
-        //    // Check if the object is blocked by an obstacle
-        //    if (hit.collider == null)
-        //    {
-        //        Entity entity = hitObject.GetComponent<Entity>();
-        //        if (entity != null)
-        //        {
-        //            // Apply the infliction to the enemy
-        //            entity.ApplyInfliction(inflictions, PlayerEntityManager.Singleton.playerAttackPoint);
-        //            continue;
-        //        }
-
-        //        Destroyables destroyableObject = hitObject.GetComponent<Destroyables>();
-        //        Debug.Log($"Destroyable Object: {destroyableObject}");
-        //        if (destroyableObject != null)
-        //        {
-        //            // Remove the destroyable object
-        //            destroyableObject.RemoveDestroyable();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Log the name of the object hit by the ray
-        //        Debug.Log($"Raycast hit: {hit.collider.gameObject.name}");
-        //        Debug.Log("There is something collideable in the way!");
-        //    }
-        //}
+        PlayerEntityManager.Singleton.StartCoroutine(HandleAnim(length));
     }
 
-    // Function to set the circle's size and position to match the ability's physics sphere
-    private IEnumerator SetCircle(Vector2 center)
+    private IEnumerator HandleAnim(float rayLength)
     {
+        SpriteRenderer ren = Spawner.GetMelee(PlayerEntityManager.Singleton.playerAttackPoint);
+        ren.gameObject.SetActive(true);
+        ren.flipX = PlayerEntityManager.Singleton.playerMovement.currentDirection.x > 0;
+        float scale = Mathf.Clamp(.4875f * rayLength - .28f, .1f, 10f);
+        ren.transform.parent.localScale = new Vector2(scale, scale);
+        for (int frame = 0; frame < MeleeVFXFrames.Length; frame++)
+        {
+            ren.sprite = MeleeVFXFrames[frame];
+            yield return new WaitForSeconds(1f / PlayerEntityManager.Singleton.animations.AttackFPS);
+        }
+        ren.gameObject.SetActive(false);
 
-        //Debug.Log("Setting Attack UI");
-        //GameObject circle = PlayerEntityManager.Singleton.circle;
-        //circle.SetActive(true);
-
-        //if (circle != null)
-        //{
-        //    // Set the position of the circle to match the player's attack point
-        //    circle.transform.position = center;
-
-        //    // Set the size of the circle (assuming the circle is a 2D object with a SpriteRenderer)
-        //    float circleRadius = this.stats.size;  // The radius of the circle matches the attack radius
-
-        //    // Adjust the scale of the circle based on the size multiplier
-        //    circle.transform.localScale = new Vector3(circleRadius * SIZE_MULTIPLIER, circleRadius * SIZE_MULTIPLIER, 1f);
-        //}
-        //else
-        //{
-        //    Debug.LogWarning("Circle GameObject is not assigned.");
-        //}
-
-        yield return new WaitForSeconds(.1f);
-
-        //circle.SetActive(false);
     }
 
 }

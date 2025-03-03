@@ -58,7 +58,7 @@ public class PlayerRenderer : EntityRenderer
     {
         while (Entity.gameObject.activeInHierarchy)
         {
-            spriteRenderer.flipX = _playerMovement.currentDirection.x > 0;
+            //spriteRenderer.flipX = _playerMovement.currentDirection.x > 0;
             
             yield return null;
         }
@@ -96,6 +96,7 @@ public class PlayerRenderer : EntityRenderer
                 while (ren._playerMovement.currrentMoveSpeed < 0.01)
                 {
                     ren.spriteRenderer.sprite = ren._animations.IdleSprites[frame];
+                    ren.spriteRenderer.flipX = ren._playerMovement.currentDirection.x > 0;
                     yield return new WaitForSeconds(1f / ren._animations.IdleFPS);
                     frame = (frame + 1) % ren._animations.IdleSprites.Length;
                 }
@@ -104,6 +105,7 @@ public class PlayerRenderer : EntityRenderer
                 while (ren._playerMovement.currrentMoveSpeed >= 0.01)
                 {
                     ren.spriteRenderer.sprite = ren._animations.WalkSprites[frame];
+                    ren.spriteRenderer.flipX = ren._playerMovement.currentDirection.x > 0;
                     yield return new WaitForSeconds(1f / ren._animations.WalkFPS);
                     frame = (frame + 1) % ren._animations.WalkSprites.Length;
                 }

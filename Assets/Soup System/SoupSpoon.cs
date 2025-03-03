@@ -52,7 +52,7 @@ public class SoupSpoon
     public SoupSpoon(List<Ingredient> ingredients, bool infinite = false)
     {
         // Track abilities and inflictions using dictionaries
-        Dictionary<AbilityAbstractClass, SpoonAbility> abilityTracker = new();
+        Dictionary<AbilityIngredient, SpoonAbility> abilityTracker = new();
         Dictionary<InflictionType, SpoonInfliction> inflictionTracker = new();
 
         // Separate ingredients into ability and flavor categories
@@ -76,8 +76,8 @@ public class SoupSpoon
         // Populate ability tracker and calculate total uses and cooldown
         foreach (var ingredient in abilityIngredients)
         {
-            if (!abilityTracker.ContainsKey(ingredient.ability)) 
-                abilityTracker.Add(ingredient.ability, new(ingredient, buffFlavors));
+            if (!abilityTracker.ContainsKey(ingredient)) 
+                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));
             uses += ingredient.uses;
             cooldown += ingredient.baseStats.cooldown;
         }
