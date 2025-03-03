@@ -4,6 +4,7 @@ public class CursorManager : MonoBehaviour
 {
     public static CursorManager Singleton { get; private set; }
     public GameObject cursorObject;
+    public CookingCursor cookingCursor;
 
     private void Awake()
     {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 
@@ -22,7 +23,8 @@ public class CookingUI : MonoBehaviour
         {
             foreach (Transform item in slot)
             {
-                Destroy(item.gameObject);
+                item.gameObject.GetComponent<Image>().sprite = null;
+                //Destroy(item.gameObject);
             }
         }
 

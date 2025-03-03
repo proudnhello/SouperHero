@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-using static SoupSpoon;
 using static FlavorIngredient;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler//, IPointerEnterHandler, IPointerExitHandler
+public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Image image;
     public GameObject draggableItem;
@@ -15,82 +12,111 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [HideInInspector] public string ingredientType;
     public bool needsBasketDrop;
     public bool needsWorldDrop;
+    public Transform pseudoParent;
 
     [Header("Do Not Edit, Ingredient is Set In CookingUI's Enable()")]
     public Ingredient ingredient = null;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        parentAfterDrag = transform.parent.transform.parent;
+        CursorManager.Singleton.cookingCursor.switchCursorImageTo(transform.parent.gameObject.GetComponent<Collectable>(), image);
+        parentAfterDrag = pseudoParent;
 
-        GameObject content = GameObject.Find("Content");
-        transform.parent.transform.SetParent(content.transform, true);
-        transform.parent.transform.SetParent(transform.parent.transform.root, true);
-        transform.parent.transform.SetAsLastSibling();
+        //GameObject content = GameObject.Find("Content");
+        //transform.parent.transform.SetParent(content.transform, true);
+        //transform.parent.transform.SetParent(transform.parent.transform.root, true);
+        //transform.parent.transform.SetAsLastSibling();
 
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        rb.simulated = false;
-        rb.velocity = Vector3.zero;
-        GetComponent<Collider2D>().enabled = false;
+        //Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        //rb.simulated = false;
+        //rb.velocity = Vector3.zero;
+        //GetComponent<Collider2D>().enabled = false;
 
-        CookingManager.Singleton.enableWorldDrop();
+        //CookingManager.Singleton.enableWorldDrop();
 
         image.raycastTarget = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        RectTransformUtility.ScreenPointToWorldPointInRectangle(
-        transform.parent.transform.parent as RectTransform,
-        Input.mousePosition,
-        eventData.pressEventCamera,
-        out Vector3 worldPos
-        );
+        //RectTransformUtility.ScreenPointToWorldPointInRectangle(
+        //transform.parent.transform.parent as RectTransform,
+        //Input.mousePosition,
+        //eventData.pressEventCamera,
+        //out Vector3 worldPos
+        //);
 
-        transform.position = worldPos;
+        //transform.position = worldPos;
+    }
+
+    public void resetParent()
+    {
+        if (!parentAfterDrag.gameObject.CompareTag("BasketDrop"))
+        {
+            image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+            image.raycastTarget = false;
+
+            if (parentAfterDrag.gameObject.CompareTag("CookingSlot"))
+            {
+                //if(parentAfterDrag == pseudoParent)
+                //{
+                //    CursorManager.Singleton.cookingCursor.removeCursorImage();
+                //    return;
+                //}
+                parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
+                parentAfterDrag.gameObject.GetComponent<CookingSlot>().updateIngredientImage(image);
+            }
+        }
+        else
+        {
+
+        }
+        pseudoParent = parentAfterDrag;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        resetParent();
+        CursorManager.Singleton.cookingCursor.removeCursorImage();
+        //Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
-        CookingManager.Singleton.disableWorldDrop();
+        //CookingManager.Singleton.disableWorldDrop();
 
-        if (needsWorldDrop)
-        {
-            GameObject content = GameObject.Find("Content");
-            transform.parent.transform.SetParent(content.transform, true);
+        //if (needsWorldDrop)
+        //{
+        //    GameObject content = GameObject.Find("Content");
+        //    transform.parent.transform.SetParent(content.transform, true);
 
-            transform.parent.transform.localPosition = Vector3.zero;
-            GetComponent<RectTransform>().localPosition = Vector3.zero;
-            transform.localScale = Vector3.one;
+        //    transform.parent.transform.localPosition = Vector3.zero;
+        //    GetComponent<RectTransform>().localPosition = Vector3.zero;
+        //    transform.localScale = Vector3.one;
 
-            rb.isKinematic = false;
-            rb.simulated = true;
-            GetComponent<Collider2D>().enabled = true;
-            needsWorldDrop = false;
-            image.raycastTarget = true;
-            return;
-        }
+        //    rb.isKinematic = false;
+        //    rb.simulated = true;
+        //    GetComponent<Collider2D>().enabled = true;
+        //    needsWorldDrop = false;
+        //    image.raycastTarget = true;
+        //    return;
+        //}
 
-        // set the parent to the parent after drag
-        transform.parent.transform.SetParent(parentAfterDrag, true);
+        //// set the parent to the parent after drag
+        //transform.parent.transform.SetParent(parentAfterDrag, true);
 
-        transform.parent.transform.localPosition = Vector3.zero;
-        transform.parent.transform.localScale = Vector3.one;
+        //transform.parent.transform.localPosition = Vector3.zero;
+        //transform.parent.transform.localScale = Vector3.one;
 
-        GetComponent<RectTransform>().localPosition = Vector3.zero;
-        GetComponent<RectTransform>().localRotation = Quaternion.identity;
+        //GetComponent<RectTransform>().localPosition = Vector3.zero;
+        //GetComponent<RectTransform>().localRotation = Quaternion.identity;
 
-        if (needsBasketDrop)
-        {
-            needsBasketDrop = false;
-            rb.simulated = true;
-            GetComponent<Collider2D>().enabled = true;
-            BasketUI.Singleton.AddIngredient(transform.parent.gameObject.GetComponent<Collectable>(), false);
-        }
+        //if (needsBasketDrop)
+        //{
+        //    needsBasketDrop = false;
+        //    rb.simulated = true;
+        //    GetComponent<Collider2D>().enabled = true;
+        //    BasketUI.Singleton.AddIngredient(transform.parent.gameObject.GetComponent<Collectable>(), false);
+        //}
 
         // return raycast to true
-        image.raycastTarget = true;
+        //image.raycastTarget = true;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
