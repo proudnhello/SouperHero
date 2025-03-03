@@ -24,6 +24,7 @@ public class CookingManager : MonoBehaviour
     private SoupSpoon statSpoon;
     bool isCooking = false;
     [SerializeField] private GameObject campfireWarning;
+    public GameObject worldDrop;
 
     private void Awake()
     {
@@ -322,6 +323,16 @@ public class CookingManager : MonoBehaviour
         {
             InflictionText.text += $"<color=#{greasyColor}>Greasy (Knockback):</color>\n" + (totalAddKnockback > 0 ? $"+{totalAddKnockback} " : "") + (totalMultKnockback != 1 ? $"x{totalMultKnockback} " : "") + "\n";
         }
+    }
+
+    public void enableWorldDrop()
+    {
+        worldDrop.SetActive(true);
+    }
+
+    public void disableWorldDrop()
+    {
+        worldDrop.SetActive(false);
     }
 
 }

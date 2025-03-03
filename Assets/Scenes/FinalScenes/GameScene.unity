@@ -1141,6 +1141,7 @@ MonoBehaviour:
   CookingCanvas: {fileID: 2126423337}
   itemStatsScreen: {fileID: 433107380}
   campfireWarning: {fileID: 1214745794}
+  worldDrop: {fileID: 473166329}
   cookingIngredients: []
 --- !u!114 &324424344
 MonoBehaviour:
@@ -1710,6 +1711,11 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &473166329 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 921813585561564762, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
+  m_PrefabInstance: {fileID: 1443712308}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &473166330 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7932816555790833573, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
@@ -5931,8 +5937,32 @@ PrefabInstance:
       propertyPath: m_Name
       value: WorldDrop
       objectReference: {fileID: 0}
+    - target: {fileID: 921813585561564762, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6941263546475187451, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6941263546475187451, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6941263546475187451, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6941263546475187451, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6941263546475187451, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6941263546475187451, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
+      propertyPath: m_RaycastTarget
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6960579164630546928, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
@@ -5973,11 +6003,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932816555790833573, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
       propertyPath: m_LocalScale.x
-      value: 19.000214
+      value: 15.728639
       objectReference: {fileID: 0}
     - target: {fileID: 7932816555790833573, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
       propertyPath: m_LocalScale.y
-      value: 10.925122
+      value: 6.802937
       objectReference: {fileID: 0}
     - target: {fileID: 7932816555790833573, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
       propertyPath: m_LocalScale.z
@@ -6013,11 +6043,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932816555790833573, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -145.92017
       objectReference: {fileID: 0}
     - target: {fileID: 7932816555790833573, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -175.76001
       objectReference: {fileID: 0}
     - target: {fileID: 7932816555790833573, guid: 78ed2121bc3736c469b74ca6916c6292, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

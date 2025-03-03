@@ -32,6 +32,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         rb.velocity = Vector3.zero;
         GetComponent<Collider2D>().enabled = false;
 
+        CookingManager.Singleton.enableWorldDrop();
+
         image.raycastTarget = false;
     }
 
@@ -49,10 +51,29 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+
+        CookingManager.Singleton.disableWorldDrop();
+
+        if (needsWorldDrop)
+        {
+            GameObject content = GameObject.Find("Content");
+            transform.parent.transform.SetParent(content.transform, true);
+
+            transform.parent.transform.localPosition = Vector3.zero;
+            GetComponent<RectTransform>().localPosition = Vector3.zero;
+            transform.localScale = Vector3.one;
+
+            rb.isKinematic = false;
+            rb.simulated = true;
+            GetComponent<Collider2D>().enabled = true;
+            needsWorldDrop = false;
+            image.raycastTarget = true;
+            return;
+        }
 
         // set the parent to the parent after drag
         transform.parent.transform.SetParent(parentAfterDrag, true);
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
         transform.parent.transform.localPosition = Vector3.zero;
         transform.parent.transform.localScale = Vector3.one;
@@ -60,20 +81,12 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         GetComponent<RectTransform>().localPosition = Vector3.zero;
         GetComponent<RectTransform>().localRotation = Quaternion.identity;
 
-        if(needsBasketDrop)
+        if (needsBasketDrop)
         {
             needsBasketDrop = false;
             rb.simulated = true;
             GetComponent<Collider2D>().enabled = true;
             BasketUI.Singleton.AddIngredient(transform.parent.gameObject.GetComponent<Collectable>(), false);
-        } else if (needsWorldDrop)
-        {
-            rb.isKinematic = false;
-            rb.simulated = true;
-            GetComponent<Collider2D>().enabled = true;
-            needsWorldDrop = false;
-            transform.parent.transform.GetChild(0).gameObject.SetActive(true);
-            gameObject.SetActive(false);
         }
 
         // return raycast to true
