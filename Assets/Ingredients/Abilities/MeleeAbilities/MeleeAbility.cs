@@ -11,7 +11,7 @@ public class MeleeAbility : AbilityAbstractClass
 
     [Header("Melee")]
     //[SerializeField] ProjectileSpawner spawner;
-    [SerializeField] float SIZE_MULTIPLIER = 2f;
+    //[SerializeField] float SIZE_MULTIPLIER = 2f;
     [SerializeField, Range(2, 100)] int RayCastNum = 36;
     [SerializeField] float RayCastAngleRad = .4f;
 
@@ -27,7 +27,7 @@ public class MeleeAbility : AbilityAbstractClass
 
         HashSet<Collider2D> hitColliders = new();
 
-        float length = passedStats.size * SIZE_MULTIPLIER;
+        float length = passedStats.size;
 
         for (float angle = -RayCastAngleRad; angle <= RayCastAngleRad; angle += 2*RayCastAngleRad/(RayCastNum-1))
         {

@@ -11,9 +11,9 @@ public class DoubleProjectile : AbilityAbstractClass
 {
     [Header("Projectile")]
     [SerializeField] ProjectileSpawner spawner;
-    [SerializeField] float SIZE_MULTIPLIER = 0.5f;
+    //[SerializeField] float SIZE_MULTIPLIER = 0.5f;
     //[SerializeField] float CRIT_MULTIPLIER = 0.5f;
-    [SerializeField] float SPEED_MULTIPLIER = 0.5f;
+    //[SerializeField] float SPEED_MULTIPLIER = 0.5f;
 
     private float offset = 0.2f;
 
@@ -22,8 +22,8 @@ public class DoubleProjectile : AbilityAbstractClass
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
 
-        stats.size *= SIZE_MULTIPLIER;
-        stats.speed *= SPEED_MULTIPLIER;
+        //stats.size *= SIZE_MULTIPLIER;
+        //stats.speed *= SPEED_MULTIPLIER;
 
         Vector2 currDir = PlayerEntityManager.Singleton.playerAttackPoint.transform.up;
 

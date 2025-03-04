@@ -12,17 +12,17 @@ public class FiredZone : AbilityAbstractClass
 {
     [Header("Projectile")]
     [SerializeField] ZoneSpawner spawner;
-    [SerializeField] float SIZE_MULTIPLIER = 0.5f;
-    [SerializeField] float CRIT_MULTIPLIER = 0.5f;
-    [SerializeField] float SPEED_MULTIPLIER = 0.5f;
+    //[SerializeField] float SIZE_MULTIPLIER = 0.5f;
+    //[SerializeField] float CRIT_MULTIPLIER = 0.5f;
+    //[SerializeField] float SPEED_MULTIPLIER = 0.5f;
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
         Debug.Log($"Is spawner null?: {spawner}");
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();
-        stats.size *= SIZE_MULTIPLIER;
-        stats.speed *= SPEED_MULTIPLIER;
+        //stats.size *= SIZE_MULTIPLIER;
+        //stats.speed *= SPEED_MULTIPLIER;
 
         Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
         

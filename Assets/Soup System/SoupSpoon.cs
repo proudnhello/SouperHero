@@ -16,7 +16,7 @@ public class SoupSpoon
 
         public SpoonAbility(AbilityIngredient ingredient, List<FlavorIngredient.BuffFlavor> buffs)
         {
-            ability = ingredient.ability;
+            ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
             Debug.Log($"SIZE STATS WITH BUFFS {statsWithBuffs.size}");
         }
