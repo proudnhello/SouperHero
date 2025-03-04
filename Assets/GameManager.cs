@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 //TODO: Don't pause game while cooking
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -15,7 +16,6 @@ public class GameManager : MonoBehaviour
 
     [Header("Keybinds")]
     public KeyCode pauseKey = KeyCode.Escape;
-
 
     void Update()
     {
@@ -40,18 +40,23 @@ public class GameManager : MonoBehaviour
         }
 
         pauseScreen.SetActive(false);
+
+        //playerInput = GetComponent<PlayerInput>(); //This is returning null
+        //Debug.Log("INPUT:" + playerInput);
     }
 
     void PauseGame() {
-        Debug.Log("**GAME PAUSED**");
         Time.timeScale = 0;
         pauseScreen.SetActive(true);
+        //playerInput.Disable();
+        //InputManager.playerInput.SwitchCurrentActionMap("UI");
     }
 
     void ResumeGame() {
-        Debug.Log("**GAME RESUMED**");
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
+        //playerInput.Enable();
+        //playerInput.SwitchCurrentActionMap("Player");
     }
 
     public void LoadGameLevel()
