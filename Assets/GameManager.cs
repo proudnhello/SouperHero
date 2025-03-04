@@ -49,14 +49,14 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         pauseScreen.SetActive(true);
         //playerInput.Disable();
-        //InputManager.playerInput.SwitchCurrentActionMap("UI");
+        InputManager.playerInput.SwitchCurrentActionMap("UI");
     }
 
     void ResumeGame() {
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
         //playerInput.Enable();
-        //playerInput.SwitchCurrentActionMap("Player");
+        InputManager.playerInput.SwitchCurrentActionMap("Player");
     }
 
     public void LoadGameLevel()

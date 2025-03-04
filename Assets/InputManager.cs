@@ -10,6 +10,5 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>(); //This is returning null
-        Debug.Log("INPUT:" + playerInput);
     }
 }
