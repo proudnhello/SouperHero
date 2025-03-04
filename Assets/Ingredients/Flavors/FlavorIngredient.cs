@@ -38,7 +38,8 @@ public class FlavorIngredient : Ingredient
             FROSTY_Freeze,
             HEARTY_Health,
             SPIKY_Damage,
-            GREASY_Knockback
+            GREASY_Knockback,
+            UNAMI_Vampirism
         }
         public enum Operation
         {

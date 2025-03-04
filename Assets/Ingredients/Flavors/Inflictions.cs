@@ -6,6 +6,7 @@ using StatusEffectInstance = EntityInflictionEffectHandler.StatusEffectInstance;
 using Infliction = SoupSpoon.SpoonInfliction;
 using UnityEngine.AI;
 using Unity.VisualScripting.FullSerializer;
+using System.Collections.Generic;
 
 public class Inflictions
 {
@@ -86,5 +87,31 @@ public class Inflictions
             agent.updatePosition = true;
         }
         target.velocity = Vector3.zero;
+    }
+
+    // Deal damage to the target and (try to) heal the source by applying the respective inflictions
+    public static void Vampirism(Infliction instance, Entity target, Transform source)
+    {
+        Infliction damage = new(instance);
+        damage.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage;
+        List<Infliction> list = new List<Infliction>();
+        list.Add(damage);
+        target.ApplyInfliction(list, source);
+
+        Infliction heal = new(instance);
+        heal.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health;
+        // Only heal half the amount of damage (that was supposed to be dealt)
+        heal.InflictionFlavor.amount /= 2;
+
+        list.Clear();
+        list.Add(heal);
+        Entity entity = source.GetComponent<Entity>();
+        if(entity)
+        {
+            entity.ApplyInfliction(list, source);
+        }else if(source.tag == "Player")
+        {
+            PlayerEntityManager.Singleton.ApplyInfliction(list, source);
+        }
     }
 }
