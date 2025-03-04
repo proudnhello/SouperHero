@@ -80,7 +80,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (ingredient.GetType() == typeof(AbilityIngredient))
         {
             AbilityIngredient abilityIngredient = ingredient as AbilityIngredient;
-            bodyText.text = $"<color=purple>Ability Ingredient</color>\nType: {abilityIngredient.ability._abilityName}\n\n";
+            bodyText.text = $"<color=purple>Ability Ingredient</color>\nType: {abilityIngredient.abilityType._abilityName}\n\n";
 
             foreach (InflictionFlavor inflictionFlavor in abilityIngredient.inherentInflictionFlavors)
             {

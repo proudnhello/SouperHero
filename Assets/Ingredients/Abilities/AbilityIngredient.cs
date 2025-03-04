@@ -9,7 +9,7 @@ public class AbilityIngredient : Ingredient
     public string AbilityDescription;
 
     [Header("Ability Info")]
-    public AbilityAbstractClass ability;
+    public AbilityAbstractClass abilityType;
     public AbilityStats baseStats;
     public List<InflictionFlavor> inherentInflictionFlavors;
     public int uses;

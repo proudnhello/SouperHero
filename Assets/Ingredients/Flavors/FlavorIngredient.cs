@@ -53,6 +53,7 @@ public class FlavorIngredient : Ingredient
     [Header("Flavors")]
     public List<BuffFlavor> buffFlavors;
     public List<InflictionFlavor> inflictionFlavors;
+
 public static readonly Dictionary<BuffFlavor.BuffType, Color> buffColorMapping = new Dictionary<BuffFlavor.BuffType, Color>
 {
     { BuffFlavor.BuffType.SOUR_Duration, Color.yellow },
