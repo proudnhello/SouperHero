@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using static SoupSpoon;
 using static FlavorIngredient;
+using UnityEditor.Recorder.Input;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -33,7 +34,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnDrag(PointerEventData eventData)
     {
         // map item position to mouse position
-        transform.position = Input.mousePosition;
+        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        transform.position = new Vector3(pos.x, pos.y, 0);
         //Debug.Log(transform.position);
     }
 
