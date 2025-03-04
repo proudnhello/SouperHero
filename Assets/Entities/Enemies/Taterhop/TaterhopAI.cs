@@ -1,14 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-public class DumbCharger : EnemyBaseClass
+public class TaterhopAI : EnemyBaseClass
 {
-
     // ~~~ DEFINITIONS ~~~
     public enum ChargerStates
     {
@@ -39,25 +37,25 @@ public class DumbCharger : EnemyBaseClass
 
     [Header("Attack State")]
     [SerializeField] protected float AttackSpeedMultiplier = 1.5f;
+    [SerializeField] protected float MinimumTimeBetweenCharges = 2f;
     [SerializeField] protected float DistanceToPlayerForCharge = 5f;
     [SerializeField] protected float AttackDistanceCheckInterval;
     [SerializeField] protected float ChargeSpeed = 5f;
     [SerializeField] protected float ChargeForce = 200f;
     [SerializeField] protected float ChargeTime = 1f;
-    [SerializeField] protected int ConsecutiveCharges = 3;
-    [SerializeField] protected Vector2 ChargeCooldownTime = new Vector2(.6f, .8f);
-    [SerializeField] protected float FinalChargeCooldownTime = 1f;
     [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
 
-
+    protected Animator animator;
     internal List<IState> states;
     internal IState currentState;
     bool freezeEnemy = false;
-    void Start(){
+    void Start()
+    {
         initEnemy();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         agent.speed = GetMoveSpeed();
+        animator = GetComponent<Animator>();
 
         states = new()
         {
@@ -75,10 +73,10 @@ public class DumbCharger : EnemyBaseClass
         currentState = states[(int)state];
         currentState.OnEnter();
     }
-    protected override void Update(){
+    protected override void Update()
+    {
         if (IsDead()) return;
         freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
-        _sprite.flipX = agent.destination.x > transform.position.x || _rigidbody.velocity.x > 0;
     }
 
     protected override void Die()
@@ -89,12 +87,12 @@ public class DumbCharger : EnemyBaseClass
 
     public class IdleState : IState
     {
-        DumbCharger sm;
+        TaterhopAI sm;
         IEnumerator IHandleDetection;
         IEnumerator IHandlePatrol;
         Vector2 centerPoint;
         NavMeshPath path;
-        public IdleState(DumbCharger _sm)
+        public IdleState(TaterhopAI _sm)
         {
             sm = _sm;
             path = new();
@@ -124,7 +122,7 @@ public class DumbCharger : EnemyBaseClass
                     float distance = Vector2.Distance(sm.transform.position, path.corners[0]);
                     for (int i = 1; i < path.corners.Length; i++)
                     {
-                        distance += Vector2.Distance(path.corners[i-1], path.corners[i]);
+                        distance += Vector2.Distance(path.corners[i - 1], path.corners[i]);
                     }
                     if (distance < sm.PlayerDetectionPathLength)
                     {
@@ -140,6 +138,7 @@ public class DumbCharger : EnemyBaseClass
         {
             while (true)
             {
+                sm.animator.Play("Idle");
                 if (sm.freezeEnemy)
                 {
                     yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
@@ -156,12 +155,14 @@ public class DumbCharger : EnemyBaseClass
 
                 sm.agent.isStopped = false;
                 sm.agent.SetDestination(targetPoint);
+                sm.animator.Play("Walk");
 
                 Vector2 lastPos;
                 do
                 {
                     //sm._sprite.flipX = sm.agent.destination.x > sm.transform.position.x;
                     lastPos = sm.agent.transform.position;
+                    sm._sprite.flipX = sm.agent.destination.x > sm.transform.position.x;
                     yield return new WaitForSeconds(sm.WhilePatrolCheckIfStoppedInterval);
                     // check that the agent is moving far enough every interval to ensure it's not blocked
                 } while (Vector2.Distance(lastPos, sm.agent.transform.position) > sm.WhilePatrolCheckIfStoppedDistance &&
@@ -175,15 +176,13 @@ public class DumbCharger : EnemyBaseClass
             if (IHandleDetection != null) sm.StopCoroutine(IHandleDetection);
             if (IHandlePatrol != null) sm.StopCoroutine(IHandlePatrol);
         }
-
-        
     }
 
     public class AttackState : IState
     {
-        DumbCharger sm;
+        TaterhopAI sm;
         IEnumerator IHandleCharge;
-        public AttackState(DumbCharger _sm)
+        public AttackState(TaterhopAI _sm)
         {
             sm = _sm;
         }
@@ -195,13 +194,19 @@ public class DumbCharger : EnemyBaseClass
 
         IEnumerator HandleCharge()
         {
+            sm.animator.Play("Walk");
             while (true)
-            {
+            {              
                 sm.agent.isStopped = false;
                 float dist = 0;
+                float time = 0;
                 do
                 {
                     sm.agent.SetDestination(sm._playerTransform.position);
+
+                    // once tater's rb has slowed down enough, then allow sprite to flip based on nav agent navigation
+                    if (sm.agent.velocity.magnitude > sm._rigidbody.velocity.magnitude) sm._sprite.flipX = sm.agent.destination.x > sm.transform.position.x;
+
                     yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);
                     dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
 
@@ -210,22 +215,22 @@ public class DumbCharger : EnemyBaseClass
                         sm.ChangeState(ChargerStates.IDLE); // disengage if too far
                     }
 
-                } while (dist > sm.DistanceToPlayerForCharge);
+                    time += sm.AttackDistanceCheckInterval;
+                } while (time < sm.MinimumTimeBetweenCharges || dist > sm.DistanceToPlayerForCharge);
                 sm.agent.isStopped = true;
 
                 // PERFORM CHARGES
-                for (int chargeNum = 1; chargeNum <= sm.ConsecutiveCharges; chargeNum++)
+                sm.animator.Play("Attack");
+                Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce;
+                sm._sprite.flipX = vel.x > 0;
+                for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
                 {
-                    Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce;
-                    for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
-                    {
-                        if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);
-                        yield return null;
-                    }
-
-                    if (chargeNum < sm.ConsecutiveCharges) yield return new WaitForSeconds(Random.Range(sm.ChargeCooldownTime.x, sm.ChargeCooldownTime.y));
-                    else yield return new WaitForSeconds(sm.FinalChargeCooldownTime);
+                    if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);
+                    yield return null;
                 }
+
+                sm.animator.Play("Walk");
+
             }
         }
 
@@ -234,5 +239,4 @@ public class DumbCharger : EnemyBaseClass
             if (IHandleCharge != null) sm.StopCoroutine(IHandleCharge);
         }
     }
-
 }

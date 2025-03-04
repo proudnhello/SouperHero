@@ -23,6 +23,7 @@ public class Inflictions
 
     public static IEnumerator Damage(StatusEffectInstance instance)
     {
+        Debug.Log("adding " + instance.amount + " damage to " + instance.entity.gameObject.name);
         instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
         instance.entity.StartCoroutine(instance.entity.entityRenderer.TakeDamageAnimation());
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
