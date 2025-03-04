@@ -191,6 +191,50 @@ public class AbilityCSVtoSO
         return foundSprite;
     }
 
+
+
+
+    //static PlayerInventory FindPlayerInventory()
+    //{
+    //    string name = "Player";
+
+    //    // Use AssetDatabase to search for the prefab asset by name in the Assets folder
+    //    string[] guids = AssetDatabase.FindAssets(name, new[] { "Assets/Entities/Player" });
+
+    //    foreach (string guid in guids)
+    //    {
+    //        Debug.Log("GUIDS: " + guid);
+    //    }
+
+    //    if (guids.Length == 0)
+    //    {
+    //        Debug.LogError($"No prefab found with name: {name}");
+    //        return null;
+    //    }
+
+    //    // Convert GUID to asset path
+    //    string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+    //    Debug.Log("Asset Path: " + path);
+
+    //    // Load the prefab at the specified path
+    //    GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+    //    if (prefab != null)
+    //    {
+    //        // Get the PlayerInventory component from the prefab
+    //        PlayerInventory foundInventory = prefab.GetComponent<PlayerInventory>();
+    //        if (foundInventory == null)
+    //        {
+    //            Debug.LogError("Prefab does not contain a PlayerInventory component.");
+    //            return null;
+    //        }
+    //        return foundInventory;
+    //    }
+
+    //    Debug.LogError("No Inventory Found");
+    //    return null;
+    //}
+
+
     static PlayerInventory FindPlayerInventory()
     {
         // sprites need to be in Resources folder to be found when unused
@@ -202,12 +246,50 @@ public class AbilityCSVtoSO
         }
 
         string name = "Player";
-        PlayerInventory foundInventory = inventory.FirstOrDefault(a => a.name == name);
+        PlayerInventory foundInventory = null;
+
+        foreach (var item in inventory)
+        {
+            // Check if the item is a prefab
+            if (PrefabUtility.GetPrefabAssetType(item) == PrefabAssetType.Regular)
+            {
+                // Check if the name matches
+                if (item.name == name)
+                {
+                    foundInventory = item;
+                    break;
+                }
+            }
+        }
+
         if (foundInventory == null)
         {
-            Debug.LogError($"No collectable found with name: {name}");
+            Debug.LogError($"No prefab found with name: {name}");
         }
 
         return foundInventory;
     }
+
+    //static PlayerInventory FindPlayerInventory()
+    //{
+    //    string name = "Player";
+    //    string[] guids = AssetDatabase.FindAssets(name, new[] { "Assets/Entities/Player" }); // Search in the Prefabs folder or specify the folder you want.
+
+    //    if (guids.Length == 0)
+    //    {
+    //        Debug.LogError($"No prefab found with name: {name}");
+    //        return null;
+    //    }
+
+    //    string path = AssetDatabase.GUIDToAssetPath(guids[0]); // Get the path of the first match
+    //    PlayerInventory foundInventory = AssetDatabase.LoadAssetAtPath<PlayerInventory>(path);
+
+    //    if (foundInventory == null)
+    //    {
+    //        Debug.LogError($"No prefab found with name: {name}");
+    //    }
+
+    //    return foundInventory;
+    //}
+
 }
