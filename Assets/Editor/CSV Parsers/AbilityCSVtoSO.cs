@@ -11,10 +11,13 @@ using Unity.VisualScripting;
 
 public class AbilityCSVtoSO
 {
-    private static string abilityCSVPath = "/Editor/CSV Parsers/CSVs/Ability Ingredients.csv";
+    private static string abilityCSVPath = "/Resources/CSVs/Ability Ingredients.csv";
     [MenuItem("Utilities/Generate Abilities")]
     public static void GenerateAbilityIngredients()
     {
+        string folderPath = "Assets/CSVSOs/AbilityIngredientSOs/";
+        ClearFolderBeforeCreatingAssets(folderPath);
+
         string path = Application.dataPath + abilityCSVPath;
 
         string[] data = File.ReadAllLines(Application.dataPath + abilityCSVPath);
@@ -99,7 +102,7 @@ public class AbilityCSVtoSO
                 abilityIngredient.Icon = icon;
             }
 
-            AssetDatabase.CreateAsset(abilityIngredient, $"Assets/CSVSOs/AbilityIngredientSOs/{abilityIngredient.IngredientName}.asset");
+            AssetDatabase.CreateAsset(abilityIngredient, $"{folderPath}{abilityIngredient.IngredientName}.asset");
 
             // Set Collectable
             if (splitData[0] != "Default Spoon")
@@ -110,37 +113,67 @@ public class AbilityCSVtoSO
             }
             else
             {
-                PlayerInventory inventory = FindPlayerInventory();
+                PlayerInventory[] inventories = FindPlayerInventory();
                 List<Ingredient> defaultSpoonIngredients = new()
                 {
                     abilityIngredient
                 };
-                inventory.defaultSpoonIngredients = defaultSpoonIngredients;
+
+                foreach (PlayerInventory i in inventories)
+                {
+                    i.defaultSpoonIngredients = defaultSpoonIngredients;
+                }
+          
             }
         }
 
         AssetDatabase.SaveAssets();
     }
 
-    static AbilityAbstractClass FindAbilityByName(string name)
+    static void ClearFolderBeforeCreatingAssets(string folderPath)
+    {
+
+        // Ensure the folder exists
+        if (AssetDatabase.IsValidFolder(folderPath))
+        {
+            string[] files = Directory.GetFiles(folderPath);
+
+            foreach (string file in files)
+            {
+                if (!file.EndsWith(".meta")) // Avoid deleting meta files explicitly
+                {
+                    bool deleted = AssetDatabase.DeleteAsset(file);
+                    if (!deleted)
+                    {
+                        Debug.LogWarning($"Failed to delete {file}");
+                    }
+                }
+            }
+
+            AssetDatabase.Refresh(); // Refresh the editor to reflect changes
+        }
+        else
+        {
+            Debug.LogWarning($"Folder '{folderPath}' does not exist.");
+        }
+    }
+
+
+static AbilityAbstractClass FindAbilityByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            Debug.LogError("Ability name is null or empty.");
+            Debug.LogError("Sprite name is null or empty.");
             return null;
         }
 
-        var abilities = Resources.FindObjectsOfTypeAll<AbilityAbstractClass>();
-        if (abilities == null || abilities.Length == 0)
-        {
-            Debug.LogError("No abilities found.");
-            return null;
-        }
+        // sprites need to be in Resources folder to be found when unused
+        var foundAbility = Resources.Load<AbilityAbstractClass>($"Ingredients/AbilityTypes/AbilitySOs/{name}");
 
-        AbilityAbstractClass foundAbility = abilities.FirstOrDefault(a => a.name == name);
         if (foundAbility == null)
         {
-            Debug.LogError($"No ability found with name: {name}");
+            Debug.LogError("No sprite found.");
+            return null;
         }
 
         return foundAbility;
@@ -235,7 +268,7 @@ public class AbilityCSVtoSO
     //}
 
 
-    static PlayerInventory FindPlayerInventory()
+    static PlayerInventory[] FindPlayerInventory()
     {
         // sprites need to be in Resources folder to be found when unused
         var inventory = Resources.FindObjectsOfTypeAll<PlayerInventory>();
@@ -245,29 +278,7 @@ public class AbilityCSVtoSO
             return null;
         }
 
-        string name = "Player";
-        PlayerInventory foundInventory = null;
-
-        foreach (var item in inventory)
-        {
-            // Check if the item is a prefab
-            if (PrefabUtility.GetPrefabAssetType(item) == PrefabAssetType.Regular)
-            {
-                // Check if the name matches
-                if (item.name == name)
-                {
-                    foundInventory = item;
-                    break;
-                }
-            }
-        }
-
-        if (foundInventory == null)
-        {
-            Debug.LogError($"No prefab found with name: {name}");
-        }
-
-        return foundInventory;
+        return inventory;
     }
 
     //static PlayerInventory FindPlayerInventory()

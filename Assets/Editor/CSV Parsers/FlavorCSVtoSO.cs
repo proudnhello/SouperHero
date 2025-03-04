@@ -11,10 +11,14 @@ using Unity.VisualScripting;
 
 public class FlavorCSVtoSO
 {
-    private static string flavorCSVPath = "/Editor/CSV Parsers/CSVs/Flavor Ingredients.csv";
+    private static string flavorCSVPath = "/Resources/CSVs/Flavor Ingredients.csv";
     [MenuItem("Utilities/Generate Flavors")]
     public static void GenerateFlavorIngredients()
     {
+
+        string folderPath = "Assets/CSVSOs/FlavorIngredientSOs/";
+        ClearFolderBeforeCreatingAssets(folderPath);
+
         string path = Application.dataPath + flavorCSVPath;
 
         string[] data = File.ReadAllLines(Application.dataPath + flavorCSVPath);
@@ -109,7 +113,7 @@ public class FlavorCSVtoSO
                 flavorIngredient.Icon = icon;
             }
 
-            AssetDatabase.CreateAsset(flavorIngredient, $"Assets/CSVSOs/FlavorIngredientSOs/{flavorIngredient.IngredientName}.asset");
+            AssetDatabase.CreateAsset(flavorIngredient, $"{folderPath}{flavorIngredient.IngredientName}.asset");
 
             // Set This To a Collectable
             Collectable ingredientCollectable = FindCollectableByName(splitData[0]);
@@ -117,6 +121,34 @@ public class FlavorCSVtoSO
         }
 
         AssetDatabase.SaveAssets();
+    }
+
+    static void ClearFolderBeforeCreatingAssets(string folderPath)
+    {
+
+        // Ensure the folder exists
+        if (AssetDatabase.IsValidFolder(folderPath))
+        {
+            string[] files = Directory.GetFiles(folderPath);
+
+            foreach (string file in files)
+            {
+                if (!file.EndsWith(".meta")) // Avoid deleting meta files explicitly
+                {
+                    bool deleted = AssetDatabase.DeleteAsset(file);
+                    if (!deleted)
+                    {
+                        Debug.LogWarning($"Failed to delete {file}");
+                    }
+                }
+            }
+
+            AssetDatabase.Refresh(); // Refresh the editor to reflect changes
+        }
+        else
+        {
+            Debug.LogWarning($"Folder '{folderPath}' does not exist.");
+        }
     }
 
     static Sprite FindSpriteByName(string name)
