@@ -35,6 +35,8 @@ public class SoupSpoon
 
         public SpoonInfliction(InflictionFlavor inflictionEffect) { InflictionFlavor = inflictionEffect; add = 0; mult = 1; }
 
+        public SpoonInfliction(SpoonInfliction other) { InflictionFlavor = new(other.InflictionFlavor); add = other.add; mult = other.mult; }
+
         public void AddIngredient(InflictionFlavor effect)
         {
             if (effect.operation == InflictionFlavor.Operation.Add) add += effect.amount;
