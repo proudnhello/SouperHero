@@ -12,7 +12,7 @@ public class PlayerInventory : MonoBehaviour
     public static event Action<int> ChangedSpoon;
     public int maxSpoons = 4;
 
-    [SerializeField] List<Ingredient> defaultSpoonIngredients;
+    public List<Ingredient> defaultSpoonIngredients;
 
     [SerializeField]
     internal List<Ingredient> ingredientsHeld;
