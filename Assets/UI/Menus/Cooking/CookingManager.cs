@@ -47,6 +47,7 @@ public class CookingManager : MonoBehaviour
     {
         CurrentCampfire = source;
         CursorManager.Singleton.ShowCursor();
+        CursorManager.Singleton.ShowCookingCursor();
         ResetStatsText();
         CookingCanvas.SetActive(true);
         isCooking = true;
@@ -63,6 +64,7 @@ public class CookingManager : MonoBehaviour
             CurrentCampfire.StopCooking();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
+            CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
             ResetStatsText();
             isCooking = false;

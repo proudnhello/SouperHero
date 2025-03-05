@@ -19,6 +19,16 @@ public class CursorManager : MonoBehaviour
         cursorObject.SetActive(false);
     }
 
+    public void ShowCookingCursor()
+    {
+        cookingCursor.gameObject.SetActive(true);
+    }
+
+    public void HideCookingCursor()
+    {
+        cookingCursor.gameObject.SetActive(false);
+    }
+
     public void HideCursor()
     {
         Cursor.visible = false;

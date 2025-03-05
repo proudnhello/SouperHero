@@ -15,6 +15,7 @@ public class CookingCursor : MonoBehaviour
 
     public void switchCursorImageTo(Collectable selectedCollectable, Image newImage)
     {
+        currentImage.enabled = true;
         currentImage.sprite = newImage.sprite;
         currentCollectableReference = selectedCollectable;
     }
@@ -22,6 +23,7 @@ public class CookingCursor : MonoBehaviour
     public void removeCursorImage()
     {
         currentImage.sprite = null;
+        currentImage.enabled = false;
         currentCollectableReference = null;
     }
 
