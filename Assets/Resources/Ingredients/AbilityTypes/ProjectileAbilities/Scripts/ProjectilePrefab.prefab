@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 1151207229782616608}
   m_Layer: 0
   m_Name: ProjectilePrefab
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,6 +134,7 @@ MonoBehaviour:
   rb: {fileID: 1151207229782616608}
   spriteRenderer: {fileID: 8709649570204905147}
   SIZE_MULTIPLIER: 0.4
+  BOUNCE_MAX: 3
 --- !u!58 &4032642320685437147
 CircleCollider2D:
   m_ObjectHideFlags: 0
