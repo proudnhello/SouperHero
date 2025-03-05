@@ -71,6 +71,7 @@ public class PlayerInventory : MonoBehaviour
     // (The collider under the basket calls it in reverse, the cook button calls it forward)
     public void RemoveIngredientCollectable(Collectable collectable)
     {
+        Debug.Log("Remove Ingredient Called");
         collectablesHeld.Remove(collectable);
         BasketUI.Singleton.RemoveIngredient(collectable);
     }

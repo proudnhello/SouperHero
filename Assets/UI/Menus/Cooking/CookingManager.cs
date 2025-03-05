@@ -123,8 +123,8 @@ public class CookingManager : MonoBehaviour
         // Don't cook if there are no ability ingredients
         foreach (Collectable ingredient in cookingIngredients)
         {
-            Debug.Log(ingredient.ingredient.IngredientName);
-            if (ingredient.GetType() == typeof(AbilityIngredient))
+            Debug.Log("Has Ability Ingredient: " + ingredient.ingredient.IngredientName);
+            if (ingredient.ingredient.GetType() == typeof(AbilityIngredient))
             {
                 return true;
             }
@@ -234,7 +234,6 @@ public class CookingManager : MonoBehaviour
         {
             cookedIngredients.Add(ingredient.ingredient);
         }
-        PlayerInventory.Singleton.CookSoup(cookedIngredients);
         statSpoon = new SoupSpoon(cookedIngredients);
         float totalDuration = 0;
         float totalSize = 0;
