@@ -21,7 +21,6 @@ public class MeleeAbility : AbilityAbstractClass
 
     public override void UseAbility(AbilityStats passedStats, List<Infliction> inflictions)
     {
-        Debug.Log(Time.time + " used ability");
         Vector2 playerDir = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
         float playerAngle = Mathf.Atan2(playerDir.y, playerDir.x);
 
@@ -71,7 +70,7 @@ public class MeleeAbility : AbilityAbstractClass
         SpriteRenderer ren = Spawner.GetMelee(PlayerEntityManager.Singleton.playerAttackPoint);
         ren.gameObject.SetActive(true);
         ren.flipX = PlayerEntityManager.Singleton.playerMovement.currentDirection.x > 0;
-        float scale = Mathf.Clamp(.4875f * rayLength - .28f, .1f, 10f);
+        float scale = Mathf.Clamp(.4875f * rayLength - .36f, .1f, 10f);
         ren.transform.parent.localScale = new Vector2(scale, scale);
         for (int frame = 0; frame < MeleeVFXFrames.Length; frame++)
         {

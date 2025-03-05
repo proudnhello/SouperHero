@@ -32,13 +32,13 @@ public class DoubleProjectile : AbilityAbstractClass
         float targetAngle = Mathf.Atan2(currDir.y, currDir.x) - offset;
         Vector2 newDir = new Vector2(Mathf.Cos(targetAngle), Mathf.Sin(targetAngle));
         proj1.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
-            newDir, stats, inflictions);
+            newDir, stats, inflictions, null, -1);
 
         //Second projectile
         ProjectileObject proj2 = spawner.GetProjectile();
         targetAngle = Mathf.Atan2(currDir.y, currDir.x) + offset;
         newDir = new Vector2(Mathf.Cos(targetAngle), Mathf.Sin(targetAngle));
         proj2.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
-            newDir, stats, inflictions);
+            newDir, stats, inflictions, null, -1);
     }
 }

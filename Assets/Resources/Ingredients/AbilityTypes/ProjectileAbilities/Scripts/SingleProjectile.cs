@@ -10,6 +10,8 @@ public class SingleProjectile : AbilityAbstractClass
 {
     [Header("Projectile")]
     [SerializeField] ProjectileSpawner spawner;
+    [SerializeField] Sprite[] projectileFrames;
+    [SerializeField] float projectileAnimFPS;
     [SerializeField] float SIZE_MULTIPLIER = 0.5f;
     //[SerializeField] float CRIT_MULTIPLIER = 0.5f;
     [SerializeField] float SPEED_MULTIPLIER = 0.5f;
@@ -24,6 +26,6 @@ public class SingleProjectile : AbilityAbstractClass
         stats.speed *= SPEED_MULTIPLIER;
         proj.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
             PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
-            stats, inflictions);
+            stats, inflictions, projectileFrames, projectileAnimFPS);
     }
 }

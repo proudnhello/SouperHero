@@ -4370,7 +4370,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1020262120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5812,10 +5811,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 234655282318529072, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: vcam
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3416317420459383421, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: cursorObject
+      value: 
+      objectReference: {fileID: 281491899}
+    - target: {fileID: 4653149911981882356, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: CookingContent
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653149911981882356, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: InventoryContent
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4732919122290708663, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4879062663162897533, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339678796142318859, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: defaultSpoonIngredients.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 04583489151496f49a61be7df6a628f7, type: 2}
     - target: {fileID: 8070026787095546051, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: m_Camera
       value: 
@@ -5860,8 +5883,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 6250594306297385194, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 1877849323348380097, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
@@ -7337,7 +7362,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1693560871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7874,7 +7898,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a188cb2ca45bb074897dc4585debb060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slot: 0
 --- !u!114 &1837384546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8633,7 +8656,7 @@ MonoBehaviour:
   m_BuildHeightMesh: 0
   m_MinRegionArea: 0
   m_HideEditorLogs: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 258c4cc17c0641e4d9e75dfbfa8c8ff3, type: 2}
 --- !u!1 &1928417584
 GameObject:
   m_ObjectHideFlags: 0

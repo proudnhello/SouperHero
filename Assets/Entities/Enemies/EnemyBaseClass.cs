@@ -34,8 +34,8 @@ public abstract class EnemyBaseClass : Entity
 
         InitEntity();
     }
-    protected abstract void UpdateAI();
-    protected void Die()
+    protected virtual void UpdateAI() { }
+    protected virtual void Die()
     {
         _sprite.color = _sprite.color / 1.5f;
         _collider.enabled = false;

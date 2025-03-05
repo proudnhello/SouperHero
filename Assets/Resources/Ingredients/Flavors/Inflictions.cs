@@ -10,9 +10,10 @@ using Unity.VisualScripting.FullSerializer;
 public class Inflictions
 {
     #region INFLICTION PARAMETERS
-    static float burnInterval = 2f;
-    static float burnIntervalDeviation = .25f;
-    static float freezeTimeDeviation = .25f;
+    static float BURN_INTERVAL = 2f;
+    static float BURN_INTERVAL_DEVIATION = .25f;
+    static float FREEZE_TIME_DEVIATION = .25f;
+    static float KNOCKBACK_MULTIPLIER = 150f;
     #endregion
 
     public static void Health(Infliction infliction, Entity entity)
@@ -22,6 +23,7 @@ public class Inflictions
 
     public static IEnumerator Damage(StatusEffectInstance instance)
     {
+        Debug.Log("adding " + instance.amount + " damage to " + instance.entity.gameObject.name);
         instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
         instance.entity.StartCoroutine(instance.entity.entityRenderer.TakeDamageAnimation());
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
@@ -30,12 +32,12 @@ public class Inflictions
 
     public static IEnumerator Burn(StatusEffectInstance instance)
     {
-        instance.intervals = Mathf.CeilToInt(instance.duration / burnInterval);
+        instance.intervals = Mathf.CeilToInt(instance.duration / BURN_INTERVAL);
         while(instance.intervals > 0)
         {
             instance.intervals--;
             instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
-            yield return new WaitForSeconds(burnInterval + Random.Range(-burnIntervalDeviation, burnIntervalDeviation));
+            yield return new WaitForSeconds(BURN_INTERVAL + Random.Range(-BURN_INTERVAL_DEVIATION, BURN_INTERVAL_DEVIATION));
         }
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
@@ -44,13 +46,13 @@ public class Inflictions
     {
         instance.duration = instance.duration > newInfliction.InflictionFlavor.statusEffectDuration ? instance.duration : newInfliction.InflictionFlavor.statusEffectDuration;
         instance.amount = instance.amount > newInfliction.InflictionFlavor.amount ? instance.amount : newInfliction.InflictionFlavor.amount;
-        instance.intervals = Mathf.CeilToInt(instance.duration / burnInterval);
+        instance.intervals = Mathf.CeilToInt(instance.duration / BURN_INTERVAL);
     }
 
     public static IEnumerator Freeze(StatusEffectInstance instance)
     {
         instance.entity.SetMoveSpeed(instance.amount);
-        yield return new WaitForSeconds(instance.duration + Random.Range(-freezeTimeDeviation, freezeTimeDeviation));
+        yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
         instance.entity.ResetMoveSpeed();
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
@@ -60,7 +62,7 @@ public class Inflictions
         instance.duration = instance.duration > newInfliction.InflictionFlavor.statusEffectDuration ? instance.duration : newInfliction.InflictionFlavor.statusEffectDuration;
         instance.amount = instance.amount > newInfliction.InflictionFlavor.amount ? instance.amount : newInfliction.InflictionFlavor.amount;
         instance.entity.SetMoveSpeed(instance.amount);
-        yield return new WaitForSeconds(instance.duration + Random.Range(-freezeTimeDeviation, freezeTimeDeviation));
+        yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
         instance.entity.ResetMoveSpeed();
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
@@ -76,7 +78,7 @@ public class Inflictions
         }
         target.velocity = Vector3.zero;
         Vector3 direction = (target.transform.position - source.transform.position).normalized;
-        target.AddForce(direction * instance.amount, ForceMode2D.Impulse);
+        target.AddForce(direction * instance.amount * KNOCKBACK_MULTIPLIER, ForceMode2D.Impulse);
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
         instance.entity.inflictionHandler.EndStatusEffect(instance);
         // If the agent is dead, don't bother making it move again
@@ -85,6 +87,5 @@ public class Inflictions
             agent.nextPosition = target.transform.position;
             agent.updatePosition = true;
         }
-        target.velocity = Vector3.zero;
     }
 }
