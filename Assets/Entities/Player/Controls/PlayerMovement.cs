@@ -5,8 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    float horizontal;
-    float vertical;
+    Vector2 inputDir;
     Rigidbody2D rb;
     private bool _useMouse;
     private Vector2 _previousMousePosition;
@@ -79,12 +78,11 @@ public class PlayerMovement : MonoBehaviour
             _useMouse = false;
         }
 
-        currentDirection = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
+        currentDirection = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y).normalized;
 
         PlayerEntityManager.Singleton.playerAttackPoint.parent.transform.up = currentDirection; // swivel attack point around player
 
-        horizontal = Input.GetAxisRaw("Horizontal");
-        vertical = Input.GetAxisRaw("Vertical");
+        inputDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
         _previousMousePosition = Input.mousePosition;
     }
 
@@ -97,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
         // If the player is charging, don't allow movement, but still allow the player to rotate
         if (!charging)
         {
-            rb.velocity = new Vector2(horizontal, vertical).normalized * PlayerEntityManager.Singleton.GetMoveSpeed();
+            rb.velocity = inputDir * PlayerEntityManager.Singleton.GetMoveSpeed();
             currrentMoveSpeed = rb.velocity.magnitude;
         }
     }
@@ -111,7 +109,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.velocity = Vector2.zero;
         charging = true;
-        rb.AddForce(new Vector2(horizontal, vertical).normalized * chargeStrength, ForceMode2D.Impulse);
+        rb.AddForce(currentDirection * chargeStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(chargeTime);
         charging = false;
     }
@@ -122,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
         {
             canDash = false;
             isDashing = true;
-            rb.velocity = new Vector2(horizontal, vertical).normalized * dashSpeed;
+            rb.velocity = inputDir * dashSpeed;
 
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
