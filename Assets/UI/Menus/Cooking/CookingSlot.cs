@@ -31,6 +31,8 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
         {
             CursorManager.Singleton.cookingCursor.switchCursorImageTo(ingredientReference, faceImage);
         }
+
+        CookingManager.Singleton.cookingSlot = this;
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -40,20 +42,42 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             return;
         }
 
-        base.dropHelper(true, CursorManager.Singleton.cookingCursor.currentCollectableReference, null);
-
-        GameObject dropped = CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.GetChild(1).gameObject;
-        if (!dropped.TryGetComponent<DraggableItem>(out var draggableItem))
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
         {
-            Debug.Log("No Draggable Item Found!");
-            return;
+            position = Input.mousePosition
+        };
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        CookingSlot dropTarget = null;
+
+        foreach (RaycastResult result in results)
+        {
+            dropTarget = result.gameObject.GetComponent<CookingSlot>();
+            if (dropTarget != null && dropTarget != CookingManager.Singleton.cookingSlot)
+            {
+                Debug.Log("Dropped on: " + dropTarget.name);
+                dropTarget.dropHelper(true, CursorManager.Singleton.cookingCursor.currentCollectableReference, null);
+                break;
+            }
         }
 
-        // Get the Ingredient Type
-        Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
-        CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+        if (dropTarget != null && dropTarget != CookingManager.Singleton.cookingSlot)
+        {
+            GameObject dropped = CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.GetChild(1).gameObject;
+            if (!dropped.TryGetComponent<DraggableItem>(out var draggableItem))
+            {
+                Debug.Log("No Draggable Item Found!");
+                return;
+            }
 
-        draggableItem.resetParent();
+            if (draggableItem.resetParent())
+            {
+                // Get the Ingredient Type
+                Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
+                CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+            }
+        }
         CursorManager.Singleton.cookingCursor.removeCursorImage();
     }
 }

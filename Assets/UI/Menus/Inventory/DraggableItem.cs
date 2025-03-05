@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using static FlavorIngredient;
-using UnityEditor.Recorder.Input;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -49,7 +48,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //transform.position = worldPos;
     }
 
-    public void resetParent()
+    public bool resetParent()
     {
         if (!parentAfterDrag.gameObject.CompareTag("BasketDrop"))
         {
@@ -58,20 +57,17 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
             if (parentAfterDrag.gameObject.CompareTag("CookingSlot"))
             {
-                //if(parentAfterDrag == pseudoParent)
-                //{
-                //    CursorManager.Singleton.cookingCursor.removeCursorImage();
-                //    return;
-                //}
+                if(parentAfterDrag == pseudoParent)
+                {
+                    CursorManager.Singleton.cookingCursor.removeCursorImage();
+                    return false;
+                }
                 parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
                 parentAfterDrag.gameObject.GetComponent<CookingSlot>().updateIngredientImage(image);
             }
         }
-        else
-        {
-
-        }
         pseudoParent = parentAfterDrag;
+        return true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
