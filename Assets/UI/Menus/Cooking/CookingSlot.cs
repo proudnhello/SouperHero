@@ -34,17 +34,21 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             }
         } else if (worldDrop)
         {
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
+
             CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.SetParent(null);
             CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.localScale = Vector3.one;
-            //CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.position = PlayerEntityManager.Singleton.gameObject.transform.position;
             CursorManager.Singleton.cookingCursor.currentCollectableReference.Spawn(PlayerEntityManager.Singleton.gameObject.transform.position);
             CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.gameObject.SetActive(true);
             CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.SetActive(false);
 
+            // Remove from player inventory
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetInteractable(true);
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetHighlighted(true);
+
             CursorManager.Singleton.cookingCursor.removeCursorImage();
             CookingManager.Singleton.disableWorldDrop();
-
-            // Make it interactable again
         }
     }
 
@@ -97,13 +101,19 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
 
             if (dropTarget.worldDrop)
             {
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
+
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.SetParent(null);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.localScale = Vector3.one;
-                //CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.position = PlayerEntityManager.Singleton.gameObject.transform.position;
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.Spawn(PlayerEntityManager.Singleton.gameObject.transform.position);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.gameObject.SetActive(true);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.SetActive(false);
-                // Make it interactable again
+
+                // remove from player inventory
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetInteractable(true);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetHighlighted(true);
+
             }
             else if (dropTarget.basketDrop)
             {
