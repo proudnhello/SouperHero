@@ -11,13 +11,21 @@ using Unity.VisualScripting;
 
 public class FlavorCSVtoSO
 {
+
+    // All the folder paths
+    // The path to folder we make new SOs in
+    static readonly string writeFolderPath = "Assets/Resources/Ingredients/Flavors/_STATS/";
+    // The path to folder where the icon sprites are
+    static readonly string iconPath = "Placeholder Items (Replace)/";
+    // The path to the flavor CSV
     private static string flavorCSVPath = "/Resources/CSVs/Flavor Ingredients.csv";
+
+
     [MenuItem("Utilities/Generate Flavors")]
     public static void GenerateFlavorIngredients()
     {
 
-        string folderPath = "Assets/Resources/Ingredients/Flavors/SOs";
-        ClearFolderBeforeCreatingAssets(folderPath);
+        ClearFolderBeforeCreatingAssets(writeFolderPath);
 
         string path = Application.dataPath + flavorCSVPath;
 
@@ -113,7 +121,7 @@ public class FlavorCSVtoSO
                 flavorIngredient.Icon = icon;
             }
 
-            AssetDatabase.CreateAsset(flavorIngredient, $"{folderPath}{flavorIngredient.IngredientName}.asset");
+            AssetDatabase.CreateAsset(flavorIngredient, $"{writeFolderPath}{flavorIngredient.IngredientName}.asset");
 
             // Set This To a Collectable
             Collectable ingredientCollectable = FindCollectableByName(splitData[0]);
@@ -160,7 +168,7 @@ public class FlavorCSVtoSO
         }
 
         // sprites need to be in Resources folder to be found when unused
-        var foundSprite = Resources.Load<Sprite>($"Placeholder Items (Replace)/{name}");
+        var foundSprite = Resources.Load<Sprite>($"{iconPath}{name}");
 
         if (foundSprite == null)
         {

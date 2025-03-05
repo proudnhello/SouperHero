@@ -11,12 +11,22 @@ using Unity.VisualScripting;
 
 public class AbilityCSVtoSO
 {
+    // All the folder paths
+    // The path to folder we make new SOs in
+    static readonly string writeFolderPath = "Assets/Resources/Ingredients/Abilities/_STATS/";
+    // The path to folder where the ability SOs are
+    static readonly string abilityPath = "Ingredients/Abilities/Classes/";
+    // The path to folder where the icon sprites are
+    static readonly string iconPath = "Placeholder Items (Replace)/";
+    // Path to where collectables are
+    static readonly string collectablePath = "Ingredients/Abilities/Collectables/";
+    // The path to the ability csv
     private static string abilityCSVPath = "/Resources/CSVs/Ability Ingredients.csv";
+
     [MenuItem("Utilities/Generate Abilities")]
     public static void GenerateAbilityIngredients()
     {
-        string folderPath = "Assets/Resources/Ingredients/Abilities/SOs";
-        ClearFolderBeforeCreatingAssets(folderPath);
+        ClearFolderBeforeCreatingAssets(writeFolderPath);
 
         string path = Application.dataPath + abilityCSVPath;
 
@@ -102,7 +112,7 @@ public class AbilityCSVtoSO
                 abilityIngredient.Icon = icon;
             }
 
-            AssetDatabase.CreateAsset(abilityIngredient, $"{folderPath}{abilityIngredient.IngredientName}.asset");
+            AssetDatabase.CreateAsset(abilityIngredient, $"{writeFolderPath}{abilityIngredient.IngredientName}.asset");
 
             // Set Collectable
             if (splitData[0] != "Default Spoon")
@@ -130,6 +140,7 @@ public class AbilityCSVtoSO
         AssetDatabase.SaveAssets();
     }
 
+    // Clear previous SOs in the folder
     static void ClearFolderBeforeCreatingAssets(string folderPath)
     {
 
@@ -158,27 +169,28 @@ public class AbilityCSVtoSO
         }
     }
 
-
-static AbilityAbstractClass FindAbilityByName(string name)
+    // Find the ability SOs to set them to the AbilityIngredient SOs
+    static AbilityAbstractClass FindAbilityByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            Debug.LogError("Sprite name is null or empty.");
+            Debug.LogError("Abiliity name is null or empty.");
             return null;
         }
 
         // sprites need to be in Resources folder to be found when unused
-        var foundAbility = Resources.Load<AbilityAbstractClass>($"Ingredients/AbilityTypes/AbilitySOs/{name}");
+        var foundAbility = Resources.Load<AbilityAbstractClass>($"{abilityPath}{name}");
 
         if (foundAbility == null)
         {
-            Debug.LogError("No sprite found.");
+            Debug.LogError($"No abiliity found with name: {name}.");
             return null;
         }
 
         return foundAbility;
     }
 
+    // Find the sprite icons to set them to the AbilityIngredient SOs
     static Sprite FindSpriteByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -188,17 +200,19 @@ static AbilityAbstractClass FindAbilityByName(string name)
         }
 
         // sprites need to be in Resources folder to be found when unused
-        var foundSprite = Resources.Load<Sprite>($"Placeholder Items (Replace)/{name}");
+        var foundSprite = Resources.Load<Sprite>($"{iconPath}{name}");
 
         if (foundSprite == null)
         {
-            Debug.LogError("No sprite found.");
+            Debug.LogError($"No sprite found with name: {name}.");
             return null;
         }
 
         return foundSprite;
     }
 
+    // Find the collectables with same name as AbilityIngredient SOs
+    // To set the collectable with the new SO
     static Collectable FindCollectableByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -208,20 +222,15 @@ static AbilityAbstractClass FindAbilityByName(string name)
         }
 
         // sprites need to be in Resources folder to be found when unused
-        var collectable = Resources.FindObjectsOfTypeAll<Collectable>();
-        if (collectable == null || collectable.Length == 0)
+        var foundCollectable = Resources.Load<Collectable>($"{collectablePath}{name}");
+
+        if (foundCollectable == null)
         {
-            Debug.LogError("No collectable found.");
+            Debug.LogError($"No collectable found with name: {name}.");
             return null;
         }
 
-        Collectable foundSprite = collectable.FirstOrDefault(a => a.name == name);
-        if (foundSprite == null)
-        {
-            Debug.LogError($"No collectable found with name: {name}");
-        }
-
-        return foundSprite;
+        return foundCollectable;
     }
 
 
