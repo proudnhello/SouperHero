@@ -43,7 +43,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.gameObject.SetActive(true);
             CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.SetActive(false);
 
-            // Remove from player inventory
+            PlayerInventory.Singleton.RemoveIngredientCollectable(CursorManager.Singleton.cookingCursor.currentCollectableReference);
             CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetInteractable(true);
             CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetHighlighted(true);
 
@@ -110,7 +110,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.gameObject.SetActive(true);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.SetActive(false);
 
-                // remove from player inventory
+                PlayerInventory.Singleton.RemoveIngredientCollectable(CursorManager.Singleton.cookingCursor.currentCollectableReference);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetInteractable(true);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetHighlighted(true);
 
