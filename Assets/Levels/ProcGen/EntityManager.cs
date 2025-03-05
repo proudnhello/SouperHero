@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening.Plugins;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -42,7 +43,7 @@ public class EntityManager : MonoBehaviour
     {
         buildEnemyDictionary();
         buildForagableDictionary();
-        createEnemies();
+        importEnemies("0,1");
         createForagables();
     }
 
@@ -105,6 +106,15 @@ public class EntityManager : MonoBehaviour
             }
         }
         return ret;
+    }
+
+    public void importEnemies(String import){
+        String[] strings = import.Split(',');
+        for(int i = 0; i < strings.Length; i++){
+            if(strings[i] == "-1"){
+                enemySpawns[i].enemy = possibleEnemies[Int32.Parse(strings[i])].enemy;
+            }
+        }
     }
 
     public void buildForagableDictionary()
