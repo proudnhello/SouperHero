@@ -30,7 +30,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             {
                 // Get the Ingredient Type
                 Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
-                CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+                CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>());
             }
         } else if (worldDrop)
         {
@@ -128,7 +128,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
                 {
                     // Get the Ingredient Type
                     Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
-                    CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+                    CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>());
                 }
             }
         }

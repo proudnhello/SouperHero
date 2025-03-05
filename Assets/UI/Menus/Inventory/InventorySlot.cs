@@ -41,7 +41,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             cook.faceImage.sprite = null;
             // REMOVE INGREDIENT
             Debug.Log($"Parent after drag is a cooking slot: {cook.gameObject}");
-            CookingManager.Singleton.RemoveIngredient(inventoryObject.ingredient);
+            CookingManager.Singleton.RemoveIngredient(inventoryObject);
         }
 
         // set the parent of the dropped object to this object

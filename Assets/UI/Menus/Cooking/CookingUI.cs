@@ -28,7 +28,7 @@ public class CookingUI : MonoBehaviour
             }
         }
 
-        List<Ingredient> currentInventory = PlayerInventory.Singleton.ingredientsHeld;
+        //List<Collectable> currentInventory = PlayerInventory.Singleton.collectablesHeld;
 
         //foreach (var ingredient in currentInventory)
         //{

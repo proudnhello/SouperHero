@@ -41,33 +41,33 @@ public class BasketUI : MonoBehaviour
         }
     }
 
-    public void RemoveIngredient(Ingredient ingredient, bool reverse = false)
+    public void RemoveIngredient(Collectable ingredient)
     {
 
-        if (!reverse)
+        //if (!reverse)
+        //{
+        foreach (Collectable collectable in basketCollectables)
         {
-            foreach (Collectable collectable in basketCollectables)
+            if (Object.Equals(collectable.ingredient, ingredient))
             {
-                if (Object.Equals(collectable.ingredient, ingredient))
-                {
-                    basketCollectables.Remove(collectable);
-                    Destroy(collectable.gameObject);
-                    break;
-                }
+                basketCollectables.Remove(collectable);
+                Destroy(collectable.gameObject);
+                break;
             }
         }
-        else
-        {
-            foreach (Collectable collectable in basketCollectables.AsEnumerable().Reverse())
-            {
-                if (Object.Equals(collectable.ingredient, ingredient))
-                {
-                    basketCollectables.Remove(collectable);
-                    Destroy(collectable.gameObject);
-                    break;
-                }
-            }
-        }
+        //}
+        //else
+        //{
+        //    foreach (Collectable collectable in basketCollectables.AsEnumerable().Reverse())
+        //    {
+        //        if (Object.Equals(collectable.ingredient, ingredient))
+        //        {
+        //            basketCollectables.Remove(collectable);
+        //            Destroy(collectable.gameObject);
+        //            break;
+        //        }
+        //    }
+        //}
 
     }
 }
