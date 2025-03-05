@@ -48,7 +48,7 @@ public class BasketUI : MonoBehaviour
         //{
         foreach (Collectable collectable in basketCollectables)
         {
-            if (Object.Equals(collectable.ingredient, ingredient))
+            if (Object.Equals(collectable, ingredient))
             {
                 basketCollectables.Remove(collectable);
                 Destroy(collectable.gameObject);
