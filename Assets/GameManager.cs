@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-//TODO: Don't pause game while cooking
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -40,22 +39,17 @@ public class GameManager : MonoBehaviour
         }
 
         pauseScreen.SetActive(false);
-
-        //playerInput = GetComponent<PlayerInput>(); //This is returning null
-        //Debug.Log("INPUT:" + playerInput);
     }
 
     void PauseGame() {
         Time.timeScale = 0;
         pauseScreen.SetActive(true);
-        //playerInput.Disable();
         InputManager.playerInput.SwitchCurrentActionMap("UI");
     }
 
     void ResumeGame() {
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
-        //playerInput.Enable();
         InputManager.playerInput.SwitchCurrentActionMap("Player");
     }
 
