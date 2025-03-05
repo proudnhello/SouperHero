@@ -16,7 +16,7 @@ public class FlavorCSVtoSO
     public static void GenerateFlavorIngredients()
     {
 
-        string folderPath = "Assets/Resources/Ingredients/Flavors/SOs";
+        string folderPath = "Assets/Resources/Ingredients/Flavors/_STATS/";
         ClearFolderBeforeCreatingAssets(folderPath);
 
         string path = Application.dataPath + flavorCSVPath;

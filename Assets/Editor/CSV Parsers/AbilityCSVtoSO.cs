@@ -15,7 +15,7 @@ public class AbilityCSVtoSO
     [MenuItem("Utilities/Generate Abilities")]
     public static void GenerateAbilityIngredients()
     {
-        string folderPath = "Assets/Resources/Ingredients/Abilities/SOs";
+        string folderPath = "Assets/Resources/Ingredients/Abilities/_STATS/";
         ClearFolderBeforeCreatingAssets(folderPath);
 
         string path = Application.dataPath + abilityCSVPath;
@@ -168,7 +168,7 @@ static AbilityAbstractClass FindAbilityByName(string name)
         }
 
         // sprites need to be in Resources folder to be found when unused
-        var foundAbility = Resources.Load<AbilityAbstractClass>($"Ingredients/AbilityTypes/AbilitySOs/{name}");
+        var foundAbility = Resources.Load<AbilityAbstractClass>($"Ingredients/Abilities/Classes/{name}");
 
         if (foundAbility == null)
         {
