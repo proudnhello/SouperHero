@@ -15,7 +15,7 @@ public class AbilityCSVtoSO
     [MenuItem("Utilities/Generate Abilities")]
     public static void GenerateAbilityIngredients()
     {
-        string folderPath = "Assets/CSVSOs/AbilityIngredientSOs/";
+        string folderPath = "Assets/Resources/Ingredients/Abilities/SOs";
         ClearFolderBeforeCreatingAssets(folderPath);
 
         string path = Application.dataPath + abilityCSVPath;
