@@ -47,11 +47,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         // set the parent of the dropped object to this object
         draggableItem.parentAfterDrag = transform;
 
-        if (basketDrop || worldDrop)
-        {
-            draggableItem.parentAfterDrag = this.transform;
-        }
-
         // resize the dropped object to this object
         //draggableItem.transform.localScale = inventorySlot.transform.localScale;
     }

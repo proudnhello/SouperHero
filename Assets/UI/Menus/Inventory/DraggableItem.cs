@@ -38,7 +38,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
         image.raycastTarget = false;
-        if (parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference != null)
+        if (parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference == null)
         {
             if (!parentAfterDrag.gameObject.CompareTag("BasketDrop"))
             {

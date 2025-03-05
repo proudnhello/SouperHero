@@ -18,13 +18,20 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
         {
             Debug.Log("No Draggable Item Found!");
             return;
-        }   
+        }
+
+        dropHelper(true, CursorManager.Singleton.cookingCursor.currentCollectableReference, null);
 
         // Get the Ingredient Type
         Debug.Log("Ingredient Drop Detected!");
         if (!basketDrop && !worldDrop)
         {
-            CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+            if (draggableItem.resetParent())
+            {
+                // Get the Ingredient Type
+                Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
+                CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+            }
         } else if (worldDrop)
         {
             CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.SetParent(null);
