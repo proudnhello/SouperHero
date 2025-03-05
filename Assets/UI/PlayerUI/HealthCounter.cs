@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class HealthCounter : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class HealthCounter : MonoBehaviour
     private int playerHealth = 0; 
     [Header("Debug")]
     public TMP_Text healthText;
+
+    [SerializeField]
+    Sprite fullHeart;
+    [SerializeField]
+    Sprite emptyHeart;
 
     void Start() {
         // Initialize with all hearts as empty
@@ -60,16 +66,11 @@ public class HealthCounter : MonoBehaviour
 
     void AddHealth(int heart, int pHealth) {
 
-        //Set heart to be fully opaque
+        //Set heart to empty heart sprite
         int heartCounter = heart;
         while (heartCounter <= pHealth)
         {
-            Debug.Log("HeartCounter In Add While: " + heartCounter);
-
-            Color newColor = heartList[heartCounter - 1].GetComponent<Image>().color;
-            newColor.a = 1f;
-            heartList[heartCounter - 1].GetComponent<Image>().color = newColor;
-
+            heartList[heartCounter - 1].GetComponent<Image>().sprite = fullHeart;
             heartCounter++;
         }
 
@@ -85,14 +86,11 @@ public class HealthCounter : MonoBehaviour
             return;
         }
 
-        //Set heart to be fully opaque
+        // Set heart to full heart sprite
         int heartCounter = heart;
         while (heartCounter > pHealth)
         {
-            Color newColor = heartList[heartCounter - 1].GetComponent<Image>().color;
-            newColor.a = 0.3f;
-            heartList[heartCounter - 1].GetComponent<Image>().color = newColor;
-
+            heartList[heartCounter - 1].GetComponent<Image>().sprite = emptyHeart;
             heartCounter--;
         }
 
