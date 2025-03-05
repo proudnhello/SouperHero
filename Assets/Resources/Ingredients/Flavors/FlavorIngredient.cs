@@ -38,7 +38,8 @@ public class FlavorIngredient : Ingredient
             FROSTY_Freeze,
             HEARTY_Health,
             SPIKY_Damage,
-            GREASY_Knockback
+            GREASY_Knockback,
+            UNAMI_Vampirism
         }
         public enum Operation
         {
@@ -49,6 +50,16 @@ public class FlavorIngredient : Ingredient
         public Operation operation;
         public int amount;
         public float statusEffectDuration;
+
+        public InflictionFlavor(InflictionFlavor other)
+        {
+            inflictionType = other.inflictionType;
+            operation = other.operation;
+            amount = other.amount;
+            statusEffectDuration = other.statusEffectDuration;
+        }
+
+        public InflictionFlavor() { }
     }
     [Header("Flavors")]
     public List<BuffFlavor> buffFlavors;

@@ -97,6 +97,9 @@ public class EntityInflictionEffectHandler
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Knockback(instance, entity._rigidbody, source));
+                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UNAMI_Vampirism)
+                {
+                    Inflictions.Vampirism(infliction, entity, source);
                 }
             }
         }                   
