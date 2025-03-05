@@ -60,6 +60,11 @@ public class PlayerInventory : MonoBehaviour
         BasketUI.Singleton.AddIngredient(collectable);
     }
 
+
+    // Removes ingredient from the player inventory
+    // By default it removes the first insance of an ingredient if there are multiple
+    // set reverse to true to remove the last instance of the ingredient
+    // (The collider under the basket calls it in reverse, the cook button calls it forward)
     public void RemoveIngredient(Ingredient ingredient, bool reverse = false)
     {
         if (!reverse)
