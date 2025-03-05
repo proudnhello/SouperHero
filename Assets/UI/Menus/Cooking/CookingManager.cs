@@ -69,6 +69,7 @@ public class CookingManager : MonoBehaviour
             ResetStatsText();
             isCooking = false;
             instructionsOnPlayScreen.SetActive(true);
+            cookingIngredients.Clear();
 
             Transform itemStatsScreenTransform = itemStatsScreen.transform;
             if (itemStatsScreenTransform != null)
