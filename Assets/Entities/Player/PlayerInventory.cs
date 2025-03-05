@@ -17,6 +17,7 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField]
     internal List<Ingredient> ingredientsHeld;
 
+    [SerializeField]
     List<SoupSpoon> spoons;
 
     int currentSpoon = 0;

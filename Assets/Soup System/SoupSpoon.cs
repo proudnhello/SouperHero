@@ -5,13 +5,19 @@ using BuffFlavor = FlavorIngredient.BuffFlavor;
 using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
+[System.Serializable]
 public class SoupSpoon
 {
     // ~~~ DEFINITIONS ~~~
+    [System.Serializable]
     public class SpoonAbility // one for each type
     {
+        //[SerializeField]
         public AbilityAbstractClass ability;
+
+        //[SerializeField]
         public AbilityStats statsWithBuffs;
+
         float lastUseTime;
 
         public SpoonAbility(AbilityIngredient ingredient, List<FlavorIngredient.BuffFlavor> buffs)
@@ -27,6 +33,7 @@ public class SoupSpoon
         }
     }
 
+    [System.Serializable]
     public class SpoonInfliction // one for each type
     {
         public InflictionFlavor InflictionFlavor;

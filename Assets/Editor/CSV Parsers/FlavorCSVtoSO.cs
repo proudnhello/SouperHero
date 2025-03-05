@@ -19,6 +19,8 @@ public class FlavorCSVtoSO
     static readonly string iconPath = "Placeholder Items (Replace)/";
     // The path to the flavor CSV
     private static string flavorCSVPath = "/Resources/CSVs/Flavor Ingredients.csv";
+    // Path to where collectables are
+    static readonly string collectablePath = "Ingredients/Flavors/Collectables/";
 
 
     [MenuItem("Utilities/Generate Flavors")]
@@ -179,6 +181,33 @@ public class FlavorCSVtoSO
         return foundSprite;
     }
 
+    //static Collectable FindCollectableByName(string name)
+    //{
+    //    if (string.IsNullOrWhiteSpace(name))
+    //    {
+    //        Debug.LogError("Collectable name is null or empty.");
+    //        return null;
+    //    }
+
+    //    // sprites need to be in Resources folder to be found when unused
+    //    var collectable = Resources.FindObjectsOfTypeAll<Collectable>();
+    //    if (collectable == null || collectable.Length == 0)
+    //    {
+    //        Debug.LogError("No collectable found.");
+    //        return null;
+    //    }
+
+    //    Collectable foundSprite = collectable.FirstOrDefault(a => a.name == name);
+    //    if (foundSprite == null)
+    //    {
+    //        Debug.LogError($"No collectable found with name: {name}");
+    //    }
+
+    //    return foundSprite;
+    //}
+
+    // Find the collectables with same name as AbilityIngredient SOs
+    // To set the collectable with the new SO
     static Collectable FindCollectableByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -188,19 +217,14 @@ public class FlavorCSVtoSO
         }
 
         // sprites need to be in Resources folder to be found when unused
-        var collectable = Resources.FindObjectsOfTypeAll<Collectable>();
-        if (collectable == null || collectable.Length == 0)
+        var foundCollectable = Resources.Load<Collectable>($"{collectablePath}{name}");
+
+        if (foundCollectable == null)
         {
-            Debug.LogError("No collectable found.");
+            Debug.LogError($"No collectable found with name: {name}.");
             return null;
         }
 
-        Collectable foundSprite = collectable.FirstOrDefault(a => a.name == name);
-        if (foundSprite == null)
-        {
-            Debug.LogError($"No collectable found with name: {name}");
-        }
-
-        return foundSprite;
+        return foundCollectable;
     }
 }

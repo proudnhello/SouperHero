@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using BuffType = FlavorIngredient.BuffFlavor.BuffType;
 using Operation = FlavorIngredient.BuffFlavor.Operation;
 
-[Serializable]
+[System.Serializable]
 public struct AbilityStats
 {
     // STATS
