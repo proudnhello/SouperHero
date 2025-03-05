@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(pauseKey) && pauseScreen != null)
+        if (Input.GetKeyDown(pauseKey) && pauseScreen != null && !CookingManager.Singleton.IsCooking())
         {
             isPaused = !isPaused;
             if (isPaused)
