@@ -9,6 +9,6 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>(); //This is returning null
+        playerInput = GetComponent<PlayerInput>();
     }
 }

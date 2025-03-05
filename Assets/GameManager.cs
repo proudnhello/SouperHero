@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
     }
 
-    // Goes to Death Scene
+    // Goes to Win Scene
     public void WinScreen()
     {
         SceneManager.LoadScene(3);
