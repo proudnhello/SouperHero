@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPointerUpHandler
@@ -21,7 +22,23 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
 
         // Get the Ingredient Type
         Debug.Log("Ingredient Drop Detected!");
-        CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+        if (!basketDrop && !worldDrop)
+        {
+            CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+        } else if (worldDrop)
+        {
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.SetParent(null);
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.localScale = Vector3.one;
+            //CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.position = PlayerEntityManager.Singleton.gameObject.transform.position;
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.Spawn(PlayerEntityManager.Singleton.gameObject.transform.position);
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.gameObject.SetActive(true);
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.SetActive(false);
+
+            CursorManager.Singleton.cookingCursor.removeCursorImage();
+            CookingManager.Singleton.disableWorldDrop();
+
+            // Make it interactable again
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -33,6 +50,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
         }
 
         CookingManager.Singleton.cookingSlot = this;
+        CookingManager.Singleton.enableWorldDrop();
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -56,7 +74,6 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             dropTarget = result.gameObject.GetComponent<CookingSlot>();
             if (dropTarget != null && dropTarget != CookingManager.Singleton.cookingSlot)
             {
-                Debug.Log("Dropped on: " + dropTarget.name);
                 dropTarget.dropHelper(true, CursorManager.Singleton.cookingCursor.currentCollectableReference, null);
                 break;
             }
@@ -71,13 +88,34 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
                 return;
             }
 
-            if (draggableItem.resetParent())
+            if (dropTarget.worldDrop)
             {
-                // Get the Ingredient Type
-                Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
-                CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.SetParent(null);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.localScale = Vector3.one;
+                //CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.position = PlayerEntityManager.Singleton.gameObject.transform.position;
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.Spawn(PlayerEntityManager.Singleton.gameObject.transform.position);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.gameObject.SetActive(true);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.SetActive(false);
+                // Make it interactable again
+            }
+            else if (dropTarget.basketDrop)
+            {
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
+                draggableItem.updateParent();
+                BasketUI.Singleton.AddIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
+            }
+            else
+            {
+                if (draggableItem.resetParent())
+                {
+                    // Get the Ingredient Type
+                    Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
+                    CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>().ingredient);
+                }
             }
         }
         CursorManager.Singleton.cookingCursor.removeCursorImage();
+        CookingManager.Singleton.disableWorldDrop();
     }
 }

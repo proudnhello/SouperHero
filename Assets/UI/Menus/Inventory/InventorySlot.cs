@@ -16,10 +16,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     public void dropHelper(bool fromBasket, Collectable inventoryObject = null, PointerEventData eventData = null)
     {
-        //if (transform.childCount == 0)
-        //{
         GameObject dropped;
-        if(fromBasket || basketDrop)
+        if(fromBasket)
         {
             dropped = inventoryObject.gameObject.transform.GetChild(1).gameObject;
         } else
@@ -37,7 +35,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
         // check if the previous parent was a cooking slot: if so, remove it from pot ingredients
         CookingSlot cook = draggableItem.pseudoParent.GetComponent<CookingSlot>();
-        if (cook != null)
+        if (cook != null && !cook.basketDrop && !cook.worldDrop)
         {
             cook.ingredientReference = null;
             cook.faceImage.sprite = null;
@@ -49,22 +47,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         // set the parent of the dropped object to this object
         draggableItem.parentAfterDrag = transform;
 
-        if (basketDrop)
+        if (basketDrop || worldDrop)
         {
-            draggableItem.parentAfterDrag = transform.root;
-            draggableItem.needsBasketDrop = true;
+            draggableItem.parentAfterDrag = this.transform;
         }
-        else if (worldDrop)
-        {
-            draggableItem.parentAfterDrag = transform.root;
-            draggableItem.needsWorldDrop = true;
-        }
-
-        Debug.Log("Set new ting: " + draggableItem.parentAfterDrag);
 
         // resize the dropped object to this object
-        draggableItem.transform.localScale = inventorySlot.transform.localScale;
-        //}
+        //draggableItem.transform.localScale = inventorySlot.transform.localScale;
     }
 
     public void OnDrop(PointerEventData eventData)
