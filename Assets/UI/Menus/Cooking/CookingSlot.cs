@@ -54,14 +54,12 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log((ingredientReference == null) + ", " + faceImage.sprite);
         if ((ingredientReference != null) && (faceImage.sprite != null))
         {
             CursorManager.Singleton.cookingCursor.switchCursorImageTo(ingredientReference, faceImage);
+            CookingManager.Singleton.cookingSlot = this;
+            CookingManager.Singleton.enableWorldDrop();
         }
-
-        CookingManager.Singleton.cookingSlot = this;
-        CookingManager.Singleton.enableWorldDrop();
     }
 
     public void OnPointerUp(PointerEventData eventData)

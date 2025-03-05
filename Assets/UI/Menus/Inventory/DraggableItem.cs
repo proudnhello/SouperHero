@@ -7,7 +7,6 @@ using static FlavorIngredient;
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Image image;
-    public GameObject draggableItem;
     public Transform parentAfterDrag;
     [HideInInspector] public string ingredientType;
     public Transform pseudoParent;
