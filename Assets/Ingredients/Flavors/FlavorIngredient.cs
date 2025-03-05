@@ -50,6 +50,16 @@ public class FlavorIngredient : Ingredient
         public Operation operation;
         public int amount;
         public float statusEffectDuration;
+
+        public InflictionFlavor(InflictionFlavor other)
+        {
+            inflictionType = other.inflictionType;
+            operation = other.operation;
+            amount = other.amount;
+            statusEffectDuration = other.statusEffectDuration;
+        }
+
+        public InflictionFlavor() { }
     }
     [Header("Flavors")]
     public List<BuffFlavor> buffFlavors;
