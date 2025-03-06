@@ -27,6 +27,15 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
                 {
                     // Get the Ingredient Type
                     Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
+                    // set this cooking slot image alpha to 1
+                    CookingManager.Singleton.CookingSlotSetOpaque(this);
+                    // set previous slot image alpha to 0
+                    CookingSlot previousCookingSlot = CookingManager.Singleton.currentCookingSlot;
+                    if ( previousCookingSlot != null)
+                    {
+                        CookingManager.Singleton.CookingSlotSetTransparent(previousCookingSlot);
+                        Debug.Log("PREVIOUS COOKING SLOT: " + previousCookingSlot.name);
+                    }
                     CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>());
                 }
             } else if (worldDrop)
@@ -36,6 +45,11 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             {
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
+
+                // set previous slot image alpha to 0
+                CookingManager.Singleton.CookingSlotSetTransparent(draggableItem.parentAfterDrag.gameObject.GetComponent<CookingSlot>());
+
+                // Add ingredient to basket
                 BasketUI.Singleton.AddIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
             }
             draggableItem.isDragging = false;
@@ -45,16 +59,21 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
         CookingManager.Singleton.disableWorldDrop();
     }
 
+    // This is called when you click on a cooking slot
+    // It sets the cursor image to the ingredient image
+    // and enables world drop box
     public void OnPointerDown(PointerEventData eventData)
     {
         if ((ingredientReference != null) && (faceImage.sprite != null))
         {
             CursorManager.Singleton.cookingCursor.switchCursorImageTo(ingredientReference, faceImage);
-            CookingManager.Singleton.cookingSlot = this;
+            CookingManager.Singleton.currentCookingSlot = this;
             CookingManager.Singleton.enableWorldDrop();
         }
     }
 
+
+    // Function that allows ingredients to drop into the world
     private void worldDropNonsense(DraggableItem d)
     {
         CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -74,6 +93,8 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
         d.parentAfterDrag = null;
     }
 
+
+    // This is called when you stopclicking on top of a cooking slot
     public void OnPointerUp(PointerEventData eventData)
     {
         if(CursorManager.Singleton.cookingCursor.currentCollectableReference == null)
@@ -95,7 +116,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
         foreach (RaycastResult result in results)
         {
             dropTarget = result.gameObject.GetComponent<CookingSlot>();
-            if (dropTarget != null && dropTarget != CookingManager.Singleton.cookingSlot && !dropTarget.ingredientReference)
+            if (dropTarget != null && dropTarget != CookingManager.Singleton.currentCookingSlot && !dropTarget.ingredientReference)
             {
                 dropTarget.dropHelper(true, CursorManager.Singleton.cookingCursor.currentCollectableReference, null);
                 break;
@@ -109,18 +130,33 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             return;
         }
 
-        if (dropTarget != null && dropTarget != CookingManager.Singleton.cookingSlot && !dropTarget.ingredientReference)
+        if (dropTarget != null && dropTarget != CookingManager.Singleton.currentCookingSlot && !dropTarget.ingredientReference)
         {
 
             if (dropTarget.worldDrop)
             {
                 worldDropNonsense(draggableItem);
+
+                // set previous slot image alpha to 0
+                CookingSlot previousCookingSlot = CookingManager.Singleton.currentCookingSlot;
+                if (previousCookingSlot != null)
+                {
+                    CookingManager.Singleton.CookingSlotSetTransparent(previousCookingSlot);
+                    Debug.Log("PREVIOUS COOKING SLOT: " + previousCookingSlot.name);
+                }
             }
             else if (dropTarget.basketDrop)
             {
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
                 draggableItem.updateParent();
+                // set previous slot image alpha to 0
+                CookingSlot previousCookingSlot = CookingManager.Singleton.currentCookingSlot;
+                if (previousCookingSlot != null)
+                {
+                    CookingManager.Singleton.CookingSlotSetTransparent(previousCookingSlot);
+                    Debug.Log("PREVIOUS COOKING SLOT: " + previousCookingSlot.name);
+                }
                 BasketUI.Singleton.AddIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
             }
             else
@@ -129,6 +165,15 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
                 {
                     // Get the Ingredient Type
                     Debug.Log("Ingredient Drop Detected! " + this.gameObject.name);
+                    // set this cooking slot image alpha to 1
+                    CookingManager.Singleton.CookingSlotSetOpaque(this);
+                    // set previous slot image alpha to 0
+                    CookingSlot previousCookingSlot = CookingManager.Singleton.currentCookingSlot;
+                    if (previousCookingSlot != null)
+                    {
+                        CookingManager.Singleton.CookingSlotSetTransparent(previousCookingSlot);
+                        Debug.Log("PREVIOUS COOKING SLOT: " + previousCookingSlot.name);
+                    }
                     CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>());
                 }
             }

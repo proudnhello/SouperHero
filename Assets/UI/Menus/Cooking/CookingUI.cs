@@ -13,20 +13,14 @@ public class CookingUI : MonoBehaviour
     public void OnEnable()
     {
 
-        // clean before use
-        foreach (Transform item in InventoryContent)
-        {
-            Destroy(item.gameObject);
-        }
+        //// clean before use
+        //foreach (Transform item in InventoryContent)
+        //{
+        //    Destroy(item.gameObject);
+        //}
 
-        foreach (Transform slot in CookingContent)
-        {
-            foreach (Transform item in slot)
-            {
-                item.gameObject.GetComponent<Image>().sprite = null;
-                //Destroy(item.gameObject);
-            }
-        }
+        // clean sprites before use
+        CookingManager.Singleton.ClearCookingManagerSprites();
 
         //List<Collectable> currentInventory = PlayerInventory.Singleton.collectablesHeld;
 

@@ -27,7 +27,7 @@ public class CookingManager : MonoBehaviour
     [SerializeField] private GameObject campfireWarning;
     public GameObject worldDrop;
     public GameObject basketDrop;
-    public CookingSlot cookingSlot;
+    public CookingSlot currentCookingSlot;
 
     public List<CookingSlot> cookingSlots;
 
@@ -216,14 +216,63 @@ public class CookingManager : MonoBehaviour
         cookingIngredients.Clear();
         ResetStatsText();
 
-        // Destroy the objects that were cooked
+        ClearCookingManagerSprites();
+    }
+
+    // Sets all the sprites in the cooking slot to null and 0 alpha
+    public void ClearCookingManagerSprites()
+    {
         foreach (Transform slot in CookingContent)
         {
             foreach (Transform item in slot)
             {
-                Destroy(item.gameObject);
+                item.gameObject.GetComponent<Image>().sprite = null;
+                Image image = item.gameObject.GetComponent<Image>();
+                Color tempColor = image.color;
+                tempColor.a = 0;
+                item.gameObject.GetComponent<Image>().color = tempColor;
+                //Destroy(item.gameObject);
             }
         }
+    }
+
+    // Sets all the images in the cooking slot to 1 alpha
+    // Only if the cooking sprite is not null (meaning an ingredient is in it)
+    public void CookingManagerSpritesSetOpaque()
+    {
+        foreach (Transform slot in CookingContent)
+        {
+            foreach (Transform item in slot)
+            {
+                Image image = item.gameObject.GetComponent<Image>();
+                if (image.sprite != null)
+                {
+                    Color tempColor = image.color;
+                    tempColor.a = 1;
+                    item.gameObject.GetComponent<Image>().color = tempColor;
+                }
+            }
+        }
+    }
+
+    // Turn a specific cookingslot transparent
+    public void CookingSlotSetTransparent(CookingSlot slot)
+    {
+        // index into first child slot bc should only be 1 child
+        //slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
+        Image image = slot.transform.GetChild(0).GetComponent<Image>();
+        Color tempColor = image.color;
+        tempColor.a = 0;
+        slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
+    }
+
+    // Turn a specific cookingslot opaque
+    public void CookingSlotSetOpaque(CookingSlot slot)
+    {
+        Image image = slot.transform.GetChild(0).GetComponent<Image>();
+        Color tempColor = image.color;
+        tempColor.a = 1;
+        slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
     }
 
     public void ResetStatsText()

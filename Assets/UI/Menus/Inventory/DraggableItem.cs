@@ -10,6 +10,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Transform parentAfterDrag;
     [HideInInspector] public string ingredientType;
     public Transform pseudoParent;
+    public Transform parentBeforeDrag;
 
     [Header("Do Not Edit, Ingredient is Set In CookingUI's Enable()")]
     public Ingredient ingredient = null;
@@ -58,6 +59,16 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     Debug.Log("set image");
                     parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
                     parentAfterDrag.gameObject.GetComponent<CookingSlot>().updateIngredientImage(image);
+
+                    // set this cooking slot image alpha to 1
+                    CookingManager.Singleton.CookingSlotSetOpaque(parentAfterDrag.gameObject.GetComponent<CookingSlot>());
+                    // set previous slot image alpha to 0
+                    CookingSlot previousCookingSlot = CookingManager.Singleton.currentCookingSlot;
+                    if (previousCookingSlot != null)
+                    {
+                        CookingManager.Singleton.CookingSlotSetTransparent(previousCookingSlot);
+                        Debug.Log("PREVIOUS COOKING SLOT: " + previousCookingSlot.name);
+                    }
                 }
             }
             else if (!parentAfterDrag.gameObject.CompareTag("WorldDrop"))
