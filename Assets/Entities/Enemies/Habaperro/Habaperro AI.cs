@@ -62,7 +62,8 @@ public class HabaperroAI : EnemyBaseClass
             return;
         }
         float distance = Vector2.Distance(_playerTransform.position, transform.position);
-        if(distance < followingRadius){
+        agent.speed = GetMoveSpeed();
+        if (distance < followingRadius){
             if(_state != HabaperroState.ATTACKING && _state != HabaperroState.PREPARING){
                 agent.SetDestination(_playerTransform.position);
                 if(distance < attackingRadius){

@@ -102,7 +102,6 @@ public class FlettuceAI : EnemyBaseClass
         public void OnEnter()
         {
             centerPoint = sm.transform.position;
-            sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
             sm.StartCoroutine(IHandleDetection = HandleDetection());
             sm.StartCoroutine(IHandlePatrol = HandlePatrol());
         }
@@ -111,6 +110,7 @@ public class FlettuceAI : EnemyBaseClass
         {
             while (true)
             {
+                sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
                 if (sm.freezeEnemy)
                 {
                     yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
@@ -189,7 +189,6 @@ public class FlettuceAI : EnemyBaseClass
         }
         public void OnEnter()
         {
-            sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
             sm.StartCoroutine(IHandleCharge = HandleCharge());
         }
 
@@ -197,6 +196,7 @@ public class FlettuceAI : EnemyBaseClass
         {
             while (true)
             {
+                sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
                 sm.agent.isStopped = false;
                 float dist = 0;
                 do
@@ -216,7 +216,7 @@ public class FlettuceAI : EnemyBaseClass
                 // PERFORM CHARGES
                 for (int chargeNum = 1; chargeNum <= sm.ConsecutiveCharges; chargeNum++)
                 {
-                    Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce;
+                    Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
                     for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
                     {
                         if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);

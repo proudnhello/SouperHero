@@ -48,7 +48,7 @@ public class HopShroomAI : EnemyBaseClass
     protected override void Update()
     {
         base.Update();
-
+        agent.speed = GetMoveSpeed();
         switch(_state){
             case RangerState.IDLING:
                 animator.Play("Idle");
