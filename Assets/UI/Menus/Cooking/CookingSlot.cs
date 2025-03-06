@@ -21,15 +21,23 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
 
         draggableItem.parentAfterDrag = transform;
 
-        CookingSlot cook = draggableItem.previousParent.GetComponent<CookingSlot>();
-        if (cook != null && ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot && !cook.basketDrop && !cook.worldDrop)
+        // SET PREVIOUS SLOT TO NULL
+        CookingSlot previousSlot = draggableItem.previousParent.GetComponent<CookingSlot>();
+        if (previousSlot != null && ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot && !previousSlot.basketDrop && !previousSlot.worldDrop)
         {
-            cook.ingredientReference = null;
-            cook.faceImage.sprite = null;
+            previousSlot.ingredientReference = null;
+            previousSlot.faceImage.sprite = null;
             CookingManager.Singleton.RemoveIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference);
+       
+            CookingSlot previousParent = CookingManager.Singleton.currentCookingSlot;
+            if (previousParent != null)
+            {
+                CookingManager.Singleton.CookingSlotSetTransparent(previousSlot);
+            }
             Debug.Log("MadeNULL!");
         }
 
+        // SET ACTUAL COOKING SLOT
         if (basketDrop)
         {
             basketDropNonsense(CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>());
@@ -44,6 +52,8 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
 
                 draggableItem.image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
                 draggableItem.image.raycastTarget = false;
+
+                CookingManager.Singleton.CookingSlotSetOpaque(this);
 
                 ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
                 updateIngredientImage(draggableItem.image);
