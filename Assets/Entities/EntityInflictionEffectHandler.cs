@@ -52,10 +52,6 @@ public class EntityInflictionEffectHandler
                 case InflictionType.SPICY_Burn:
                     Inflictions.WorsenBurn(this, infliction);
                     break;
-                case InflictionType.FROSTY_Freeze:
-                    if (StatusMethod != null) entity.StopCoroutine(StatusMethod);
-                    entity.StartCoroutine(StatusMethod = Inflictions.WorsenFreeze(this, infliction));
-                    break;
             }
             
         }
@@ -71,12 +67,6 @@ public class EntityInflictionEffectHandler
             else
             {
                 if (infliction.InflictionFlavor.inflictionType == InflictionType.SPICY_Burn)
-                {
-                    StatusEffectInstance instance = new(entity, infliction);
-                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
-                    instance.StartStatusEffect(Inflictions.Burn(instance));
-                }
-                else if (infliction.InflictionFlavor.inflictionType == InflictionType.FROSTY_Freeze)
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
@@ -100,6 +90,12 @@ public class EntityInflictionEffectHandler
                 }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UNAMI_Vampirism)
                 {
                     Inflictions.Vampirism(infliction, entity, source);
+                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.FROSTY_Freeze)
+                {
+                    StatusEffectInstance instance = new(entity, infliction);
+                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
+                    Debug.Log("Freezing " + entity.gameObject.name);
+                    instance.StartStatusEffect(Inflictions.Freeze(instance));
                 }
             }
         }                   

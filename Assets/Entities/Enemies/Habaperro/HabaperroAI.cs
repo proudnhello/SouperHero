@@ -102,7 +102,6 @@ public class HabaperroAI : EnemyBaseClass
         public void OnEnter()
         {
             centerPoint = sm.transform.position;
-            sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
             sm.StartCoroutine(IHandleDetection = HandleDetection());
             sm.StartCoroutine(IHandlePatrol = HandlePatrol());
         }
@@ -124,6 +123,7 @@ public class HabaperroAI : EnemyBaseClass
         {
             while (true)
             {
+                sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
                 if (sm.freezeEnemy)
                 {
                     yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
@@ -148,6 +148,7 @@ public class HabaperroAI : EnemyBaseClass
             bool towardsCenter = false;
             while (true)
             {
+                sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
                 sm.animator.Play("Idle");
                 if (sm.freezeEnemy)
                 {
@@ -230,6 +231,7 @@ public class HabaperroAI : EnemyBaseClass
             float dist = 0;
             do
             {
+                sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
                 sm.agent.SetDestination(sm._playerTransform.position);
                 sm._sprite.flipX = sm.agent.velocity.x > 0;
                 yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);

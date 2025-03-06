@@ -17,6 +17,7 @@ public class Entity : MonoBehaviour
         public float baseMoveSpeed;
         public float invincibility;
     }
+    [Serializable]
     public struct CurrentStats
     {
         public int health;
@@ -25,7 +26,7 @@ public class Entity : MonoBehaviour
 
     // ~~~ VARIABLES ~~~
     [SerializeField] BaseStats baseStats;
-    CurrentStats currentStats;
+    [SerializeField] CurrentStats currentStats;
     internal EntityInflictionEffectHandler inflictionHandler;
     internal EntityRenderer entityRenderer;
     internal Rigidbody2D _rigidbody;
@@ -78,12 +79,13 @@ public class Entity : MonoBehaviour
     {
         return currentStats.moveSpeed;
     }
-    public void SetMoveSpeed(float newSpeed)
+    public virtual void SetMoveSpeed(float newSpeed)
     {
+        print("Changing speed to " + newSpeed);
         currentStats.moveSpeed = newSpeed;
     }
 
-    public void ResetMoveSpeed()
+    public virtual void ResetMoveSpeed()
     {
         currentStats.moveSpeed = baseStats.baseMoveSpeed;
     }

@@ -77,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
   m_SortingLayer: 2
-  m_SortingOrder: 11
+  m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -105,7 +105,10 @@ MonoBehaviour:
     maxHealth: 50
     baseMoveSpeed: 3
     invincibility: 0.5
-  collectable: {fileID: 165481585712337600, guid: 9e8d1a10c86d6544abe66fa3979bb99d, type: 3}
+  currentStats:
+    health: 0
+    moveSpeed: 0
+  collectable: {fileID: 0}
   playerCollisionDamage: 10
   interactableLayer:
     serializedVersion: 2
