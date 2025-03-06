@@ -83,7 +83,7 @@ public class CookingManager : MonoBehaviour
             {
                 c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 c.collectableUI.GetComponent<Image>().raycastTarget = true;
-                c.collectableUI.GetComponent<DraggableItem>().pseudoParent = basketDrop.transform;
+                c.collectableUI.GetComponent<DraggableItem>().previousParent = basketDrop.transform;
             }
             cookingIngredients.Clear();
 
@@ -236,6 +236,8 @@ public class CookingManager : MonoBehaviour
                 item.gameObject.GetComponent<Image>().color = tempColor;
                 //Destroy(item.gameObject);
             }
+            slot.gameObject.GetComponent<CookingSlot>().ingredientReference = null;
+            slot.gameObject.GetComponent<CookingSlot>().faceImage.sprite = null;
         }
     }
 
