@@ -6,26 +6,36 @@ using UnityEngine;
 public class Explosion : MonoBehaviour
 {
     public float timeActive = 2f;
+    public float radius = 6f;
+    List<Entity> entitiesAffected = new();
     void Start()
     {
         StartCoroutine(timer());
+        transform.localScale = new Vector3(radius, radius, radius);
+        Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, radius);
+        foreach(var col in cols)
+        {
+            if (CollisionLayers.Singleton.InEntityLayer(col.gameObject))
+            {
+                try
+                {
+                    Entity entity = col.GetComponent<Entity>();
+                    if (!entitiesAffected.Contains(entity))
+                    {
+                        entitiesAffected.Add(entity);
+                        entity.ModifyHealth(-10);
+                    }
+                }
+                catch
+                {
+                    return;
+                }
+            }
+        }
     }
 
     IEnumerator timer(){
         yield return new WaitForSeconds(timeActive);
         Destroy(gameObject);
-    }
-    private void OnTriggerEnter2D(Collider2D collider)
-    {
-        if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject))
-        {
-            try {
-                Entity entity = collider.GetComponent<Entity>();
-                entity.ModifyHealth(-10);
-            }
-            catch{
-                return;
-            }
-        }
     }
 }

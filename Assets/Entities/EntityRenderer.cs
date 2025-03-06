@@ -28,7 +28,7 @@ public class EntityRenderer
         spriteRenderer.color = normalColor;
     }
 
-    float deathAnimTime = 2.0f;
+    float deathAnimTime = 1.0f;
     public IEnumerator EnemyDeathAnimation()
     {
         float timeProgressed = deathAnimTime;

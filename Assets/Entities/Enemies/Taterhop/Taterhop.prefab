@@ -78,7 +78,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 11
   m_Sprite: {fileID: -255279486, guid: 0e519f27535a3ab4ebf202b8871a21be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -104,23 +104,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseStats:
     maxHealth: 30
-    baseMoveSpeed: 6
+    baseMoveSpeed: 2
     invincibility: 0.5
-  collectable: {fileID: 165481585712337600, guid: 44bb327a40822b2438365ccb0e9adbd8, type: 3}
+  collectable: {fileID: 165481585712337600, guid: 81bb97f278cd55f4eb9f559c8a3fb1b9, type: 3}
   playerCollisionDamage: 10
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
-  detectionRadius: 9
-  followingRadius: 12
-  attackingRadius: 3
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
-  timeToAttack: 0.5
-  timeAfterAttack: 0.3
-  timeBetweenAttacks: 2
-  lungeDistance: 2
+  FreezeEnemyWhenThisFar: 38
+  PlayerDetectionIntervalWhenFrozen: 1.5
+  PlayerDetectionPathLength: 10.1
+  PlayerDetectionInterval: 0.5
+  PatrolDistance: {x: 2.5, y: 3.5}
+  PatrolWaitTime: {x: 1, y: 3}
+  WhilePatrolCheckIfStoppedInterval: 0.15
+  WhilePatrolCheckIfStoppedDistance: 0.03
+  IdleSpeedMultiplier: 1
+  AttackSpeedMultiplier: 1.5
+  MinimumTimeBetweenCharges: 1.5
+  DistanceToPlayerForCharge: 5.5
+  AttackDistanceCheckInterval: 0.08
+  ChargeSpeed: 4.01
+  ChargeForce: 51229
+  ChargeTime: 1.27
+  DistanceFromPlayerToDisengage: 16
 --- !u!50 &6808612831671540774
 Rigidbody2D:
   serializedVersion: 4
@@ -133,8 +143,8 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
+  m_Mass: 31.7
+  m_LinearDrag: 2.6
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -158,18 +168,18 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.1
-  m_Speed: 3.5
-  m_Acceleration: 8
+  m_Speed: 4.69
+  m_Acceleration: 3.3
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 84.09
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 0.9
   m_BaseOffset: 0.3
-  m_WalkableMask: 1
-  m_ObstacleAvoidanceType: 4
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 0
 --- !u!95 &443627030062101057
 Animator:
   serializedVersion: 5
@@ -206,7 +216,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 160
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -223,8 +233,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.03370434, y: -0.01830858}
-  m_Size: {x: 0.17114317, y: 0.31345046}
+  m_Offset: {x: -0.034460664, y: -0.048059136}
+  m_Size: {x: 0.1534946, y: 0.234788}
   m_Direction: 0
 --- !u!1001 &3943763176302807041
 PrefabInstance:
