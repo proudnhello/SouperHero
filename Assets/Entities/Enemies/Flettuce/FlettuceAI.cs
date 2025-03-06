@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
+using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
 public class FlettuceAI : EnemyBaseClass
 {
@@ -160,7 +161,6 @@ public class FlettuceAI : EnemyBaseClass
                 Vector2 lastPos;
                 do
                 {
-                    //sm._sprite.flipX = sm.agent.destination.x > sm.transform.position.x;
                     lastPos = sm.agent.transform.position;
                     yield return new WaitForSeconds(sm.WhilePatrolCheckIfStoppedInterval);
                     // check that the agent is moving far enough every interval to ensure it's not blocked
@@ -216,6 +216,7 @@ public class FlettuceAI : EnemyBaseClass
                 // PERFORM CHARGES
                 for (int chargeNum = 1; chargeNum <= sm.ConsecutiveCharges; chargeNum++)
                 {
+                    yield return new WaitUntil(() => !sm.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
                     Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
                     for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
                     {
