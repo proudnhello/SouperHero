@@ -4,6 +4,7 @@ public class CursorManager : MonoBehaviour
 {
     public static CursorManager Singleton { get; private set; }
     public GameObject cursorObject;
+    public CookingCursor cookingCursor;
 
     private void Awake()
     {
@@ -16,6 +17,16 @@ public class CursorManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None; // Unlock if it was locked
         cursorObject.SetActive(false);
+    }
+
+    public void ShowCookingCursor()
+    {
+        cookingCursor.gameObject.SetActive(true);
+    }
+
+    public void HideCookingCursor()
+    {
+        cookingCursor.gameObject.SetActive(false);
     }
 
     public void HideCursor()

@@ -16,5 +16,4 @@ public class CollectableUI : MonoBehaviour
     {
         return _Collectable;
     }
-
 }

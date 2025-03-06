@@ -1,55 +1,91 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-using static SoupSpoon;
 using static FlavorIngredient;
-using UnityEditor.Recorder.Input;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Image image;
-    public GameObject draggableItem;
-    [HideInInspector] public Transform parentAfterDrag;
+    public Transform parentAfterDrag;
     [HideInInspector] public string ingredientType;
+    public Transform pseudoParent;
 
     [Header("Do Not Edit, Ingredient is Set In CookingUI's Enable()")]
     public Ingredient ingredient = null;
+    public bool isDragging = false;
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // save the original parent
-        parentAfterDrag = transform.parent;
+        CursorManager.Singleton.cookingCursor.switchCursorImageTo(transform.parent.gameObject.GetComponent<Collectable>(), image);
+        parentAfterDrag = CookingManager.Singleton.basketDrop.transform;
 
-        // bring the ingredient to the front of the scene while dragging
-        transform.SetParent(transform.root);
-        transform.SetAsLastSibling();
-
-        // set raycast off so that when you drop on the slot
-        // the drop system doesn't think you dropped it on itself
+        image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
         image.raycastTarget = false;
+
+        isDragging = true;
+
+        CookingManager.Singleton.enableWorldDrop();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        // map item position to mouse position
-        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(pos.x, pos.y, 0);
-        //Debug.Log(transform.position);
+    }
+
+    public void updateParent()
+    {
+        pseudoParent = parentAfterDrag;
+    }
+
+    public bool resetParent()
+    {
+        image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+        image.raycastTarget = false;
+        if (parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference == null)
+        {
+            if (!parentAfterDrag.gameObject.CompareTag("BasketDrop") && !parentAfterDrag.gameObject.CompareTag("WorldDrop"))
+            {
+                Debug.Log("set image 3");
+                image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+                image.raycastTarget = false;
+
+                if (parentAfterDrag.gameObject.CompareTag("CookingSlot"))
+                {
+                    if (parentAfterDrag == pseudoParent)
+                    {
+                        return false;
+                    }
+                    Debug.Log("set image");
+                    parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
+                    parentAfterDrag.gameObject.GetComponent<CookingSlot>().updateIngredientImage(image);
+                }
+            }
+            else if (!parentAfterDrag.gameObject.CompareTag("WorldDrop"))
+            {
+                Debug.Log("set Right");
+                image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                image.raycastTarget = true;
+                BasketUI.Singleton.AddIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
+            }
+        }
+        updateParent();
+        return true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        // set the parent to the parent after drag
-        transform.SetParent(parentAfterDrag);
-
-        // return raycast to true
-        image.raycastTarget = true;
+        updateParent();
+        if(isDragging)
+        {
+            isDragging = false;
+            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            image.raycastTarget = true;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        ingredient = transform.parent.GetComponent<Collectable>().ingredient;
         //Debug.Log($"Mouse entered UI element {ingredient.ingredientName}!");
 
         CookingManager.Singleton.DisplayItemStats();
@@ -75,7 +111,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         // set text
         TextMeshProUGUI headerText = header.GetComponent<TextMeshProUGUI>();
-        headerText.text = ingredient.IngredientName;  
+        headerText.text = ingredient.IngredientName;
 
         TextMeshProUGUI bodyText = body.GetComponent<TextMeshProUGUI>();
 
@@ -173,7 +209,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 bodyText.text += $"<color=#{ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed])}>Sweet (Speed):</color> {abilityIngredient.baseStats.speed}\n";
             bodyText.text += $"<color=blue>Cooldown:</color> {abilityIngredient.baseStats.cooldown}\n";
 
-        } else if (ingredient.GetType() == typeof(FlavorIngredient))
+        }
+        else if (ingredient.GetType() == typeof(FlavorIngredient))
         {
             FlavorIngredient flavorIngredient = ingredient as FlavorIngredient;
             bodyText.text = "<color=yellow>Flavor Ingredient</color>\n\n";
@@ -328,23 +365,24 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                         break;
                 }
             }
-        } else
+        }
+        else
         {
             Debug.LogError("Invalid Ingredient Type");
         }
 
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        //Debug.Log($"Mouse exited UI element {ingredient.ingredientName}!");
-        CookingManager.Singleton.HideItemStats();
+    //public void OnPointerExit(PointerEventData eventData)
+    //{
+    //    //Debug.Log($"Mouse exited UI element {ingredient.ingredientName}!");
+    //    CookingManager.Singleton.HideItemStats();
 
-        GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
-        GameObject CookingCanvas = CookingManager.Singleton.CookingCanvas;
-        itemStatsScreen.transform.SetParent(CookingManager.Singleton.CookingCanvas.transform);
+    //    GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
+    //    GameObject CookingCanvas = CookingManager.Singleton.CookingCanvas;
+    //    itemStatsScreen.transform.SetParent(CookingManager.Singleton.CookingCanvas.transform);
 
-    }
+    //}
 
     public void OnDestroy()
     {
