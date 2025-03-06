@@ -7,6 +7,7 @@ public class Campfire : Interactable
 {
     [Header("Campfire")]
     [SerializeField] float playerDistanceToCancelCooking = 3f;
+    public Vector3 CameraOffset = new Vector3(0, 30, 0);
     bool isCooking;
 
     // Start is called before the first frame update
