@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+#else
+#endif
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +17,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Keybinds")]
     public KeyCode pauseKey = KeyCode.Escape;
+
+    [SerializeField] GameObject exitPanel;
 
 
     void Update()
@@ -83,5 +89,30 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(1);
+    }
+    public void ShowExitConfirmation()
+    {
+        exitPanel.SetActive(true);
+    }
+
+    public void ConfirmExit()
+    {
+        if (Application.isEditor)
+        {
+            // Code for Unity Editor
+            Debug.Log("Exiting Game in Editor");
+            EditorApplication.isPlaying = false;  // Stops Play Mode in the editor
+        }
+        else
+        {
+            // Code for a built application
+            Debug.Log("Exiting Game in Build");
+            Application.Quit();  // Quits the game in a build
+        }
+    }
+
+    public void ReturnFromExit()
+    {
+        exitPanel.SetActive(false);
     }
 }
