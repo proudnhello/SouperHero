@@ -4,135 +4,212 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using static FlavorIngredient.InflictionFlavor;
 
 //The ranged enemy follows player constantly until they are in range, at which point they freeze and fire bullets
 //Code tutorial for ranged enemy found at: https://www.youtube.com/watch?v=bwi4lteomic
 
 public class HopShroomAI : EnemyBaseClass
 {
-    [Header("Player Detection")]
-    private bool playerDetected = false;
-    [SerializeField] private float detectionRadius = 9f;
-    [SerializeField] private float followingRadius = 12f;
-    [SerializeField] private float shootingRadius = 6f;
-    private float detectionDelay = 0.3f;
-    [SerializeField] protected LayerMask playerLayer;
-    //[SerializeField] private float distanceToStop = 5f;
-    [SerializeField] private float timeToShoot = 0.5f;
-    [SerializeField] private float timeAfterShoot = 0.3f;
-    [SerializeField] private float timeBetweenShots = 2.0f;
-    public Transform firingPoint;
-    public HopShroomSpore bullet;
-    private Animator animator;
-
-    private enum RangerState
+    // ~~~ DEFINITIONS ~~~
+    public enum ChargerStates
     {
-        IDLING,
-        CHASING,
-        PREPARING,
-        SHOOTING
+        IDLE,
+        ATTACK
     }
-    private RangerState _state;
+    public interface IState
+    {
+        public void OnEnter();
+        public void OnExit();
+    }
 
-    protected void Start()
+    // ~~~ VARIABLES ~~~
+
+    [Header("General")]
+    [SerializeField] protected LayerMask playerLayer;
+    [SerializeField] protected float FreezeEnemyWhenThisFar = 30f;
+    [SerializeField] protected float PlayerDetectionIntervalWhenFrozen = 1.5f;
+    [SerializeField] Transform firingPoint;
+    [SerializeField] HopShroomSpore bullet;
+
+    [Header("Idle State")]
+    [SerializeField] protected float PlayerDetectionPathLength = 15f;
+    [SerializeField] protected float PlayerDetectionInterval = .5f;
+    [SerializeField] protected float IdleSpeedMultiplier = 1f;
+
+    [Header("Attack State")]
+    [SerializeField] protected float AttackSpeedMultiplier = 1.5f;
+    [SerializeField] protected float MidDistanceShootPoint = 7;
+    [SerializeField] protected Vector2 DistanceRangeToPlayerForShoot = new Vector2(5, 8);
+    [SerializeField] protected float AttackDistanceCheckInterval = .3f;
+    [SerializeField] protected float AttackMoveCheckMinimumDistance = .2f;
+    [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
+    [SerializeField] private float TimeToStartShooting = 0.5f;
+    [SerializeField] private float ShotAnimDelay = .2f;
+    [SerializeField] private int ShotCount = 3;
+    [SerializeField] private float ShotCooldown = 2.0f;
+    [SerializeField] private float FinalShotCooldown = 0.3f;
+
+    protected Animator animator;
+    internal List<IState> states;
+    internal IState currentState;
+    bool freezeEnemy = false;
+    void Start()
     {
         initEnemy();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         agent.speed = GetMoveSpeed();
-        _state = RangerState.IDLING;
         animator = GetComponent<Animator>();
-        StartCoroutine(DetectionCoroutine());
+
+        states = new()
+        {
+            new IdleState(this),
+            new AttackState(this)
+        };
+
+        currentState = states[0];
+        currentState.OnEnter();
     }
 
+    public void ChangeState(ChargerStates state)
+    {
+        currentState.OnExit();
+        currentState = states[(int)state];
+        currentState.OnEnter();
+    }
     protected override void Update()
     {
-        base.Update();
-
-        switch(_state){
-            case RangerState.IDLING:
-                animator.Play("Idle");
-                break;
-            case RangerState.CHASING:
-                animator.Play("Walk");
-                break;
-            case RangerState.PREPARING:
-                animator.Play("Walk");
-                break;
-            case RangerState.SHOOTING:
-                animator.Play("Attack");
-                break;
-        }
+        if (IsDead()) return;
+        freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
     }
-    protected override void UpdateAI()
+
+    protected override void Die()
     {
-        if (!playerDetected)
+        currentState.OnExit();
+        base.Die();
+    }
+
+    public class IdleState : IState
+    {
+        HopShroomAI sm;
+        IEnumerator IHandleDetection;
+        NavMeshPath path;
+        public IdleState(HopShroomAI _sm)
         {
-            return;
+            sm = _sm;
+            path = new();
         }
-        float distance = Vector2.Distance(_playerTransform.position, transform.position);
-        if(distance < followingRadius){
-            agent.SetDestination(_playerTransform.position);
-            if(_state != RangerState.SHOOTING && _state != RangerState.PREPARING){
-                StartCoroutine(ChasingCoroutine());
+        public void OnEnter()
+        {
+            sm.animator.Play("Idle");
+            sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
+            sm.StartCoroutine(IHandleDetection = HandleDetection());
+        }
+
+        float CalculatePathLength()
+        {
+            float distance = -1;
+            if (path.status != NavMeshPathStatus.PathComplete) return distance;
+
+            distance = Vector2.Distance(sm.transform.position, path.corners[0]);
+            for (int i = 1; i < path.corners.Length; i++)
+            {
+                distance += Vector2.Distance(path.corners[i - 1], path.corners[i]);
+            }
+            return distance;
+        }
+
+        IEnumerator HandleDetection()
+        {
+            while (true)
+            {
+                if (sm.freezeEnemy)
+                {
+                    yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
+                    continue;
+                }
+
+                NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), sm._playerTransform.position,
+                    NavMesh.AllAreas, path);
+
+                float distance = CalculatePathLength();
+                if (distance >= 0 && distance < sm.PlayerDetectionPathLength)
+                {
+                    // if player is within certain distance, start attacking
+                    sm.ChangeState(ChargerStates.ATTACK);
+                }
+                yield return new WaitForSeconds(sm.PlayerDetectionInterval);
             }
         }
-        else{
-            _state = RangerState.IDLING;
-        }
 
-        if(_state != RangerState.SHOOTING){
-            if(agent.destination.x < transform.position.x){
-                _sprite.flipX = true;
-            }
-            else{
-                _sprite.flipX = false;
-            }   
+        public void OnExit()
+        {
+            if (IHandleDetection != null) sm.StopCoroutine(IHandleDetection);
         }
     }
 
-    IEnumerator DetectionCoroutine()
+    public class AttackState : IState
     {
-        yield return new WaitForSeconds(detectionDelay);
-        CheckDetection();
-        StartCoroutine(DetectionCoroutine());
-    }
-
-    protected void CheckDetection()
-    {   
-        Collider2D collider;
-        if(playerDetected){
-            collider = Physics2D.OverlapCircle((Vector2)transform.position, followingRadius, playerLayer);
-        }
-        else{
-            collider = Physics2D.OverlapCircle((Vector2)transform.position, detectionRadius, playerLayer);
-        }
-        if (collider != null)
+        HopShroomAI sm;
+        IEnumerator IHandleShoot;
+        public AttackState(HopShroomAI _sm)
         {
-            playerDetected = true;
-        } else
-        {
-            playerDetected = false;
+            sm = _sm;
         }
-    }
+        public void OnEnter()
+        {
+            sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
+            sm.StartCoroutine(IHandleShoot = HandleShoot());
+        }
 
-    IEnumerator ChasingCoroutine(){
-        // Wait a few seconds before shooting
-        _state = RangerState.PREPARING;
-        yield return new WaitForSeconds(timeBetweenShots);
+        IEnumerator HandleShoot()
+        {
+            while (true)
+            {
+                sm.animator.Play("Walk");
+                sm.agent.isStopped = false;
+                float dist = 0;
+                Vector2 lastPos;
+                do
+                {
+                    Vector3 offset = (sm.transform.position - sm._playerTransform.position).normalized * sm.MidDistanceShootPoint;
+                    sm.agent.SetDestination(sm._playerTransform.position + offset);
+                    sm._sprite.flipX = sm.agent.destination.x <= sm.transform.position.x;
+                    lastPos = sm.agent.transform.position;
+                    yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);
+                    dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
 
-        // Play shooting animation and set state
-        _state = RangerState.SHOOTING;
-        agent.isStopped = true;
-        float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
+                    if (dist > sm.DistanceFromPlayerToDisengage)
+                    {
+                        sm.ChangeState(ChargerStates.IDLE); // disengage if too far
+                    }
+                } while ((dist < sm.DistanceRangeToPlayerForShoot.x && 
+                            Vector2.Distance(lastPos, sm.agent.transform.position) > sm.AttackMoveCheckMinimumDistance)
+                            || dist > sm.DistanceRangeToPlayerForShoot.y);
+                sm.agent.isStopped = true;
 
-        // wait til animation is finshed then make bullet       
-        yield return new WaitForSecondsRealtime(animationLength);
-        HopShroomSpore temp = Instantiate(bullet, firingPoint.position, firingPoint.rotation);
-        temp.direction = (_playerTransform.position - transform.position).normalized;
+                // EXPLODE
+                sm.animator.Play("Idle");
+                yield return new WaitForSeconds(sm.TimeToStartShooting);
 
-        // clean up
-        agent.isStopped = false;
-        _state = RangerState.CHASING;
+                // PERFORM CHARGES
+                for (int chargeNum = 1; chargeNum <= sm.ShotCount; chargeNum++)
+                {
+                    sm.animator.Play("Attack");
+                    yield return new WaitForSeconds(sm.ShotAnimDelay);
+                    HopShroomSpore temp = Instantiate(sm.bullet, sm.firingPoint.position, sm.firingPoint.rotation);
+                    temp.direction = (sm._playerTransform.position - sm.transform.position).normalized;
+                    sm._sprite.flipX = temp.direction.x <= 0;
+                    if (chargeNum < sm.ShotCount) yield return new WaitForSeconds(sm.ShotCooldown);
+                    else yield return new WaitForSeconds(sm.FinalShotCooldown);
+                }
+            }       
+        }
+
+        public void OnExit()
+        {
+            if (IHandleShoot != null) sm.StopCoroutine(IHandleShoot);
+        }
     }
 }
