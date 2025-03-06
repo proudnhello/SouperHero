@@ -52,22 +52,12 @@ public class Inflictions
 
     public static IEnumerator Freeze(StatusEffectInstance instance)
     {
-        instance.entity.SetMoveSpeed(instance.amount);
+        Debug.Log("adding " + instance.amount + " freeze to " + instance.entity.gameObject.name);
+        instance.entity.SetMoveSpeed(instance.entity.GetMoveSpeed() / instance.amount);
         yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
         instance.entity.ResetMoveSpeed();
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
-
-    public static IEnumerator WorsenFreeze(StatusEffectInstance instance, Infliction newInfliction)
-    {
-        instance.duration = instance.duration > newInfliction.InflictionFlavor.statusEffectDuration ? instance.duration : newInfliction.InflictionFlavor.statusEffectDuration;
-        instance.amount = instance.amount > newInfliction.InflictionFlavor.amount ? instance.amount : newInfliction.InflictionFlavor.amount;
-        instance.entity.SetMoveSpeed(instance.amount);
-        yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
-        instance.entity.ResetMoveSpeed();
-        instance.entity.inflictionHandler.EndStatusEffect(instance);
-    }
-
 
     public static IEnumerator Knockback(StatusEffectInstance instance, Rigidbody2D target, Transform source)
     {
