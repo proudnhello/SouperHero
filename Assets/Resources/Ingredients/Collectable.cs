@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,6 +44,6 @@ public class Collectable : MonoBehaviour
     {
         collectableObj.gameObject.SetActive(false);
         collectableUI.gameObject.SetActive(true);
-        PlayerInventory.Singleton.CollectIngredient(this);
+        PlayerInventory.Singleton.CollectIngredientCollectable(this);
     }
 }
