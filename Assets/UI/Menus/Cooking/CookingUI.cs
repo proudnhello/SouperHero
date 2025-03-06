@@ -11,7 +11,7 @@ public class CookingUI : MonoBehaviour
 
     public void OnEnable()
     {
-
+        
         // clean before use
         foreach (Transform item in InventoryContent)
         {

@@ -18,7 +18,9 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(pauseKey) && pauseScreen != null && !CookingManager.Singleton.IsCooking())
+        if (Input.GetKeyDown(pauseKey) && pauseScreen != null 
+            && !CookingManager.Singleton.IsCooking() //Don't pause when cooking
+            && SceneManager.GetActiveScene().buildIndex != 0) //Don't pause if in main menu
         {
             isPaused = !isPaused;
             if (isPaused)
@@ -37,22 +39,28 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
-
-        pauseScreen.SetActive(false);
+        if (pauseScreen != null)
+        {
+            pauseScreen.SetActive(false);
+        }
     }
 
     void PauseGame() {
         Time.timeScale = 0;
+        CursorManager.Singleton.cursorObject.SetActive(false);
         pauseScreen.SetActive(true);
-        //InputManager.playerInput.SwitchCurrentActionMap("UI");
         PlayerEntityManager.Singleton.input.Disable();
+
+        //InputManager.playerInput.SwitchCurrentActionMap("UI");
     }
 
     void ResumeGame() {
         Time.timeScale = 1;
+        CursorManager.Singleton.cursorObject.SetActive(true);
         pauseScreen.SetActive(false);
-        //InputManager.playerInput.SwitchCurrentActionMap("Player");
         PlayerEntityManager.Singleton.input.Enable();
+
+        //InputManager.playerInput.SwitchCurrentActionMap("Player");
     }
 
     public void LoadGameLevel()
