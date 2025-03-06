@@ -53,7 +53,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        dropHelper(false, null, eventData);
+        //dropHelper(false, null, eventData);
     }
 
     public void updateIngredientImage(Image newImage)

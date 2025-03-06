@@ -15,7 +15,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Ingredient ingredient = null;
     public bool isDragging = false;
 
-    public void OnBeginDrag(PointerEventData eventData)
+    public void OnBeginDrag(PointerEventData eventData)         
     {
         CursorManager.Singleton.cookingCursor.switchCursorImageTo(transform.parent.gameObject.GetComponent<Collectable>(), image);
         
@@ -84,12 +84,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         //previousParent = parentAfterDrag;
-        ////if (isDragging)
-        ////{
-        ////    isDragging = false;
-        ////    image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        ////    image.raycastTarget = true;
-        ////}
+        if (isDragging)
+        {
+            isDragging = false;
+            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            image.raycastTarget = true;
+            CookingManager.Singleton.currentCookingSlot = null;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

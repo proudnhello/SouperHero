@@ -19,16 +19,16 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
 
         DraggableItem draggableItem = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>();
 
+        draggableItem.parentAfterDrag = transform;
+
         CookingSlot cook = draggableItem.previousParent.GetComponent<CookingSlot>();
-        if (cook != null && !cook.basketDrop && !cook.worldDrop)
+        if (cook != null && ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot && !cook.basketDrop && !cook.worldDrop)
         {
             cook.ingredientReference = null;
             cook.faceImage.sprite = null;
             CookingManager.Singleton.RemoveIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference);
             Debug.Log("MadeNULL!");
         }
-
-        draggableItem.parentAfterDrag = transform;
 
         if (basketDrop)
         {
@@ -38,7 +38,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             worldDropNonsense(draggableItem);
         } else
         {
-            if (ingredientReference == null)
+            if (ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot)
             {
                 Debug.Log("Set!");
 
@@ -51,9 +51,14 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
                 CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>());
 
                 draggableItem.previousParent = transform;
+                draggableItem.isDragging = false;
+            } else
+            {
+                Debug.Log((ingredientReference == null) + ", " + (this != CookingManager.Singleton.currentCookingSlot));
             }
         }
 
+        CookingManager.Singleton.currentCookingSlot = null;
         CursorManager.Singleton.cookingCursor.removeCursorImage();
         CookingManager.Singleton.disableWorldDrop();
     }
