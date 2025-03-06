@@ -64,7 +64,6 @@ public class ProjectileObject : MonoBehaviour
             spriteRenderer.sprite = frames[frame];
             yield return new WaitForSeconds(1f / FPS);
             frame = (frame + 1) % frames.Length;
-            Debug.Log("frame = " + frame);
         }
     }
 

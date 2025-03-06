@@ -41,7 +41,7 @@ public class TaterhopAI : EnemyBaseClass
     [SerializeField] protected float DistanceToPlayerForCharge = 5f;
     [SerializeField] protected float AttackDistanceCheckInterval;
     [SerializeField] protected float ChargeSpeed = 5f;
-    [SerializeField] protected float ChargeForce = 200f;
+    [SerializeField] protected float ChargeForce = 100f;
     [SerializeField] protected float ChargeTime = 1f;
     [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
 
@@ -100,7 +100,6 @@ public class TaterhopAI : EnemyBaseClass
         public void OnEnter()
         {
             centerPoint = sm.transform.position;
-            sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
             sm.StartCoroutine(IHandleDetection = HandleDetection());
             sm.StartCoroutine(IHandlePatrol = HandlePatrol());
         }
@@ -109,6 +108,7 @@ public class TaterhopAI : EnemyBaseClass
         {
             while (true)
             {
+                sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
                 if (sm.freezeEnemy)
                 {
                     yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
@@ -188,7 +188,6 @@ public class TaterhopAI : EnemyBaseClass
         }
         public void OnEnter()
         {
-            sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
             sm.StartCoroutine(IHandleCharge = HandleCharge());
         }
 
@@ -208,6 +207,7 @@ public class TaterhopAI : EnemyBaseClass
                     if (sm.agent.velocity.magnitude > sm._rigidbody.velocity.magnitude) sm._sprite.flipX = sm.agent.destination.x > sm.transform.position.x;
 
                     yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);
+                    sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
                     dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
 
                     if (dist > sm.DistanceFromPlayerToDisengage)
@@ -221,7 +221,7 @@ public class TaterhopAI : EnemyBaseClass
 
                 // PERFORM CHARGES
                 sm.animator.Play("Attack");
-                Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce;
+                Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
                 sm._sprite.flipX = vel.x > 0;
                 for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
                 {
