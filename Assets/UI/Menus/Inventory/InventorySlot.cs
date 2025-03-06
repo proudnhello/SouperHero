@@ -27,14 +27,14 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
         DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
 
-        if (draggableItem == null || draggableItem.pseudoParent == null)
+        if (draggableItem == null || draggableItem.previousParent == null)
         {
             Debug.Log("No Draggable Item Found!");
             return;
         }
 
         // check if the previous parent was a cooking slot: if so, remove it from pot ingredients
-        CookingSlot cook = draggableItem.pseudoParent.GetComponent<CookingSlot>();
+        CookingSlot cook = draggableItem.previousParent.GetComponent<CookingSlot>();
         if (cook != null && !cook.basketDrop && !cook.worldDrop)
         {
             cook.ingredientReference = null;
@@ -53,7 +53,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        dropHelper(false, null, eventData);
+        //dropHelper(false, null, eventData);
     }
 
     public void updateIngredientImage(Image newImage)

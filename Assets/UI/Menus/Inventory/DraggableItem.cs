@@ -9,17 +9,23 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Image image;
     public Transform parentAfterDrag;
     [HideInInspector] public string ingredientType;
-    public Transform pseudoParent;
-    public Transform parentBeforeDrag;
+    public Transform previousParent;
 
     [Header("Do Not Edit, Ingredient is Set In CookingUI's Enable()")]
     public Ingredient ingredient = null;
     public bool isDragging = false;
 
-    public void OnBeginDrag(PointerEventData eventData)
+    public void OnBeginDrag(PointerEventData eventData)         
     {
         CursorManager.Singleton.cookingCursor.switchCursorImageTo(transform.parent.gameObject.GetComponent<Collectable>(), image);
-        parentAfterDrag = CookingManager.Singleton.basketDrop.transform;
+        
+        if(!parentAfterDrag)
+        {
+            parentAfterDrag = CookingManager.Singleton.basketDrop.transform;
+        } else
+        {
+            parentAfterDrag = previousParent;
+        }
 
         image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
         image.raycastTarget = false;
@@ -33,11 +39,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
     }
 
-    public void updateParent()
-    {
-        pseudoParent = parentAfterDrag;
-    }
-
     public bool resetParent()
     {
         image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
@@ -46,17 +47,15 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         {
             if (!parentAfterDrag.gameObject.CompareTag("BasketDrop") && !parentAfterDrag.gameObject.CompareTag("WorldDrop"))
             {
-                Debug.Log("set image 3");
                 image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
                 image.raycastTarget = false;
 
                 if (parentAfterDrag.gameObject.CompareTag("CookingSlot"))
                 {
-                    if (parentAfterDrag == pseudoParent)
+                    if (parentAfterDrag == previousParent)
                     {
                         return false;
                     }
-                    Debug.Log("set image");
                     parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
                     parentAfterDrag.gameObject.GetComponent<CookingSlot>().updateIngredientImage(image);
 
@@ -73,24 +72,24 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
             else if (!parentAfterDrag.gameObject.CompareTag("WorldDrop"))
             {
-                Debug.Log("set Right");
                 image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 image.raycastTarget = true;
                 BasketUI.Singleton.AddIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
             }
         }
-        updateParent();
+        previousParent = parentAfterDrag;
         return true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        updateParent();
-        if(isDragging)
+        //previousParent = parentAfterDrag;
+        if (isDragging)
         {
             isDragging = false;
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             image.raycastTarget = true;
+            CookingManager.Singleton.currentCookingSlot = null;
         }
     }
 
@@ -416,5 +415,4 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             itemStatsScreenTransform.SetParent(CookingManager.Singleton.CookingCanvas.transform);
         }
     }
-
 }
