@@ -11,7 +11,7 @@ public class CollectableDeathBox : MonoBehaviour
         {
             CollectableUI ingredientUI = collision.gameObject.GetComponent<CollectableUI>();
             Collectable ingredientCollectable = ingredientUI.GetCollectable();
-            PlayerInventory.Singleton.RemoveIngredientCollectable(ingredientCollectable);
+            PlayerInventory.Singleton.RemoveIngredientCollectable(ingredientCollectable, true);
         }
     }
 }

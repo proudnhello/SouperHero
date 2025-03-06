@@ -69,11 +69,11 @@ public class PlayerInventory : MonoBehaviour
     // By default it removes the first insance of an ingredient if there are multiple
     // set reverse to true to remove the last instance of the ingredient
     // (The collider under the basket calls it in reverse, the cook button calls it forward)
-    public void RemoveIngredientCollectable(Collectable collectable)
+    public void RemoveIngredientCollectable(Collectable collectable, bool needsDestroy)
     {
         Debug.Log("Remove Ingredient Called");
         collectablesHeld.Remove(collectable);
-        BasketUI.Singleton.RemoveIngredient(collectable);
+        BasketUI.Singleton.RemoveIngredient(collectable, needsDestroy);
     }
 
     public bool CookSoup(List<Ingredient> ingredients)

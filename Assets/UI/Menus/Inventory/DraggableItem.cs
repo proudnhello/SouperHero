@@ -13,6 +13,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     [Header("Do Not Edit, Ingredient is Set In CookingUI's Enable()")]
     public Ingredient ingredient = null;
+    public bool isDragging = false;
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         CursorManager.Singleton.cookingCursor.switchCursorImageTo(transform.parent.gameObject.GetComponent<Collectable>(), image);
@@ -20,6 +22,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
         image.raycastTarget = false;
+
+        isDragging = true;
 
         CookingManager.Singleton.enableWorldDrop();
     }
@@ -39,8 +43,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         image.raycastTarget = false;
         if (parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference == null)
         {
-            Debug.Log("set image 2");
-            if (!parentAfterDrag.gameObject.CompareTag("BasketDrop"))
+            if (!parentAfterDrag.gameObject.CompareTag("BasketDrop") && !parentAfterDrag.gameObject.CompareTag("WorldDrop"))
             {
                 Debug.Log("set image 3");
                 image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
@@ -71,9 +74,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        resetParent();
-        CursorManager.Singleton.cookingCursor.removeCursorImage();
-        CookingManager.Singleton.disableWorldDrop();
+        updateParent();
+        if(isDragging)
+        {
+            isDragging = false;
+            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            image.raycastTarget = true;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -210,7 +210,7 @@ public class CookingManager : MonoBehaviour
         // Remove From Player Inventory
         foreach (Collectable ingredient in cookingIngredients)
         {
-            PlayerInventory.Singleton.RemoveIngredientCollectable(ingredient);
+            PlayerInventory.Singleton.RemoveIngredientCollectable(ingredient, true);
         }
 
         cookingIngredients.Clear();

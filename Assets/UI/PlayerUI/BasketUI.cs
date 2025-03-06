@@ -41,7 +41,7 @@ public class BasketUI : MonoBehaviour
         }
     }
 
-    public void RemoveIngredient(Collectable ingredient)
+    public void RemoveIngredient(Collectable ingredient, bool needsDestroy)
     {
 
         //if (!reverse)
@@ -51,7 +51,10 @@ public class BasketUI : MonoBehaviour
             if (Object.Equals(collectable, ingredient))
             {
                 basketCollectables.Remove(collectable);
-                Destroy(collectable.gameObject);
+                if (needsDestroy)
+                {
+                    Destroy(collectable.gameObject);
+                }
                 break;
             }
         }
