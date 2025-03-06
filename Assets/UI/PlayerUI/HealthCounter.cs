@@ -28,12 +28,12 @@ public class HealthCounter : MonoBehaviour
         }
         playerHealth = PlayerEntityManager.Singleton.GetHealth() / 10;
 
-        Debug.Log("Player Health In UI:" + playerHealth);
+        //Debug.Log("Player Health In UI:" + playerHealth);
         for (int i = 0; i < playerHealth; i++) {
             heartList[i].SetActive(true);
             heartCount++;
         }
-        Debug.Log("Heart Count In UI:" + heartCount);
+        //Debug.Log("Heart Count In UI:" + heartCount);
         healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
         PlayerEntityManager.HealthChange += HealthChange;
     }

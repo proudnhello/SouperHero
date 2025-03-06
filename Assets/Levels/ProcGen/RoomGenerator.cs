@@ -946,11 +946,11 @@ public class RoomGenerator : MonoBehaviour
 
         if(mapSeed < 0) {
             UnityEngine.Random.InitState(seed);
-            Debug.Log("SEED: " + seed);
+            //Debug.Log("SEED: " + seed);
         } else
         {
             UnityEngine.Random.InitState(mapSeed);
-            Debug.Log("SEED: " + mapSeed);
+            //Debug.Log("SEED: " + mapSeed);
         }
 
         // Get mid width and height to place the start block

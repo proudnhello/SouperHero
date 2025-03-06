@@ -102,12 +102,12 @@ public class CameraMover : MonoBehaviour
                     velocityY = Mathf.Clamp(velocityY, -maxVelocity, maxVelocity);
 
                     transform.localPosition = ppc.RoundToPixel(new Vector3(transform.localPosition.x + velocityX, transform.localPosition.y + velocityY, transform.localPosition.z));
-                    Debug.Log(errorX + " " + errorY + " " + velocityX + " " + velocityY + " pos = " + targetPos + " dis = " + Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition)));
+                    //Debug.Log(errorX + " " + errorY + " " + velocityX + " " + velocityY + " pos = " + targetPos + " dis = " + Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition)));
 
                     yield return null;
                     CalculateTargetPos();
                 } while (errorX > eps || errorY > eps || velocityX > veps || velocityY > veps || Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition)) > deps);
-                Debug.Log("done");
+                //Debug.Log("done");
             }
             yield return null;
         }     
