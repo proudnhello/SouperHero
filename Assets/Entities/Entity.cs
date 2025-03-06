@@ -31,6 +31,8 @@ public class Entity : MonoBehaviour
     internal EntityRenderer entityRenderer;
     internal Rigidbody2D _rigidbody;
 
+    [SerializeField] GameObject hitmarker;
+
     public void InitEntity()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -47,6 +49,13 @@ public class Entity : MonoBehaviour
     public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
     {
         inflictionHandler.ApplyInflictions(spoonInflictions, source);
+    }
+
+    public void DisplayHitmarker(Color color, string text)
+    {
+        GameObject hitmarkerInstance = Instantiate(hitmarker, transform.position, Quaternion.identity);
+        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = text;
+        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = color;
     }
 
     public BaseStats GetBaseStats()
