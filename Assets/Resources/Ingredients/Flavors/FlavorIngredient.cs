@@ -80,7 +80,17 @@ public static readonly Dictionary<InflictionFlavor.InflictionType, Color> inflic
     { InflictionFlavor.InflictionType.FROSTY_Freeze, new Color(0f, 1f, 1f) }, // Cyan
     { InflictionFlavor.InflictionType.HEARTY_Health, Color.green },
     { InflictionFlavor.InflictionType.SPIKY_Damage, new Color(1f, 0f, 1f) }, // Magenta
-    { InflictionFlavor.InflictionType.GREASY_Knockback, new Color(0.55f, 0.27f, 0.07f) } // SaddleBrown
+    { InflictionFlavor.InflictionType.GREASY_Knockback, new Color(0.55f, 0.27f, 0.07f) }, // SaddleBrown
+    { InflictionFlavor.InflictionType.UNAMI_Vampirism, new Color(0.58f, 0, 0.82f) } // Purple
+};
+
+public static readonly Dictionary<InflictionFlavor.InflictionType, string> inflictionTextMapping = new Dictionary<InflictionFlavor.InflictionType, string> {
+    { InflictionFlavor.InflictionType.SPICY_Burn, "Burn" },
+    { InflictionFlavor.InflictionType.FROSTY_Freeze, "Freeze" },
+    { InflictionFlavor.InflictionType.HEARTY_Health, "Health" },
+    { InflictionFlavor.InflictionType.SPIKY_Damage, "Damage" },
+    { InflictionFlavor.InflictionType.GREASY_Knockback, "Knockback" },
+    { InflictionFlavor.InflictionType.UNAMI_Vampirism, "Vampirism" }
 };
 
 }

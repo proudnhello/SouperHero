@@ -61,6 +61,10 @@ public class EntityInflictionEffectHandler
     {
         foreach (var infliction in spoonInflictions)
         {
+            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[infliction.InflictionFlavor.inflictionType];
+            string hitmarkerText = FlavorIngredient.inflictionTextMapping[infliction.InflictionFlavor.inflictionType];
+            if(hitmarkerColor == null) hitmarkerColor = Color.white;
+            if(hitmarkerText == null) hitmarkerText = "DEFAULT HITMARKER TEXT";
             Debug.Log("applying infliction " + infliction.InflictionFlavor.inflictionType);
             if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType)) 
                 activeStatuses[infliction.InflictionFlavor.inflictionType].WorsenStatusEffect(infliction);
@@ -70,26 +74,33 @@ public class EntityInflictionEffectHandler
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
+                    // Handle hitmarkers in the damage coroutine
+                    hitmarkerText = "";
                     instance.StartStatusEffect(Inflictions.Burn(instance));
                 }
                 else if (infliction.InflictionFlavor.inflictionType == InflictionType.HEARTY_Health)
                 {
                     Inflictions.Health(infliction, entity);
+                    hitmarkerText = "+" + infliction.add + " " + hitmarkerText;
                 }
                 else if (infliction.InflictionFlavor.inflictionType == InflictionType.SPIKY_Damage)
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Damage(instance));
+                    hitmarkerText = "-" + infliction.add + " " + hitmarkerText;
                 } 
                 else if (infliction.InflictionFlavor.inflictionType == InflictionType.GREASY_Knockback)
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Knockback(instance, entity._rigidbody, source));
+                    hitmarkerText = "+" + infliction.add + " " + hitmarkerText;
                 }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UNAMI_Vampirism)
                 {
                     Inflictions.Vampirism(infliction, entity, source);
+                    // Display nothing, as it'll appear as healing the player and damage to the enemy
+                    hitmarkerText = "";
                 }else if(infliction.InflictionFlavor.inflictionType == InflictionType.FROSTY_Freeze)
                 {
                     StatusEffectInstance instance = new(entity, infliction);
@@ -98,7 +109,8 @@ public class EntityInflictionEffectHandler
                     instance.StartStatusEffect(Inflictions.Freeze(instance));
                 }
             }
-        }                   
+            entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
+        }
     }
 
     public void DealDamage(int dmg)
