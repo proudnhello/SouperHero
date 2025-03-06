@@ -44,7 +44,7 @@ public class CookingManager : MonoBehaviour
     [SerializeField]
     public List<Collectable> cookingIngredients = new();
 
-    private Campfire CurrentCampfire;
+    internal Campfire CurrentCampfire;
 
     public void EnterCooking(Campfire source)
     {
