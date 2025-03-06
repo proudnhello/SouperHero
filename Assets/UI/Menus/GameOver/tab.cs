@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class Tab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Sprite defaultTab;
     [SerializeField] Sprite hoverTab;
     [SerializeField] int spriteScalar = 5;
+    [SerializeField] TextMeshProUGUI text;
 
     private Image image;
     private RectTransform rectTransform;
@@ -17,6 +19,11 @@ public class Tab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         rectTransform = GetComponent<RectTransform>();
         image.sprite = defaultTab;
         AdjustSizeToSprite(defaultTab);
+
+        if (text != null)
+        {
+            text.enabled = false;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -25,6 +32,10 @@ public class Tab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             image.sprite = hoverTab;
             AdjustSizeToSprite(hoverTab);
+            if (text != null)
+            {
+                text.enabled = true;
+            }
         }
     }
 
@@ -34,6 +45,10 @@ public class Tab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             image.sprite = defaultTab;
             AdjustSizeToSprite(defaultTab);
+            if (text != null)
+            {
+                text.enabled = false;
+            }
         }
     }
 
