@@ -21,7 +21,7 @@ public class MeleeAbility : AbilityAbstractClass
 
     public override void UseAbility(AbilityStats passedStats, List<Infliction> inflictions)
     {
-        Vector2 playerDir = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
+        Vector2 playerDir = PlayerEntityManager.Singleton.playerMovement.currentDirection;
         float playerAngle = Mathf.Atan2(playerDir.y, playerDir.x);
 
         HashSet<Collider2D> hitColliders = new();

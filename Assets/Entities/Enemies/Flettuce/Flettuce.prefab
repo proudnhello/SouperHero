@@ -78,7 +78,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: a704f79a908609340a0bb0bffdab6c34, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -116,7 +116,7 @@ MonoBehaviour:
     m_Bits: 64
   FreezeEnemyWhenThisFar: 38
   PlayerDetectionIntervalWhenFrozen: 1.5
-  PlayerDetectionPathLength: 10.1
+  PlayerDetectionPathLength: 8.96
   PlayerDetectionInterval: 0.5
   PatrolDistance: {x: 3, y: 10}
   PatrolWaitTime: {x: 1, y: 3}
@@ -124,15 +124,15 @@ MonoBehaviour:
   WhilePatrolCheckIfStoppedDistance: 0.07
   IdleSpeedMultiplier: 1
   AttackSpeedMultiplier: 1.5
-  DistanceToPlayerForCharge: 4.6
+  DistanceToPlayerForCharge: 5.35
   AttackDistanceCheckInterval: 0.3
   ChargeSpeed: 6.88
   ChargeForce: 106080
-  ChargeTime: 0.4
+  ChargeTime: 0.48
   ConsecutiveCharges: 3
-  ChargeCooldownTime: {x: 0.65, y: 0.8}
+  ChargeCooldownTime: {x: 0.3, y: 0.4}
   FinalChargeCooldownTime: 1.62
-  DistanceFromPlayerToDisengage: 16
+  DistanceFromPlayerToDisengage: 12
 --- !u!50 &3527386940917697244
 Rigidbody2D:
   serializedVersion: 4

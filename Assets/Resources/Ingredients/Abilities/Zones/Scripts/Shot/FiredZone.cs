@@ -24,7 +24,7 @@ public class FiredZone : AbilityAbstractClass
         stats.size *= SIZE_MULTIPLIER;
         stats.speed *= SPEED_MULTIPLIER;
 
-        Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection.normalized;
+        Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection;
         
         //proj.transform.localScale = new Vector3(stats.size, stats.size, stats.size);
         SpriteRenderer spriteRenderer = proj.GetZoneArea().GetComponent<SpriteRenderer>();

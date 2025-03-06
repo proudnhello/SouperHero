@@ -9,14 +9,21 @@ public class HopShroomSpore : MonoBehaviour
     public float bulletSpeed = 15f;
     public int bulletDamage = 10;
     public Vector2 direction;
+    [SerializeField] Sprite[] ProjectileFrames;
+    [SerializeField] float ProjectileAnimFPS;
 
     private Rigidbody2D rb;
+    SpriteRenderer spriteRenderer;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         Destroy(gameObject, bulletLifeTime);
         rb.velocity = direction * bulletSpeed;
+        transform.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        Debug.Log(direction);
+        StartCoroutine(HandleAnimation());
     }
 
     public void SetDirection(Vector2 d)
@@ -41,5 +48,16 @@ public class HopShroomSpore : MonoBehaviour
             collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
         }
         Destroy(this.gameObject);
+    }
+
+    IEnumerator HandleAnimation()
+    {
+        int frame = 0;
+        while (true)
+        {
+            spriteRenderer.sprite = ProjectileFrames[frame];
+            yield return new WaitForSeconds(1f / ProjectileAnimFPS);
+            frame = (frame + 1) % ProjectileFrames.Length;
+        }
     }
 }
