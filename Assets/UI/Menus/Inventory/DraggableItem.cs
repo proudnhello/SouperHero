@@ -15,9 +15,17 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Ingredient ingredient = null;
     public bool isDragging = false;
 
+    Collectable collectable;
+
+    private void Awake()
+    {
+        collectable = transform.parent.gameObject.GetComponent<Collectable>();
+    }
+
     public void OnBeginDrag(PointerEventData eventData)         
     {
-        CursorManager.Singleton.cookingCursor.switchCursorImageTo(transform.parent.gameObject.GetComponent<Collectable>(), image);
+        CursorManager.Singleton.cookingCursor.switchCursorImageTo(collectable, image);
+        Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
         
         if(!parentAfterDrag)
         {
