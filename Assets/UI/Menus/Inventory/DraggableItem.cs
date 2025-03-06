@@ -39,8 +39,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         image.raycastTarget = false;
         if (parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference == null)
         {
+            Debug.Log("set image 2");
             if (!parentAfterDrag.gameObject.CompareTag("BasketDrop"))
             {
+                Debug.Log("set image 3");
                 image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
                 image.raycastTarget = false;
 
@@ -50,6 +52,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     {
                         return false;
                     }
+                    Debug.Log("set image");
                     parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
                     parentAfterDrag.gameObject.GetComponent<CookingSlot>().updateIngredientImage(image);
                 }

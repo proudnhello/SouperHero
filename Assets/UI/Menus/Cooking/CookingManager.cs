@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using static SoupSpoon;
 
@@ -27,6 +28,8 @@ public class CookingManager : MonoBehaviour
     public GameObject worldDrop;
     public GameObject basketDrop;
     public CookingSlot cookingSlot;
+
+    public List<CookingSlot> cookingSlots;
 
     private void Awake()
     {
@@ -53,7 +56,11 @@ public class CookingManager : MonoBehaviour
         isCooking = true;
         instructionsOnPlayScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
-
+        foreach(CookingSlot c in cookingSlots)
+        {
+            c.ingredientReference = null;
+            c.faceImage.sprite = null;
+        }
     }
 
 
@@ -69,6 +76,12 @@ public class CookingManager : MonoBehaviour
             ResetStatsText();
             isCooking = false;
             instructionsOnPlayScreen.SetActive(true);
+            foreach(Collectable c in cookingIngredients)
+            {
+                c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                c.collectableUI.GetComponent<Image>().raycastTarget = true;
+                c.collectableUI.GetComponent<DraggableItem>().pseudoParent = basketDrop.transform;
+            }
             cookingIngredients.Clear();
 
             Transform itemStatsScreenTransform = itemStatsScreen.transform;
