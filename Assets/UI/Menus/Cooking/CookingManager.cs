@@ -57,6 +57,7 @@ public class CookingManager : MonoBehaviour
         CookingCanvas.transform.position = source.GetCanvasPosition();
         isCooking = true;
         instructionsOnPlayScreen.SetActive(false);
+        ClearCookingManagerSprites();
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
         foreach(CookingSlot c in cookingSlots)
         {
@@ -229,6 +230,10 @@ public class CookingManager : MonoBehaviour
         {
             slot.gameObject.GetComponent<CookingSlot>().ingredientReference = null;
             slot.gameObject.GetComponent<CookingSlot>().faceImage.sprite = null;
+
+            Color tempColor = slot.gameObject.GetComponent<CookingSlot>().faceImage.color;
+            tempColor.a = 0;
+            slot.gameObject.GetComponent<CookingSlot>().faceImage.color = tempColor;
         }
     }
 
