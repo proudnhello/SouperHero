@@ -49,6 +49,8 @@ public class RoomGenerator : MonoBehaviour
 
     public int numIntermediates = 10;
 
+    public GameObject spawnObject;
+
     void Start()
     {
         // Need to create a new map full of nulls, placeholders for the Blocks and to determine if there is/isnt a block at a position
@@ -117,7 +119,7 @@ public class RoomGenerator : MonoBehaviour
         for (int i = 0; i < numIntermediates; i++)
         {
             int blockType = UnityEngine.Random.Range(0, _intermediateBlocks.Count);
-            MapRoom b = Instantiate(_intermediateBlocks[blockType]).GetComponent<MapRoom>();
+            MapRoom b = Instantiate(_intermediateBlocks[blockType], spawnObject.transform).GetComponent<MapRoom>();
 
             bool placed = false;
             while (!placed)
@@ -329,52 +331,52 @@ public class RoomGenerator : MonoBehaviour
         switch (c)
         {
             case "EE":
-                b = Instantiate(connectorEW).GetComponent<MapRoom>();
+                b = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "WW":
-                b = Instantiate(connectorEW).GetComponent<MapRoom>();
+                b = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "NN":
-                b = Instantiate(connectorNS).GetComponent<MapRoom>();
+                b = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "SS":
-                b = Instantiate(connectorNS).GetComponent<MapRoom>();
+                b = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "EN":
-                b = Instantiate(connectorNW).GetComponent<MapRoom>();
+                b = Instantiate(connectorNW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "ES":
-                b = Instantiate(connectorSW).GetComponent<MapRoom>();
+                b = Instantiate(connectorSW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "EW":
-                b = Instantiate(connectorEW).GetComponent<MapRoom>();
+                b = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "NE":
-                b = Instantiate(connectorNE).GetComponent<MapRoom>();
+                b = Instantiate(connectorNE, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "NW":
-                b = Instantiate(connectorNW).GetComponent<MapRoom>();
+                b = Instantiate(connectorNW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "NS":
-                b = Instantiate(connectorNS).GetComponent<MapRoom>();
+                b = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "WN":
-                b = Instantiate(connectorNW).GetComponent<MapRoom>();
+                b = Instantiate(connectorNW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "WE":
-                b = Instantiate(connectorEW).GetComponent<MapRoom>();
+                b = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "WS":
-                b = Instantiate(connectorSW).GetComponent<MapRoom>();
+                b = Instantiate(connectorSW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "SE":
-                b = Instantiate(connectorSE).GetComponent<MapRoom>();
+                b = Instantiate(connectorSE, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "SW":
-                b = Instantiate(connectorSW).GetComponent<MapRoom>();
+                b = Instantiate(connectorSW, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             case "SN":
-                b = Instantiate(connectorNS).GetComponent<MapRoom>();
+                b = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
                 break;
             default:
                 break;
@@ -413,22 +415,22 @@ public class RoomGenerator : MonoBehaviour
                         switch (c)
                         {
                             case "NW":
-                                b = Instantiate(connectorNW).GetComponent<MapRoom>();
+                                b = Instantiate(connectorNW, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             case "NE":
-                                b = Instantiate(connectorNE).GetComponent<MapRoom>();
+                                b = Instantiate(connectorNE, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             case "NS":
-                                b = Instantiate(connectorNS).GetComponent<MapRoom>();
+                                b = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             case "SW":
-                                b = Instantiate(connectorSW).GetComponent<MapRoom>();
+                                b = Instantiate(connectorSW, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             case "SE":
-                                b = Instantiate(connectorSE).GetComponent<MapRoom>();
+                                b = Instantiate(connectorSE, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             case "EW":
-                                b = Instantiate(connectorEW).GetComponent<MapRoom>();
+                                b = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             default:
                                 break;
@@ -442,16 +444,16 @@ public class RoomGenerator : MonoBehaviour
                         switch(c)
                         {
                             case "NSE":
-                                b2 = Instantiate(connectorNSE).GetComponent<MapRoom>();
+                                b2 = Instantiate(connectorNSE, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             case "NSW":
-                                b2 = Instantiate(connectorNSW).GetComponent<MapRoom>();
+                                b2 = Instantiate(connectorNSW, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             case "SEW":
-                                b2 = Instantiate(connectorSEW).GetComponent<MapRoom>();
+                                b2 = Instantiate(connectorSEW, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                             case "NEW":
-                                b2 = Instantiate(connectorNEW).GetComponent<MapRoom>();
+                                b2 = Instantiate(connectorNEW, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                         }
                         canPlaceIntermediate(row, col, b2);
@@ -459,7 +461,7 @@ public class RoomGenerator : MonoBehaviour
                         _map[row][col] = b2.At(0, 0);
                         break;
                     case 4:
-                        MapRoom b3 = Instantiate(connector4).GetComponent<MapRoom>();
+                        MapRoom b3 = Instantiate(connector4, spawnObject.transform).GetComponent<MapRoom>();
                         canPlaceIntermediate(row, col, b3);
                         fillBlock(row, col, b3);
                         _map[row][col] = b3.At(0, 0);
@@ -903,7 +905,7 @@ public class RoomGenerator : MonoBehaviour
                 dstCoord.col++;
                 _map[c.row][c.col].northDoor.SetActive(false);
                 _map[c.row][c.col].northDoorOpen.SetActive(true);
-                b = Instantiate(_endBlockDown).GetComponent<MapRoom>();
+                b = Instantiate(_endBlockDown, spawnObject.transform).GetComponent<MapRoom>();
             }
             if (s.Contains('E') && !found)
             {
@@ -912,7 +914,7 @@ public class RoomGenerator : MonoBehaviour
                 dstCoord.row++;
                 _map[c.row][c.col].eastDoor.SetActive(false);
                 _map[c.row][c.col].eastDoorOpen.SetActive(true);
-                b = Instantiate(_endBlockLeft).GetComponent<MapRoom>();
+                b = Instantiate(_endBlockLeft, spawnObject.transform).GetComponent<MapRoom>();
             }
             if (s.Contains('S') && !found)
             {
@@ -921,7 +923,7 @@ public class RoomGenerator : MonoBehaviour
                 dstCoord.col--;
                 _map[c.row][c.col].southDoor.SetActive(false);
                 _map[c.row][c.col].southDoorOpen.SetActive(true);
-                b = Instantiate(_endBlockUp).GetComponent<MapRoom>();
+                b = Instantiate(_endBlockUp, spawnObject.transform).GetComponent<MapRoom>();
             }
             if (s.Contains('W') && !found)
             {
@@ -929,7 +931,7 @@ public class RoomGenerator : MonoBehaviour
                 _map[c.row][c.col].westDoor.SetActive(false);
                 _map[c.row][c.col].westDoorOpen.SetActive(true);
                 dstCoord.row--;
-                b = Instantiate(_endBlockRight).GetComponent<MapRoom>();
+                b = Instantiate(_endBlockRight, spawnObject.transform).GetComponent<MapRoom>();
             }
             canPlaceIntermediate(dstCoord.row, dstCoord.col, b);
             _map[dstCoord.row][dstCoord.col] = b.At(0, 0);
@@ -955,7 +957,7 @@ public class RoomGenerator : MonoBehaviour
         int midWidth = (_mapWidth - 1) / 2;
         int midHeight = (_mapHeight - 1) / 2;
 
-        MapRoom b = Instantiate(_startBlock).GetComponent<MapRoom>();
+        MapRoom b = Instantiate(_startBlock, spawnObject.transform).GetComponent<MapRoom>();
         _intermediateRooms.Add(b);
         b.gameObject.transform.position = getOffset(midWidth - 1, midHeight, b);
         _map[midWidth - 1][midHeight] = b.At(0, 0);
@@ -977,7 +979,7 @@ public class RoomGenerator : MonoBehaviour
 
         // Create a 4-way connector to symbolize that anything can connect
         // at the point right outside the start room
-        MapRoom b2 = Instantiate(connector4).GetComponent<MapRoom>();
+        MapRoom b2 = Instantiate(connector4, spawnObject.transform).GetComponent<MapRoom>();
         if (canPlaceIntermediate(midWidth + 1, midHeight, b2))
         {
             fillBlock(midWidth + 1, midHeight, b2);

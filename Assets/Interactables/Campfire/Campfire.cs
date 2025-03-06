@@ -48,4 +48,9 @@ public class Campfire : Interactable
             yield return null;
         }
     }
+
+    public Vector3 GetCanvasPosition()
+    {
+        return transform.GetChild(0).position;
+    }
 }

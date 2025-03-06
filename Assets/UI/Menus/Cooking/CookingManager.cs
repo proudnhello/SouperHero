@@ -53,6 +53,8 @@ public class CookingManager : MonoBehaviour
         CursorManager.Singleton.ShowCookingCursor();
         ResetStatsText();
         CookingCanvas.SetActive(true);
+        basketDrop.SetActive(true);
+        CookingCanvas.transform.position = source.GetCanvasPosition();
         isCooking = true;
         instructionsOnPlayScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
@@ -73,6 +75,7 @@ public class CookingManager : MonoBehaviour
             CursorManager.Singleton.HideCursor();
             CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
+            basketDrop.SetActive(false);
             ResetStatsText();
             isCooking = false;
             instructionsOnPlayScreen.SetActive(true);
