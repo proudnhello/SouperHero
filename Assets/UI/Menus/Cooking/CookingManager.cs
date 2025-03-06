@@ -227,15 +227,6 @@ public class CookingManager : MonoBehaviour
     {
         foreach (Transform slot in CookingContent)
         {
-            foreach (Transform item in slot)
-            {
-                item.gameObject.GetComponent<Image>().sprite = null;
-                Image image = item.gameObject.GetComponent<Image>();
-                Color tempColor = image.color;
-                tempColor.a = 0;
-                item.gameObject.GetComponent<Image>().color = tempColor;
-                //Destroy(item.gameObject);
-            }
             slot.gameObject.GetComponent<CookingSlot>().ingredientReference = null;
             slot.gameObject.GetComponent<CookingSlot>().faceImage.sprite = null;
         }
