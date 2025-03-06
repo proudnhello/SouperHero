@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
         exitPanel.SetActive(true);
     }
 
-    public void ConfirmExit()
+    public void ConfirmedExit()
     {
         if (Application.isEditor)
         {

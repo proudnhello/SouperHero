@@ -43,6 +43,13 @@ public class ProjectileObject : MonoBehaviour
         else if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject) || (collider.gameObject.CompareTag("Player") && canHitPlayer))
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();
+
+            // check if entity is null for player projectile
+            if (entity == null)
+            {
+                return;
+            }
+
             // Apply the infliction to the enemy
             entity.ApplyInfliction(inflictions, gameObject.transform);
             canHitPlayer = false;
