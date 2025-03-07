@@ -43,7 +43,7 @@ public class EntityManager : MonoBehaviour
     {
         buildEnemyDictionary();
         buildForagableDictionary();
-        importEnemies("0,1");
+        createEnemies();
         createForagables();
     }
 
@@ -157,6 +157,6 @@ public class EntityManager : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(exportEnemies());
+        //Debug.Log(exportEnemies());
     }
 }
