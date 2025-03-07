@@ -13,6 +13,7 @@ public class Explosion : MonoBehaviour
         StartCoroutine(timer());
         transform.localScale = new Vector3(radius, radius, radius);
         Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, radius);
+        Debug.DrawLine(transform.position, transform.position + new Vector3(radius, radius, radius), Color.green, 10);
         foreach(var col in cols)
         {
             if (CollisionLayers.Singleton.InEntityLayer(col.gameObject))
