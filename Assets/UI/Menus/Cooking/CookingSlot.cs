@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Security;
+using TMPro;
 
 public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPointerUpHandler
 {
+    public TMP_Text usesText;
     // Slightly modifying OnDrop From the base class
     public new void OnDrop(PointerEventData eventData)
     {
@@ -16,6 +18,8 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             CookingManager.Singleton.disableWorldDrop();
             return;
         }
+
+        usesText.text = "";
 
         DraggableItem draggableItem = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>();
 
@@ -27,6 +31,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
         {
             previousSlot.ingredientReference = null;
             previousSlot.faceImage.sprite = null;
+            previousSlot.usesText.text = "";
             CookingManager.Singleton.RemoveIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference);
        
             CookingSlot previousParent = CookingManager.Singleton.currentCookingSlot;
@@ -34,6 +39,8 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             {
                 CookingManager.Singleton.CookingSlotSetTransparent(previousSlot);
             }
+
+            
             Debug.Log("MadeNULL!");
         }
 
@@ -59,6 +66,8 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
                 updateIngredientImage(draggableItem.image);
 
                 CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>());
+
+                if (ingredientReference.ingredient.GetType() == typeof(AbilityIngredient)) usesText.text = ((AbilityIngredient)ingredientReference.ingredient).uses.ToString();
 
                 draggableItem.previousParent = transform;
                 draggableItem.isDragging = false;
