@@ -123,6 +123,9 @@ public class FlavorCSVtoSO
                 flavorIngredient.Icon = icon;
             }
 
+            flavorIngredient.Source = splitData[10];
+            flavorIngredient.FlavorProfile = splitData[11];
+
             AssetDatabase.CreateAsset(flavorIngredient, $"{writeFolderPath}{flavorIngredient.IngredientName}.asset");
 
             // Set This To a Collectable

@@ -61,6 +61,8 @@ public class AbilityCSVtoSO
             abilityIngredient.baseStats.cooldown = float.Parse(splitData[7]);
             abilityIngredient.uses = int.Parse(splitData[8]);
 
+            
+
             // Set Ingredient Flavors
             FlavorIngredient.InflictionFlavor.InflictionType inflictionType;
             List<InflictionFlavor> inherentInflictionFlavors = new();
@@ -112,6 +114,9 @@ public class AbilityCSVtoSO
                 abilityIngredient.Icon = icon;
             }
 
+            abilityIngredient.Source = splitData[16];
+            abilityIngredient.AbilityDescription = splitData[17];
+
             AssetDatabase.CreateAsset(abilityIngredient, $"{writeFolderPath}{abilityIngredient.IngredientName}.asset");
 
             // Set Collectable
@@ -134,7 +139,7 @@ public class AbilityCSVtoSO
                     i.defaultSpoonIngredients = defaultSpoonIngredients;
                 }
           
-            }
+            }          
         }
 
         AssetDatabase.SaveAssets();

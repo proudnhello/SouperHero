@@ -63,6 +63,8 @@ public class CookingManager : MonoBehaviour
         {
             c.ingredientReference = null;
             c.faceImage.sprite = null;
+            c.usesText.text = "";
+
         }
     }
 
@@ -228,12 +230,14 @@ public class CookingManager : MonoBehaviour
     {
         foreach (Transform slot in CookingContent)
         {
-            slot.gameObject.GetComponent<CookingSlot>().ingredientReference = null;
-            slot.gameObject.GetComponent<CookingSlot>().faceImage.sprite = null;
+            CookingSlot cookingSlot = slot.gameObject.GetComponent<CookingSlot>();
+            cookingSlot.ingredientReference = null;
+            cookingSlot.faceImage.sprite = null;
 
-            Color tempColor = slot.gameObject.GetComponent<CookingSlot>().faceImage.color;
+            Color tempColor = cookingSlot.faceImage.color;
             tempColor.a = 0;
-            slot.gameObject.GetComponent<CookingSlot>().faceImage.color = tempColor;
+            cookingSlot.faceImage.color = tempColor;
+            cookingSlot.usesText.text = "";
         }
     }
 
