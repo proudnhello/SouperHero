@@ -102,7 +102,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void Dash(InputAction.CallbackContext ctx)
     {
-            StartCoroutine(Dashing());
+        StartCoroutine(Dashing());
+    }
+
+    public bool IsMoving()
+    {
+        return rb.velocity.magnitude > .01f;
     }
 
     public IEnumerator Charge(float chargeTime, float chargeStrength)

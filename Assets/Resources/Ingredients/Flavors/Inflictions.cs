@@ -38,6 +38,10 @@ public class Inflictions
         {
             instance.intervals--;
             instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
+            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[instance.type];
+            string hitmarkerText = FlavorIngredient.inflictionTextMapping[instance.type];
+            instance.entity.DisplayHitmarker(hitmarkerColor, "-" + instance.amount + " " + hitmarkerText);
+            instance.entity.StartCoroutine(instance.entity.entityRenderer.TakeDamageAnimation());
             yield return new WaitForSeconds(BURN_INTERVAL + Random.Range(-BURN_INTERVAL_DEVIATION, BURN_INTERVAL_DEVIATION));
         }
         instance.entity.inflictionHandler.EndStatusEffect(instance);

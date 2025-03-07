@@ -83,6 +83,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
             CursorManager.Singleton.cookingCursor.switchCursorImageTo(ingredientReference, faceImage);
             CookingManager.Singleton.currentCookingSlot = this;
             CookingManager.Singleton.enableWorldDrop();
+            Encyclopedia.Singleton.PullUpEntry(ingredientReference.ingredient);
         }
     }
 
