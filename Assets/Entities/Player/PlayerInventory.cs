@@ -59,7 +59,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void CollectIngredientCollectable(Collectable collectable)
     {
-        Debug.Log($"Collected Ingredient {collectable.ingredient}");
+        //Debug.Log($"Collected Ingredient {collectable.ingredient}");
         collectablesHeld.Add(collectable);
         BasketUI.Singleton.AddIngredient(collectable, true);
     }
@@ -71,7 +71,7 @@ public class PlayerInventory : MonoBehaviour
     // (The collider under the basket calls it in reverse, the cook button calls it forward)
     public void RemoveIngredientCollectable(Collectable collectable, bool needsDestroy)
     {
-        Debug.Log("Remove Ingredient Called");
+        //Debug.Log("Remove Ingredient Called");
         collectablesHeld.Remove(collectable);
         BasketUI.Singleton.RemoveIngredient(collectable, needsDestroy);
     }

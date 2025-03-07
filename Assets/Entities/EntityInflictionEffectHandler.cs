@@ -65,7 +65,7 @@ public class EntityInflictionEffectHandler
             string hitmarkerText = FlavorIngredient.inflictionTextMapping[infliction.InflictionFlavor.inflictionType];
             if(hitmarkerColor == null) hitmarkerColor = Color.white;
             if(hitmarkerText == null) hitmarkerText = "DEFAULT HITMARKER TEXT";
-            Debug.Log("applying infliction " + infliction.InflictionFlavor.inflictionType);
+            //Debug.Log("applying infliction " + infliction.InflictionFlavor.inflictionType);
             if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType)) 
                 activeStatuses[infliction.InflictionFlavor.inflictionType].WorsenStatusEffect(infliction);
             else

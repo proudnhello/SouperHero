@@ -48,7 +48,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
         {
             if (ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot)
             {
-                Debug.Log("Set!");
+                //Debug.Log("Set!");
 
                 draggableItem.image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
                 draggableItem.image.raycastTarget = false;
@@ -64,7 +64,7 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
                 draggableItem.isDragging = false;
             } else
             {
-                Debug.Log((ingredientReference == null) + ", " + (this != CookingManager.Singleton.currentCookingSlot));
+                //Debug.Log((ingredientReference == null) + ", " + (this != CookingManager.Singleton.currentCookingSlot));
             }
         }
 

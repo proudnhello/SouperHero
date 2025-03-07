@@ -55,7 +55,7 @@ public class MeleeAbility : AbilityAbstractClass
             }
 
             Destroyables destroyableObject = col.GetComponent<Destroyables>();
-            Debug.Log($"Destroyable Object: {destroyableObject}");
+            //Debug.Log($"Destroyable Object: {destroyableObject}");
             if (destroyableObject != null)
             {
                 // Remove the destroyable object
