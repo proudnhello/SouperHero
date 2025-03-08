@@ -6,9 +6,15 @@ using UnityEngine.EventSystems;
 using System.Security;
 using TMPro;
 
-public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPointerUpHandler
+public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPointerUpHandler
 {
+    public bool basketDrop = false;
+    public bool worldDrop = false;
+    public Image faceImage;
     public TMP_Text usesText;
+
+    internal Collectable ingredientReference;
+
     // Slightly modifying OnDrop From the base class
     public new void OnDrop(PointerEventData eventData)
     {
@@ -120,6 +126,11 @@ public class CookingSlot : InventorySlot, IDropHandler, IPointerDownHandler, IPo
 
         d.previousParent = d.gameObject.transform.parent;
         d.parentAfterDrag = null;
+    }
+
+    public void updateIngredientImage(Image newImage)
+    {
+        faceImage.sprite = newImage.sprite;
     }
 
 
