@@ -16,7 +16,7 @@ public class FlavorCSVtoSO
     // The path to folder we make new SOs in
     static readonly string writeFolderPath = "Assets/Resources/Ingredients/Flavors/_STATS/";
     // The path to folder where the icon sprites are
-    static readonly string iconPath = "Placeholder Items (Replace)/";
+    static readonly string iconPath = "EncyclopediaIcons/";
     // The path to the flavor CSV
     private static string flavorCSVPath = "/Resources/CSVs/Flavor Ingredients.csv";
     // Path to where collectables are
@@ -120,7 +120,7 @@ public class FlavorCSVtoSO
             if (!string.IsNullOrWhiteSpace(splitData[9]))
             {
                 Sprite icon = FindSpriteByName(splitData[9]);
-                flavorIngredient.Icon = icon;
+                flavorIngredient.EncyclopediaImage = icon;
             }
 
             flavorIngredient.Source = splitData[10];
