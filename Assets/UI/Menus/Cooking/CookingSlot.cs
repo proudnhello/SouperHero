@@ -45,9 +45,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
             {
                 CookingManager.Singleton.CookingSlotSetTransparent(previousSlot);
             }
-
-            
-            Debug.Log("MadeNULL!");
         }
 
         // SET ACTUAL COOKING SLOT

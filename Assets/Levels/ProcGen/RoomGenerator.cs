@@ -69,11 +69,6 @@ public class RoomGenerator : MonoBehaviour
         // After map is created, generate the rooms
         GenerateRoom();
         NavMesh.BuildNavMeshAsync();
-
-        //foreach(MapRoom room in _intermediateRooms)
-        //{
-        //    room.enableAllEnemies();
-        //}
     }
 
     // Obtains the offset needed to position the room along grid lines given a row and column
@@ -957,6 +952,8 @@ public class RoomGenerator : MonoBehaviour
         int midWidth = (_mapWidth - 1) / 2;
         int midHeight = (_mapHeight - 1) / 2;
 
+        Coordinate startCoordinate = new Coordinate(midWidth, midHeight);
+
         MapRoom b = Instantiate(_startBlock, spawnObject.transform).GetComponent<MapRoom>();
         _intermediateRooms.Add(b);
         b.gameObject.transform.position = getOffset(midWidth - 1, midHeight, b);
@@ -1079,6 +1076,42 @@ public class RoomGenerator : MonoBehaviour
 
         // Place the end block
         placeEnd(startIntermediates, new Coordinate(midWidth, midHeight));
+
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    m.difficulty = int.MaxValue;
+                }
+            }
+        }
+
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    m.difficulty = (int)Mathf.Min(m.difficulty, Mathf.Sqrt(new Coordinate(i, j).squaredDistanceTo(startCoordinate) * 1.5f));
+                }
+            }
+        }
+
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    m.spawnEnemies();
+                }
+            }
+        }
 
         // Debug purposes, color the grid with debug lines
         colorGrid();

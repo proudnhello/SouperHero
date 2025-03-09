@@ -9,7 +9,7 @@ using UnityEngine;
 public class EntityManager : MonoBehaviour
 {
     [Header("Spawning Parameters")]
-    [SerializeField] int difficulty;
+    [SerializeField] public int difficulty;
     [SerializeField] int lootLevel;
     [Serializable]
     public class SpawnableEnemy {
@@ -39,7 +39,15 @@ public class EntityManager : MonoBehaviour
     private int totalForagableWeight;
     private Dictionary<int, SpawnableEnemy> enemyDict;
     private Dictionary<int, SpawnableForagable> foragableDict;
-    void Start()
+    //void Start()
+    //{
+    //    buildEnemyDictionary();
+    //    buildForagableDictionary();
+    //    createEnemies();
+    //    createForagables();
+    //}
+
+    public void spawnEnemies()
     {
         buildEnemyDictionary();
         buildForagableDictionary();
