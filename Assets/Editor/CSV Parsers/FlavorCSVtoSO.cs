@@ -177,7 +177,7 @@ public class FlavorCSVtoSO
 
         if (foundSprite == null)
         {
-            Debug.LogError("No sprite found.");
+            Debug.LogError("No sprite found for " + name);
             return null;
         }
 
