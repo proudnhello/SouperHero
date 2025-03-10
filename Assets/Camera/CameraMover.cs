@@ -51,6 +51,7 @@ public class CameraMover : MonoBehaviour
     // This method is called once per frame
     void CalculateTargetPos()
     {
+        if (GameManager.isPaused) { return; }
         if (CookingManager.Singleton.IsCooking())
         {
             targetPos = CookingManager.Singleton.CurrentCampfire.transform.position + CookingManager.Singleton.CurrentCampfire.CameraOffset;

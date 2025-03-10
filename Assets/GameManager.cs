@@ -14,13 +14,12 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [Header("Configuration")]
-    private static bool isPaused = false;
+    public static bool isPaused = false;
     public GameObject pauseScreen;
+    [SerializeField] GameObject exitPanel;
 
     [Header("Keybinds")]
     public KeyCode pauseKey = KeyCode.Escape;
-
-    [SerializeField] GameObject exitPanel;
 
     void Update()
     {
@@ -51,7 +50,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void PauseGame() {
+    public void PauseGame() {
+        isPaused = true;
         Time.timeScale = 0;
         CursorManager.Singleton.cursorObject.SetActive(false);
         pauseScreen.SetActive(true);
@@ -60,7 +60,8 @@ public class GameManager : MonoBehaviour
         //InputManager.playerInput.SwitchCurrentActionMap("UI");
     }
 
-    void ResumeGame() {
+    public void ResumeGame() {
+        isPaused = false;
         Time.timeScale = 1;
         CursorManager.Singleton.cursorObject.SetActive(true);
         pauseScreen.SetActive(false);
@@ -72,6 +73,7 @@ public class GameManager : MonoBehaviour
     public void LoadGameLevel()
     {
         SceneManager.LoadScene(1);
+        ResumeGame();
     }
 
     // Goes to Death Scene
@@ -92,12 +94,14 @@ public class GameManager : MonoBehaviour
     public void MainMenu()
     {
         SceneManager.LoadScene(0);
+        ResumeGame();
     }
 
     // Restarts the Game
     public void RestartGame()
     {
         SceneManager.LoadScene(1);
+        ResumeGame();
     }
     public void ShowExitConfirmation()
     {
