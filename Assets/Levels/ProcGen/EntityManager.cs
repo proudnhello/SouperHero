@@ -163,6 +163,31 @@ public class EntityManager : MonoBehaviour
         }
     }
 
+    public String exportForagables(){
+        String ret = "";
+        for(int i = 0; i < foragableSpawns.Count; i++){
+            if(foragableSpawns[i].foragable != null){
+                ret += foragableSpawns[i].index;
+            }
+            else{
+                ret += "-1";
+            }
+            if(i < foragableSpawns.Count - 1){
+                ret += ",";
+            }
+        }
+        return ret;
+    }
+
+    public void importForagables(String import){
+        String[] strings = import.Split(',');
+        for(int i = 0; i < strings.Length; i++){
+            if(strings[i] == "-1"){
+                foragableSpawns[i].foragable = possibleForagables[Int32.Parse(strings[i])].foragable;
+            }
+        }
+    }
+
     void Update()
     {
         //Debug.Log(exportEnemies());

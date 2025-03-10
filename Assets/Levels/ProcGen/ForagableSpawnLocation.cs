@@ -6,4 +6,5 @@ public class ForagableSpawnLocation : MonoBehaviour
 {
     // DO NOT SET THIS IN EDITOR
     public GameObject foragable;
+    public int index = -1;
 }
