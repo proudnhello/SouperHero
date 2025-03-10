@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using NavMeshPlus.Components;
 using UnityEngine;
@@ -24,7 +25,9 @@ public class RoomGenerator : MonoBehaviour
     public GameObject _endBlockRight;
     public GameObject _endBlockUp;
     public GameObject _endBlockDown;
-
+    public GameObject _restRoomVertical;
+    public GameObject _restRoomHorizontal;
+    public GameObject _bossRoom;
 
 
     [Header("I CONNECTORS")]
@@ -69,11 +72,6 @@ public class RoomGenerator : MonoBehaviour
         // After map is created, generate the rooms
         GenerateRoom();
         NavMesh.BuildNavMeshAsync();
-
-        //foreach(MapRoom room in _intermediateRooms)
-        //{
-        //    room.enableAllEnemies();
-        //}
     }
 
     // Obtains the offset needed to position the room along grid lines given a row and column
@@ -160,6 +158,55 @@ public class RoomGenerator : MonoBehaviour
         return _map[c.row][c.col] == null;
     }
 
+    private bool checkForBlockExtent(Coordinate c, int width, int height, char dir)
+    {
+        int startRow = 0;
+        int endRow = 0;
+        int startCol = 0;
+        int endCol = 0;
+        bool ret = true;
+        if (dir == 'N')
+        {
+            startRow = -Mathf.FloorToInt(width / 2.0f);
+            endRow = Mathf.FloorToInt(width / 2.0f);
+            startCol = 0;
+            endCol = height;
+        }
+        else if (dir == 'S')
+        {
+            startRow = -Mathf.FloorToInt(width / 2.0f);
+            endRow = Mathf.FloorToInt(width / 2.0f);
+            startCol = -height;
+            endCol = 0;
+        }
+        else if (dir == 'E')
+        {
+            startRow = 0;
+            endRow = width;
+            startCol = -Mathf.FloorToInt(height / 2.0f);
+            endCol = Mathf.FloorToInt(height / 2.0f);
+        }
+        else if (dir == 'W')
+        {
+            startRow = -width;
+            endRow = 0;
+            startCol = -Mathf.FloorToInt(height / 2.0f);
+            endCol = Mathf.FloorToInt(height / 2.0f);
+        }
+
+        for (int i = startRow; i < endRow; i++)
+        {
+            for (int j = startCol; j < endCol; j++)
+            {
+                if(c.row + i >= 0 && c.row + i < _mapWidth && c.col + j >= 0 && c.col + j < _mapHeight)
+                {
+                    ret = ret && _map[c.row + i][c.col + j] == null;
+                }
+            }
+        }
+        return ret;
+    }
+
     // Returns the string representation of the connections possible at a certain position
     private string getConnectionsAt(int row, int col)
     {
@@ -204,40 +251,32 @@ public class RoomGenerator : MonoBehaviour
     // Returns the string representation of the connections possible at a certain position
     private string getConnectionsSelf(int row, int col)
     {
+        Coordinate c = new Coordinate(row, col);
         Coordinate rowPlus = new Coordinate(row + 1, col);
         Coordinate rowMinus = new Coordinate(row - 1, col);
         Coordinate colPlus = new Coordinate(row, col + 1);
         Coordinate colMinus = new Coordinate(row, col - 1);
 
+        int endWidth = _bossRoom.GetComponent<MapRoom>().BlockWidth();
+        int endHeight = _bossRoom.GetComponent<MapRoom>().BlockHeight();
+
         string s = "";
 
-        if (colPlus.col < _mapHeight)
+        if (checkForBlockExtent(colPlus, endWidth, endHeight, 'N') && _map[row][col].northDoor && _map[row][col].northDoor.activeInHierarchy)
         {
-            if (checkForBlockAdvanced(colPlus) && _map[row][col].northDoor.activeInHierarchy)
-            {
-                s += "N";
-            }
+            s += "N";
         }
-        if (colMinus.col >= 0)
+        if (checkForBlockExtent(colMinus, endWidth, endHeight, 'S') && _map[row][col].southDoor && _map[row][col].southDoor.activeInHierarchy)
         {
-            if (checkForBlockAdvanced(colMinus) && _map[row][col].southDoor.activeInHierarchy)
-            {
-                s += "S";
-            }
+            s += "S";
         }
-        if (rowPlus.row < _mapWidth)
+        if (checkForBlockExtent(rowPlus, endWidth, endHeight, 'E') && _map[row][col].eastDoor && _map[row][col].eastDoor.activeInHierarchy)
         {
-            if (checkForBlockAdvanced(rowPlus) && _map[row][col].eastDoor.activeInHierarchy)
-            {
-                s += "E";
-            }
+            s += "E";
         }
-        if (rowMinus.row >= 0)
+        if (checkForBlockExtent(rowMinus, endWidth, endHeight, 'W') && _map[row][col].westDoor && _map[row][col].westDoor.activeInHierarchy)
         {
-            if (checkForBlockAdvanced(rowMinus) && _map[row][col].westDoor.activeInHierarchy)
-            {
-                s += "W";
-            }
+            s += "W";
         }
         return s;
     }
@@ -887,12 +926,15 @@ public class RoomGenerator : MonoBehaviour
         foreach (Coordinate c in sortedCoordinates)
         {
             string s = getConnectionsSelf(c.row, c.col);
+            bool found = false;
             bool north = false;
             bool south = false;
             bool east = false;
             bool west = false;
-            bool found = false;
-            Coordinate dstCoord = c;
+            Coordinate dstCoord = new Coordinate(c.row, c.col);
+            Coordinate frstCoord = new Coordinate(c.row, c.col);
+            Coordinate connCord = new Coordinate(c.row, c.col);
+            Coordinate bossCoord = new Coordinate(c.row, c.col);
             MapRoom b = null;
             if(s.Length == 0)
             {
@@ -900,42 +942,97 @@ public class RoomGenerator : MonoBehaviour
             }
             if (s.Contains('N'))
             {
-                north = true;
                 found = true;
-                dstCoord.col++;
+                north = true;
+                dstCoord.col += 2;
+                frstCoord.col += 1;
+                connCord.col += 4;
+                bossCoord.col += 5;
+                bossCoord.row -= 1;
                 _map[c.row][c.col].northDoor.SetActive(false);
                 _map[c.row][c.col].northDoorOpen.SetActive(true);
-                b = Instantiate(_endBlockDown, spawnObject.transform).GetComponent<MapRoom>();
+                b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
             }
             if (s.Contains('E') && !found)
             {
-                east = true;
                 found = true;
-                dstCoord.row++;
+                east = true;
+                dstCoord.row += 2;
+                frstCoord.row += 1;
+                connCord.row += 4;
+                bossCoord.row += 5;
+                bossCoord.col -= 1;
                 _map[c.row][c.col].eastDoor.SetActive(false);
                 _map[c.row][c.col].eastDoorOpen.SetActive(true);
-                b = Instantiate(_endBlockLeft, spawnObject.transform).GetComponent<MapRoom>();
+                b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
             }
             if (s.Contains('S') && !found)
             {
-                south = true;
                 found = true;
-                dstCoord.col--;
+                south = true;
+                dstCoord.col -= 3;
+                frstCoord.col -= 1;
+                connCord.col -= 4;
+                bossCoord.col -= 7;
+                bossCoord.row -= 1;
                 _map[c.row][c.col].southDoor.SetActive(false);
                 _map[c.row][c.col].southDoorOpen.SetActive(true);
-                b = Instantiate(_endBlockUp, spawnObject.transform).GetComponent<MapRoom>();
+                b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
             }
             if (s.Contains('W') && !found)
             {
                 west = true;
                 _map[c.row][c.col].westDoor.SetActive(false);
                 _map[c.row][c.col].westDoorOpen.SetActive(true);
-                dstCoord.row--;
-                b = Instantiate(_endBlockRight, spawnObject.transform).GetComponent<MapRoom>();
+                dstCoord.row -= 3;
+                frstCoord.row -= 1;
+                connCord.row -= 4;
+                bossCoord.row -= 7;
+                bossCoord.col -= 1;
+                b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
             }
-            canPlaceIntermediate(dstCoord.row, dstCoord.col, b);
-            _map[dstCoord.row][dstCoord.col] = b.At(0, 0);
-            b.At(0, 0).setDirections(north, south, east, west);
+            b.gameObject.transform.position = getOffset(dstCoord.row, dstCoord.col, b); // place 1x2 or 2x1 
+
+            if (north || south)
+            {
+                b.At(0, 0).southDoor.SetActive(false);
+                b.At(0, 0).southDoorOpen.SetActive(true);
+                b.At(0, 1).northDoor.SetActive(false);
+                b.At(0, 1).northDoorOpen.SetActive(true);
+            }
+            else
+            {
+                b.At(0, 0).westDoor.SetActive(false);
+                b.At(0, 0).westDoorOpen.SetActive(true);
+                b.At(1, 0).eastDoor.SetActive(false);
+                b.At(1, 0).eastDoorOpen.SetActive(true);
+            }
+
+            MapRoom connector;
+            MapRoom connector1;
+            if (north || south)
+            {
+                connector = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
+                connector1 = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
+            } else
+            {
+                connector = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
+                connector1 = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
+            }
+            connector.gameObject.transform.position = getOffset(connCord.row, connCord.col, connector);
+            connector1.gameObject.transform.position = getOffset(frstCoord.row, frstCoord.col, connector1);
+
+            MapRoom bossRoom = Instantiate(_bossRoom, spawnObject.transform).GetComponent<MapRoom>();
+            bossRoom.gameObject.transform.position = getOffset(bossCoord.row, bossCoord.col, bossRoom);
+            bossRoom.At(0, 0).westDoor.SetActive(!east);
+            bossRoom.At(0, 0).westDoorOpen.SetActive(east);
+            bossRoom.At(0, 0).eastDoor.SetActive(!west);
+            bossRoom.At(0, 0).eastDoorOpen.SetActive(west);
+            bossRoom.At(0, 0).northDoor.SetActive(!south);
+            bossRoom.At(0, 0).northDoorOpen.SetActive(south);
+            bossRoom.At(0, 0).southDoor.SetActive(!north);
+            bossRoom.At(0, 0).southDoorOpen.SetActive(north);
+
             break;
         }
     }
@@ -946,16 +1043,18 @@ public class RoomGenerator : MonoBehaviour
 
         if(mapSeed < 0) {
             UnityEngine.Random.InitState(seed);
-            //Debug.Log("SEED: " + seed);
+            Debug.Log("SEED: " + seed);
         } else
         {
             UnityEngine.Random.InitState(mapSeed);
-            //Debug.Log("SEED: " + mapSeed);
+            Debug.Log("SEED: " + mapSeed);
         }
 
         // Get mid width and height to place the start block
         int midWidth = (_mapWidth - 1) / 2;
         int midHeight = (_mapHeight - 1) / 2;
+
+        Coordinate startCoordinate = new Coordinate(midWidth, midHeight);
 
         MapRoom b = Instantiate(_startBlock, spawnObject.transform).GetComponent<MapRoom>();
         _intermediateRooms.Add(b);
@@ -1079,6 +1178,42 @@ public class RoomGenerator : MonoBehaviour
 
         // Place the end block
         placeEnd(startIntermediates, new Coordinate(midWidth, midHeight));
+
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    m.difficulty = int.MaxValue;
+                }
+            }
+        }
+
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    m.difficulty = (int)Mathf.Min(m.difficulty, Mathf.Sqrt(new Coordinate(i, j).squaredDistanceTo(startCoordinate) * 1.5f));
+                }
+            }
+        }
+
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    m.spawnEnemies();
+                }
+            }
+        }
 
         // Debug purposes, color the grid with debug lines
         colorGrid();

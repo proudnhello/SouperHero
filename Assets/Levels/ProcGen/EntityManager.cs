@@ -9,7 +9,7 @@ using UnityEngine;
 public class EntityManager : MonoBehaviour
 {
     [Header("Spawning Parameters")]
-    [SerializeField] int difficulty;
+    [SerializeField] public int difficulty;
     [SerializeField] int lootLevel;
     [Serializable]
     public class SpawnableEnemy {
@@ -39,7 +39,15 @@ public class EntityManager : MonoBehaviour
     private int totalForagableWeight;
     private Dictionary<int, SpawnableEnemy> enemyDict;
     private Dictionary<int, SpawnableForagable> foragableDict;
-    void Start()
+    //void Start()
+    //{
+    //    buildEnemyDictionary();
+    //    buildForagableDictionary();
+    //    createEnemies();
+    //    createForagables();
+    //}
+
+    public void spawnEnemies()
     {
         buildEnemyDictionary();
         buildForagableDictionary();
@@ -152,6 +160,31 @@ public class EntityManager : MonoBehaviour
             foragableSpawns[totalForagables].foragable = foragable;
             lootCounter += foragableDict[x].value;
             totalForagables++;
+        }
+    }
+
+    public String exportForagables(){
+        String ret = "";
+        for(int i = 0; i < foragableSpawns.Count; i++){
+            if(foragableSpawns[i].foragable != null){
+                ret += foragableSpawns[i].index;
+            }
+            else{
+                ret += "-1";
+            }
+            if(i < foragableSpawns.Count - 1){
+                ret += ",";
+            }
+        }
+        return ret;
+    }
+
+    public void importForagables(String import){
+        String[] strings = import.Split(',');
+        for(int i = 0; i < strings.Length; i++){
+            if(strings[i] == "-1"){
+                foragableSpawns[i].foragable = possibleForagables[Int32.Parse(strings[i])].foragable;
+            }
         }
     }
 

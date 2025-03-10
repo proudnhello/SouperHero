@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 #else
@@ -12,27 +14,28 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [Header("Configuration")]
-    private bool isPaused = false;
+    public static bool isPaused = false;
     public GameObject pauseScreen;
+    [SerializeField] GameObject exitPanel;
 
     [Header("Keybinds")]
     public KeyCode pauseKey = KeyCode.Escape;
 
-    [SerializeField] GameObject exitPanel;
-
-
     void Update()
     {
-        if (Input.GetKeyDown(pauseKey))
+        if (Input.GetKeyDown(pauseKey) && pauseScreen != null 
+            && !CookingManager.Singleton.IsCooking() //Don't pause when cooking
+            && SceneManager.GetActiveScene().buildIndex != 0) //Don't pause if in main menu
         {
             isPaused = !isPaused;
-        }
-        if (isPaused) {
-            PauseGame();
-        }
-        else
-        {
-            ResumeGame();
+            if (isPaused)
+            {
+                PauseGame();
+            }
+            else
+            {
+                ResumeGame();
+            }
         }
     }
     private void Awake()
@@ -41,28 +44,36 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
-    }
-
-    void PauseGame() {
-        // For possible view of inventory
-        if(pauseScreen != null)
-        {
-            Time.timeScale = 0;
-            pauseScreen.SetActive(true);
-        }
-    }
-
-    void ResumeGame() {
         if (pauseScreen != null)
         {
-            Time.timeScale = 1;
             pauseScreen.SetActive(false);
         }
+    }
+
+    public void PauseGame() {
+        isPaused = true;
+        Time.timeScale = 0;
+        CursorManager.Singleton.cursorObject.SetActive(false);
+        pauseScreen.SetActive(true);
+        PlayerEntityManager.Singleton.input.Disable();
+
+        //InputManager.playerInput.SwitchCurrentActionMap("UI");
+    }
+
+    public void ResumeGame() {
+        isPaused = false;
+        Time.timeScale = 1;
+        CursorManager.Singleton.cursorObject.SetActive(true);
+        pauseScreen.SetActive(false);
+        PlayerEntityManager.Singleton.input.Enable();
+
+        //InputManager.playerInput.SwitchCurrentActionMap("Player");
     }
 
     public void LoadGameLevel()
     {
         SceneManager.LoadScene(1);
+        ResumeGame();
     }
 
     // Goes to Death Scene
@@ -72,7 +83,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
     }
 
-    // Goes to Death Scene
+    // Goes to Win Scene
     public void WinScreen()
     {
         SceneManager.LoadScene(3);
@@ -83,12 +94,14 @@ public class GameManager : MonoBehaviour
     public void MainMenu()
     {
         SceneManager.LoadScene(0);
+        ResumeGame();
     }
 
     // Restarts the Game
     public void RestartGame()
     {
         SceneManager.LoadScene(1);
+        ResumeGame();
     }
     public void ShowExitConfirmation()
     {

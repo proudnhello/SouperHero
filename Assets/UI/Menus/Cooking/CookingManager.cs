@@ -27,7 +27,7 @@ public class CookingManager : MonoBehaviour
     [SerializeField] private GameObject campfireWarning;
     public GameObject worldDrop;
     public GameObject basketDrop;
-    public CookingSlot currentCookingSlot;
+    internal CookingSlot currentCookingSlot;
 
     public List<CookingSlot> cookingSlots;
 

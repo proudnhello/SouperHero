@@ -74,11 +74,11 @@ public abstract class EnemyBaseClass : Entity
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // check if the collision is with an enemy and if the player is not invincible
-        Entity player = collision.gameObject.GetComponent<Entity>();
-        if (collision.gameObject.tag == "Player" &&
-            player != null)
+        if (playerCollisionDamage <= 0) return;
+        if (collision.gameObject.tag == "Player")
         {
-            player.DealDamage(playerCollisionDamage);
+            Entity player = collision.gameObject.GetComponent<Entity>();
+            player?.DealDamage(playerCollisionDamage);
         }
     }
 
