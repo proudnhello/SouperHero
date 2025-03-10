@@ -23,7 +23,6 @@ public class CollisionLayers : MonoBehaviour
     {
         return (entityLayer.value & (1 << source.layer)) != 0;
     }
-
     public bool InCollisionLayer(GameObject source)
     {
         return (collisionLayer.value & (1 << source.layer)) != 0;
@@ -66,6 +65,11 @@ public class CollisionLayers : MonoBehaviour
     public int GetInteractableLayer()
     {
         return LayerMask.NameToLayer("Interactable");
+    }
+
+    public int GetEntityLayer()
+    {
+        return entityLayer.value;
     }
 }
 
