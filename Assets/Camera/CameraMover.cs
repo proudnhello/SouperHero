@@ -103,8 +103,7 @@ public class CameraMover : MonoBehaviour
                     velocityY = Mathf.Clamp(velocityY, -maxVelocity, maxVelocity);
 
                     transform.localPosition = ppc.RoundToPixel(new Vector3(transform.localPosition.x + velocityX, transform.localPosition.y + velocityY, transform.localPosition.z));
-                    Debug.Log($"{Time.time}: vel = ({velocityX},{velocityY}), error = ({errorX},{errorY}), P={P},D={D}, dis = {Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition))}");
-                    //Debug.Log(errorX + " " + errorY + " " + velocityX + " " + velocityY + " pos = " + targetPos + " dis = " + Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition)));
+                    //Debug.Log($"{Time.time}: vel = ({velocityX},{velocityY}), error = ({errorX},{errorY}), P={P},D={D}, dis = {Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition))}");
 
                     yield return new WaitForFixedUpdate();
                     CalculateTargetPos();
