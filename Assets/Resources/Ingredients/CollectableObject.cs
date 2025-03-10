@@ -13,7 +13,8 @@ public class CollectableObject : Interactable
     private float collectionSpeed = 6f;
     Collider2D _collider;
     Collectable _Collectable;
-    // Start is called before the first frame update
+    protected const float dropLifetime = 30f; //How long object will last once dropped
+
     public void Init(Collectable col)
     {
         _Collectable = col;
@@ -22,6 +23,11 @@ public class CollectableObject : Interactable
             toolTipText.text = _Collectable.promptText;
         }
         _collider = GetComponent<Collider2D>();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(Fade());
     }
 
     public void Drop(Vector2 dropPoint)
@@ -52,5 +58,20 @@ public class CollectableObject : Interactable
             yield return null;
         }
         this.transform.parent.GetComponent<Collectable>().Collect();
+    }
+    private IEnumerator Fade()
+    {
+        float timeProgressed = dropLifetime;
+        Color normalColor = this.gameObject.GetComponent<SpriteRenderer>().color;
+
+        while (timeProgressed > 0)
+        {
+            normalColor.a = timeProgressed / (dropLifetime - 20f);
+            this.gameObject.GetComponent<SpriteRenderer>().color = normalColor;
+            timeProgressed -= Time.deltaTime;
+            yield return null;
+        }
+
+        Destroy(this.transform.parent.gameObject);
     }
 }

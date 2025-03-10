@@ -22,7 +22,7 @@ public class HopShroomSpore : MonoBehaviour
         Destroy(gameObject, bulletLifeTime);
         rb.velocity = direction * bulletSpeed;
         transform.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-        Debug.Log(direction);
+        //Debug.Log(direction);
         StartCoroutine(HandleAnimation());
     }
 

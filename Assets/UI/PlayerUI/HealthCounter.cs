@@ -28,12 +28,12 @@ public class HealthCounter : MonoBehaviour
         }
         playerHealth = PlayerEntityManager.Singleton.GetHealth() / 10;
 
-        Debug.Log("Player Health In UI:" + playerHealth);
+        //Debug.Log("Player Health In UI:" + playerHealth);
         for (int i = 0; i < playerHealth; i++) {
             heartList[i].SetActive(true);
             heartCount++;
         }
-        Debug.Log("Heart Count In UI:" + heartCount);
+        //Debug.Log("Heart Count In UI:" + heartCount);
         healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
         PlayerEntityManager.HealthChange += HealthChange;
     }
@@ -53,9 +53,9 @@ public class HealthCounter : MonoBehaviour
     public void HealthChange() {
         healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
         playerHealth = Mathf.CeilToInt(PlayerEntityManager.Singleton.GetHealth() / 10f);
-        Debug.Log("PLAYER HEALTH Normalized: " + playerHealth);
-        Debug.Log("HEART COUNT: " + heartCount);
-        Debug.Log("Player health real: " + PlayerEntityManager.Singleton.GetHealth());
+        //Debug.Log("PLAYER HEALTH Normalized: " + playerHealth);
+        //Debug.Log("HEART COUNT: " + heartCount);
+        //Debug.Log("Player health real: " + PlayerEntityManager.Singleton.GetHealth());
         if (heartCount < playerHealth) {
             AddHealth(heartCount, playerHealth);
         }
@@ -82,7 +82,7 @@ public class HealthCounter : MonoBehaviour
     void RemoveHealth(int heart, int pHealth) {
         if (heartCount-1 < 0)
         {
-            Debug.Log("Error: heartCount is already 0!!!");
+            //Debug.Log("Error: heartCount is already 0!!!");
             return;
         }
 

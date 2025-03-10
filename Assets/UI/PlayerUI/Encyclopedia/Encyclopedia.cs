@@ -7,6 +7,8 @@ using TMPro;
 
 public class Encyclopedia : MonoBehaviour
 {
+    public static Encyclopedia Singleton { get; private set; }
+
     [SerializeField] LayerMask ClickableLayers;
     [SerializeField] GameObject RenderedObject;
     [SerializeField] TMP_Text Title;
@@ -17,38 +19,27 @@ public class Encyclopedia : MonoBehaviour
 
 
     List<Ingredient> collectedEntries;
-    void Start()
+    void Awake()
     {
+        if (Singleton != null && Singleton != this) Destroy(gameObject);
+        else Singleton = this;
+
         collectedEntries = new();
-        PlayerEntityManager.Singleton.input.Player.Encyclopedia.started += PressEncyclopediaButton;
         RenderedObject.SetActive(false);
     }
 
-    private void OnDisable()
+    private void Update()
     {
-        PlayerEntityManager.Singleton.input.Player.Encyclopedia.started -= PressEncyclopediaButton;
-    }
-
-    void PressEncyclopediaButton(InputAction.CallbackContext ctx)
-    {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0, ClickableLayers);
-        foreach (var hit in hits)
+        if (RenderedObject.activeInHierarchy)
         {
-            if (hit.collider.gameObject.CompareTag("Ingredient"))
+            if (PlayerEntityManager.Singleton.playerMovement.IsMoving())
             {
-                var ing = hit.collider.gameObject.GetComponent<CollectableUI>();
-                if (ing) 
-                {
-                    PullUpEntry(ing.GetCollectable().ingredient);
-                    return;
-                }
+                RenderedObject.SetActive(false);
             }
         }
-
-        RenderedObject.SetActive(false);
     }
 
-    void PullUpEntry(Ingredient ing)
+    public void PullUpEntry(Ingredient ing)
     {
         if (!collectedEntries.Contains(ing)) collectedEntries.Add(ing);
         Title.text = ing.IngredientName;
@@ -68,7 +59,6 @@ public class Encyclopedia : MonoBehaviour
         }
 
         RenderedObject.SetActive(true);
-
 
     }
 }

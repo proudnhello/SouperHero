@@ -24,7 +24,7 @@ public class Inflictions
 
     public static IEnumerator Damage(StatusEffectInstance instance)
     {
-        Debug.Log("adding " + instance.amount + " damage to " + instance.entity.gameObject.name);
+        //Debug.Log("adding " + instance.amount + " damage to " + instance.entity.gameObject.name);
         instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
         instance.entity.StartCoroutine(instance.entity.entityRenderer.TakeDamageAnimation());
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
@@ -38,6 +38,10 @@ public class Inflictions
         {
             instance.intervals--;
             instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
+            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[instance.type];
+            string hitmarkerText = FlavorIngredient.inflictionTextMapping[instance.type];
+            instance.entity.DisplayHitmarker(hitmarkerColor, "-" + instance.amount + " " + hitmarkerText);
+            instance.entity.StartCoroutine(instance.entity.entityRenderer.TakeDamageAnimation());
             yield return new WaitForSeconds(BURN_INTERVAL + Random.Range(-BURN_INTERVAL_DEVIATION, BURN_INTERVAL_DEVIATION));
         }
         instance.entity.inflictionHandler.EndStatusEffect(instance);
@@ -52,26 +56,16 @@ public class Inflictions
 
     public static IEnumerator Freeze(StatusEffectInstance instance)
     {
-        instance.entity.SetMoveSpeed(instance.amount);
+        Debug.Log("adding " + instance.amount + " freeze to " + instance.entity.gameObject.name);
+        instance.entity.SetMoveSpeed(instance.entity.GetMoveSpeed() / instance.amount);
         yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
         instance.entity.ResetMoveSpeed();
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
-
-    public static IEnumerator WorsenFreeze(StatusEffectInstance instance, Infliction newInfliction)
-    {
-        instance.duration = instance.duration > newInfliction.InflictionFlavor.statusEffectDuration ? instance.duration : newInfliction.InflictionFlavor.statusEffectDuration;
-        instance.amount = instance.amount > newInfliction.InflictionFlavor.amount ? instance.amount : newInfliction.InflictionFlavor.amount;
-        instance.entity.SetMoveSpeed(instance.amount);
-        yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
-        instance.entity.ResetMoveSpeed();
-        instance.entity.inflictionHandler.EndStatusEffect(instance);
-    }
-
 
     public static IEnumerator Knockback(StatusEffectInstance instance, Rigidbody2D target, Transform source)
     {
-        Debug.Log("adding " + instance.amount + " knockback to " + instance.entity.gameObject.name);
+        //Debug.Log("adding " + instance.amount + " knockback to " + instance.entity.gameObject.name);
         NavMeshAgent agent = target.GetComponent<NavMeshAgent>();
         if (agent)
         {

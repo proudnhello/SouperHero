@@ -17,7 +17,7 @@ public class AbilityCSVtoSO
     // The path to folder where the ability SOs are
     static readonly string abilityPath = "Ingredients/Abilities/Classes/";
     // The path to folder where the icon sprites are
-    static readonly string iconPath = "Placeholder Items (Replace)/";
+    static readonly string iconPath = "EncyclopediaIcons/";
     // Path to where collectables are
     static readonly string collectablePath = "Ingredients/Abilities/Collectables/";
     // The path to the ability csv
@@ -60,6 +60,8 @@ public class AbilityCSVtoSO
             abilityIngredient.baseStats.speed = float.Parse(splitData[6]);
             abilityIngredient.baseStats.cooldown = float.Parse(splitData[7]);
             abilityIngredient.uses = int.Parse(splitData[8]);
+
+            
 
             // Set Ingredient Flavors
             FlavorIngredient.InflictionFlavor.InflictionType inflictionType;
@@ -109,8 +111,11 @@ public class AbilityCSVtoSO
             if (!string.IsNullOrWhiteSpace(splitData[15]))
             {
                 Sprite icon = FindSpriteByName(splitData[15]);
-                abilityIngredient.Icon = icon;
+                abilityIngredient.EncyclopediaImage = icon;
             }
+
+            abilityIngredient.Source = splitData[16];
+            abilityIngredient.AbilityDescription = splitData[17];
 
             AssetDatabase.CreateAsset(abilityIngredient, $"{writeFolderPath}{abilityIngredient.IngredientName}.asset");
 
@@ -134,7 +139,7 @@ public class AbilityCSVtoSO
                     i.defaultSpoonIngredients = defaultSpoonIngredients;
                 }
           
-            }
+            }          
         }
 
         AssetDatabase.SaveAssets();

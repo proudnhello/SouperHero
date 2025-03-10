@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using static SoupSpoon;
 
@@ -24,6 +25,11 @@ public class CookingManager : MonoBehaviour
     private SoupSpoon statSpoon;
     bool isCooking = false;
     [SerializeField] private GameObject campfireWarning;
+    public GameObject worldDrop;
+    public GameObject basketDrop;
+    internal CookingSlot currentCookingSlot;
+
+    public List<CookingSlot> cookingSlots;
 
     private void Awake()
     {
@@ -31,21 +37,35 @@ public class CookingManager : MonoBehaviour
         else Singleton = this;
     }
 
-    // Initialize Ingredient List
-    public List<Ingredient> cookingIngredients = new();
+    //// Initialize Ingredient List
+    //public List<Ingredient> cookingIngredients = new();
 
-    private Campfire CurrentCampfire;
+    // Initialize Ingredient List
+    [SerializeField]
+    public List<Collectable> cookingIngredients = new();
+
+    internal Campfire CurrentCampfire;
 
     public void EnterCooking(Campfire source)
     {
         CurrentCampfire = source;
         CursorManager.Singleton.ShowCursor();
+        CursorManager.Singleton.ShowCookingCursor();
         ResetStatsText();
         CookingCanvas.SetActive(true);
+        basketDrop.SetActive(true);
+        CookingCanvas.transform.position = source.GetCanvasPosition();
         isCooking = true;
         instructionsOnPlayScreen.SetActive(false);
+        ClearCookingManagerSprites();
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
+        foreach(CookingSlot c in cookingSlots)
+        {
+            c.ingredientReference = null;
+            c.faceImage.sprite = null;
+            c.usesText.text = "";
 
+        }
     }
 
 
@@ -56,10 +76,19 @@ public class CookingManager : MonoBehaviour
             CurrentCampfire.StopCooking();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
+            CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
+            basketDrop.SetActive(false);
             ResetStatsText();
             isCooking = false;
             instructionsOnPlayScreen.SetActive(true);
+            foreach(Collectable c in cookingIngredients)
+            {
+                c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                c.collectableUI.GetComponent<Image>().raycastTarget = true;
+                c.collectableUI.GetComponent<DraggableItem>().previousParent = basketDrop.transform;
+            }
+            cookingIngredients.Clear();
 
             Transform itemStatsScreenTransform = itemStatsScreen.transform;
             if (itemStatsScreenTransform != null)
@@ -92,18 +121,18 @@ public class CookingManager : MonoBehaviour
     //}
 
     // Function to add an Ability Ingredient
-    public void AddIngredient(Ingredient ingredient)
+    public void AddIngredient(Collectable ingredient)
     {
 
-        Debug.Log($"Added Ingredient: {ingredient}");
+        //Debug.Log($"Added Ingredient: {ingredient}");
         cookingIngredients.Add(ingredient);
         UpdateStatsText();
     }
 
     // Function to remove an Ability Ingredient
-    public void RemoveIngredient(Ingredient ingredient)
+    public void RemoveIngredient(Collectable ingredient)
     {
-        Debug.Log($"Removed Ingredient: {ingredient}");
+        //Debug.Log($"Removed Ingredient: {ingredient}");
         cookingIngredients.Remove(ingredient);
         UpdateStatsText();
     }
@@ -112,10 +141,10 @@ public class CookingManager : MonoBehaviour
     public bool HasAbilityIngredient()
     {
         // Don't cook if there are no ability ingredients
-        foreach (Ingredient ingredient in cookingIngredients)
+        foreach (Collectable ingredient in cookingIngredients)
         {
-            Debug.Log(ingredient.IngredientName);
-            if (ingredient.GetType() == typeof(AbilityIngredient))
+            //Debug.Log("Has Ability Ingredient: " + ingredient.ingredient.IngredientName);
+            if (ingredient.ingredient.GetType() == typeof(AbilityIngredient))
             {
                 return true;
             }
@@ -177,19 +206,78 @@ public class CookingManager : MonoBehaviour
         CurrentCampfire.SetInteractable(false);
 
         // Cook the soup with what is currently in the pot
-        PlayerInventory.Singleton.CookSoup(cookingIngredients);
+        List<Ingredient> cookedIngredients = new();
+        foreach (Collectable ingredient in cookingIngredients)
+        {
+            cookedIngredients.Add(ingredient.ingredient);
+        }
+        PlayerInventory.Singleton.CookSoup(cookedIngredients);
+
+        // Remove From Player Inventory
+        foreach (Collectable ingredient in cookingIngredients)
+        {
+            PlayerInventory.Singleton.RemoveIngredientCollectable(ingredient, true);
+        }
 
         cookingIngredients.Clear();
         ResetStatsText();
 
-        // Destroy the objects that were cooked
+        ClearCookingManagerSprites();
+    }
+
+    // Sets all the sprites in the cooking slot to null and 0 alpha
+    public void ClearCookingManagerSprites()
+    {
+        foreach (Transform slot in CookingContent)
+        {
+            CookingSlot cookingSlot = slot.gameObject.GetComponent<CookingSlot>();
+            cookingSlot.ingredientReference = null;
+            cookingSlot.faceImage.sprite = null;
+
+            Color tempColor = cookingSlot.faceImage.color;
+            tempColor.a = 0;
+            cookingSlot.faceImage.color = tempColor;
+            cookingSlot.usesText.text = "";
+        }
+    }
+
+    // Sets all the images in the cooking slot to 1 alpha
+    // Only if the cooking sprite is not null (meaning an ingredient is in it)
+    public void CookingManagerSpritesSetOpaque()
+    {
         foreach (Transform slot in CookingContent)
         {
             foreach (Transform item in slot)
             {
-                Destroy(item.gameObject);
+                Image image = item.gameObject.GetComponent<Image>();
+                if (image.sprite != null)
+                {
+                    Color tempColor = image.color;
+                    tempColor.a = 1;
+                    item.gameObject.GetComponent<Image>().color = tempColor;
+                }
             }
         }
+    }
+
+    // Turn a specific cookingslot transparent
+    public void CookingSlotSetTransparent(CookingSlot slot)
+    {
+        // index into first child slot bc should only be 1 child
+        //slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
+        Image image = slot.transform.GetChild(0).GetComponent<Image>();
+        Color tempColor = image.color;
+        tempColor.a = 0;
+        slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
+    }
+
+    // Turn a specific cookingslot opaque
+    public void CookingSlotSetOpaque(CookingSlot slot)
+    {
+        Image image = slot.transform.GetChild(0).GetComponent<Image>();
+        Color tempColor = image.color;
+        tempColor.a = 1;
+        slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
     }
 
     public void ResetStatsText()
@@ -208,7 +296,13 @@ public class CookingManager : MonoBehaviour
         InflictionText.text = "";
         AbilitiesText.text = "Abilities:\n";
         UsesText.text = "Uses: ";
-        statSpoon = new SoupSpoon(cookingIngredients);
+        // Cook the soup with what is currently in the pot
+        List<Ingredient> cookedIngredients = new();
+        foreach (Collectable ingredient in cookingIngredients)
+        {
+            cookedIngredients.Add(ingredient.ingredient);
+        }
+        statSpoon = new SoupSpoon(cookedIngredients);
         float totalDuration = 0;
         float totalSize = 0;
         float totalCrit = 0;
@@ -324,4 +418,13 @@ public class CookingManager : MonoBehaviour
         }
     }
 
+    public void enableWorldDrop()
+    {
+        worldDrop.SetActive(true);
+    }
+
+    public void disableWorldDrop()
+    {
+        worldDrop.SetActive(false);
+    }
 }

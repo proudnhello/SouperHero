@@ -27,7 +27,7 @@ public class BasketUI : MonoBehaviour
         Singleton = this;
     }
 
-    public void AddIngredient(Collectable collectable)
+    public void AddIngredient(Collectable collectable, bool needsAdd)
     {
         //TODO: Set parent of collectable to pot
         collectable.transform.SetParent(this.transform, false);
@@ -35,36 +35,42 @@ public class BasketUI : MonoBehaviour
         collectable.collectableUI.rb.velocity = new Vector2(Random.Range(dropForceRangeX.x, dropForceRangeX.y), -Random.Range(dropForceRangeY.x, dropForceRangeY.y));
 
         // Add collectable to list
-        basketCollectables.Add(collectable);
+        if (needsAdd)
+        {
+            basketCollectables.Add(collectable);
+        }
     }
 
-    public void RemoveIngredient(Ingredient ingredient, bool reverse = false)
+    public void RemoveIngredient(Collectable ingredient, bool needsDestroy)
     {
 
-        if (!reverse)
+        //if (!reverse)
+        //{
+        foreach (Collectable collectable in basketCollectables)
         {
-            foreach (Collectable collectable in basketCollectables)
+            if (Object.Equals(collectable, ingredient))
             {
-                if (Object.Equals(collectable.ingredient, ingredient))
+                basketCollectables.Remove(collectable);
+                if (needsDestroy)
                 {
-                    basketCollectables.Remove(collectable);
                     Destroy(collectable.gameObject);
-                    break;
                 }
+                break;
             }
         }
-        else
-        {
-            foreach (Collectable collectable in basketCollectables.AsEnumerable().Reverse())
-            {
-                if (Object.Equals(collectable.ingredient, ingredient))
-                {
-                    basketCollectables.Remove(collectable);
-                    Destroy(collectable.gameObject);
-                    break;
-                }
-            }
-        }
+        //}
+        //else
+        //{
+        //    foreach (Collectable collectable in basketCollectables.AsEnumerable().Reverse())
+        //    {
+        //        if (Object.Equals(collectable.ingredient, ingredient))
+        //        {
+        //            basketCollectables.Remove(collectable);
+        //            Destroy(collectable.gameObject);
+        //            break;
+        //        }
+        //    }
+        //}
 
     }
 }
