@@ -23,10 +23,8 @@ public class CameraMover : MonoBehaviour
     [SerializeField] float eps = .2f;
     [SerializeField] float veps = .02f;
     [SerializeField] float deps = .2f;
-    [SerializeField] float minimumMouseDif = .1f;
     float dt, lastDt, maxDt;
     private Vector3 targetPos;
-    Vector3 lastMousePosScreen;
     Transform _player;
 
 
@@ -39,7 +37,6 @@ public class CameraMover : MonoBehaviour
         // Get the player's transform from the PlayerEntityManager singleton
         _player = PlayerEntityManager.Singleton.gameObject.transform;
         dt = lastDt = maxDt = Time.maximumDeltaTime;
-        lastMousePosScreen = Input.mousePosition;
         StartCoroutine(ZoomFollow());
     }
 
@@ -51,10 +48,10 @@ public class CameraMover : MonoBehaviour
     // This method is called once per frame
     void CalculateTargetPos()
     {
-        if (GameManager.isPaused) { return; }
         if (CookingManager.Singleton.IsCooking())
         {
             targetPos = CookingManager.Singleton.CurrentCampfire.transform.position + CookingManager.Singleton.CurrentCampfire.CameraOffset;
+            targetPos = new Vector3(targetPos.x, targetPos.y, transform.localPosition.z);
         } else
         {
             // Round the player position first to ensure consistent base position
@@ -67,7 +64,7 @@ public class CameraMover : MonoBehaviour
             // Clamp the target position within the specified maximum distance and add the player's position
             targetPos = new Vector3(Mathf.Clamp(targetDist.x, -maxDistance.x, maxDistance.x),
                                     Mathf.Clamp(targetDist.y, -maxDistance.y, maxDistance.y),
-                                    0) + roundedPlayerPos;
+                                    transform.localPosition.z) + roundedPlayerPos;
         }      
     }
 
@@ -77,16 +74,19 @@ public class CameraMover : MonoBehaviour
         {
             errorX = errLastX = errorY = errLastY = velocityX = velocityY = 0;
 
-            CalculateTargetPos();
+            yield return new WaitUntil(() => !GameManager.isPaused);
+
+            CalculateTargetPos();          
 
             if (Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition)) > deps)
             {       
                 do
                 {
-                    errorX = targetPos.x - transform.localPosition.x;
-                    P = proportionalGain * errorX;
                     dt = Time.deltaTime <= 0 || Time.deltaTime >= maxDt ? lastDt : Time.deltaTime;
                     lastDt = dt;
+
+                    errorX = targetPos.x - transform.localPosition.x;
+                    P = proportionalGain * errorX;                 
                     errorRateOfChange = (errorX - errLastX) / dt;
 
                     errLastX = errorX;
@@ -103,14 +103,15 @@ public class CameraMover : MonoBehaviour
                     velocityY = Mathf.Clamp(velocityY, -maxVelocity, maxVelocity);
 
                     transform.localPosition = ppc.RoundToPixel(new Vector3(transform.localPosition.x + velocityX, transform.localPosition.y + velocityY, transform.localPosition.z));
+                    Debug.Log($"{Time.time}: vel = ({velocityX},{velocityY}), error = ({errorX},{errorY}), P={P},D={D}, dis = {Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition))}");
                     //Debug.Log(errorX + " " + errorY + " " + velocityX + " " + velocityY + " pos = " + targetPos + " dis = " + Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition)));
 
-                    yield return null;
+                    yield return new WaitForFixedUpdate();
                     CalculateTargetPos();
-                } while (errorX > eps || errorY > eps || velocityX > veps || velocityY > veps || Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition)) > deps);
-                //Debug.Log("done");
+                } while (!GameManager.isPaused && (Mathf.Abs(errorX) > eps || Mathf.Abs(errorY) > eps || Mathf.Abs(velocityX) > veps || Mathf.Abs(velocityY) > veps 
+                || Mathf.Abs(Vector3.Distance(targetPos, transform.localPosition)) > deps));
             }
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }     
     }
 }
