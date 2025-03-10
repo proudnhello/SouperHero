@@ -12,11 +12,16 @@ using Unity.Profiling;
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Singleton { get; private set; }
-    private String saveDataPath = Application.persistentDataPath + "save.dat";
+    private String saveDataPath;
     public void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(this);
         else Singleton = this;
+    }
+
+    public void Start()
+    {
+        saveDataPath = Application.persistentDataPath + "save.dat";
     }
     public void SaveGame(){
         BinaryFormatter bf = new BinaryFormatter();
