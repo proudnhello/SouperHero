@@ -103,6 +103,10 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(1);
         ResumeGame();
     }
+
+    public void LanguageSelect(){
+        SceneManager.LoadScene(4);
+    }
     public void ShowExitConfirmation()
     {
         exitPanel.SetActive(true);
