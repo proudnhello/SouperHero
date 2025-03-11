@@ -2,9 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Ingredient/New Flavor Ingredient")]
 public class FlavorIngredient : Ingredient
@@ -68,38 +65,33 @@ public class FlavorIngredient : Ingredient
     public List<BuffFlavor> buffFlavors;
     public List<InflictionFlavor> inflictionFlavors;
 
-    public static readonly Dictionary<BuffFlavor.BuffType, Color> buffColorMapping = new Dictionary<BuffFlavor.BuffType, Color>
-    {
-        { BuffFlavor.BuffType.SOUR_Duration, Color.yellow },
-        { BuffFlavor.BuffType.SALTY_CriticalStrike, new Color(0.65f, 0.16f, 0.16f) }, // Brownish
-        { BuffFlavor.BuffType.BITTER_Size, new Color(0f, 1f, 0f) }, // Green
-        { BuffFlavor.BuffType.SWEET_Speed, new Color(0.5f, 0f, 0.5f) }, // Purple
-        { BuffFlavor.BuffType.UMAMI_Vampirism, new Color(0.5f, 0.25f, 0f) } // Brown
-    };
+public static readonly Dictionary<BuffFlavor.BuffType, Color> buffColorMapping = new Dictionary<BuffFlavor.BuffType, Color>
+{
+    { BuffFlavor.BuffType.SOUR_Duration, Color.yellow },
+    { BuffFlavor.BuffType.SALTY_CriticalStrike, new Color(0.65f, 0.16f, 0.16f) }, // Brownish
+    { BuffFlavor.BuffType.BITTER_Size, new Color(0f, 1f, 0f) }, // Green
+    { BuffFlavor.BuffType.SWEET_Speed, new Color(0.5f, 0f, 0.5f) }, // Purple
+    { BuffFlavor.BuffType.UMAMI_Vampirism, new Color(0.5f, 0.25f, 0f) } // Brown
+};
 
-    public static readonly Dictionary<InflictionFlavor.InflictionType, Color> inflictionColorMapping = new Dictionary<InflictionFlavor.InflictionType, Color>
-    {
-        { InflictionFlavor.InflictionType.SPICY_Burn, Color.red },
-        { InflictionFlavor.InflictionType.FROSTY_Freeze, new Color(0f, 1f, 1f) }, // Cyan
-        { InflictionFlavor.InflictionType.HEARTY_Health, Color.green },
-        { InflictionFlavor.InflictionType.SPIKY_Damage, new Color(1f, 0f, 1f) }, // Magenta
-        { InflictionFlavor.InflictionType.GREASY_Knockback, new Color(0.55f, 0.27f, 0.07f) }, // SaddleBrown
-        { InflictionFlavor.InflictionType.UNAMI_Vampirism, new Color(0.58f, 0, 0.82f) } // Purple
-    };
-    public static Dictionary<InflictionFlavor.InflictionType, string> inflictionTextMapping = new Dictionary<InflictionFlavor.InflictionType, string>{
-        {InflictionFlavor.InflictionType.SPICY_Burn, "Burn Infliction"},
-        {InflictionFlavor.InflictionType.FROSTY_Freeze, "Freeze Infliction"},
-        {InflictionFlavor.InflictionType.HEARTY_Health, "Health Infliction"},
-        {InflictionFlavor.InflictionType.SPIKY_Damage, "Damage Infliction"},
-        {InflictionFlavor.InflictionType.GREASY_Knockback, "Knockback Infliction"},
-        {InflictionFlavor.InflictionType.UNAMI_Vampirism, "Vampirism Infliction"}
-    };
+public static readonly Dictionary<InflictionFlavor.InflictionType, Color> inflictionColorMapping = new Dictionary<InflictionFlavor.InflictionType, Color>
+{
+    { InflictionFlavor.InflictionType.SPICY_Burn, Color.red },
+    { InflictionFlavor.InflictionType.FROSTY_Freeze, new Color(0f, 1f, 1f) }, // Cyan
+    { InflictionFlavor.InflictionType.HEARTY_Health, Color.green },
+    { InflictionFlavor.InflictionType.SPIKY_Damage, new Color(1f, 0f, 1f) }, // Magenta
+    { InflictionFlavor.InflictionType.GREASY_Knockback, new Color(0.55f, 0.27f, 0.07f) }, // SaddleBrown
+    { InflictionFlavor.InflictionType.UNAMI_Vampirism, new Color(0.58f, 0, 0.82f) } // Purple
+};
 
-    public static string GetFlavorHitmarker(InflictionFlavor.InflictionType flavorKey)
-    {   
-        LocalizedString localString = new LocalizedString(LocalizationManager.GetTable(), inflictionTextMapping[flavorKey]); 
-        return localString.GetLocalizedString();
-    }
+public static readonly Dictionary<InflictionFlavor.InflictionType, string> inflictionTextMapping = new Dictionary<InflictionFlavor.InflictionType, string> {
+    { InflictionFlavor.InflictionType.SPICY_Burn, "Burn" },
+    { InflictionFlavor.InflictionType.FROSTY_Freeze, "Freeze" },
+    { InflictionFlavor.InflictionType.HEARTY_Health, "Health" },
+    { InflictionFlavor.InflictionType.SPIKY_Damage, "Damage" },
+    { InflictionFlavor.InflictionType.GREASY_Knockback, "Knockback" },
+    { InflictionFlavor.InflictionType.UNAMI_Vampirism, "Vampirism" }
+};
 
 }
 
