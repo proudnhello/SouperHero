@@ -14,7 +14,7 @@ public class FlavorIngredient : Ingredient
         public enum BuffType
         {
             SOUR_Duration,
-            SALTY_CriticalStrike,
+            SALTY_Crit,
             BITTER_Size,
             SWEET_Speed,
             UMAMI_Vampirism,
@@ -68,7 +68,7 @@ public class FlavorIngredient : Ingredient
 public static readonly Dictionary<BuffFlavor.BuffType, Color> buffColorMapping = new Dictionary<BuffFlavor.BuffType, Color>
 {
     { BuffFlavor.BuffType.SOUR_Duration, Color.yellow },
-    { BuffFlavor.BuffType.SALTY_CriticalStrike, new Color(0.65f, 0.16f, 0.16f) }, // Brownish
+    { BuffFlavor.BuffType.SALTY_Crit, new Color(0.65f, 0.16f, 0.16f) }, // Brownish
     { BuffFlavor.BuffType.BITTER_Size, new Color(0f, 1f, 0f) }, // Green
     { BuffFlavor.BuffType.SWEET_Speed, new Color(0.5f, 0f, 0.5f) }, // Purple
     { BuffFlavor.BuffType.UMAMI_Vampirism, new Color(0.5f, 0.25f, 0f) } // Brown

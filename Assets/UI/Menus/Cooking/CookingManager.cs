@@ -376,7 +376,7 @@ public class CookingManager : MonoBehaviour
         }
         if (totalCrit > 0)
         {
-            string saltyColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SALTY_CriticalStrike]);
+            string saltyColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SALTY_Crit]);
             BuffText.text += $"<color=#{saltyColor}>Salty (Crit):</color> " + totalCrit + "\n";
         }
         if (totalSpeed > 0)
