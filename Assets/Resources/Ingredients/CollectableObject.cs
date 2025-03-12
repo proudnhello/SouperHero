@@ -7,7 +7,6 @@ using UnityEngine;
 public class CollectableObject : Interactable
 {
     [Header("Collectable")]   
-    [SerializeField] public TextMeshPro toolTipText;
 
     private Vector2 playerPosition;
     private float collectionSpeed = 6f;
@@ -18,10 +17,6 @@ public class CollectableObject : Interactable
     public void Init(Collectable col)
     {
         _Collectable = col;
-        if(toolTipText != null)
-        {
-            toolTipText.text = _Collectable.promptText;
-        }
         _collider = GetComponent<Collider2D>();
     }
 
@@ -41,12 +36,6 @@ public class CollectableObject : Interactable
         SetInteractable(false);  //Cannot interact multiple times
         SetHighlighted(false);
         StartCoroutine (CollectionAnimation());
-    }
-
-    public override void SetHighlighted(bool isHighlighted)
-    {
-        toolTipText.gameObject.SetActive(isHighlighted);
-        base.SetHighlighted(isHighlighted);
     }
 
     private IEnumerator CollectionAnimation()
