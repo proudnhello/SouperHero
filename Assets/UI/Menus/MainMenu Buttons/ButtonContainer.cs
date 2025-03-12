@@ -44,6 +44,7 @@ public class ButtonContainer : MonoBehaviour
     // I <3 ChatGPT (only sometimes)
     private void AddEvent(EventTrigger trigger, EventTriggerType type, System.Action callback)
     {
+
         EventTrigger.Entry entry = new EventTrigger.Entry { eventID = type };
         entry.callback.AddListener((_) => callback());
         trigger.triggers.Add(entry);
@@ -54,6 +55,7 @@ public class ButtonContainer : MonoBehaviour
     private void OnButtonHover(ButtonScript hoveredButton)
     {
         _currentButton = hoveredButton;
+
         foreach (ButtonScript button in buttons)
         {
             RectTransform rect = button.GetComponent<RectTransform>();

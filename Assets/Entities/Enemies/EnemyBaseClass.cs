@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using static FlavorIngredient.InflictionFlavor;
@@ -20,6 +21,9 @@ public abstract class EnemyBaseClass : Entity
     protected Color _initialColor;
     protected Collider2D _collider;
     protected NavMeshAgent agent;
+    private EnemySpawnLocation spawn;
+
+    private bool hasDied = false;
 
     protected void initEnemy()
     {
@@ -32,8 +36,8 @@ public abstract class EnemyBaseClass : Entity
 
         InitEntity();
     }
-    protected abstract void UpdateAI();
-    protected void Die()
+    protected virtual void UpdateAI() { }
+    protected virtual void Die()
     {
         _sprite.color = _sprite.color / 1.5f;
         _collider.enabled = false;
@@ -41,6 +45,9 @@ public abstract class EnemyBaseClass : Entity
         agent.updatePosition = false;
         Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
         StartCoroutine(entityRenderer.EnemyDeathAnimation());
+        if(spawn != null){
+            spawn.enemy = null;
+        }
     }
 
     public override void ApplyInfliction(List<SoupSpoon.SpoonInfliction> spoonInflictions, Transform source)
@@ -67,20 +74,31 @@ public abstract class EnemyBaseClass : Entity
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // check if the collision is with an enemy and if the player is not invincible
-        Entity player = collision.gameObject.GetComponent<Entity>();
-        if (collision.gameObject.tag == "Player" &&
-            player != null)
+        if (playerCollisionDamage <= 0) return;
+        if (collision.gameObject.tag == "Player")
         {
-            player.DealDamage(playerCollisionDamage);
+            Entity player = collision.gameObject.GetComponent<Entity>();
+            player?.DealDamage(playerCollisionDamage);
         }
+    }
+
+    protected virtual void Update()
+    {
+        if (IsDead()) return;
+        UpdateAI();
     }
 
     public override void ModifyHealth(int amount)
     {
         base.ModifyHealth(amount);
-        if (IsDead())
+        if (IsDead() && !hasDied)
         {
+            hasDied = true;
             Die();
         }
+    }
+
+    public void setSpawn(EnemySpawnLocation s){
+        spawn = s;
     }
 }

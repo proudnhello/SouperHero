@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class HealthCounter : MonoBehaviour
 {
@@ -15,6 +16,11 @@ public class HealthCounter : MonoBehaviour
     [Header("Debug")]
     public TMP_Text healthText;
 
+    [SerializeField]
+    Sprite fullHeart;
+    [SerializeField]
+    Sprite emptyHeart;
+
     void Start() {
         // Initialize with all hearts as empty
         foreach(GameObject heart in heartList) {
@@ -22,12 +28,12 @@ public class HealthCounter : MonoBehaviour
         }
         playerHealth = PlayerEntityManager.Singleton.GetHealth() / 10;
 
-        Debug.Log("Player Health In UI:" + playerHealth);
+        //Debug.Log("Player Health In UI:" + playerHealth);
         for (int i = 0; i < playerHealth; i++) {
             heartList[i].SetActive(true);
             heartCount++;
         }
-        Debug.Log("Heart Count In UI:" + heartCount);
+        //Debug.Log("Heart Count In UI:" + heartCount);
         healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
         PlayerEntityManager.HealthChange += HealthChange;
     }
@@ -47,9 +53,9 @@ public class HealthCounter : MonoBehaviour
     public void HealthChange() {
         healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
         playerHealth = Mathf.CeilToInt(PlayerEntityManager.Singleton.GetHealth() / 10f);
-        Debug.Log("PLAYER HEALTH Normalized: " + playerHealth);
-        Debug.Log("HEART COUNT: " + heartCount);
-        Debug.Log("Player health real: " + PlayerEntityManager.Singleton.GetHealth());
+        //Debug.Log("PLAYER HEALTH Normalized: " + playerHealth);
+        //Debug.Log("HEART COUNT: " + heartCount);
+        //Debug.Log("Player health real: " + PlayerEntityManager.Singleton.GetHealth());
         if (heartCount < playerHealth) {
             AddHealth(heartCount, playerHealth);
         }
@@ -60,16 +66,11 @@ public class HealthCounter : MonoBehaviour
 
     void AddHealth(int heart, int pHealth) {
 
-        //Set heart to be fully opaque
+        //Set heart to empty heart sprite
         int heartCounter = heart;
         while (heartCounter <= pHealth)
         {
-            Debug.Log("HeartCounter In Add While: " + heartCounter);
-
-            Color newColor = heartList[heartCounter - 1].GetComponent<Image>().color;
-            newColor.a = 1f;
-            heartList[heartCounter - 1].GetComponent<Image>().color = newColor;
-
+            heartList[heartCounter - 1].GetComponent<Image>().sprite = fullHeart;
             heartCounter++;
         }
 
@@ -81,18 +82,15 @@ public class HealthCounter : MonoBehaviour
     void RemoveHealth(int heart, int pHealth) {
         if (heartCount-1 < 0)
         {
-            Debug.Log("Error: heartCount is already 0!!!");
+            //Debug.Log("Error: heartCount is already 0!!!");
             return;
         }
 
-        //Set heart to be fully opaque
+        // Set heart to full heart sprite
         int heartCounter = heart;
         while (heartCounter > pHealth)
         {
-            Color newColor = heartList[heartCounter - 1].GetComponent<Image>().color;
-            newColor.a = 0.3f;
-            heartList[heartCounter - 1].GetComponent<Image>().color = newColor;
-
+            heartList[heartCounter - 1].GetComponent<Image>().sprite = emptyHeart;
             heartCounter--;
         }
 

@@ -4,70 +4,114 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
-
+using BuffType = FlavorIngredient.BuffFlavor.BuffType;
+using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
+using System;
 public class Encyclopedia : MonoBehaviour
 {
+    [Serializable]
+    public struct FlavorTextToIcon
+    {
+        public string KEY;
+        public string REPLACEMENT_TEXT;
+        public Sprite ICON;
+        public string TOOLTIP_TEXT;
+    }
+    public static Encyclopedia Singleton { get; private set; }
+
     [SerializeField] LayerMask ClickableLayers;
     [SerializeField] GameObject RenderedObject;
     [SerializeField] TMP_Text Title;
     [SerializeField] Image EntryImage;
     [SerializeField] TMP_Text SourceText;
+    [SerializeField] GameObject FlavorProfile;
     [SerializeField] TMP_Text FlavorEntry;
     [SerializeField] TMP_Text AbilityEntry;
+    [SerializeField] EncyclopediaFlavorIcon[] FlavorIcons;
+    [SerializeField] List<FlavorTextToIcon> FlavorTextToIcons;
+
+    Dictionary<string, FlavorTextToIcon> FlavorTextToIconsDict = new();
 
 
     List<Ingredient> collectedEntries;
-    void Start()
+
+    void Awake()
     {
+        if (Singleton != null && Singleton != this) Destroy(gameObject);
+        else Singleton = this;
+
         collectedEntries = new();
-        PlayerEntityManager.Singleton.input.Player.Encyclopedia.started += PressEncyclopediaButton;
         RenderedObject.SetActive(false);
-    }
-
-    private void OnDisable()
-    {
-        PlayerEntityManager.Singleton.input.Player.Encyclopedia.started -= PressEncyclopediaButton;
-    }
-
-    void PressEncyclopediaButton(InputAction.CallbackContext ctx)
-    {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0, ClickableLayers);
-        foreach (var hit in hits)
+        foreach (var flavor in FlavorTextToIcons)
         {
-            if (hit.collider.gameObject.CompareTag("Ingredient"))
-            {
-                var ing = hit.collider.gameObject.GetComponent<CollectableUI>();
-                if (ing) 
-                {
-                    PullUpEntry(ing.GetCollectable().ingredient);
-                    return;
-                }
-            }
+            FlavorTextToIconsDict.Add(flavor.KEY, flavor);
         }
 
-        RenderedObject.SetActive(false);
     }
 
-    void PullUpEntry(Ingredient ing)
+    private void Update()
     {
+        if (RenderedObject.activeInHierarchy)
+        {
+            if (PlayerEntityManager.Singleton.playerMovement.IsMoving())
+            {
+                RenderedObject.SetActive(false);
+            }
+        }
+    }
+
+    public void PullUpEntry(Ingredient ing)
+    {
+        RenderedObject.SetActive(true);
+        foreach (var icon in FlavorIcons) icon.gameObject.SetActive(false);
+
         if (!collectedEntries.Contains(ing)) collectedEntries.Add(ing);
         Title.text = ing.IngredientName;
         EntryImage.sprite = ing.EncyclopediaImage;
         SourceText.text = ing.Source;
+
         if (ing.GetType() == typeof(FlavorIngredient))
         {
-            FlavorEntry.text = ((FlavorIngredient)ing).FlavorProfile;
-            FlavorEntry.gameObject.SetActive(true);
+            FlavorProfile.SetActive(true);
             AbilityEntry.gameObject.SetActive(false);
+
+            // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
+            string[] words = ((FlavorIngredient)ing).FlavorProfile.Split(' ');
+            string display = "";
+            int icon = 0;
+            for (int i = 0; i < words.Length; i++)
+            {
+                var word = words[i];
+                FlavorTextToIcon iconInfo;
+                if (FlavorTextToIconsDict.TryGetValue(word, out iconInfo))
+                {
+
+                    display += iconInfo.REPLACEMENT_TEXT;
+                    FlavorEntry.text = display;
+                    FlavorEntry.ForceMeshUpdate();
+                    var firstCharInfo = FlavorEntry.textInfo.characterInfo[FlavorEntry.textInfo.wordInfo[i].firstCharacterIndex];
+                    var wordLocation = FlavorEntry.transform.TransformPoint((firstCharInfo.topLeft + firstCharInfo.bottomLeft) / 2f);
+
+                    FlavorIcons[icon].SetIcon(iconInfo);
+                    FlavorIcons[icon].transform.position = wordLocation;
+                    icon++;
+                }
+                else
+                {
+                    display += word;
+                }
+                display += ' ';
+            }
+
+            FlavorEntry.text = display;
+            
         } 
         else // is AbilityIngredient
         {
-            AbilityEntry.text = ((AbilityIngredient)ing).AbilityDescription;
             AbilityEntry.gameObject.SetActive(true);
-            FlavorEntry.gameObject.SetActive(false);
+            FlavorProfile.SetActive(false);
+            AbilityEntry.text = ((AbilityIngredient)ing).AbilityDescription;         
         }
-
-        RenderedObject.SetActive(true);
 
 
     }

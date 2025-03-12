@@ -12,7 +12,6 @@ public class PlayerEntityManager : Entity
     public PlayerInputActions input;
     public Transform playerAttackPoint;
     public PlayerAnimationHolder animations;
-    public GameObject circle;
     public PlayerMovement playerMovement;
     public PlayerAudio playerAudio;
     private bool cooked = false;
@@ -24,6 +23,7 @@ public class PlayerEntityManager : Entity
         InitEntity();
         input = new();
         input.Enable();
+        //InputManager.playerInput.SwitchCurrentActionMap("Player");
         entityRenderer = new PlayerRenderer(this, animations);
     }
 
@@ -35,6 +35,7 @@ public class PlayerEntityManager : Entity
     private void OnDisable()
     {
         input.Disable();
+        //InputManager.playerInput.SwitchCurrentActionMap("UI");
         ((PlayerRenderer)entityRenderer).Disable();
     }
     public override void ModifyHealth(int amount)

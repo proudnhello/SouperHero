@@ -1,6 +1,5 @@
 using UnityEngine;
 
-//[CreateAssetMenu(fileName = "CollisionLayers", menuName = "Helper/CollisionLayers")]
 public class CollisionLayers : MonoBehaviour
 {
     public static CollisionLayers Singleton { get; private set; }
@@ -9,6 +8,7 @@ public class CollisionLayers : MonoBehaviour
     public LayerMask destroyableLayer;
     public LayerMask enemyLayer;
     public LayerMask environmentLayer;
+    public LayerMask entityLayer;
 
     private void Awake()
     {
@@ -19,7 +19,10 @@ public class CollisionLayers : MonoBehaviour
     {
         return (enemyLayer.value & (1 << source.layer)) != 0;
     }
-
+    public bool InEntityLayer(GameObject source)
+    {
+        return (entityLayer.value & (1 << source.layer)) != 0;
+    }
     public bool InCollisionLayer(GameObject source)
     {
         return (collisionLayer.value & (1 << source.layer)) != 0;
@@ -62,6 +65,11 @@ public class CollisionLayers : MonoBehaviour
     public int GetInteractableLayer()
     {
         return LayerMask.NameToLayer("Interactable");
+    }
+
+    public int GetEntityLayer()
+    {
+        return entityLayer.value;
     }
 }
 

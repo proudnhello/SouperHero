@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using static SoupSpoon;
 
@@ -17,12 +18,18 @@ public class CookingManager : MonoBehaviour
     public TMP_Text InflictionText;
     public TMP_Text AbilitiesText;
     public TMP_Text UsesText;
-    [SerializeField] private TMP_Text WarningText;
+    [SerializeField] private GameObject abilityIngWarning;
+    [SerializeField] private GameObject instructionsOnPlayScreen;
     public GameObject CookingCanvas;
     public GameObject itemStatsScreen;
     private SoupSpoon statSpoon;
     bool isCooking = false;
     [SerializeField] private GameObject campfireWarning;
+    public GameObject worldDrop;
+    public GameObject basketDrop;
+    internal CookingSlot currentCookingSlot;
+
+    public List<CookingSlot> cookingSlots;
 
     private void Awake()
     {
@@ -30,20 +37,35 @@ public class CookingManager : MonoBehaviour
         else Singleton = this;
     }
 
-    // Initialize Ingredient List
-    public List<Ingredient> cookingIngredients = new();
+    //// Initialize Ingredient List
+    //public List<Ingredient> cookingIngredients = new();
 
-    private Campfire CurrentCampfire;
+    // Initialize Ingredient List
+    [SerializeField]
+    public List<Collectable> cookingIngredients = new();
+
+    internal Campfire CurrentCampfire;
 
     public void EnterCooking(Campfire source)
     {
         CurrentCampfire = source;
         CursorManager.Singleton.ShowCursor();
+        CursorManager.Singleton.ShowCookingCursor();
         ResetStatsText();
         CookingCanvas.SetActive(true);
+        basketDrop.SetActive(true);
+        CookingCanvas.transform.position = source.GetCanvasPosition();
         isCooking = true;
+        instructionsOnPlayScreen.SetActive(false);
+        ClearCookingManagerSprites();
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
+        foreach(CookingSlot c in cookingSlots)
+        {
+            c.ingredientReference = null;
+            c.faceImage.sprite = null;
+            c.usesText.text = "";
 
+        }
     }
 
 
@@ -54,9 +76,19 @@ public class CookingManager : MonoBehaviour
             CurrentCampfire.StopCooking();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
+            CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
+            basketDrop.SetActive(false);
             ResetStatsText();
             isCooking = false;
+            instructionsOnPlayScreen.SetActive(true);
+            foreach(Collectable c in cookingIngredients)
+            {
+                c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                c.collectableUI.GetComponent<Image>().raycastTarget = true;
+                c.collectableUI.GetComponent<DraggableItem>().previousParent = basketDrop.transform;
+            }
+            cookingIngredients.Clear();
 
             Transform itemStatsScreenTransform = itemStatsScreen.transform;
             if (itemStatsScreenTransform != null)
@@ -89,18 +121,18 @@ public class CookingManager : MonoBehaviour
     //}
 
     // Function to add an Ability Ingredient
-    public void AddIngredient(Ingredient ingredient)
+    public void AddIngredient(Collectable ingredient)
     {
 
-        Debug.Log($"Added Ingredient: {ingredient}");
+        //Debug.Log($"Added Ingredient: {ingredient}");
         cookingIngredients.Add(ingredient);
         UpdateStatsText();
     }
 
     // Function to remove an Ability Ingredient
-    public void RemoveIngredient(Ingredient ingredient)
+    public void RemoveIngredient(Collectable ingredient)
     {
-        Debug.Log($"Removed Ingredient: {ingredient}");
+        //Debug.Log($"Removed Ingredient: {ingredient}");
         cookingIngredients.Remove(ingredient);
         UpdateStatsText();
     }
@@ -109,10 +141,10 @@ public class CookingManager : MonoBehaviour
     public bool HasAbilityIngredient()
     {
         // Don't cook if there are no ability ingredients
-        foreach (Ingredient ingredient in cookingIngredients)
+        foreach (Collectable ingredient in cookingIngredients)
         {
-            Debug.Log(ingredient.IngredientName);
-            if (ingredient.GetType() == typeof(AbilityIngredient))
+            //Debug.Log("Has Ability Ingredient: " + ingredient.ingredient.IngredientName);
+            if (ingredient.ingredient.GetType() == typeof(AbilityIngredient))
             {
                 return true;
             }
@@ -131,14 +163,14 @@ public class CookingManager : MonoBehaviour
         itemStatsScreen.SetActive(false);
     }
 
-    public void DisplayWarning()
+    public void DisplayAbilityIngWarning()
     {
-        WarningText.gameObject.SetActive(true);
+        abilityIngWarning.SetActive(true);
     }
 
-    public void HideWarning()
+    public void HideAbilityIngWarning()
     {
-        WarningText.gameObject.SetActive(false);
+        abilityIngWarning.SetActive(false);
     }
 
     public void ShowCampfireWarning()
@@ -157,11 +189,11 @@ public class CookingManager : MonoBehaviour
         // Don't cook if there is no ability ingredient, return early
         if (!HasAbilityIngredient())
         {
-            DisplayWarning();
+            DisplayAbilityIngWarning();
             return;
         } else
         {
-            HideWarning();
+            HideAbilityIngWarning();
         }
 
         if (!PlayerEntityManager.Singleton.HasCooked())
@@ -174,19 +206,78 @@ public class CookingManager : MonoBehaviour
         CurrentCampfire.SetInteractable(false);
 
         // Cook the soup with what is currently in the pot
-        PlayerInventory.Singleton.CookSoup(cookingIngredients);
+        List<Ingredient> cookedIngredients = new();
+        foreach (Collectable ingredient in cookingIngredients)
+        {
+            cookedIngredients.Add(ingredient.ingredient);
+        }
+        PlayerInventory.Singleton.CookSoup(cookedIngredients);
+
+        // Remove From Player Inventory
+        foreach (Collectable ingredient in cookingIngredients)
+        {
+            PlayerInventory.Singleton.RemoveIngredientCollectable(ingredient, true);
+        }
 
         cookingIngredients.Clear();
         ResetStatsText();
 
-        // Destroy the objects that were cooked
+        ClearCookingManagerSprites();
+    }
+
+    // Sets all the sprites in the cooking slot to null and 0 alpha
+    public void ClearCookingManagerSprites()
+    {
+        foreach (Transform slot in CookingContent)
+        {
+            CookingSlot cookingSlot = slot.gameObject.GetComponent<CookingSlot>();
+            cookingSlot.ingredientReference = null;
+            cookingSlot.faceImage.sprite = null;
+
+            Color tempColor = cookingSlot.faceImage.color;
+            tempColor.a = 0;
+            cookingSlot.faceImage.color = tempColor;
+            cookingSlot.usesText.text = "";
+        }
+    }
+
+    // Sets all the images in the cooking slot to 1 alpha
+    // Only if the cooking sprite is not null (meaning an ingredient is in it)
+    public void CookingManagerSpritesSetOpaque()
+    {
         foreach (Transform slot in CookingContent)
         {
             foreach (Transform item in slot)
             {
-                Destroy(item.gameObject);
+                Image image = item.gameObject.GetComponent<Image>();
+                if (image.sprite != null)
+                {
+                    Color tempColor = image.color;
+                    tempColor.a = 1;
+                    item.gameObject.GetComponent<Image>().color = tempColor;
+                }
             }
         }
+    }
+
+    // Turn a specific cookingslot transparent
+    public void CookingSlotSetTransparent(CookingSlot slot)
+    {
+        // index into first child slot bc should only be 1 child
+        //slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
+        Image image = slot.transform.GetChild(0).GetComponent<Image>();
+        Color tempColor = image.color;
+        tempColor.a = 0;
+        slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
+    }
+
+    // Turn a specific cookingslot opaque
+    public void CookingSlotSetOpaque(CookingSlot slot)
+    {
+        Image image = slot.transform.GetChild(0).GetComponent<Image>();
+        Color tempColor = image.color;
+        tempColor.a = 1;
+        slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
     }
 
     public void ResetStatsText()
@@ -205,7 +296,13 @@ public class CookingManager : MonoBehaviour
         InflictionText.text = "";
         AbilitiesText.text = "Abilities:\n";
         UsesText.text = "Uses: ";
-        statSpoon = new SoupSpoon(cookingIngredients);
+        // Cook the soup with what is currently in the pot
+        List<Ingredient> cookedIngredients = new();
+        foreach (Collectable ingredient in cookingIngredients)
+        {
+            cookedIngredients.Add(ingredient.ingredient);
+        }
+        statSpoon = new SoupSpoon(cookedIngredients);
         float totalDuration = 0;
         float totalSize = 0;
         float totalCrit = 0;
@@ -267,18 +364,67 @@ public class CookingManager : MonoBehaviour
         }
 
         // update buff text
-        BuffText.text += "<color=yellow>Sour (Duration):</color> " + totalDuration + "\n";
-        BuffText.text += "<color=#00FF00>Bitter (Size):</color> " + totalSize + "\n";
-        BuffText.text += "<color=orange>Salty (Crit):</color> " + totalCrit + "\n";
-        BuffText.text += "<color=purple>Sweet (Speed):</color> " + totalSpeed + "\n";
+        if (totalDuration > 0)
+        {
+            string sourColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SOUR_Duration]);
+            BuffText.text += $"<color=#{sourColor}>Sour (Duration):</color> " + totalDuration + "\n";
+        }
+        if (totalSize > 0)
+        {
+            string bittedColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.BITTER_Size]);
+            BuffText.text += $"<color=#{bittedColor}>Bitter (Size):</color> " + totalSize + "\n";
+        }
+        if (totalCrit > 0)
+        {
+            string saltyColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SALTY_Crit]);
+            BuffText.text += $"<color=#{saltyColor}>Salty (Crit):</color> " + totalCrit + "\n";
+        }
+        if (totalSpeed > 0)
+        {
+            string sweetColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed]);
+            BuffText.text += $"<color=#{sweetColor}>Sweet (Speed):</color> " + totalSpeed + "\n";
+        }
         BuffText.text += "<color=blue>Cooldown:</color> " + totalCooldown + "\n";
 
         // update infliction text
-        InflictionText.text += "<color=red>Spicy (Burn):</color>" + "\n" + "| Add "+ totalAddBurn + " | Mult " + totalMultBurn + " |\n";
-        InflictionText.text += "<color=#00FFFF>Frosty (Freeze):</color>" + "\n" + "| Add " + totalAddFreeze + " | Mult " + totalMultFreeze + " |\n";
-        InflictionText.text += "<color=green>Hearty (Healing):</color>" + "\n" + "| Add " + totalAddHealing + " | Mult " + totalMultHealing + " |\n";
-        InflictionText.text += "<color=#FF00FF>Spiky (Damage):</color>" + "\n" + "| Add " + totalAddDamage + " | Mult " + totalMultDamage + " |\n";
-        InflictionText.text += "<color=#8B4513>Greasy (Knockback):</color>" + "\n" + "| Add " + totalAddKnockback + " | Mult " + totalMultKnockback + " |\n";
+        string spicyColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.inflictionColorMapping[FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn]);
+        if (totalAddBurn > 0 || totalMultBurn > 0)
+        {
+            InflictionText.text += $"<color=#{spicyColor}>Spicy (Burn):</color>\n" + (totalAddBurn > 0 ? $"+{totalAddBurn} " : "") + (totalMultBurn != 1 ? $"x{totalMultBurn} " : "") + "\n";
+        }
+        
+        string frostyColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.inflictionColorMapping[FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze]);
+        if (totalAddFreeze > 0 || totalMultFreeze > 0)
+        {
+            InflictionText.text += $"<color=#{frostyColor}>Frosty (Freeze):</color>\n" + (totalAddFreeze > 0 ? $"+{totalAddFreeze} " : "") + (totalMultFreeze != 1 ? $"x{totalMultFreeze} " : "") + "\n";
+        }
+        
+        string heartyColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.inflictionColorMapping[FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health]);
+        if (totalAddHealing > 0 || totalMultHealing > 0)
+        {
+            InflictionText.text += $"<color=#{heartyColor}>Hearty (Healing):</color>\n" + (totalAddHealing > 0 ? $"+{totalAddHealing} " : "") + (totalMultHealing != 1 ? $"x{totalMultHealing} " : "") + "\n";
+        }
+        
+        string spikyColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.inflictionColorMapping[FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage]);
+        if (totalAddDamage > 0 || totalMultDamage > 0)
+        {
+            InflictionText.text += $"<color=#{spikyColor}>Spiky (Damage):</color>\n" + (totalAddDamage > 0 ? $"+{totalAddDamage} " : "") + (totalMultDamage != 1 ? $"x{totalMultDamage} " : "") + "\n";
+        }
+        
+        string greasyColor = ColorUtility.ToHtmlStringRGB(FlavorIngredient.inflictionColorMapping[FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback]);
+        if (totalAddKnockback > 0 || totalMultKnockback > 0)
+        {
+            InflictionText.text += $"<color=#{greasyColor}>Greasy (Knockback):</color>\n" + (totalAddKnockback > 0 ? $"+{totalAddKnockback} " : "") + (totalMultKnockback != 1 ? $"x{totalMultKnockback} " : "") + "\n";
+        }
     }
 
+    public void enableWorldDrop()
+    {
+        worldDrop.SetActive(true);
+    }
+
+    public void disableWorldDrop()
+    {
+        worldDrop.SetActive(false);
+    }
 }

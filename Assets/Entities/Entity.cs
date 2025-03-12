@@ -17,6 +17,7 @@ public class Entity : MonoBehaviour
         public float baseMoveSpeed;
         public float invincibility;
     }
+    [Serializable]
     public struct CurrentStats
     {
         public int health;
@@ -25,10 +26,12 @@ public class Entity : MonoBehaviour
 
     // ~~~ VARIABLES ~~~
     [SerializeField] BaseStats baseStats;
-    CurrentStats currentStats;
+    [SerializeField] CurrentStats currentStats;
     internal EntityInflictionEffectHandler inflictionHandler;
     internal EntityRenderer entityRenderer;
     internal Rigidbody2D _rigidbody;
+
+    [SerializeField] GameObject hitmarker;
 
     public void InitEntity()
     {
@@ -46,6 +49,13 @@ public class Entity : MonoBehaviour
     public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
     {
         inflictionHandler.ApplyInflictions(spoonInflictions, source);
+    }
+
+    public void DisplayHitmarker(Color color, string text)
+    {
+        GameObject hitmarkerInstance = Instantiate(hitmarker, transform.position, Quaternion.identity);
+        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = text;
+        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = color;
     }
 
     public BaseStats GetBaseStats()
@@ -78,12 +88,13 @@ public class Entity : MonoBehaviour
     {
         return currentStats.moveSpeed;
     }
-    public void SetMoveSpeed(float newSpeed)
+    public virtual void SetMoveSpeed(float newSpeed)
     {
+        print("Changing speed to " + newSpeed);
         currentStats.moveSpeed = newSpeed;
     }
 
-    public void ResetMoveSpeed()
+    public virtual void ResetMoveSpeed()
     {
         currentStats.moveSpeed = baseStats.baseMoveSpeed;
     }

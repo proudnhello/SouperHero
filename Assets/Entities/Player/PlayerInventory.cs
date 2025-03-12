@@ -12,11 +12,15 @@ public class PlayerInventory : MonoBehaviour
     public static event Action<int> ChangedSpoon;
     public int maxSpoons = 4;
 
-    [SerializeField] List<Ingredient> defaultSpoonIngredients;
+    public List<Ingredient> defaultSpoonIngredients;
+
+    //[SerializeField]
+    //internal List<Ingredient> ingredientsHeld;
 
     [SerializeField]
-    internal List<Ingredient> ingredientsHeld;
+    internal List<Collectable> collectablesHeld;
 
+    [SerializeField]
     List<SoupSpoon> spoons;
 
     int currentSpoon = 0;
@@ -28,7 +32,7 @@ public class PlayerInventory : MonoBehaviour
         {
             new SoupSpoon(defaultSpoonIngredients, true)
         };
-        ingredientsHeld = new();
+        collectablesHeld = new();
     }
 
     public List<SoupSpoon> GetSpoons()
@@ -53,25 +57,23 @@ public class PlayerInventory : MonoBehaviour
         PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
     }
 
-    public void CollectIngredient(Collectable collectable)
+    public void CollectIngredientCollectable(Collectable collectable)
     {
-        Debug.Log($"Collected Ingredient {collectable.ingredient}");
-        ingredientsHeld.Add(collectable.ingredient);
-        BasketUI.Singleton.AddIngredient(collectable);
+        //Debug.Log($"Collected Ingredient {collectable.ingredient}");
+        collectablesHeld.Add(collectable);
+        BasketUI.Singleton.AddIngredient(collectable, true);
     }
 
-    public void RemoveIngredient(Ingredient ingredient, bool reverse = false)
+
+    // Removes ingredient from the player inventory
+    // By default it removes the first insance of an ingredient if there are multiple
+    // set reverse to true to remove the last instance of the ingredient
+    // (The collider under the basket calls it in reverse, the cook button calls it forward)
+    public void RemoveIngredientCollectable(Collectable collectable, bool needsDestroy)
     {
-        if (!reverse)
-        {
-            ingredientsHeld.Remove(ingredient);
-            BasketUI.Singleton.RemoveIngredient(ingredient);
-        }
-        else
-        {
-            ingredientsHeld.Remove(ingredient);
-            BasketUI.Singleton.RemoveIngredient(ingredient, reverse);
-        }
+        //Debug.Log("Remove Ingredient Called");
+        collectablesHeld.Remove(collectable);
+        BasketUI.Singleton.RemoveIngredient(collectable, needsDestroy);
     }
 
     public bool CookSoup(List<Ingredient> ingredients)
@@ -81,10 +83,6 @@ public class PlayerInventory : MonoBehaviour
         spoons.Add(new SoupSpoon(ingredients));
         currentSpoon = spoons.Count - 1;
         ChangedSpoon?.Invoke(currentSpoon);
-        foreach (var ingredient in ingredients)
-        {
-            RemoveIngredient(ingredient);
-        }
 
         return true;
     }
