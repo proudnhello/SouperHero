@@ -62,7 +62,7 @@ public class EntityInflictionEffectHandler
         foreach (var infliction in spoonInflictions)
         {
             Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[infliction.InflictionFlavor.inflictionType];
-            string hitmarkerText = FlavorIngredient.inflictionTextMapping[infliction.InflictionFlavor.inflictionType];
+            string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(infliction.InflictionFlavor.inflictionType);
             if(hitmarkerColor == null) hitmarkerColor = Color.white;
             if(hitmarkerText == null) hitmarkerText = "DEFAULT HITMARKER TEXT";
             //Debug.Log("applying infliction " + infliction.InflictionFlavor.inflictionType);
