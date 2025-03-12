@@ -15,6 +15,7 @@ public class Encyclopedia : MonoBehaviour
         public string KEY;
         public string REPLACEMENT_TEXT;
         public Sprite ICON;
+        public string TOOLTIP_TEXT;
     }
     public static Encyclopedia Singleton { get; private set; }
 
@@ -25,7 +26,7 @@ public class Encyclopedia : MonoBehaviour
     [SerializeField] TMP_Text SourceText;
     [SerializeField] TMP_Text FlavorEntry;
     [SerializeField] TMP_Text AbilityEntry;
-    [SerializeField] Image[] FlavorIcons;
+    [SerializeField] EncyclopediaFlavorIcon[] FlavorIcons;
     [SerializeField] List<FlavorTextToIcon> FlavorTextToIcons;
 
     Dictionary<string, FlavorTextToIcon> FlavorTextToIconsDict = new();
@@ -74,19 +75,13 @@ public class Encyclopedia : MonoBehaviour
             AbilityEntry.gameObject.SetActive(false);
 
             // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
-            //string pattern = @"(?<=(SOUR_Duration)|(SALTY_Crit)|(BITTER_Size)|(SWEET_Speed)|(SPICY_Burn)|(FROSTY_Freeze)|(HEARTY_Health)|(SPIKY_Damage)|(GREASY_Knockback)|(UMAMI_Vampirism))";
             string[] words = ((FlavorIngredient)ing).FlavorProfile.Split(' ');
-            //string[] words = Regex.Matches(((FlavorIngredient)ing).FlavorProfile, pattern).Cast<Match>()
-            //                    .Select(m => m.Value)
-            //                    .ToArray();
-            Debug.Log("word count = " + words.Length);
             string display = "";
             int icon = 0;
             for (int i = 0; i < words.Length; i++)
             {
                 var word = words[i];
                 FlavorTextToIcon iconInfo;
-                Debug.Log($"Word = {word}");
                 if (FlavorTextToIconsDict.TryGetValue(word, out iconInfo))
                 {
 
@@ -96,8 +91,7 @@ public class Encyclopedia : MonoBehaviour
                     var firstCharInfo = FlavorEntry.textInfo.characterInfo[FlavorEntry.textInfo.wordInfo[i].firstCharacterIndex];
                     var wordLocation = FlavorEntry.transform.TransformPoint((firstCharInfo.topLeft + firstCharInfo.bottomLeft) / 2f);
 
-                    FlavorIcons[icon].gameObject.SetActive(true);
-                    FlavorIcons[icon].sprite = iconInfo.ICON;
+                    FlavorIcons[icon].SetIcon(iconInfo);
                     FlavorIcons[icon].transform.position = wordLocation;
                     icon++;
                 }
@@ -106,22 +100,9 @@ public class Encyclopedia : MonoBehaviour
                     display += word;
                 }
                 display += ' ';
-                Debug.Log("display is now = " + display);
             }
 
             FlavorEntry.text = display;
-
-            //FlavorEntry.ForceMeshUpdate();
-            //Debug.Log($"Word count = {FlavorEntry.textInfo.wordInfo.Length}");
-            //spicyicon.SetActive(false);
-            //foreach (var wordInfo in FlavorEntry.textInfo.wordInfo)
-            //{
-            //    Debug.Log($"Word = {wordInfo.firstCharacterIndex}");
-            //}
-            ////Debug.Log($"Word = {FlavorEntry.textInfo.wordInfo[1].firstCharacterIndex}");
-            ////var firstCharInfo = FlavorEntry.textInfo.characterInfo[FlavorEntry.textInfo.wordInfo[2].firstCharacterIndex];
-            ////var wordLocation = FlavorEntry.transform.TransformPoint((firstCharInfo.topLeft + firstCharInfo.bottomLeft) / 2f);
-            ////Instantiate(spicyicon, wordLocation, transform.localRotation, transform);
             
         } 
         else // is AbilityIngredient
