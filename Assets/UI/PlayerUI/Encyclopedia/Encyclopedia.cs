@@ -24,6 +24,7 @@ public class Encyclopedia : MonoBehaviour
     [SerializeField] TMP_Text Title;
     [SerializeField] Image EntryImage;
     [SerializeField] TMP_Text SourceText;
+    [SerializeField] GameObject FlavorProfile;
     [SerializeField] TMP_Text FlavorEntry;
     [SerializeField] TMP_Text AbilityEntry;
     [SerializeField] EncyclopediaFlavorIcon[] FlavorIcons;
@@ -71,7 +72,7 @@ public class Encyclopedia : MonoBehaviour
 
         if (ing.GetType() == typeof(FlavorIngredient))
         {
-            FlavorEntry.gameObject.SetActive(true);
+            FlavorProfile.SetActive(true);
             AbilityEntry.gameObject.SetActive(false);
 
             // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
@@ -108,7 +109,7 @@ public class Encyclopedia : MonoBehaviour
         else // is AbilityIngredient
         {
             AbilityEntry.gameObject.SetActive(true);
-            FlavorEntry.gameObject.SetActive(false);
+            FlavorProfile.SetActive(false);
             AbilityEntry.text = ((AbilityIngredient)ing).AbilityDescription;         
         }
 
