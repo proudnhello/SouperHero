@@ -222,7 +222,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             if (abilityIngredient.baseStats.size > 0)
                 bodyText.text += $"<color=#{ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.BITTER_Size])}>Bitter (Size):</color> {abilityIngredient.baseStats.size}\n";
             if (abilityIngredient.baseStats.crit > 0)
-                bodyText.text += $"<color=#{ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SALTY_CriticalStrike])}>Salty (Critical Strike):</color> {abilityIngredient.baseStats.crit}\n";
+                bodyText.text += $"<color=#{ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SALTY_Crit])}>Salty (Critical Strike):</color> {abilityIngredient.baseStats.crit}\n";
             if (abilityIngredient.baseStats.speed > 0)
                 bodyText.text += $"<color=#{ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed])}>Sweet (Speed):</color> {abilityIngredient.baseStats.speed}\n";
             bodyText.text += $"<color=blue>Cooldown:</color> {abilityIngredient.baseStats.cooldown}\n";
@@ -325,7 +325,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                             }
                         }
                         break;
-                    case FlavorIngredient.BuffFlavor.BuffType.SALTY_CriticalStrike:
+                    case FlavorIngredient.BuffFlavor.BuffType.SALTY_Crit:
                         if (buffFlavor.operation == BuffFlavor.Operation.Add)
                         {
                             if (buffFlavor.amount > 0){

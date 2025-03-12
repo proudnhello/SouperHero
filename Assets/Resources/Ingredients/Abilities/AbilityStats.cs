@@ -36,7 +36,7 @@ public struct AbilityStats
                     if (buff.operation == Operation.Add) add.size += buff.amount;
                     else mult.size *= buff.amount;
                     break;
-                case BuffType.SALTY_CriticalStrike:
+                case BuffType.SALTY_Crit:
                     if (buff.operation == Operation.Add) add.crit += buff.amount;
                     else mult.crit *= buff.amount;
                     break;
