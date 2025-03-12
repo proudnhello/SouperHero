@@ -6,11 +6,16 @@ using UnityEngine.UI;
 using TMPro;
 using BuffType = FlavorIngredient.BuffFlavor.BuffType;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
-using System.Text.RegularExpressions;
-using System.Linq;
-using System.Xml;
+using System;
 public class Encyclopedia : MonoBehaviour
 {
+    [Serializable]
+    public struct FlavorTextToIcon
+    {
+        public string KEY;
+        public string REPLACEMENT_TEXT;
+        public Sprite ICON;
+    }
     public static Encyclopedia Singleton { get; private set; }
 
     [SerializeField] LayerMask ClickableLayers;
@@ -20,30 +25,25 @@ public class Encyclopedia : MonoBehaviour
     [SerializeField] TMP_Text SourceText;
     [SerializeField] TMP_Text FlavorEntry;
     [SerializeField] TMP_Text AbilityEntry;
-    [SerializeField] GameObject spicyicon;
+    [SerializeField] Image[] FlavorIcons;
+    [SerializeField] List<FlavorTextToIcon> FlavorTextToIcons;
 
-    Dictionary<BuffType, string> buffFlavorToIconSpacing = new()
-    {
-        
-    };
-    Dictionary<InflictionType, string> inflictionFlavorToIconSpacing = new()
-    {
-        { InflictionType.SPICY_Burn, "                " }
-    };
+    Dictionary<string, FlavorTextToIcon> FlavorTextToIconsDict = new();
 
 
     List<Ingredient> collectedEntries;
-    private void Awake()
-    {
-        RenderedObject.SetActive(false);
-    }
-    void Start()
+
+    void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
 
         collectedEntries = new();
         RenderedObject.SetActive(false);
+        foreach (var flavor in FlavorTextToIcons)
+        {
+            FlavorTextToIconsDict.Add(flavor.KEY, flavor);
+        }
 
     }
 
@@ -61,6 +61,7 @@ public class Encyclopedia : MonoBehaviour
     public void PullUpEntry(Ingredient ing)
     {
         RenderedObject.SetActive(true);
+        foreach (var icon in FlavorIcons) icon.gameObject.SetActive(false);
 
         if (!collectedEntries.Contains(ing)) collectedEntries.Add(ing);
         Title.text = ing.IngredientName;
@@ -69,52 +70,65 @@ public class Encyclopedia : MonoBehaviour
 
         if (ing.GetType() == typeof(FlavorIngredient))
         {
-            // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
-            //string pattern = "\b(SOUR_Duration|SALTY_Crit|BITTER_Size|SWEET_Speed|SPICY_Burn|FROSTY_Freeze|HEARTY_Health|SPIKY_Damage|GREASY_Knockback|UMAMI_Vampirism|)\b";
-            //SourceText.textInfo.characterInfo
-            //string[] words = Regex.Matches(((FlavorIngredient)ing).FlavorProfile, pattern).Cast<Match>()
-            //                    .Select(m => m.Value)
-            //                    .ToArray();
-
-            //string display = "";
-            //foreach (var word in words)
-            //{
-
-            //}
             FlavorEntry.gameObject.SetActive(true);
             AbilityEntry.gameObject.SetActive(false);
 
-            FlavorEntry.text = ((FlavorIngredient)ing).FlavorProfile;
-
-            FlavorEntry.ForceMeshUpdate();
-            Debug.Log($"Word count = {FlavorEntry.textInfo.wordInfo.Length}");
-            foreach (var wordInfo in FlavorEntry.textInfo.wordInfo)
+            // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
+            //string pattern = @"(?<=(SOUR_Duration)|(SALTY_Crit)|(BITTER_Size)|(SWEET_Speed)|(SPICY_Burn)|(FROSTY_Freeze)|(HEARTY_Health)|(SPIKY_Damage)|(GREASY_Knockback)|(UMAMI_Vampirism))";
+            string[] words = ((FlavorIngredient)ing).FlavorProfile.Split(' ');
+            //string[] words = Regex.Matches(((FlavorIngredient)ing).FlavorProfile, pattern).Cast<Match>()
+            //                    .Select(m => m.Value)
+            //                    .ToArray();
+            Debug.Log("word count = " + words.Length);
+            string display = "";
+            int icon = 0;
+            for (int i = 0; i < words.Length; i++)
             {
-                Debug.Log($"Word = {wordInfo.firstCharacterIndex}");
+                var word = words[i];
+                FlavorTextToIcon iconInfo;
+                Debug.Log($"Word = {word}");
+                if (FlavorTextToIconsDict.TryGetValue(word, out iconInfo))
+                {
+
+                    display += iconInfo.REPLACEMENT_TEXT;
+                    FlavorEntry.text = display;
+                    FlavorEntry.ForceMeshUpdate();
+                    var firstCharInfo = FlavorEntry.textInfo.characterInfo[FlavorEntry.textInfo.wordInfo[i].firstCharacterIndex];
+                    var wordLocation = FlavorEntry.transform.TransformPoint((firstCharInfo.topLeft + firstCharInfo.bottomLeft) / 2f);
+
+                    FlavorIcons[icon].gameObject.SetActive(true);
+                    FlavorIcons[icon].sprite = iconInfo.ICON;
+                    FlavorIcons[icon].transform.position = wordLocation;
+                    icon++;
+                }
+                else
+                {
+                    display += word;
+                }
+                display += ' ';
+                Debug.Log("display is now = " + display);
             }
-            //Debug.Log($"Word = {FlavorEntry.textInfo.wordInfo[1].firstCharacterIndex}");
-            var firstCharInfo = FlavorEntry.textInfo.characterInfo[FlavorEntry.textInfo.wordInfo[2].firstCharacterIndex];
-            var wordLocation = FlavorEntry.transform.TransformPoint((firstCharInfo.topLeft + firstCharInfo.bottomLeft) / 2f);
-            Instantiate(spicyicon, wordLocation, transform.localRotation, transform);
+
+            FlavorEntry.text = display;
+
+            //FlavorEntry.ForceMeshUpdate();
+            //Debug.Log($"Word count = {FlavorEntry.textInfo.wordInfo.Length}");
+            //spicyicon.SetActive(false);
+            //foreach (var wordInfo in FlavorEntry.textInfo.wordInfo)
+            //{
+            //    Debug.Log($"Word = {wordInfo.firstCharacterIndex}");
+            //}
+            ////Debug.Log($"Word = {FlavorEntry.textInfo.wordInfo[1].firstCharacterIndex}");
+            ////var firstCharInfo = FlavorEntry.textInfo.characterInfo[FlavorEntry.textInfo.wordInfo[2].firstCharacterIndex];
+            ////var wordLocation = FlavorEntry.transform.TransformPoint((firstCharInfo.topLeft + firstCharInfo.bottomLeft) / 2f);
+            ////Instantiate(spicyicon, wordLocation, transform.localRotation, transform);
             
         } 
         else // is AbilityIngredient
         {
             AbilityEntry.gameObject.SetActive(true);
             FlavorEntry.gameObject.SetActive(false);
-
-            AbilityEntry.text = ((AbilityIngredient)ing).AbilityDescription;
-            AbilityEntry.ForceMeshUpdate();
-            Debug.Log($"Word count = {AbilityEntry.textInfo.wordInfo.Length}");
-            foreach (var wordInfo in AbilityEntry.textInfo.wordInfo)
-            {
-                Debug.Log($"Word = {wordInfo.firstCharacterIndex}");
-            }
-            //Debug.Log($"Word = {FlavorEntry.textInfo.wordInfo[1].firstCharacterIndex}");
-            var firstCharInfo = AbilityEntry.textInfo.characterInfo[AbilityEntry.textInfo.wordInfo[2].firstCharacterIndex];
-            var wordLocation = AbilityEntry.transform.TransformPoint((firstCharInfo.topLeft + firstCharInfo.bottomLeft) / 2f);
-            Instantiate(spicyicon, wordLocation, transform.localRotation, transform);
-            
+            AbilityEntry.text = ((AbilityIngredient)ing).AbilityDescription;         
         }
 
 
