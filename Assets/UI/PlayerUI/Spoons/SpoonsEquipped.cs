@@ -17,6 +17,7 @@ public class SpoonsEquipped : MonoBehaviour
     private void Start()
     {
         PlayerInventory.ChangedSpoon += ChangeSpoon;
+        PlayerInventory.AddSpoon += AddSpoon;
         ChangeSpoon(0); //Start with default spoon
     }
 
@@ -32,5 +33,10 @@ public class SpoonsEquipped : MonoBehaviour
         prevSpoon = spoon;
         imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f);
         imageComponents[prevSpoon].rectTransform.sizeDelta = selectedSize;
+    }
+
+    void AddSpoon(int spoon)
+    {
+        imageComponents[spoon].enabled = true;
     }
 }
