@@ -54,10 +54,10 @@ public class AbilityCSVtoSO
             abilityIngredient.IngredientName = splitData[0];
 
             // Set Base Stats
-            abilityIngredient.baseStats.duration = float.Parse(splitData[3]);
-            abilityIngredient.baseStats.size = float.Parse(splitData[4]);
-            abilityIngredient.baseStats.crit = float.Parse(splitData[5]);
-            abilityIngredient.baseStats.speed = float.Parse(splitData[6]);
+            abilityIngredient.baseStats.BaseDuration = float.Parse(splitData[3]);
+            abilityIngredient.baseStats.BaseSize = float.Parse(splitData[4]);
+            abilityIngredient.baseStats.BaseCrit = float.Parse(splitData[5]);
+            abilityIngredient.baseStats.BaseSpeed = float.Parse(splitData[6]);
             abilityIngredient.baseStats.cooldown = float.Parse(splitData[7]);
             abilityIngredient.uses = int.Parse(splitData[8]);
 
@@ -76,15 +76,6 @@ public class AbilityCSVtoSO
                         FlavorIngredient.InflictionFlavor inflictionFlavor = new();
                         inflictionFlavor.inflictionType = inflictionType;
 
-                        FlavorIngredient.InflictionFlavor.Operation operation;
-                        if (Enum.TryParse("Add", out operation))
-                        {
-                            inflictionFlavor.operation = operation;
-                        }
-                        else
-                        {
-                            Debug.LogError("Invalid operation enum name.");
-                        }
 
                         inflictionFlavor.amount = int.Parse(splitData[i + 1]);
 

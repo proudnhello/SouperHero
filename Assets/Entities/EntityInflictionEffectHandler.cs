@@ -28,7 +28,7 @@ public class EntityInflictionEffectHandler
         public StatusEffectInstance(Entity entity, Infliction infliction)
         {
             this.entity = entity;
-            amount = infliction.add * infliction.mult;
+            amount = infliction.amount;
             duration = infliction.InflictionFlavor.statusEffectDuration;
             type = infliction.InflictionFlavor.inflictionType;
         }
@@ -81,22 +81,22 @@ public class EntityInflictionEffectHandler
                 else if (infliction.InflictionFlavor.inflictionType == InflictionType.HEARTY_Health)
                 {
                     Inflictions.Health(infliction, entity);
-                    hitmarkerText = "+" + infliction.add + " " + hitmarkerText;
+                    hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
                 }
                 else if (infliction.InflictionFlavor.inflictionType == InflictionType.SPIKY_Damage)
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Damage(instance));
-                    hitmarkerText = "-" + infliction.add + " " + hitmarkerText;
+                    hitmarkerText = "-" + infliction.amount + " " + hitmarkerText;
                 } 
                 else if (infliction.InflictionFlavor.inflictionType == InflictionType.GREASY_Knockback)
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Knockback(instance, entity._rigidbody, source));
-                    hitmarkerText = "+" + infliction.add + " " + hitmarkerText;
-                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UNAMI_Vampirism)
+                    hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
+                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UMAMI_Vampirism)
                 {
                     Inflictions.Vampirism(infliction, entity, source);
                     // Display nothing, as it'll appear as healing the player and damage to the enemy

@@ -19,12 +19,19 @@ public class SoupSpoon
         public AbilityStats statsWithBuffs;
 
         float lastUseTime;
+        int uses = 0;
 
         public SpoonAbility(AbilityIngredient ingredient, List<FlavorIngredient.BuffFlavor> buffs)
         {
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
+            uses = ingredient.uses;
             //Debug.Log($"SIZE STATS WITH BUFFS {statsWithBuffs.size}");
+        }
+
+        public void AddIngredient(AbilityIngredient ingredient)
+        {
+            uses += ingredient.uses;
         }
 
         public bool Use()
@@ -39,6 +46,13 @@ public class SoupSpoon
         public InflictionFlavor InflictionFlavor;
         public int add;
         public float mult;
+        public float amount
+        {
+            get
+            {
+                return add * mult;
+            }
+        }
 
         public SpoonInfliction(InflictionFlavor inflictionEffect) { InflictionFlavor = inflictionEffect; add = 0; mult = 1; }
 
@@ -46,8 +60,11 @@ public class SoupSpoon
 
         public void AddIngredient(InflictionFlavor effect)
         {
-            if (effect.operation == InflictionFlavor.Operation.Add) add += effect.amount;
-            else mult += effect.amount;
+             add += effect.amount;
+        }
+        public void Multiply(int count)
+        {
+            mult += .2f * count;
         }
     }
 
@@ -64,6 +81,10 @@ public class SoupSpoon
         Dictionary<AbilityIngredient, SpoonAbility> abilityTracker = new();
         Dictionary<InflictionType, SpoonInfliction> inflictionTracker = new();
 
+        // Track number of each flavor
+        Dictionary<BuffFlavor.BuffType, int> FlavorBuffCounter = new();
+        Dictionary<InflictionType, int> FlavorInflictionCounter = new();
+
         // Separate ingredients into ability and flavor categories
         List<AbilityIngredient> abilityIngredients = ingredients.Where(x => x.GetType() == typeof(AbilityIngredient)).Cast<AbilityIngredient>().ToList();
         List<FlavorIngredient> flavorIngredients = ingredients.Where(x => x.GetType() == typeof(FlavorIngredient)).Cast<FlavorIngredient>().ToList();
@@ -71,26 +92,45 @@ public class SoupSpoon
         // Collect and order buff flavors from flavor ingredients
         List<BuffFlavor> buffFlavors = new();
         flavorIngredients.ForEach(f => buffFlavors = buffFlavors.Concat(f.buffFlavors).ToList());
-        buffFlavors = buffFlavors.OrderBy(x => x.operation).ToList();
+        //buffFlavors = buffFlavors.OrderBy(x => x.operation).ToList();
 
         // Collect infliction flavors from both flavor and ability ingredients
         List<InflictionFlavor> inflictionFlavors = new();
         flavorIngredients.ForEach(f => inflictionFlavors = inflictionFlavors.Concat(f.inflictionFlavors).ToList());
-        abilityIngredients.ForEach(f => inflictionFlavors = inflictionFlavors.Concat(f.inherentInflictionFlavors).ToList());
 
         // Initialize uses and cooldown
         uses = 0;
         cooldown = 0;
 
+        float totalCooldown = 0;
         // Populate ability tracker and calculate total uses and cooldown
         foreach (var ingredient in abilityIngredients)
         {
-            if (!abilityTracker.ContainsKey(ingredient)) 
-                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));
-            uses += ingredient.uses;
-            cooldown += ingredient.baseStats.cooldown;
+            if (!abilityTracker.ContainsKey(ingredient))
+            {
+                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));              
+            } else
+            {
+                abilityTracker[ingredient].AddIngredient(ingredient);
+            }
+            foreach (var infliction in ingredient.inherentInflictionFlavors)
+            {
+                if (!inflictionTracker.ContainsKey(infliction.inflictionType)) // only add each infliction type once
+                {
+                    inflictionTracker.Add(infliction.inflictionType, new(infliction));
+                    inflictionTracker[infliction.inflictionType].AddIngredient(infliction);
+                }
+                // Track number of each infliction
+                if (FlavorInflictionCounter.ContainsKey(infliction.inflictionType)) FlavorInflictionCounter[infliction.inflictionType]++;
+                else FlavorInflictionCounter.Add(infliction.inflictionType, 1);
+            }
+                
+
+            uses += ingredient.uses; // <- ONCE EQUIPPED SPOON UI IS WORKING DELETE
+            totalCooldown += ingredient.baseStats.cooldown;
         }
-        
+        foreach (var ingredient in abilityIngredients) cooldown += Mathf.Pow(ingredient.baseStats.cooldown, 2) / totalCooldown;
+
         // Set uses to infinite if specified
         if (infinite) uses = -1;
         
@@ -103,14 +143,75 @@ public class SoupSpoon
             if (!inflictionTracker.ContainsKey(infliction.inflictionType)) 
                 inflictionTracker.Add(infliction.inflictionType, new(infliction));
             inflictionTracker[infliction.inflictionType].AddIngredient(infliction);
+
+            // Track number of each infliction
+            if (FlavorInflictionCounter.ContainsKey(infliction.inflictionType)) FlavorInflictionCounter[infliction.inflictionType]++;
+            else FlavorInflictionCounter.Add(infliction.inflictionType, 1);
         }
 
-        // Convert trackers to lists for use in abilities and inflictions
+        // Track number of each buff
+        foreach (var buff in buffFlavors)
+        {
+            if (FlavorBuffCounter.ContainsKey(buff.buffType)) FlavorBuffCounter[buff.buffType]++;
+            else FlavorBuffCounter.Add(buff.buffType, 1);
+        }
+
+        // Convert ability track into spoon's finalized list of abilities
         spoonAbilities = abilityTracker.Values.ToList();
+
+        void MultiplyFlavorPairing(FlavorIngredient ing, int count)
+        {
+            foreach (var spoonAbility in spoonAbilities)
+            {
+                foreach (var buff in ing.buffFlavors)
+                {
+                    spoonAbility.statsWithBuffs.MultiplyStat(buff.buffType, count);
+                }
+            }
+
+            foreach (var infliction in ing.inflictionFlavors)
+            {
+                inflictionTracker[infliction.inflictionType].Multiply(count);
+            }     
+        }
+
+        // Now based on pairings, multiply corresponding stat
+        foreach (var flavorIngredient in flavorIngredients)
+        {
+            if (flavorIngredient.Pairing.isBuff)
+            {
+                var pair = (BuffFlavor.BuffType)flavorIngredient.Pairing.GetPairing();
+                if (!FlavorBuffCounter.ContainsKey(pair)) continue;
+                MultiplyFlavorPairing(flavorIngredient, FlavorBuffCounter[pair]);
+            } else
+            {
+                var pair = (InflictionType)flavorIngredient.Pairing.GetPairing();
+                if (!FlavorInflictionCounter.ContainsKey(pair)) continue;
+                MultiplyFlavorPairing(flavorIngredient, FlavorInflictionCounter[pair]);
+            }
+        }
+
+        // now that all infliction values are set, make it a finalized inflictions list
         spoonInflictions = inflictionTracker.Values.ToList();
-        
+
         // set initial lastTimeUsed to cooldown to get atk right away
         lastTimeUsed = Time.time - cooldown;
+
+    }
+
+    static void PrintSpoon(SoupSpoon spoon)
+    {
+        string output = "SPOON Abilities\n";
+        foreach (var ability in spoon.spoonAbilities)
+        {
+            output += $"{ability.ability._abilityName}=D{ability.statsWithBuffs.duration},SIZ{ability.statsWithBuffs.size},CRIT{ability.statsWithBuffs.crit},SP{ability.statsWithBuffs.speed},CO{ability.statsWithBuffs.cooldown}\n";
+        }
+        output += "INFLICTIONS\n";
+        foreach (var infliction in spoon.spoonInflictions)
+        {
+            output += $"{infliction.InflictionFlavor.inflictionType} = {infliction.amount}";
+        }
+        Debug.Log(output);
     }
 
     // Variable to track the last time the spoon was used
