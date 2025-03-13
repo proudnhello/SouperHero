@@ -71,7 +71,6 @@ public class FlavorCSVtoSO
                         };
 
                         inflictionFlavor.amount = int.Parse(splitData[i + 1]);
-                        Debug.Log(splitData[i + 2]);
                         inflictionFlavor.statusEffectDuration = float.Parse(splitData[i + 2]);
 
                         // add parsed infliction flavor
