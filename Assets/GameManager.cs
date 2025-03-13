@@ -72,8 +72,8 @@ public class GameManager : MonoBehaviour
 
     public void LoadGameLevel()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(1);
-        ResumeGame();
     }
 
     // Goes to Death Scene
@@ -94,14 +94,13 @@ public class GameManager : MonoBehaviour
     public void MainMenu()
     {
         SceneManager.LoadScene(0);
-        ResumeGame();
     }
 
     // Restarts the Game
     public void RestartGame()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(1);
-        ResumeGame();
     }
 
     public void LanguageSelect(){
