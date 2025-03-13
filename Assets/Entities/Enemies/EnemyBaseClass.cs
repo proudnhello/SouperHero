@@ -101,4 +101,10 @@ public abstract class EnemyBaseClass : Entity
     public void setSpawn(EnemySpawnLocation s){
         spawn = s;
     }
+
+    // Helper function to sent the enemy after the player when they should be aware of them (ie boss fight)
+    public void AttackPlayer()
+    {
+        agent.SetDestination(PlayerEntityManager.Singleton.GetPlayerPosition());
+    }
 }
