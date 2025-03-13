@@ -60,7 +60,7 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
             {
                 //Debug.Log("Set!");
 
-                draggableItem.image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+                draggableItem.image.color = new Color(1.0f, 1.0f, 1.0f, DraggableItem.alphaOnPickup);
                 draggableItem.image.raycastTarget = false;
 
                 CookingManager.Singleton.CookingSlotSetOpaque(this);

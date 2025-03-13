@@ -96,7 +96,7 @@ public class EntityInflictionEffectHandler
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Knockback(instance, entity._rigidbody, source));
                     hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
-                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UNAMI_Vampirism)
+                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UMAMI_Vampirism)
                 {
                     Inflictions.Vampirism(infliction, entity, source);
                     // Display nothing, as it'll appear as healing the player and damage to the enemy

@@ -16,6 +16,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public bool isDragging = false;
 
     Collectable collectable;
+    public static float alphaOnPickup = .25f;
 
     private void Awake()
     {
@@ -35,7 +36,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             parentAfterDrag = previousParent;
         }
 
-        image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+        image.color = new Color(1.0f, 1.0f, 1.0f, alphaOnPickup);
         image.raycastTarget = false;
 
         isDragging = true;
@@ -49,13 +50,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public bool resetParent()
     {
-        image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+        image.color = new Color(1.0f, 1.0f, 1.0f, alphaOnPickup);
         image.raycastTarget = false;
         if (parentAfterDrag.gameObject.GetComponent<CookingSlot>().ingredientReference == null)
         {
             if (!parentAfterDrag.gameObject.CompareTag("BasketDrop") && !parentAfterDrag.gameObject.CompareTag("WorldDrop"))
             {
-                image.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+                image.color = new Color(1.0f, 1.0f, 1.0f, alphaOnPickup);
                 image.raycastTarget = false;
 
                 if (parentAfterDrag.gameObject.CompareTag("CookingSlot"))
