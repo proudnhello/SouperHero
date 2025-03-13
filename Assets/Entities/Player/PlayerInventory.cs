@@ -127,6 +127,7 @@ public class PlayerInventory : MonoBehaviour
             spoons.RemoveAt(currentSpoon);
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+            ChangedSpoon?.Invoke(currentSpoon);
         } 
     }
 }

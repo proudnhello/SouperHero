@@ -17,7 +17,7 @@ public class SpoonsEquipped : MonoBehaviour
     private void Start()
     {
         PlayerInventory.ChangedSpoon += ChangeSpoon;
-        ChangeSpoon(0);
+        ChangeSpoon(0); //Start with default spoon
     }
 
     void ChangeSpoon(int spoon)
