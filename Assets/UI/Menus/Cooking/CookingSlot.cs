@@ -21,7 +21,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
         if (CursorManager.Singleton.cookingCursor.currentCollectableReference == null)
         {
             CursorManager.Singleton.cookingCursor.removeCursorImage();
-            CookingManager.Singleton.disableWorldDrop();
             return;
         }
 
@@ -82,7 +81,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
 
         CookingManager.Singleton.currentCookingSlot = null;
         CursorManager.Singleton.cookingCursor.removeCursorImage();
-        CookingManager.Singleton.disableWorldDrop();
     }
 
     // This is called when you click on a cooking slot
@@ -94,7 +92,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
         {
             CursorManager.Singleton.cookingCursor.switchCursorImageTo(ingredientReference, faceImage);
             CookingManager.Singleton.currentCookingSlot = this;
-            CookingManager.Singleton.enableWorldDrop();
             Encyclopedia.Singleton.PullUpEntry(ingredientReference.ingredient);
         }
     }
@@ -115,6 +112,10 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
         CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.localScale = Vector3.one;
         CursorManager.Singleton.cookingCursor.currentCollectableReference.Spawn(PlayerEntityManager.Singleton.gameObject.transform.position);
         CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.gameObject.SetActive(true);
+        if (!CookingManager.Singleton.IsCooking())
+        {
+            CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().OnEndDrag(null);
+        }
         CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.SetActive(false);
 
         PlayerInventory.Singleton.RemoveIngredientCollectable(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
@@ -134,29 +135,31 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
     // This is called when you stopclicking on top of a cooking slot
     public void OnPointerUp(PointerEventData eventData)
     {
-        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        if (CursorManager.Singleton.cookingCursor.currentCollectableReference != null)
         {
-            position = Input.mousePosition
-        };
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, results);
-
-        CookingSlot dropTarget = null;
-
-        foreach (RaycastResult result in results)
-        {
-            dropTarget = result.gameObject.GetComponent<CookingSlot>();
-            if(dropTarget != null)
+            PointerEventData pointerData = new PointerEventData(EventSystem.current)
             {
-                dropTarget.OnDrop(eventData);
-                break;
-            }
-        }
+                position = Input.mousePosition
+            };
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerData, results);
 
-        if(dropTarget == null)
-        {
-            CursorManager.Singleton.cookingCursor.removeCursorImage();
-            CookingManager.Singleton.disableWorldDrop();
+            CookingSlot dropTarget = null;
+
+            foreach (RaycastResult result in results)
+            {
+                dropTarget = result.gameObject.GetComponent<CookingSlot>();
+                if (dropTarget != null)
+                {
+                    dropTarget.OnDrop(eventData);
+                    break;
+                }
+            }
+
+            if (dropTarget == null)
+            {
+                CursorManager.Singleton.cookingCursor.removeCursorImage();
+            }
         }
     }
 }

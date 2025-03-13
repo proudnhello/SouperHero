@@ -417,14 +417,4 @@ public class CookingManager : MonoBehaviour
             InflictionText.text += $"<color=#{greasyColor}>Greasy (Knockback):</color>\n" + (totalAddKnockback > 0 ? $"+{totalAddKnockback} " : "") + (totalMultKnockback != 1 ? $"x{totalMultKnockback} " : "") + "\n";
         }
     }
-
-    public void enableWorldDrop()
-    {
-        worldDrop.SetActive(true);
-    }
-
-    public void disableWorldDrop()
-    {
-        worldDrop.SetActive(false);
-    }
 }

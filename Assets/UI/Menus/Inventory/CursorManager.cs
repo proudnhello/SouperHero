@@ -3,8 +3,11 @@ using UnityEngine;
 public class CursorManager : MonoBehaviour
 {
     public static CursorManager Singleton { get; private set; }
+    public bool isDragging = false;
+    public bool isInBasket = false;
     public GameObject cursorObject;
     public CookingCursor cookingCursor;
+    public GameObject basketDrop;
 
     private void Awake()
     {
