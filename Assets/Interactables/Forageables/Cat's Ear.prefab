@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8310152696646874184}
   - component: {fileID: -6575118301210200657}
   - component: {fileID: -2271839371715764953}
-  - component: {fileID: 1689813806336907546}
+  - component: {fileID: 1528581696672608084}
   m_Layer: 9
-  m_Name: Kelp
+  m_Name: Cat's Ear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 326946545
   m_SortingLayer: 2
   m_SortingOrder: 6
-  m_Sprite: {fileID: 1283491084, guid: 3c2cbde50f70d7045bfcfef1212dea62, type: 3}
+  m_Sprite: {fileID: -449777702, guid: 1c440546b946003429f9228c585f83ea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbaf6e811409734da045017e0d66cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectable: {fileID: 165481585712337600, guid: 9311debb772a66a46afe44900de5a599, type: 3}
+  collectable: {fileID: 165481585712337600, guid: eb80b8fe77ed4044a839eaeef5ae9318, type: 3}
 --- !u!95 &-2271839371715764953
 Animator:
   serializedVersion: 5
@@ -110,7 +110,7 @@ Animator:
   m_GameObject: {fileID: 6066935060175311365}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c2389c7611a77454bb8750551de6b579, type: 2}
+  m_Controller: {fileID: 9100000, guid: b4a77d62ac9e06448a056a4293be1615, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -121,8 +121,8 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!70 &1689813806336907546
-CapsuleCollider2D:
+--- !u!61 &1528581696672608084
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -153,6 +153,16 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.039796114, y: 0.26}
-  m_Size: {x: 1.4785697, y: 1.7807989}
-  m_Direction: 0
+  m_Offset: {x: 0.03677857, y: 0.085725814}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.4908942, y: 0.1781983}
+    oldSize: {x: 1.46875, y: 1.875}
+    newSize: {x: 1, y: 0.5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.3118021, y: 0.8727369}
+  m_EdgeRadius: 0
