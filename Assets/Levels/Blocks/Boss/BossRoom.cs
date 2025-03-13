@@ -10,7 +10,7 @@ public class BossRoom : MonoBehaviour
     public GameObject[] openDoors;
     bool fightStarted = false;
     public Wave[] waves;
-    List<GameObject> enemiesInWave;
+    List<(GameObject, GameObject)> enemiesInWave;
     public List<GameObject> spawnLocations;
     int currentWave = 0;
     float waveCheckInterval = 0.5f;
@@ -34,7 +34,7 @@ public class BossRoom : MonoBehaviour
 
     private void Start()
     {
-        enemiesInWave = new List<GameObject>();
+        enemiesInWave = new List<(GameObject, GameObject)>();
     }
 
     public void BeginFight()
@@ -67,8 +67,9 @@ public class BossRoom : MonoBehaviour
         {
             waveCheckInterval = 0.5f;
             // If no enemies are left, see if we can spawn the next wave
-            foreach (var enemy in enemiesInWave)
+            foreach (var holder in enemiesInWave)
             {
+                GameObject enemy = holder.Item1;
                 if (enemy != null)
                 {
                     print(enemy.name + " is still alive");
@@ -147,14 +148,13 @@ public class BossRoom : MonoBehaviour
             }
         }
 
-        List<GameObject> enemiesNotSpawned = new List<GameObject>(enemiesInWave);
+        List<(GameObject, GameObject)> enemiesNotSpawned = new List<(GameObject, GameObject)>(enemiesInWave);
         // Then, activate them in chunks of wave.spawnsAtATime every wave.timeBetweenSpawns seconds
         while (enemiesNotSpawned.Count > 0)
         {
             for (int i = 0; i < wave.spawnsAtATime && enemiesNotSpawned.Count > 0; i++)
             {
-                GameObject enemy = enemiesNotSpawned[0];
-                enemy.SetActive(true);
+                StartCoroutine(SpawnAnimation(enemiesNotSpawned[0]));
                 enemiesNotSpawned.RemoveAt(0);
             }
             yield return new WaitForSeconds(wave.timeBetweenSpawns);
@@ -173,10 +173,40 @@ public class BossRoom : MonoBehaviour
 
         GameObject newEnemy = Instantiate(enemy.enemy, spawnPoint.transform);
         newEnemy.transform.position = spawnPoint.transform.position;
-        newEnemy.SetActive(active);
-        newEnemy.GetComponent<EnemyBaseClass>().AttackPlayer();
+        newEnemy.SetActive(false);
 
         wave.difficulty -= enemy.difficulty;
-        enemiesInWave.Add(newEnemy);
+        enemiesInWave.Add((newEnemy, spawnPoint));
+
+        if (active)
+        {
+            StartCoroutine(SpawnAnimation((newEnemy, spawnPoint)));
+        }
+    }
+
+    IEnumerator SpawnAnimation((GameObject, GameObject) holder)
+    {
+        GameObject enemy = holder.Item1;
+        GameObject spawnPoint = holder.Item2;
+
+        enemy.SetActive(true);
+        print(enemy.name + " spawned at " + spawnPoint.name);
+        EnemyBaseClass e = enemy.GetComponent<EnemyBaseClass>();
+        ParticleSystem spawnEffect = spawnPoint.GetComponentInChildren<ParticleSystem>();
+        if(spawnEffect != null)
+        {
+            spawnEffect.Play();
+        }
+
+        yield return new WaitForSeconds(0.5f);
+        if (spawnEffect != null)
+        {
+            spawnEffect.Stop();
+        }
+        if (e)
+        {
+            e.AttackPlayer();
+        }
+
     }
 }
