@@ -2,54 +2,100 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using BuffType = FlavorIngredient.BuffFlavor.BuffType;
-using Operation = FlavorIngredient.BuffFlavor.Operation;
 
 [System.Serializable]
 public struct AbilityStats
 {
-    // STATS
-    public float duration;
-    public float size;
-    public float crit;
-    public float speed;
-    public float cooldown;
-
-    AbilityStats EmptyStats(int stat) {
-        return new AbilityStats { duration = stat, cooldown = stat, size = stat, speed = stat, crit = stat}; 
+    // STATS -- I APOLOGIZE IN ADVANCE THIS IS JUST TO FINISH UP THE SPRINT I WANT TO FIX THIS NEXT QUARTER
+    public float BaseDuration;
+    public float duration
+    {
+        get
+        {
+            return (BaseDuration + durationAdd) * durationMult;
+        }
+        set { BaseDuration = value; }
     }
+    float durationAdd, durationMult;
+
+    public float BaseSize;
+    public float size
+    {
+        get
+        {
+            return (BaseSize + sizeAdd) * sizeMult;
+        }
+        set { BaseSize = value; }
+    }
+    float sizeAdd, sizeMult;
+
+    public float BaseCrit;
+    public float crit
+    {
+        get
+        {
+            return (BaseCrit + critAdd) * critMult;
+        }
+        set { BaseCrit = value;  }
+    }
+    float critAdd, critMult;
+    public float BaseSpeed;
+    public float speed
+    {
+        get
+        {
+            return (BaseSpeed + speedAdd) * speedMult;
+        }
+        set { BaseSpeed = value; }
+    }
+    float speedAdd, speedMult;
+
+    public float cooldown;
 
     public AbilityStats(AbilityStats baseStats, List<FlavorIngredient.BuffFlavor> buffs)
     {
         this = baseStats;
+        durationMult = 1;
+        sizeMult = 1;
+        critMult = 1;
+        speedMult = 1;
 
-        AbilityStats add = EmptyStats(0);
-        AbilityStats mult = EmptyStats(1);
         foreach (var buff in buffs)
         {
             switch(buff.buffType)
             {
                 case BuffType.SOUR_Duration:
-                    if (buff.operation == Operation.Add) add.duration += buff.amount;
-                    else mult.duration *= buff.amount; 
+                    durationAdd += buff.amount;
                     break;
                 case BuffType.BITTER_Size:
-                    if (buff.operation == Operation.Add) add.size += buff.amount;
-                    else mult.size *= buff.amount;
+                    sizeAdd += buff.amount;
                     break;
                 case BuffType.SALTY_Crit:
-                    if (buff.operation == Operation.Add) add.crit += buff.amount;
-                    else mult.crit *= buff.amount;
+                    critAdd += buff.amount;
                     break;
                 case BuffType.SWEET_Speed:
-                    if (buff.operation == Operation.Add) add.speed += buff.amount;
-                    else mult.speed *= buff.amount;
+                    speedAdd += buff.amount;
                     break;
             }
         }
+    }
 
-        duration = (duration + add.duration) * mult.duration;
-        size = (size + add.size) * mult.size;
-        crit = (crit + add.crit) * mult.crit;
-        speed = (speed + add.speed) * mult.speed;
+    public void MultiplyStat(BuffType buff, int count) 
+    {
+        switch (buff)
+        {
+            case BuffType.SOUR_Duration:
+                durationMult += .2f * count;
+                break;
+            case BuffType.BITTER_Size:
+                sizeMult += .2f * count;
+                break;
+            case BuffType.SALTY_Crit:
+                critMult += .2f * count;
+                break;
+            case BuffType.SWEET_Speed:
+                speedMult += .2f * count;
+                break;
+        }
     }
 }

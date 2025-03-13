@@ -58,7 +58,7 @@ public class FlavorCSVtoSO
             List<InflictionFlavor> inherentInflictionFlavors = new();
             List<BuffFlavor> inherentBuffFlavors = new();
 
-            for (int i=1; i<9; i += 4)
+            for (int i=1; i<7; i += 3)
             {
                 if (!string.IsNullOrEmpty(splitData[i]))
                 {
@@ -69,18 +69,9 @@ public class FlavorCSVtoSO
                             inflictionType = inflictionType
                         };
 
-                        if (Enum.TryParse(splitData[i + 1], out InflictionFlavor.Operation operation))
-                        {
-                            inflictionFlavor.operation = operation;
-                        }
-                        else
-                        {
-                            Debug.LogError("Invalid operation enum name.");
-                        }
+                        inflictionFlavor.amount = int.Parse(splitData[i + 1]);
 
-                        inflictionFlavor.amount = int.Parse(splitData[i + 2]);
-
-                        inflictionFlavor.statusEffectDuration = float.Parse(splitData[i + 3]);
+                        inflictionFlavor.statusEffectDuration = float.Parse(splitData[i + 2]);
 
                         // add parsed infliction flavor
                         inherentInflictionFlavors.Add(inflictionFlavor);
@@ -91,16 +82,8 @@ public class FlavorCSVtoSO
                             buffType = buffType
                         };
 
-                        if(Enum.TryParse(splitData[i + 1], out BuffFlavor.Operation operation))
-                        {
-                            buffFlavor.operation = operation;
-                        }
-                        else
-                        {
-                            Debug.LogError("Invalid operation enum name.");
-                        }
 
-                        buffFlavor.amount = int.Parse(splitData[i + 2]);
+                        buffFlavor.amount = int.Parse(splitData[i + 1]);
 
                         // add parsed infliction flavor
                         inherentBuffFlavors.Add(buffFlavor);
@@ -113,18 +96,20 @@ public class FlavorCSVtoSO
 
             }
 
+            flavorIngredient.Pairing = new(splitData[10]);
+
             flavorIngredient.inflictionFlavors = inherentInflictionFlavors;
             flavorIngredient.buffFlavors = inherentBuffFlavors;
 
             // Set Icon
-            if (!string.IsNullOrWhiteSpace(splitData[9]))
+            if (!string.IsNullOrWhiteSpace(splitData[7]))
             {
-                Sprite icon = FindSpriteByName(splitData[9]);
+                Sprite icon = FindSpriteByName(splitData[7]);
                 flavorIngredient.EncyclopediaImage = icon;
             }
 
-            flavorIngredient.Source = splitData[10];
-            flavorIngredient.FlavorProfile = splitData[11];
+            flavorIngredient.Source = splitData[8];
+            flavorIngredient.FlavorProfile = splitData[9];
 
             AssetDatabase.CreateAsset(flavorIngredient, $"{writeFolderPath}{flavorIngredient.IngredientName}.asset");
 

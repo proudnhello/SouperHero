@@ -19,7 +19,7 @@ public class Inflictions
 
     public static void Health(Infliction infliction, Entity entity)
     {
-        entity.ModifyHealth(Mathf.CeilToInt(infliction.add * infliction.mult));
+        entity.ModifyHealth(Mathf.CeilToInt(infliction.amount));
     }
 
     public static IEnumerator Damage(StatusEffectInstance instance)

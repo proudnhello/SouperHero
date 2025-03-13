@@ -141,79 +141,79 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             foreach (InflictionFlavor inflictionFlavor in abilityIngredient.inherentInflictionFlavors)
             {
                 string color = ColorUtility.ToHtmlStringRGB(FlavorIngredient.inflictionColorMapping[inflictionFlavor.inflictionType]);
-                switch (inflictionFlavor.inflictionType)
-                {
-                    case FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0) {
-                                bodyText.text += $"<color=#{color}>Spicy:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount > 1) {
-                                bodyText.text += $"<color=#{color}>Spicy:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0) {
-                                bodyText.text += $"<color=#{color}>Frosty:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount > 1) {
-                                bodyText.text += $"<color=#{color}>Frosty:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0) {
-                                bodyText.text += $"<color=#{color}>Hearty:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount > 1) {
-                                bodyText.text += $"<color=#{color}>Hearty:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0) {
-                                bodyText.text += $"<color=#{color}>Spiky:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount > 1) {
-                                bodyText.text += $"<color=#{color}>Spiky:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0) {
-                                bodyText.text += $"<color=#{color}>Greasy:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount > 1) {
-                                bodyText.text += $"<color=#{color}>Greasy:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                }
+                //switch (inflictionFlavor.inflictionType)
+                //{
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0) {
+                //                bodyText.text += $"<color=#{color}>Spicy:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount > 1) {
+                //                bodyText.text += $"<color=#{color}>Spicy:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0) {
+                //                bodyText.text += $"<color=#{color}>Frosty:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount > 1) {
+                //                bodyText.text += $"<color=#{color}>Frosty:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0) {
+                //                bodyText.text += $"<color=#{color}>Hearty:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount > 1) {
+                //                bodyText.text += $"<color=#{color}>Hearty:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0) {
+                //                bodyText.text += $"<color=#{color}>Spiky:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount > 1) {
+                //                bodyText.text += $"<color=#{color}>Spiky:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0) {
+                //                bodyText.text += $"<color=#{color}>Greasy:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount > 1) {
+                //                bodyText.text += $"<color=#{color}>Greasy:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //}
             }
 
             bodyText.text += "\nBase Stats:\n";
@@ -236,152 +236,152 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             foreach (InflictionFlavor inflictionFlavor in flavorIngredient.inflictionFlavors)
             {
                 string color = ColorUtility.ToHtmlStringRGB(FlavorIngredient.inflictionColorMapping[inflictionFlavor.inflictionType]);
-                switch (inflictionFlavor.inflictionType)
-                {
-                    case FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Spicy:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Spicy:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Frosty:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Frosty:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Hearty:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Hearty:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Spiky:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Spiky:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback:
-                        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
-                        {
-                            if (inflictionFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Greasy:</color> + {inflictionFlavor.amount}\n";
-                            }
-                        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
-                        {
-                            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Greasy:</color> x {inflictionFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                }
+                //switch (inflictionFlavor.inflictionType)
+                //{
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.SPICY_Burn:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0){
+                //                bodyText.text += $"<color=#{color}>Spicy:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
+                //                bodyText.text += $"<color=#{color}>Spicy:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.FROSTY_Freeze:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0){
+                //                bodyText.text += $"<color=#{color}>Frosty:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
+                //                bodyText.text += $"<color=#{color}>Frosty:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0){
+                //                bodyText.text += $"<color=#{color}>Hearty:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
+                //                bodyText.text += $"<color=#{color}>Hearty:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0){
+                //                bodyText.text += $"<color=#{color}>Spiky:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
+                //                bodyText.text += $"<color=#{color}>Spiky:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //    case FlavorIngredient.InflictionFlavor.InflictionType.GREASY_Knockback:
+                //        if (inflictionFlavor.operation == InflictionFlavor.Operation.Add)
+                //        {
+                //            if (inflictionFlavor.amount > 0){
+                //                bodyText.text += $"<color=#{color}>Greasy:</color> + {inflictionFlavor.amount}\n";
+                //            }
+                //        } else if (inflictionFlavor.operation == InflictionFlavor.Operation.Multiply)
+                //        {
+                //            if (inflictionFlavor.amount != 0 && inflictionFlavor.amount != 1){
+                //                bodyText.text += $"<color=#{color}>Greasy:</color> x {inflictionFlavor.amount}\n";
+                //            }
+                //        }
+                //        break;
+                //}
             }
 
             foreach (BuffFlavor buffFlavor in flavorIngredient.buffFlavors)
             {
                 string color = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[buffFlavor.buffType]);
-                switch (buffFlavor.buffType)
-                {
-                    case FlavorIngredient.BuffFlavor.BuffType.BITTER_Size:
-                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
-                        {
-                            if (buffFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Bitter:</color> + {buffFlavor.amount}\n";
-                            }
-                        }
-                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-                        {
-                            if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Bitter:</color> x {buffFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.BuffFlavor.BuffType.SALTY_Crit:
-                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
-                        {
-                            if (buffFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Salty:</color> + {buffFlavor.amount}\n";
-                            }
-                        }
-                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-                        {
-                            if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Salty:</color> x {buffFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.BuffFlavor.BuffType.SOUR_Duration:
-                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
-                        {
-                            if (buffFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Sour:</color> + {buffFlavor.amount}\n";
-                            }
-                        }
-                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-                        {
-                            if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Sour:</color> x {buffFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.BuffFlavor.BuffType.UMAMI_Vampirism:
-                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
-                        {
-                            if (buffFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Cooldown:</color> + {buffFlavor.amount}\n";
-                            }
-                        }
-                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-                        {
-                            if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Cooldown:</color> x {buffFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                    case FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed:
-                        if (buffFlavor.operation == BuffFlavor.Operation.Add)
-                        {
-                            if (buffFlavor.amount > 0){
-                                bodyText.text += $"<color=#{color}>Sweet:</color> + {buffFlavor.amount}\n";
-                            }
-                        }
-                        else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-                        {
-                            if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-                                bodyText.text += $"<color=#{color}>Sweet:</color> x {buffFlavor.amount}\n";
-                            }
-                        }
-                        break;
-                }
+            //    switch (buffFlavor.buffType)
+            //    {
+            //        case FlavorIngredient.BuffFlavor.BuffType.BITTER_Size:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Bitter:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Bitter:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //        case FlavorIngredient.BuffFlavor.BuffType.SALTY_Crit:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Salty:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Salty:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //        case FlavorIngredient.BuffFlavor.BuffType.SOUR_Duration:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Sour:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Sour:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //        case FlavorIngredient.BuffFlavor.BuffType.UMAMI_Vampirism:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Cooldown:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Cooldown:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //        case FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Sweet:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Sweet:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //    }
             }
         }
         else

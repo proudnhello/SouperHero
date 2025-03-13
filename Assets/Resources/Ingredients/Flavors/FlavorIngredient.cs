@@ -7,6 +7,40 @@ using UnityEngine;
 public class FlavorIngredient : Ingredient
 {
     public string FlavorProfile;
+    public FlavorPairing Pairing;
+    
+    [Serializable]
+    public class FlavorPairing
+    {
+        public bool isBuff; // 0 = buff, 1 = infliction, -1 = error
+        public BuffFlavor.BuffType FlavorPairingBuff; // Only one pairing is set
+        public InflictionFlavor.InflictionType FlavorPairingInfliction;
+        public FlavorPairing(string pairing)
+        {
+            if (Enum.TryParse(pairing, out BuffFlavor.BuffType buffType))
+            {
+                isBuff = true;
+                FlavorPairingBuff = buffType;
+                Debug.Log("Pairs with " + FlavorPairingBuff);
+            }
+            else if (Enum.TryParse(pairing, out InflictionFlavor.InflictionType inflictionType))
+            {
+                isBuff = false;
+                FlavorPairingInfliction = inflictionType;
+                Debug.Log("Pairs with " + FlavorPairingInfliction);
+            } 
+            else
+            {
+                Debug.LogError($"Invalid flavor type enum name: {pairing}.");
+            }
+        } 
+
+        public int GetPairing()
+        {
+            if (isBuff) return (int)FlavorPairingBuff;
+            else return (int)FlavorPairingInfliction;
+        }
+    }
     
     [Serializable]
     public class BuffFlavor
@@ -20,13 +54,7 @@ public class FlavorIngredient : Ingredient
             UMAMI_Vampirism,
             REFRESHING_Cooldown,
         }
-        public enum Operation
-        {
-            Add,
-            Multiply
-        }
         public BuffType buffType;
-        public Operation operation;
         public float amount;
     }
     [Serializable]
@@ -41,20 +69,13 @@ public class FlavorIngredient : Ingredient
             GREASY_Knockback,
             UNAMI_Vampirism
         }
-        public enum Operation
-        {
-            Add,
-            Multiply
-        }
         public InflictionType inflictionType;
-        public Operation operation;
         public int amount;
         public float statusEffectDuration;
 
         public InflictionFlavor(InflictionFlavor other)
         {
             inflictionType = other.inflictionType;
-            operation = other.operation;
             amount = other.amount;
             statusEffectDuration = other.statusEffectDuration;
         }
