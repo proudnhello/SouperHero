@@ -62,7 +62,7 @@ public class TurretAI : EnemyBaseClass
         public override void Update(TurretAI turret, float deltaT)
         {
             hideTimer -= deltaT;
-            if(turret.playerDetected && hideTimer <= 0)
+            if((turret.playerDetected || turret.alwaysAggro) && hideTimer <= 0)
             {
                 turret.SwapState(turret.emerging);
             }
