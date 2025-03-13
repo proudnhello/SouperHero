@@ -23,6 +23,9 @@ public abstract class EnemyBaseClass : Entity
     protected NavMeshAgent agent;
     private EnemySpawnLocation spawn;
 
+    // Used for boss fights to make the enemy always attack and never idle
+    protected bool alwaysAggro = false;
+
     private bool hasDied = false;
 
     protected void initEnemy()
@@ -105,6 +108,6 @@ public abstract class EnemyBaseClass : Entity
     // Helper function to sent the enemy after the player when they should be aware of them (ie boss fight)
     public void AttackPlayer()
     {
-        agent.SetDestination(PlayerEntityManager.Singleton.GetPlayerPosition());
+        alwaysAggro = true;
     }
 }

@@ -124,9 +124,9 @@ public class TaterhopAI : EnemyBaseClass
                     {
                         distance += Vector2.Distance(path.corners[i - 1], path.corners[i]);
                     }
-                    if (distance < sm.PlayerDetectionPathLength)
+                    if (distance < sm.PlayerDetectionPathLength || sm.alwaysAggro)
                     {
-                        // if player is within certain distance, start attacking
+                        // if player is within certain distance, or the enemy is always aggro'ed, start attacking
                         sm.ChangeState(ChargerStates.ATTACK);
                     }
                 }
@@ -210,9 +210,9 @@ public class TaterhopAI : EnemyBaseClass
                     sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
                     dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
 
-                    if (dist > sm.DistanceFromPlayerToDisengage)
+                    if (dist > sm.DistanceFromPlayerToDisengage && !sm.alwaysAggro)
                     {
-                        sm.ChangeState(ChargerStates.IDLE); // disengage if too far
+                        sm.ChangeState(ChargerStates.IDLE); // disengage if too far (but not if set to always aggro)
                     }
 
                     time += sm.AttackDistanceCheckInterval;

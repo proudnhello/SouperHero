@@ -54,7 +54,7 @@ public class RingerAI : EnemyBaseClass
 
         public override void Update(RingerAI ringer, float deltaT)
         {
-            if (ringer.playerDetected)
+            if (ringer.playerDetected || ringer.alwaysAggro)
             {
                 ringer.currentState.Exit(ringer);
                 ringer.currentState = ringer.chasing;
@@ -86,7 +86,7 @@ public class RingerAI : EnemyBaseClass
         {
             float distance = Vector2.Distance(ringer.transform.position, PlayerEntityManager.Singleton.GetPlayerPosition());
             // If the player is out of range, go back to idle
-            if(distance > ringer.followingRadius)
+            if(distance > ringer.followingRadius && !ringer.alwaysAggro)
             {
                 rotationDirection = 0;
                 ringer.currentState.Exit(ringer);

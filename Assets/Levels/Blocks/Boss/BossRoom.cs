@@ -149,6 +149,7 @@ public class BossRoom : MonoBehaviour
         GameObject newEnemy = Instantiate(enemy.enemy, spawnPoint.transform);
         newEnemy.transform.position = spawnPoint.transform.position;
         newEnemy.SetActive(active);
+        newEnemy.GetComponent<EnemyBaseClass>().AttackPlayer();
 
         wave.difficulty -= enemy.difficulty;
         enemiesInWave.Add(newEnemy);

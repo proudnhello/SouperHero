@@ -134,7 +134,7 @@ public class HabaperroAI : EnemyBaseClass
                     NavMesh.AllAreas, path);
 
                 float distance = CalculatePathLength();
-                if (distance >= 0 && distance < sm.PlayerDetectionPathLength)
+                if ((distance >= 0 && distance < sm.PlayerDetectionPathLength) || sm.alwaysAggro)
                 {
                     // if player is within certain distance, start attacking
                     sm.ChangeState(ChargerStates.ATTACK);
@@ -237,7 +237,7 @@ public class HabaperroAI : EnemyBaseClass
                 yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);
                 dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
 
-                if (dist > sm.DistanceFromPlayerToDisengage)
+                if (dist > sm.DistanceFromPlayerToDisengage && !sm.alwaysAggro)
                 {
                     sm.ChangeState(ChargerStates.IDLE); // disengage if too far
                 }
