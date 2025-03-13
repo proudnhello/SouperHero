@@ -93,8 +93,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         //previousParent = parentAfterDrag;
+        print("End Drag");
         if (isDragging)
         {
+            CursorManager.Singleton.cookingCursor.removeCursorImage();
+            CookingManager.Singleton.disableWorldDrop();
             isDragging = false;
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             image.raycastTarget = true;
