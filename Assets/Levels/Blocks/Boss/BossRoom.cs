@@ -132,7 +132,32 @@ public class BossRoom : MonoBehaviour
         }
         else if(wave.type == WaveType.Gradual)
         {
-            print("IMPLEMENT THIS");
+            StartCoroutine(SpawnGradually(wave));
+        }
+    }
+
+    IEnumerator SpawnGradually(Wave wave)
+    {
+        // First, spawn in all the enemies, but have them inactive
+        while (wave.difficulty > 0)
+        {
+            for (int i = 0; i < wave.spawnsAtATime; i++)
+            {
+                SpawnEnemy(wave, BuildEnemyDictionary(wave.enemies), false);
+            }
+        }
+
+        List<GameObject> enemiesNotSpawned = new List<GameObject>(enemiesInWave);
+        // Then, activate them in chunks of wave.spawnsAtATime every wave.timeBetweenSpawns seconds
+        while (enemiesNotSpawned.Count > 0)
+        {
+            for (int i = 0; i < wave.spawnsAtATime && enemiesNotSpawned.Count > 0; i++)
+            {
+                GameObject enemy = enemiesNotSpawned[0];
+                enemy.SetActive(true);
+                enemiesNotSpawned.RemoveAt(0);
+            }
+            yield return new WaitForSeconds(wave.timeBetweenSpawns);
         }
     }
 
