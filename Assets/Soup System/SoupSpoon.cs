@@ -244,9 +244,6 @@ public class SoupSpoon
         // Decrement uses if applicable
         if (uses > 0) uses--;
 
-        // Call Changed Spoon
-        PlayerInventory.Singleton.UpdateSpooon();
-
         return true;
     }
 }

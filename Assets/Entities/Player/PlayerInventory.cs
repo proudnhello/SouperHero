@@ -129,9 +129,4 @@ public class PlayerInventory : MonoBehaviour
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         } 
     }
-
-    public void UpdateSpooon()
-    {
-        ChangedSpoon?.Invoke(currentSpoon);
-    }
 }
