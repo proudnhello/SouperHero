@@ -1811,7 +1811,6 @@ MonoBehaviour:
   AbilitiesText: {fileID: 138029896}
   UsesText: {fileID: 1487183182}
   abilityIngWarning: {fileID: 923320223}
-  instructionsOnPlayScreen: {fileID: 0}
   CookingCanvas: {fileID: 1737841872}
   itemStatsScreen: {fileID: 433107380}
   campfireWarning: {fileID: 986060842}
@@ -3854,6 +3853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a4631f13d0b34e43888b9faaaf26e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  basketChange: {fileID: 1785306949}
   SpawnPoint: {fileID: 117694042}
   offsetYSpawn: 4
   dropForceRangeX: {x: -1.5, y: 1.5}
@@ -7138,6 +7138,10 @@ PrefabInstance:
     - target: {fileID: 8733271975775841825, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8941959851582686303, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 9090454973021212795, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: m_LocalPosition.x

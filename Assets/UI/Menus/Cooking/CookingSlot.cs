@@ -25,8 +25,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
             return;
         }
 
-        usesText.text = "";
-
         DraggableItem draggableItem = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>();
 
         draggableItem.parentAfterDrag = transform;

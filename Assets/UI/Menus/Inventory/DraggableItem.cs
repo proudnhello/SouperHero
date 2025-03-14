@@ -93,25 +93,25 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (!CookingManager.Singleton.IsCooking() && isDragging)
-        {
-            CursorManager.Singleton.cookingCursor.removeCursorImage();
-            isDragging = false;
-            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            CookingManager.Singleton.currentCookingSlot = null;
-        }
-        if (!CookingManager.Singleton.IsCooking())
-        {
-            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        //if (!CookingManager.Singleton.IsCooking() && isDragging)
+        //{
+        //    CursorManager.Singleton.cookingCursor.removeCursorImage();
+        //    isDragging = false;
+        //    image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        //    CookingManager.Singleton.currentCookingSlot = null;
+        //}
+        //if (!CookingManager.Singleton.IsCooking())
+        //{
+        //    image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-            Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            transform.position = position;
+        //    Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //    transform.position = position;
 
-            CursorManager.Singleton.cookingCursor.removeCursorImage();
-            CursorManager.Singleton.cursorObject.SetActive(true);
-            CursorManager.Singleton.HideCookingCursor();
-            Encyclopedia.Singleton.setInActive();
-        }
+        //    CursorManager.Singleton.cookingCursor.removeCursorImage();
+        //    CursorManager.Singleton.cursorObject.SetActive(true);
+        //    CursorManager.Singleton.HideCookingCursor();
+        //    Encyclopedia.Singleton.setInActive();
+        //}
 
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
         {
@@ -133,7 +133,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
         }
 
-        if (dropTarget == null)
+        if (dropTarget == null && !isDragging)
         {
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -153,6 +153,45 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 image.raycastTarget = true;
             }
+        } else if (CookingManager.Singleton.IsCooking() && isDragging)
+        {
+            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+            Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+
+            previousParent = collectable.gameObject.transform;
+
+            CursorManager.Singleton.cookingCursor.removeCursorImage();
+            CursorManager.Singleton.cursorObject.SetActive(true);
+            CursorManager.Singleton.HideCookingCursor();
+            Encyclopedia.Singleton.setInActive();
+
+            Debug.Log(BasketUI.Singleton.basketChange.bounds);
+            Debug.Log(transform.position);
+            if (BasketUI.Singleton.basketChange.bounds.Intersects(GetComponent<Collider2D>().bounds))
+            {
+                image.raycastTarget = true;
+            }
+        } else if (!CookingManager.Singleton.IsCooking() && dropTarget == null && isDragging)
+        {
+            Debug.Log("hit1");
+            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+            Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            isDragging = false;
+
+            CursorManager.Singleton.cookingCursor.removeCursorImage();
+            CursorManager.Singleton.cursorObject.SetActive(true);
+            CursorManager.Singleton.HideCookingCursor();
+            Encyclopedia.Singleton.setInActive();
+
+            if (BasketUI.Singleton.basketChange.bounds.Intersects(GetComponent<Collider2D>().bounds))
+            {
+                Debug.Log("huh?");
+                image.raycastTarget = true;
+            }
         }
     }
 
@@ -160,6 +199,14 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if(collision.gameObject.CompareTag("WorldDrop"))
         {
+            if(previousParent.TryGetComponent<CookingSlot>(out CookingSlot previousSlot))
+            {
+                previousSlot.ingredientReference = null;
+                previousSlot.faceImage.sprite = null;
+                previousSlot.usesText.text = "";
+                CookingManager.Singleton.RemoveIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference);
+                CookingManager.Singleton.CookingSlotSetTransparent(previousSlot);
+            }
             Collectable collectable = transform.parent.GetComponent<Collectable>();
 
             collectable.gameObject.transform.SetParent(null);
