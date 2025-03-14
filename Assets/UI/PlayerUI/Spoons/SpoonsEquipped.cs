@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -35,7 +35,7 @@ public class SpoonsEquipped : MonoBehaviour
         prevSpoon = spoon;
         imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f);
         imageComponents[prevSpoon].rectTransform.sizeDelta = selectedSize;
-        usesTextComponents[spoon].text = PlayerInventory.Singleton.GetSpoons()[spoon].uses.ToString();
+        SetUsesText(spoon);
     }
 
     //Enable spoon image when cooked
@@ -50,5 +50,17 @@ public class SpoonsEquipped : MonoBehaviour
     {
         this.gameObject.transform.GetChild(spoon).gameObject.SetActive(false);
         //imageComponents[spoon].enabled = false;
+    }
+
+    void SetUsesText(int spoon)
+    {
+        int uses = PlayerInventory.Singleton.GetSpoons()[spoon].uses;
+        if (uses != -1)
+        {
+            usesTextComponents[spoon].text = uses.ToString();
+        } else
+        {
+            usesTextComponents[spoon].text = "∞";
+        }
     }
 }
