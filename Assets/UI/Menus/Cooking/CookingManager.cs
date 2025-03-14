@@ -19,7 +19,6 @@ public class CookingManager : MonoBehaviour
     public TMP_Text AbilitiesText;
     public TMP_Text UsesText;
     [SerializeField] private GameObject abilityIngWarning;
-    [SerializeField] private GameObject instructionsOnPlayScreen;
     public GameObject CookingCanvas;
     public GameObject itemStatsScreen;
     private SoupSpoon statSpoon;
@@ -55,7 +54,6 @@ public class CookingManager : MonoBehaviour
         CookingCanvas.SetActive(true);
         CookingCanvas.transform.position = source.GetCanvasPosition();
         isCooking = true;
-        instructionsOnPlayScreen.SetActive(false);
         ClearCookingManagerSprites();
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
         foreach(CookingSlot c in cookingSlots)
@@ -79,7 +77,6 @@ public class CookingManager : MonoBehaviour
             CookingCanvas.SetActive(false);
             ResetStatsText();
             isCooking = false;
-            instructionsOnPlayScreen.SetActive(true);
             foreach(Collectable c in cookingIngredients)
             {
                 c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
