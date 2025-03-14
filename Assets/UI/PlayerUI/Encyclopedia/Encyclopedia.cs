@@ -61,6 +61,11 @@ public class Encyclopedia : MonoBehaviour
         }
     }
 
+    public void Hide()
+    {
+        RenderedObject.SetActive(false);
+    }
+
     public void PullUpEntry(Ingredient ing)
     {
         RenderedObject.SetActive(true);

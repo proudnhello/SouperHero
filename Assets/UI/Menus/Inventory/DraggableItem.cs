@@ -32,6 +32,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         CursorManager.Singleton.cookingCursor.switchCursorImageTo(collectable, image);
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
+        print("Begin Drag");
         
         if(!parentAfterDrag)
         {
@@ -51,6 +52,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
+        Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
     }
 
     public bool resetParent()
@@ -99,10 +101,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (isDragging)
         {
+            CursorManager.Singleton.cookingCursor.removeCursorImage();
+            CookingManager.Singleton.disableWorldDrop();
             isDragging = false;
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             image.raycastTarget = true;
             CookingManager.Singleton.currentCookingSlot = null;
+            Encyclopedia.Singleton.Hide();
         }
         //if(CursorManager.Singleton.isDragging)
         //{
@@ -125,16 +130,20 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //CursorManager.Singleton.isDragging = false;
+        Encyclopedia.Singleton.Hide();
+        print("exit");
     }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //CursorManager.Singleton.isDragging = true;
-        //ingredient = transform.parent.GetComponent<Collectable>().ingredient;
-        ////Debug.Log($"Mouse entered UI element {ingredient.ingredientName}!");
-
-        //CookingManager.Singleton.DisplayItemStats();
-        //GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
+        ingredient = transform.parent.GetComponent<Collectable>().ingredient;
+        Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
+        print("enter");
+        
+        // I wanna give a huge shoutout to the person whoever wrote this 300 line function, only for it all to be thrown away.
+        // o7
+        /*CookingManager.Singleton.DisplayItemStats();
+        GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
 
         //Transform background = itemStatsScreen.transform.Find("Background");
         //Transform header = background.transform.Find("Header");
@@ -333,88 +342,88 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //        //}
         //    }
 
-        //    foreach (BuffFlavor buffFlavor in flavorIngredient.buffFlavors)
-        //    {
-        //        string color = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[buffFlavor.buffType]);
-        //    //    switch (buffFlavor.buffType)
-        //    //    {
-        //    //        case FlavorIngredient.BuffFlavor.BuffType.BITTER_Size:
-        //    //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
-        //    //            {
-        //    //                if (buffFlavor.amount > 0){
-        //    //                    bodyText.text += $"<color=#{color}>Bitter:</color> + {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-        //    //            {
-        //    //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-        //    //                    bodyText.text += $"<color=#{color}>Bitter:</color> x {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            break;
-        //    //        case FlavorIngredient.BuffFlavor.BuffType.SALTY_Crit:
-        //    //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
-        //    //            {
-        //    //                if (buffFlavor.amount > 0){
-        //    //                    bodyText.text += $"<color=#{color}>Salty:</color> + {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-        //    //            {
-        //    //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-        //    //                    bodyText.text += $"<color=#{color}>Salty:</color> x {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            break;
-        //    //        case FlavorIngredient.BuffFlavor.BuffType.SOUR_Duration:
-        //    //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
-        //    //            {
-        //    //                if (buffFlavor.amount > 0){
-        //    //                    bodyText.text += $"<color=#{color}>Sour:</color> + {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-        //    //            {
-        //    //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-        //    //                    bodyText.text += $"<color=#{color}>Sour:</color> x {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            break;
-        //    //        case FlavorIngredient.BuffFlavor.BuffType.UMAMI_Vampirism:
-        //    //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
-        //    //            {
-        //    //                if (buffFlavor.amount > 0){
-        //    //                    bodyText.text += $"<color=#{color}>Cooldown:</color> + {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-        //    //            {
-        //    //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-        //    //                    bodyText.text += $"<color=#{color}>Cooldown:</color> x {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            break;
-        //    //        case FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed:
-        //    //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
-        //    //            {
-        //    //                if (buffFlavor.amount > 0){
-        //    //                    bodyText.text += $"<color=#{color}>Sweet:</color> + {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
-        //    //            {
-        //    //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
-        //    //                    bodyText.text += $"<color=#{color}>Sweet:</color> x {buffFlavor.amount}\n";
-        //    //                }
-        //    //            }
-        //    //            break;
-        //    //    }
-        //    }
-        //}
-        //else
-        //{
-        //    Debug.LogError("Invalid Ingredient Type");
-        //}
+            foreach (BuffFlavor buffFlavor in flavorIngredient.buffFlavors)
+            {
+                string color = ColorUtility.ToHtmlStringRGB(FlavorIngredient.buffColorMapping[buffFlavor.buffType]);
+            //    switch (buffFlavor.buffType)
+            //    {
+            //        case FlavorIngredient.BuffFlavor.BuffType.BITTER_Size:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Bitter:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Bitter:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //        case FlavorIngredient.BuffFlavor.BuffType.SALTY_Crit:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Salty:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Salty:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //        case FlavorIngredient.BuffFlavor.BuffType.SOUR_Duration:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Sour:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Sour:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //        case FlavorIngredient.BuffFlavor.BuffType.UMAMI_Vampirism:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Cooldown:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Cooldown:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //        case FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed:
+            //            if (buffFlavor.operation == BuffFlavor.Operation.Add)
+            //            {
+            //                if (buffFlavor.amount > 0){
+            //                    bodyText.text += $"<color=#{color}>Sweet:</color> + {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            else if (buffFlavor.operation == BuffFlavor.Operation.Multiply)
+            //            {
+            //                if (buffFlavor.amount != 0 && buffFlavor.amount != 1){
+            //                    bodyText.text += $"<color=#{color}>Sweet:</color> x {buffFlavor.amount}\n";
+            //                }
+            //            }
+            //            break;
+            //    }
+            }
+        }
+        else
+        {
+            Debug.LogError("Invalid Ingredient Type");
+        }*/
 
     }
 

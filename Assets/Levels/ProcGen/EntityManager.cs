@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using DG.Tweening.Plugins;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EntityManager : MonoBehaviour
@@ -47,15 +43,15 @@ public class EntityManager : MonoBehaviour
     //    createForagables();
     //}
 
-    public void spawnEnemies()
+    public void SpawnEnemies()
     {
-        buildEnemyDictionary();
-        buildForagableDictionary();
-        createEnemies();
-        createForagables();
+        BuildEnemyDictionary();
+        BuildForagableDictionary();
+        CreateEnemies();
+        CreateForagables();
     }
 
-    public void buildEnemyDictionary()
+    public void BuildEnemyDictionary()
     {
         totalEnemyWeight = 0;
         for(int i = 0; i < possibleEnemies.Count; i++)
@@ -81,7 +77,7 @@ public class EntityManager : MonoBehaviour
         }
     }
 
-    public void createEnemies(){
+    public void CreateEnemies(){
         int difficultyCounter = 0;
         while(difficultyCounter < difficulty && totalEnemies < enemySpawns.Count){
             // Generate a random enemy using the weighted dictionary
@@ -100,7 +96,7 @@ public class EntityManager : MonoBehaviour
         }
     }
 
-    public String exportEnemies(){
+    public String ExportEnemies(){
         String ret = "";
         for(int i = 0; i < enemySpawns.Count; i++){
             if(enemySpawns[i].enemy != null){
@@ -116,7 +112,7 @@ public class EntityManager : MonoBehaviour
         return ret;
     }
 
-    public void importEnemies(String import){
+    public void ImportEnemies(String import){
         String[] strings = import.Split(',');
         for(int i = 0; i < strings.Length; i++){
             if(strings[i] == "-1"){
@@ -125,7 +121,7 @@ public class EntityManager : MonoBehaviour
         }
     }
 
-    public void buildForagableDictionary()
+    public void BuildForagableDictionary()
     {
         totalForagableWeight = 0;
         for(int i = 0; i < possibleForagables.Count; i++)
@@ -150,7 +146,7 @@ public class EntityManager : MonoBehaviour
         }
     }
 
-    public void createForagables(){
+    public void CreateForagables(){
         int lootCounter = 0;
         while(lootCounter < lootLevel && totalForagables < foragableSpawns.Count){
             int x = UnityEngine.Random.Range(0, totalForagableWeight);
@@ -163,7 +159,7 @@ public class EntityManager : MonoBehaviour
         }
     }
 
-    public String exportForagables(){
+    public String ExportForagables(){
         String ret = "";
         for(int i = 0; i < foragableSpawns.Count; i++){
             if(foragableSpawns[i].foragable != null){
@@ -179,7 +175,7 @@ public class EntityManager : MonoBehaviour
         return ret;
     }
 
-    public void importForagables(String import){
+    public void ImportForagables(String import){
         String[] strings = import.Split(',');
         for(int i = 0; i < strings.Length; i++){
             if(strings[i] == "-1"){
