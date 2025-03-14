@@ -138,7 +138,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
             Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            transform.position = position;
+            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
 
             previousParent = collectable.gameObject.transform;
 
@@ -149,7 +149,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
             Debug.Log(BasketUI.Singleton.basketChange.bounds);
             Debug.Log(transform.position);
-            if (BasketUI.Singleton.basketChange.bounds.Contains(new Vector3(transform.position.x, transform.position.y, transform.root.position.z)))
+            if (BasketUI.Singleton.basketChange.bounds.Intersects(GetComponent<Collider2D>().bounds))
             {
                 image.raycastTarget = true;
             }
