@@ -13,8 +13,6 @@ public class HealthCounter : MonoBehaviour
     [SerializeField] List<GameObject> heartList;
     private int heartCount = 0;
     private int playerHealth = 0; 
-    [Header("Debug")]
-    public TMP_Text healthText;
 
     [SerializeField]
     Sprite fullHeart;
@@ -28,13 +26,10 @@ public class HealthCounter : MonoBehaviour
         }
         playerHealth = PlayerEntityManager.Singleton.GetHealth() / 10;
 
-        //Debug.Log("Player Health In UI:" + playerHealth);
         for (int i = 0; i < playerHealth; i++) {
             heartList[i].SetActive(true);
             heartCount++;
         }
-        //Debug.Log("Heart Count In UI:" + heartCount);
-        healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
         PlayerEntityManager.HealthChange += HealthChange;
     }
 
@@ -51,7 +46,6 @@ public class HealthCounter : MonoBehaviour
     }
 
     public void HealthChange() {
-        healthText.text = PlayerEntityManager.Singleton.GetHealth().ToString();
         playerHealth = Mathf.CeilToInt(PlayerEntityManager.Singleton.GetHealth() / 10f);
         //Debug.Log("PLAYER HEALTH Normalized: " + playerHealth);
         //Debug.Log("HEART COUNT: " + heartCount);
