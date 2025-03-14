@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using static FlavorIngredient;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Image image;
     public Transform parentAfterDrag;
@@ -27,6 +27,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         CursorManager.Singleton.cookingCursor.switchCursorImageTo(collectable, image);
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
+        print("Begin Drag");
         
         if(!parentAfterDrag)
         {
@@ -46,6 +47,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
+        Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
     }
 
     public bool resetParent()
@@ -95,19 +97,31 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //previousParent = parentAfterDrag;
         if (isDragging)
         {
+            CursorManager.Singleton.cookingCursor.removeCursorImage();
+            CookingManager.Singleton.disableWorldDrop();
             isDragging = false;
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             image.raycastTarget = true;
             CookingManager.Singleton.currentCookingSlot = null;
+            Encyclopedia.Singleton.Hide();
         }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Encyclopedia.Singleton.Hide();
+        print("exit");
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         ingredient = transform.parent.GetComponent<Collectable>().ingredient;
-        //Debug.Log($"Mouse entered UI element {ingredient.ingredientName}!");
-
-        CookingManager.Singleton.DisplayItemStats();
+        Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
+        print("enter");
+        
+        // I wanna give a huge shoutout to the person whoever wrote this 300 line function, only for it all to be thrown away.
+        // o7
+        /*CookingManager.Singleton.DisplayItemStats();
         GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
 
         Transform background = itemStatsScreen.transform.Find("Background");
@@ -388,7 +402,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         else
         {
             Debug.LogError("Invalid Ingredient Type");
-        }
+        }*/
 
     }
 
