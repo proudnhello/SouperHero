@@ -33,7 +33,7 @@ public class SpoonsEquipped : MonoBehaviour
         //Highlight current spoon
         prevSpoon = spoon;
         imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f);
-        imageComponents[prevSpoon].rectTransform.sizeDelta = selectedSize;
+        imageComponents[spoon].rectTransform.sizeDelta = selectedSize;
     }
 
     //Enable spoon image when cooked
