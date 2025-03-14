@@ -18,6 +18,7 @@ public class SpoonsEquipped : MonoBehaviour
     {
         PlayerInventory.ChangedSpoon += ChangeSpoon;
         PlayerInventory.AddSpoon += AddSpoon;
+        PlayerInventory.RemoveSpoon += RemoveSpoon;
         ChangeSpoon(0); //Start with default spoon
     }
 
@@ -35,8 +36,16 @@ public class SpoonsEquipped : MonoBehaviour
         imageComponents[prevSpoon].rectTransform.sizeDelta = selectedSize;
     }
 
+    //Enable spoon image when cooked
     void AddSpoon(int spoon)
     {
         imageComponents[spoon].enabled = true;
+    }
+
+    //Disable spoon image when uses run out
+    //FIX: Not working correctly
+    void RemoveSpoon(int spoon)
+    {
+        imageComponents[spoon].enabled = false;
     }
 }

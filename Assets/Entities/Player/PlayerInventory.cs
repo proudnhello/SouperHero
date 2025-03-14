@@ -11,6 +11,7 @@ public class PlayerInventory : MonoBehaviour
     public static event Action UsedSpoon;
     public static event Action<int> ChangedSpoon;
     public static event Action<int> AddSpoon;
+    public static event Action<int> RemoveSpoon;
     public int maxSpoons = 4;
 
     public List<Ingredient> defaultSpoonIngredients;
@@ -129,6 +130,7 @@ public class PlayerInventory : MonoBehaviour
             spoons.RemoveAt(currentSpoon);
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+            //RemoveSpoon?.Invoke(currentSpoon);
             ChangedSpoon?.Invoke(currentSpoon);
         } 
     }
