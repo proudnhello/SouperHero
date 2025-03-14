@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using static FlavorIngredient;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
@@ -83,7 +84,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             else if (!parentAfterDrag.gameObject.CompareTag("WorldDrop"))
             {
                 image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                image.raycastTarget = true;
                 BasketUI.Singleton.AddIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
             }
         }
@@ -98,13 +98,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             CursorManager.Singleton.cookingCursor.removeCursorImage();
             isDragging = false;
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            image.raycastTarget = true;
             CookingManager.Singleton.currentCookingSlot = null;
         }
         if (!CookingManager.Singleton.IsCooking())
         {
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            image.raycastTarget = true;
 
             Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             transform.position = position;
@@ -138,7 +136,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (dropTarget == null)
         {
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            image.raycastTarget = true;
 
             Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             transform.position = position;
@@ -149,6 +146,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             CursorManager.Singleton.cursorObject.SetActive(true);
             CursorManager.Singleton.HideCookingCursor();
             Encyclopedia.Singleton.setInActive();
+
+            Debug.Log(BasketUI.Singleton.basketChange.bounds);
+            Debug.Log(transform.position);
+            if (BasketUI.Singleton.basketChange.bounds.Contains(new Vector3(transform.position.x, transform.position.y, transform.root.position.z)))
+            {
+                image.raycastTarget = true;
+            }
         }
     }
 
@@ -156,7 +160,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if(collision.gameObject.CompareTag("WorldDrop"))
         {
-            Debug.Log("hit world drop"); 
             Collectable collectable = transform.parent.GetComponent<Collectable>();
 
             collectable.gameObject.transform.SetParent(null);

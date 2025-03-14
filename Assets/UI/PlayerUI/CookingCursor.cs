@@ -5,13 +5,8 @@ using UnityEngine.UI;
 
 public class CookingCursor : MonoBehaviour
 {
-    private Image currentImage;
+    public Image currentImage;
     public Collectable currentCollectableReference;
-
-    void Start()
-    {
-        currentImage = GetComponent<Image>();
-    }
 
     public void switchCursorImageTo(Collectable selectedCollectable, Image newImage)
     {

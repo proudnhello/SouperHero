@@ -101,14 +101,12 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
     private void basketDropNonsense(Image image)
     {
         image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        image.raycastTarget = true;
         BasketUI.Singleton.AddIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
     }
 
     private void worldDropNonsense(DraggableItem d)
     {
         CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
 
         CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.SetParent(null);
         CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.localScale = Vector3.one;
@@ -164,7 +162,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
                 // spawn in UI space
                 Image draggableImage = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().image;
                 draggableImage.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-                draggableImage.raycastTarget = true;
 
                 if (CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().previousParent.TryGetComponent<CookingSlot>(out CookingSlot previousSlot))
                 {
