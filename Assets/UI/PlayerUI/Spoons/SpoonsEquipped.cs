@@ -22,6 +22,13 @@ public class SpoonsEquipped : MonoBehaviour
         ChangeSpoon(0); //Start with default spoon
     }
 
+    private void OnDisable()
+    {
+        PlayerInventory.ChangedSpoon -= ChangeSpoon;
+        PlayerInventory.AddSpoon -= AddSpoon;
+        PlayerInventory.RemoveSpoon -= RemoveSpoon;
+    }
+
     void ChangeSpoon(int spoon)
     {
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
