@@ -8,6 +8,8 @@ using static FlavorIngredient.InflictionFlavor;
 using BuffFlavor = FlavorIngredient.BuffFlavor;
 using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
+using FMOD.Studio;
+using FMODUnity;
 
 public abstract class EnemyBaseClass : Entity
 {
@@ -16,12 +18,16 @@ public abstract class EnemyBaseClass : Entity
     public int playerCollisionDamage = 10;
     [SerializeField] LayerMask interactableLayer;
 
+    public static event Action<EnemyBaseClass> EnemyDamageEvent;
+
     internal SpriteRenderer _sprite;
     protected Transform _playerTransform;
     protected Color _initialColor;
     protected Collider2D _collider;
     protected NavMeshAgent agent;
     private EnemySpawnLocation spawn;
+    protected EnemyAudio enemyAudio;
+    public StudioEventEmitter enemyEmitter;
 
     // Used for boss fights to make the enemy always attack and never idle
     protected bool alwaysAggro = false;
@@ -36,6 +42,7 @@ public abstract class EnemyBaseClass : Entity
         _collider = GetComponent<Collider2D>();
         entityRenderer = new(this);
         agent = GetComponent<NavMeshAgent>();
+        enemyEmitter = gameObject.AddComponent<StudioEventEmitter>();
 
         InitEntity();
     }
@@ -71,6 +78,10 @@ public abstract class EnemyBaseClass : Entity
                 }
             }
         }
+
+        // Play enemy damage sfx
+        EnemyDamageEvent?.Invoke(this);
+
         base.ApplyInfliction(spoonInflictions, source);
     }
 
