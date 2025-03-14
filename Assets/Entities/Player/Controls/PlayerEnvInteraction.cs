@@ -90,7 +90,7 @@ public class PlayerEnvInteraction : MonoBehaviour
             lastInteractionFrame = Time.frameCount;
             currentInteractable.Interact();
             //Debug.Log(currentInteractable);
-            if (!currentInteractable.CanInteract())
+            if (currentInteractable && !currentInteractable.CanInteract())
             {
                 withinRange.Remove(currentInteractable);
                 currentInteractable = null;
