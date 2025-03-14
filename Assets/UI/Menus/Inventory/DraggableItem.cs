@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using static FlavorIngredient;
+using System.Collections.Generic;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
@@ -28,19 +29,12 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         CursorManager.Singleton.cursorObject.SetActive(false);
         CursorManager.Singleton.ShowCookingCursor();
         CursorManager.Singleton.isDragging = true;
-        CursorManager.Singleton.basketDrop.SetActive(true);
 
         CursorManager.Singleton.cookingCursor.switchCursorImageTo(collectable, image);
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
         print("Begin Drag");
-        
-        if(!parentAfterDrag)
-        {
-            parentAfterDrag = CookingManager.Singleton.basketDrop.transform;
-        } else
-        {
-            parentAfterDrag = previousParent;
-        }
+
+        parentAfterDrag = previousParent;
 
         image.color = new Color(1.0f, 1.0f, 1.0f, alphaOnPickup);
         image.raycastTarget = false;
@@ -99,31 +93,85 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (isDragging)
+        if (!CookingManager.Singleton.IsCooking() && isDragging)
         {
             CursorManager.Singleton.cookingCursor.removeCursorImage();
-            CookingManager.Singleton.disableWorldDrop();
             isDragging = false;
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             image.raycastTarget = true;
             CookingManager.Singleton.currentCookingSlot = null;
         }
-        //if(CursorManager.Singleton.isDragging)
-        //{
-        //    CursorManager.Singleton.basketDrop.SetActive(true);
-        //    CursorManager.Singleton.isDragging = false;
-        //    if (!CursorManager.Singleton.isInBasket)
-        //    {
-        //        CursorManager.Singleton.cursorObject.SetActive(true);
-        //        CursorManager.Singleton.HideCookingCursor();
-        //    }
-        //}
         if (!CookingManager.Singleton.IsCooking())
         {
+            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            image.raycastTarget = true;
+
+            Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transform.position = position;
+
+            CursorManager.Singleton.cookingCursor.removeCursorImage();
             CursorManager.Singleton.cursorObject.SetActive(true);
             CursorManager.Singleton.HideCookingCursor();
             Encyclopedia.Singleton.setInActive();
-            CursorManager.Singleton.basketDrop.SetActive(false);
+        }
+
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = Input.mousePosition
+        };
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        CookingSlot dropTarget = null;
+
+        foreach (RaycastResult result in results)
+        {
+            dropTarget = result.gameObject.GetComponent<CookingSlot>();
+            if (dropTarget != null)
+            {
+                dropTarget.OnDrop(eventData);
+                Debug.Log("dropped!");
+                break;
+            }
+        }
+
+        if (dropTarget == null)
+        {
+            image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            image.raycastTarget = true;
+
+            Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transform.position = position;
+
+            previousParent = collectable.gameObject.transform;
+
+            CursorManager.Singleton.cookingCursor.removeCursorImage();
+            CursorManager.Singleton.cursorObject.SetActive(true);
+            CursorManager.Singleton.HideCookingCursor();
+            Encyclopedia.Singleton.setInActive();
+        }
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("WorldDrop"))
+        {
+            Debug.Log("hit world drop"); 
+            Collectable collectable = transform.parent.GetComponent<Collectable>();
+
+            collectable.gameObject.transform.SetParent(null);
+            collectable.gameObject.transform.localScale = Vector3.one;
+            collectable.Spawn(PlayerEntityManager.Singleton.gameObject.transform.position);
+            collectable.collectableObj.gameObject.SetActive(true);
+            if (!CookingManager.Singleton.IsCooking())
+            {
+                OnEndDrag(null);
+            }
+            collectable.collectableUI.gameObject.SetActive(false);
+
+            PlayerInventory.Singleton.RemoveIngredientCollectable(collectable, false);
+            collectable.collectableObj.SetInteractable(true);
+            collectable.collectableObj.SetHighlighted(true);
         }
     }
 

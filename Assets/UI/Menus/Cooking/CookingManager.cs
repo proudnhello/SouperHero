@@ -53,7 +53,6 @@ public class CookingManager : MonoBehaviour
         CursorManager.Singleton.ShowCookingCursor();
         ResetStatsText();
         CookingCanvas.SetActive(true);
-        basketDrop.SetActive(true);
         CookingCanvas.transform.position = source.GetCanvasPosition();
         isCooking = true;
         instructionsOnPlayScreen.SetActive(false);
@@ -78,7 +77,6 @@ public class CookingManager : MonoBehaviour
             CursorManager.Singleton.HideCursor();
             CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
-            basketDrop.SetActive(false);
             ResetStatsText();
             isCooking = false;
             instructionsOnPlayScreen.SetActive(true);
@@ -86,7 +84,7 @@ public class CookingManager : MonoBehaviour
             {
                 c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 c.collectableUI.GetComponent<Image>().raycastTarget = true;
-                c.collectableUI.GetComponent<DraggableItem>().previousParent = basketDrop.transform;
+                c.collectableUI.GetComponent<DraggableItem>().previousParent = c.transform;
             }
             cookingIngredients.Clear();
 

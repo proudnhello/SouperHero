@@ -32,7 +32,7 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
         draggableItem.parentAfterDrag = transform;
 
         // SET PREVIOUS SLOT TO NULL
-        CookingSlot previousSlot = draggableItem.previousParent.GetComponent<CookingSlot>();
+        draggableItem.previousParent.TryGetComponent<CookingSlot>(out CookingSlot previousSlot);
         if (previousSlot != null && ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot && !previousSlot.basketDrop && !previousSlot.worldDrop)
         {
             previousSlot.ingredientReference = null;
@@ -154,12 +154,34 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
                 if (dropTarget != null)
                 {
                     dropTarget.OnDrop(eventData);
+                    Debug.Log("dropped!");
                     break;
                 }
             }
 
             if (dropTarget == null)
             {
+                // spawn in UI space
+                Image draggableImage = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().image;
+                draggableImage.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                draggableImage.raycastTarget = true;
+
+                if (CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().previousParent.TryGetComponent<CookingSlot>(out CookingSlot previousSlot))
+                {
+                    previousSlot.ingredientReference = null;
+                    previousSlot.faceImage.sprite = null;
+                    previousSlot.usesText.text = "";
+                    Debug.Log(previousSlot.gameObject.name);
+                    CookingManager.Singleton.CookingSlotSetTransparent(previousSlot);
+                    previousSlot = null;    
+                }
+
+                CookingManager.Singleton.currentCookingSlot = null;
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().previousParent = CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform;
+
+                Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.transform.position = position;
+
                 CursorManager.Singleton.cookingCursor.removeCursorImage();
             }
         }
