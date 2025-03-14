@@ -41,6 +41,6 @@ public class EntityRenderer
             yield return null;
         }
 
-        Entity.Destroy(Entity);
+        Entity.Destroy(Entity.gameObject);
     }
 }

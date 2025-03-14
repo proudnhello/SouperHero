@@ -83,7 +83,6 @@ public class PlayerEnvInteraction : MonoBehaviour
     private int lastInteractionFrame = -1;
     private void Interact(InputAction.CallbackContext ctx)
     {
-
         if (currentInteractable != null && 
         Time.frameCount != lastInteractionFrame)
         {

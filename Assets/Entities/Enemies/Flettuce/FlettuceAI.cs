@@ -127,7 +127,7 @@ public class FlettuceAI : EnemyBaseClass
                     {
                         distance += Vector2.Distance(path.corners[i-1], path.corners[i]);
                     }
-                    if (distance < sm.PlayerDetectionPathLength)
+                    if (distance < sm.PlayerDetectionPathLength || sm.alwaysAggro)
                     {
                         // if player is within certain distance, start attacking
                         sm.ChangeState(ChargerStates.ATTACK);
@@ -205,7 +205,7 @@ public class FlettuceAI : EnemyBaseClass
                     yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);
                     dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
 
-                    if (dist > sm.DistanceFromPlayerToDisengage)
+                    if (dist > sm.DistanceFromPlayerToDisengage && !sm.alwaysAggro)
                     {
                         sm.ChangeState(ChargerStates.IDLE); // disengage if too far
                     }

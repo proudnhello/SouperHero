@@ -1210,7 +1210,7 @@ public class RoomGenerator : MonoBehaviour
                 if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    m.spawnEnemies();
+                    m.SpawnEnemies();
                 }
             }
         }

@@ -53,7 +53,7 @@ public class HopShroomSpore : MonoBehaviour
     IEnumerator HandleAnimation()
     {
         int frame = 0;
-        while (true)
+        while (true && ProjectileFrames.Length != 0)
         {
             spriteRenderer.sprite = ProjectileFrames[frame];
             yield return new WaitForSeconds(1f / ProjectileAnimFPS);

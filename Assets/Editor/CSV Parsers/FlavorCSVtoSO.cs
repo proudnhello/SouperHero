@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using MacFsWatcher;
 using System.Linq;
 using Unity.VisualScripting;
+using System.Drawing.Printing;
 
 public class FlavorCSVtoSO
 {
@@ -70,7 +71,6 @@ public class FlavorCSVtoSO
                         };
 
                         inflictionFlavor.amount = int.Parse(splitData[i + 1]);
-
                         inflictionFlavor.statusEffectDuration = float.Parse(splitData[i + 2]);
 
                         // add parsed infliction flavor
