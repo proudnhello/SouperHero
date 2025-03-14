@@ -1809,7 +1809,6 @@ MonoBehaviour:
   AbilitiesText: {fileID: 138029896}
   UsesText: {fileID: 1487183182}
   abilityIngWarning: {fileID: 923320223}
-  instructionsOnPlayScreen: {fileID: 0}
   CookingCanvas: {fileID: 1737841872}
   itemStatsScreen: {fileID: 433107380}
   campfireWarning: {fileID: 986060842}
@@ -1903,6 +1902,13 @@ MonoBehaviour:
       Data3: 684890520
       Data4: -894546785
     Path: event:/SPOON_SWING
+  <ENEMY_SFX>k__BackingField:
+  - Guid:
+      Data1: -1826047818
+      Data2: 1288169372
+      Data3: 1700991106
+      Data4: -1380604785
+    Path: event:/ENEMY_DAMAGE
 --- !u!114 &324424347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7094,10 +7100,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 99970492126700294, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
-      propertyPath: baseStats.maxHealth
-      value: 90
-      objectReference: {fileID: 0}
     - target: {fileID: 234655282318529072, guid: c15d3ed9389078e4db731ca55bbf22a4, type: 3}
       propertyPath: vcam
       value: 
