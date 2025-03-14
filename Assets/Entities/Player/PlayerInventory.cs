@@ -128,10 +128,11 @@ public class PlayerInventory : MonoBehaviour
         if (spoon.uses == 0)
         {
             spoons.RemoveAt(currentSpoon);
+            RemoveSpoon?.Invoke(currentSpoon);
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
-            //RemoveSpoon?.Invoke(currentSpoon);
-            ChangedSpoon?.Invoke(currentSpoon);
-        } 
+        }
+
+        ChangedSpoon?.Invoke(currentSpoon);
     }
 }

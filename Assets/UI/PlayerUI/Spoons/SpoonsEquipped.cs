@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class SpoonsEquipped : MonoBehaviour
 {
     [SerializeField] Image[] imageComponents;
+    [SerializeField] TMP_Text[] usesTextComponents;
     private int prevSpoon = -1;
 
     private Vector2 normalSize = new Vector2(82, 50);
@@ -34,18 +35,20 @@ public class SpoonsEquipped : MonoBehaviour
         prevSpoon = spoon;
         imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f);
         imageComponents[prevSpoon].rectTransform.sizeDelta = selectedSize;
+        usesTextComponents[spoon].text = PlayerInventory.Singleton.GetSpoons()[spoon].uses.ToString();
     }
 
     //Enable spoon image when cooked
     void AddSpoon(int spoon)
     {
-        imageComponents[spoon].enabled = true;
+        this.gameObject.transform.GetChild(spoon).gameObject.SetActive(true);
+        //imageComponents[spoon].enabled = true;
     }
 
     //Disable spoon image when uses run out
-    //FIX: Not working correctly
     void RemoveSpoon(int spoon)
     {
-        imageComponents[spoon].enabled = false;
+        this.gameObject.transform.GetChild(spoon).gameObject.SetActive(false);
+        //imageComponents[spoon].enabled = false;
     }
 }
