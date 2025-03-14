@@ -47,7 +47,7 @@ public abstract class EnemyBaseClass : Entity
         _rigidbody.velocity = Vector2.zero;
         agent.updatePosition = false;
         Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
-        StartCoroutine(entityRenderer.EnemyDeathAnimation());
+        entityRenderer.EnemyDeath();
         if(spawn != null){
             spawn.enemy = null;
         }
