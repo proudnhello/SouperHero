@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using static FlavorIngredient;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public Image image;
     public Transform parentAfterDrag;
@@ -103,7 +103,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             image.raycastTarget = true;
             CookingManager.Singleton.currentCookingSlot = null;
-            Encyclopedia.Singleton.Hide();
         }
     }
 
@@ -111,6 +110,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         Encyclopedia.Singleton.Hide();
         print("exit");
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ingredient = transform.parent.GetComponent<Collectable>().ingredient;
+        Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
+        print("click");
     }
 
     public void OnPointerEnter(PointerEventData eventData)

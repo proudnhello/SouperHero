@@ -84,7 +84,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
         CookingManager.Singleton.currentCookingSlot = null;
         CursorManager.Singleton.cookingCursor.removeCursorImage();
         CookingManager.Singleton.disableWorldDrop();
-        Encyclopedia.Singleton.Hide();
     }
 
     // This is called when you click on a cooking slot
