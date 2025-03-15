@@ -34,14 +34,14 @@ public class SpoonsEquipped : MonoBehaviour
     {
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
         {
-            imageComponents[prevSpoon].color = Color.white;
-            imageComponents[prevSpoon].rectTransform.sizeDelta = normalSize;
+            //imageComponents[prevSpoon].color = Color.white;
+            imageComponents[prevSpoon].rectTransform.sizeDelta = normalSize; //Reset to normal size
         }
 
         //Highlight current spoon
         prevSpoon = spoon;
-        imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f);
-        imageComponents[spoon].rectTransform.sizeDelta = selectedSize;
+        //imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f); //Turn icon yellow
+        imageComponents[spoon].rectTransform.sizeDelta = selectedSize; //Increase size
         SetUsesText(spoon);
     }
 
