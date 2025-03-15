@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public float dashSpeed = 15f;
     [SerializeField] public float dashCooldown = 1f;
 
+    public static event Action dash;
 
     // Start is called before the first frame update
     void Awake()
@@ -126,6 +128,7 @@ public class PlayerMovement : MonoBehaviour
             canDash = false;
             isDashing = true;
             rb.velocity = inputDir * dashSpeed;
+            dash?.Invoke();
 
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;

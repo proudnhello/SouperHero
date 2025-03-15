@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerAudio
 {
     List<EventInstance> swingSpoon;
+    List<EventInstance> dash;
     EventInstance cookSoup;
     public PlayerAudio()
     {
@@ -17,6 +18,14 @@ public class PlayerAudio
             AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[0])
         };
         PlayerInventory.UsedSpoon += SwingSpoon;
+
+        dash = new List<EventInstance>
+        {
+            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[2]),
+            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[2]),
+            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[2])
+        };
+        PlayerMovement.dash += Dash;
 
         cookSoup = AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[1]);
         CookingManager.CookSoup += CookSoup;
@@ -40,6 +49,27 @@ public class PlayerAudio
         }
 
         EventInstance instance = GetSwingSpoon();
+        instance.start();
+    }
+
+    public void Dash()
+    {
+        EventInstance GetDash()
+        {
+            for (int i = 0; i < dash.Count; i++)
+            {
+                if (!AudioManager.IsAudioEventPlaying(dash[i]))
+                {
+                    return dash[i];
+                }
+            }
+
+            EventInstance instance = AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[2]);
+            dash.Add(instance);
+            return instance;
+        }
+
+        EventInstance instance = GetDash();
         instance.start();
     }
 
