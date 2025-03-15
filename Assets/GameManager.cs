@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+/*
 #if UNITY_EDITOR
 #else
 #endif
+*/
 
 public class GameManager : MonoBehaviour
 {
@@ -117,6 +119,7 @@ public class GameManager : MonoBehaviour
 
     public void ConfirmedExit()
     {
+        /*
         if (Application.isEditor)
         {
             // Code for Unity Editor
@@ -129,6 +132,8 @@ public class GameManager : MonoBehaviour
             Debug.Log("Exiting Game in Build");
             Application.Quit();  // Quits the game in a build
         }
+        */
+        Application.Quit();  // Quits the game in a build
     }
 
     public void ReturnFromExit()
