@@ -61,7 +61,6 @@ public class CookingManager : MonoBehaviour
             c.ingredientReference = null;
             c.faceImage.sprite = null;
             c.usesText.text = "";
-
         }
     }
 
@@ -73,6 +72,17 @@ public class CookingManager : MonoBehaviour
             CurrentCampfire.StopCooking();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
+
+            if(CursorManager.Singleton.cookingCursor.currentCollectableReference != null)
+            {
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
+
+                CursorManager.Singleton.cookingCursor.removeCursorImage();
+                CursorManager.Singleton.cursorObject.SetActive(true);
+                Encyclopedia.Singleton.setInActive();
+            }
+
             CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
             ResetStatsText();

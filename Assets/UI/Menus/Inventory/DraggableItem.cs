@@ -16,6 +16,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [Header("Do Not Edit, Ingredient is Set In CookingUI's Enable()")]
     public Ingredient ingredient = null;
     public bool isDragging = false;
+    public bool droppedOn = false;
+    public bool worldDropped = false;
 
     Collectable collectable;
     public static float alphaOnPickup = .25f;
@@ -41,6 +43,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         image.raycastTarget = false;
 
         isDragging = true;
+        worldDropped = false;
 
         //CookingManager.Singleton.enableWorldDrop();
     }
@@ -93,26 +96,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //if (!CookingManager.Singleton.IsCooking() && isDragging)
-        //{
-        //    CursorManager.Singleton.cookingCursor.removeCursorImage();
-        //    isDragging = false;
-        //    image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        //    CookingManager.Singleton.currentCookingSlot = null;
-        //}
-        //if (!CookingManager.Singleton.IsCooking())
-        //{
-        //    image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-        //    Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //    transform.position = position;
-
-        //    CursorManager.Singleton.cookingCursor.removeCursorImage();
-        //    CursorManager.Singleton.cursorObject.SetActive(true);
-        //    CursorManager.Singleton.HideCookingCursor();
-        //    Encyclopedia.Singleton.setInActive();
-        //}
-
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
         {
             position = Input.mousePosition
@@ -133,23 +116,22 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
         }
 
-        if (dropTarget == null && !isDragging)
+
+        Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Bounds b = GetComponent<Collider2D>().bounds;
+
+        if (dropTarget == null && !isDragging && !droppedOn)
         {
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-            Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Bounds b = GetComponent<Collider2D>().bounds;
             transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            worldDropped = true;
 
             previousParent = collectable.gameObject.transform;
 
             CursorManager.Singleton.cookingCursor.removeCursorImage();
             CursorManager.Singleton.cursorObject.SetActive(true);
-            CursorManager.Singleton.HideCookingCursor();
-            Encyclopedia.Singleton.setInActive();
 
-            Debug.Log(BasketUI.Singleton.basketChange.bounds);
-            Debug.Log(transform.position);
             if (BasketUI.Singleton.basketChange.bounds.Intersects(new Bounds(new Vector3(position.x, position.y, transform.root.position.z), b.size)))
             {
                 image.raycastTarget = true;
@@ -157,38 +139,36 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         } else if (CookingManager.Singleton.IsCooking() && isDragging)
         {
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            if (droppedOn)  // dropped on an already occupied slot
+            {
+                image.raycastTarget = true;
+                CursorManager.Singleton.cookingCursor.removeCursorImage();
+                CursorManager.Singleton.cursorObject.SetActive(true);
+            }
 
-            Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Bounds b = GetComponent<Collider2D>().bounds;
             transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            worldDropped = true;
 
             previousParent = collectable.gameObject.transform;
 
             CursorManager.Singleton.cookingCursor.removeCursorImage();
             CursorManager.Singleton.cursorObject.SetActive(true);
-            CursorManager.Singleton.HideCookingCursor();
-            Encyclopedia.Singleton.setInActive();
 
-            Debug.Log(BasketUI.Singleton.basketChange.bounds);
-            Debug.Log(transform.position);
             if (BasketUI.Singleton.basketChange.bounds.Intersects(new Bounds(new Vector3(position.x, position.y, transform.root.position.z), b.size)))
             {
                 image.raycastTarget = true;
             }
         } else if (!CookingManager.Singleton.IsCooking() && dropTarget == null && isDragging)
         {
-            Debug.Log("hit1");
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-            Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Bounds b = GetComponent<Collider2D>().bounds;
             transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            worldDropped = true;
             isDragging = false;
 
             CursorManager.Singleton.cookingCursor.removeCursorImage();
             CursorManager.Singleton.cursorObject.SetActive(true);
             CursorManager.Singleton.HideCookingCursor();
-            Encyclopedia.Singleton.setInActive();
 
             if (BasketUI.Singleton.basketChange.bounds.Intersects(new Bounds(new Vector3(position.x, position.y, transform.root.position.z), b.size)))
             {
@@ -230,14 +210,12 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnPointerExit(PointerEventData eventData)
     {
         Encyclopedia.Singleton.Hide();
-        print("exit");
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         ingredient = transform.parent.GetComponent<Collectable>().ingredient;
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
-        print("click");
     }
 
     public void OnPointerEnter(PointerEventData eventData)

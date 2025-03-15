@@ -18,7 +18,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
     // Slightly modifying OnDrop From the base class
     public new void OnDrop(PointerEventData eventData)
     {
-        print("OnDrop");
         if (CursorManager.Singleton.cookingCursor.currentCollectableReference == null)
         {
             CursorManager.Singleton.cookingCursor.removeCursorImage();
@@ -26,6 +25,11 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
         }
 
         DraggableItem draggableItem = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>();
+
+        if (draggableItem.worldDropped)
+        {
+            return;
+        }
 
         draggableItem.parentAfterDrag = transform;
 
@@ -45,38 +49,27 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
             }
         }
 
-        // SET ACTUAL COOKING SLOT
-        if (basketDrop)
+        if (ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot && !draggableItem.worldDropped)
         {
-            basketDropNonsense(CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>());
-        } else if (worldDrop)
-        {
-            worldDropNonsense(draggableItem);
-        } else
-        {
-            if (ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot)
-            {
-                //Debug.Log("Set!");
+            //Debug.Log("Set!");
 
-                draggableItem.image.color = new Color(1.0f, 1.0f, 1.0f, DraggableItem.alphaOnPickup);
-                draggableItem.image.raycastTarget = false;
+            draggableItem.image.color = new Color(1.0f, 1.0f, 1.0f, DraggableItem.alphaOnPickup);
+            draggableItem.image.raycastTarget = false;
 
-                CookingManager.Singleton.CookingSlotSetOpaque(this);
+            CookingManager.Singleton.CookingSlotSetOpaque(this);
 
-                ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
-                updateIngredientImage(draggableItem.image);
+            ingredientReference = CursorManager.Singleton.cookingCursor.currentCollectableReference;
+            updateIngredientImage(draggableItem.image);
 
-                CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>());
+            CookingManager.Singleton.AddIngredient(draggableItem.gameObject.transform.parent.gameObject.GetComponent<Collectable>());
 
-                if (ingredientReference.ingredient.GetType() == typeof(AbilityIngredient)) usesText.text = ((AbilityIngredient)ingredientReference.ingredient).uses.ToString();
+            if (ingredientReference.ingredient.GetType() == typeof(AbilityIngredient)) usesText.text = ((AbilityIngredient)ingredientReference.ingredient).uses.ToString();
 
-                draggableItem.previousParent = transform;
-                draggableItem.isDragging = false;
-            } else
-            {
-                //Debug.Log((ingredientReference == null) + ", " + (this != CookingManager.Singleton.currentCookingSlot));
-            }
+            draggableItem.previousParent = transform;
+            draggableItem.isDragging = false;
         }
+        
+        draggableItem.droppedOn = true;
 
         CookingManager.Singleton.currentCookingSlot = null;
         CursorManager.Singleton.cookingCursor.removeCursorImage();
@@ -94,34 +87,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
             CookingManager.Singleton.currentCookingSlot = this;
             Encyclopedia.Singleton.PullUpEntry(ingredientReference.ingredient);
         }
-    }
-
-    private void basketDropNonsense(Image image)
-    {
-        image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        BasketUI.Singleton.AddIngredient(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
-    }
-
-    private void worldDropNonsense(DraggableItem d)
-    {
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.SetParent(null);
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform.localScale = Vector3.one;
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.Spawn(PlayerEntityManager.Singleton.gameObject.transform.position);
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.gameObject.SetActive(true);
-        if (!CookingManager.Singleton.IsCooking())
-        {
-            CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().OnEndDrag(null);
-        }
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.SetActive(false);
-
-        PlayerInventory.Singleton.RemoveIngredientCollectable(CursorManager.Singleton.cookingCursor.currentCollectableReference, false);
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetInteractable(true);
-        CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableObj.SetHighlighted(true);
-
-        d.previousParent = d.gameObject.transform.parent;
-        d.parentAfterDrag = null;
     }
 
     public void updateIngredientImage(Image newImage)
@@ -150,7 +115,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
                 if (dropTarget != null)
                 {
                     dropTarget.OnDrop(eventData);
-                    Debug.Log("dropped!");
                     break;
                 }
             }
@@ -163,6 +127,7 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
 
                 if (CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().previousParent.TryGetComponent<CookingSlot>(out CookingSlot previousSlot))
                 {
+                    CookingManager.Singleton.RemoveIngredient(previousSlot.ingredientReference);
                     previousSlot.ingredientReference = null;
                     previousSlot.faceImage.sprite = null;
                     previousSlot.usesText.text = "";
