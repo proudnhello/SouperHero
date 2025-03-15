@@ -257,8 +257,11 @@ public class RoomGenerator : MonoBehaviour
         Coordinate colPlus = new Coordinate(row, col + 1);
         Coordinate colMinus = new Coordinate(row, col - 1);
 
-        int endWidth = _bossRoom.GetComponent<MapRoom>().BlockWidth();
-        int endHeight = _bossRoom.GetComponent<MapRoom>().BlockHeight();
+        //int endWidth = _bossRoom.GetComponent<MapRoom>().BlockWidth();
+        //int endHeight = _bossRoom.GetComponent<MapRoom>().BlockHeight();
+
+        int endWidth = 3;
+        int endHeight = 7;
 
         string s = "";
 
@@ -270,11 +273,11 @@ public class RoomGenerator : MonoBehaviour
         {
             s += "S";
         }
-        if (checkForBlockExtent(rowPlus, endWidth, endHeight, 'E') && _map[row][col].eastDoor && _map[row][col].eastDoor.activeInHierarchy)
+        if (checkForBlockExtent(rowPlus, endHeight, endWidth, 'E') && _map[row][col].eastDoor && _map[row][col].eastDoor.activeInHierarchy)
         {
             s += "E";
         }
-        if (checkForBlockExtent(rowMinus, endWidth, endHeight, 'W') && _map[row][col].westDoor && _map[row][col].westDoor.activeInHierarchy)
+        if (checkForBlockExtent(rowMinus, endHeight, endWidth, 'W') && _map[row][col].westDoor && _map[row][col].westDoor.activeInHierarchy)
         {
             s += "W";
         }
