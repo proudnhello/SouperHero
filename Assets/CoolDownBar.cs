@@ -11,6 +11,15 @@ public class CooldownBar : MonoBehaviour
         SoupSpoon currentSpoon = PlayerInventory.Singleton.GetSpoons()[PlayerInventory.Singleton.GetCurrentSpoon()];
         float fillNum = currentSpoon.GetCoolDownRatio();
         cooldownFill.fillAmount = fillNum;
-    }
 
+        if (fillNum >= 1)
+        {
+            cooldownFill.enabled = false;
+        }
+        else
+        {
+            cooldownFill.enabled = true;
+
+        }
+    }
 }

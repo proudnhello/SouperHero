@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class EnemyHealthBar : MonoBehaviour
 {
     private Slider slider;
+    private CanvasGroup canvasGroup;
     [SerializeField] private EnemyBaseClass enemy;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text statusText;
@@ -18,6 +19,7 @@ public class EnemyHealthBar : MonoBehaviour
     {
         slider = GetComponent<Slider>();
         enemyClass = enemy.GetComponent<EnemyBaseClass>();
+        canvasGroup = GetComponent<CanvasGroup>();
     }
     void Update()
     {
@@ -26,9 +28,22 @@ public class EnemyHealthBar : MonoBehaviour
         healthText.text = enemyClass.GetHealth().ToString();
 
         // set value to health ratio
-        float oldValue = slider.value;
-        slider.value = (float) enemyClass.GetHealth() / enemyClass.GetBaseStats().maxHealth;
-        float newValue = slider.value;
+        //float oldValue = slider.value;
+        float healthRatio = (float)enemyClass.GetHealth() / enemyClass.GetBaseStats().maxHealth;
+        slider.value = healthRatio;
+
+        Debug.Log(healthRatio);
+
+        if (healthRatio < 1)
+        {
+            canvasGroup.alpha = 1f;
+        }
+        else
+        {
+            canvasGroup.alpha = 0f;
+        }
+
+        //float newValue = slider.value;
 
         // display status's
         statusText.text = "";
