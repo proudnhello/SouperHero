@@ -14,12 +14,16 @@ public class ZoneArea : MonoBehaviour
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();
 
-            // Apply the infliction to the enemy
-            entity.ApplyInfliction(inflictions, gameObject.transform);
-            foreach (Infliction infliction in inflictions)
+            if (entity != null)
             {
-                print(infliction.InflictionFlavor.inflictionType.ToString());
+                // Apply the infliction to the enemy
+                entity.ApplyInfliction(inflictions, gameObject.transform);
+                foreach (Infliction infliction in inflictions)
+                {
+                    print(infliction.InflictionFlavor.inflictionType.ToString());
+                }
             }
+         
         }
         else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {

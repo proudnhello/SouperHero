@@ -10,11 +10,14 @@ public class AudioManager : MonoBehaviour
 
     [field: Header("FMOD EVENTS")]
     [field: SerializeField] public List<EventReference> PLAYER_SFX { get; private set; }
+    [field: SerializeField] public List<EventReference> ENEMY_SFX { get; private set; }
+    public EnemyAudio enemyAudio;
 
     private void Awake()
     {
-        if (Main != null && Main != this) Destroy(this);
+        if (Main != null && Main != this) { Destroy(this); return; }
         else Main = this;
+        enemyAudio = new();
     }
 
     public void PlayOneShot(EventReference sound, Vector3 worldPos = default)

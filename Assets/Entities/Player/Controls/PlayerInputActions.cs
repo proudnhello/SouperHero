@@ -80,6 +80,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomOut"",
+                    ""type"": ""Button"",
+                    ""id"": ""1aaf4b0a-82f8-4395-9c9d-447020092987"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -267,6 +276,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fcfbc165-2efe-40b7-aa95-556b2175b036"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomOut"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -799,6 +819,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_CycleSpoon = m_Player.FindAction("CycleSpoon", throwIfNotFound: true);
         m_Player_Encyclopedia = m_Player.FindAction("Encyclopedia", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        m_Player_ZoomOut = m_Player.FindAction("ZoomOut", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -884,6 +905,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_CycleSpoon;
     private readonly InputAction m_Player_Encyclopedia;
     private readonly InputAction m_Player_Dash;
+    private readonly InputAction m_Player_ZoomOut;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -894,6 +916,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @CycleSpoon => m_Wrapper.m_Player_CycleSpoon;
         public InputAction @Encyclopedia => m_Wrapper.m_Player_Encyclopedia;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
+        public InputAction @ZoomOut => m_Wrapper.m_Player_ZoomOut;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -921,6 +944,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
+            @ZoomOut.started += instance.OnZoomOut;
+            @ZoomOut.performed += instance.OnZoomOut;
+            @ZoomOut.canceled += instance.OnZoomOut;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -943,6 +969,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
+            @ZoomOut.started -= instance.OnZoomOut;
+            @ZoomOut.performed -= instance.OnZoomOut;
+            @ZoomOut.canceled -= instance.OnZoomOut;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1086,6 +1115,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnCycleSpoon(InputAction.CallbackContext context);
         void OnEncyclopedia(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnZoomOut(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -28,7 +28,6 @@ public class PlayerRenderer : EntityRenderer
         currentState.Enter();
 
         PlayerInventory.UsedSpoon += Swing;
-        entity.StartCoroutine(Update());
     }
 
     public void Disable()
@@ -51,17 +50,6 @@ public class PlayerRenderer : EntityRenderer
     {
         currentState = states[0];
         currentState.Enter();
-    }
-
-
-    public IEnumerator Update()
-    {
-        while (Entity.gameObject.activeInHierarchy)
-        {
-            //spriteRenderer.flipX = _playerMovement.currentDirection.x > 0;
-            
-            yield return null;
-        }
     }
     public void Swing()
     {

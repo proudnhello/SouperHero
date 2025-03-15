@@ -28,7 +28,6 @@ public class CameraMover : MonoBehaviour
     Transform _player;
 
 
-
     // This method is called when the script instance is being loaded
     private void Start()
     {
@@ -37,8 +36,31 @@ public class CameraMover : MonoBehaviour
         // Get the player's transform from the PlayerEntityManager singleton
         _player = PlayerEntityManager.Singleton.gameObject.transform;
         dt = lastDt = maxDt = Time.maximumDeltaTime;
-        StartCoroutine(ZoomFollow());
+        StartCoroutine(TargetFollow());
+        PlayerEntityManager.Singleton.input.Player.ZoomOut.started += (ctx) => toggleZoomOut = !toggleZoomOut;
+        StartCoroutine(HandleZoom());
     }
+
+    bool toggleZoomOut = false;
+    IEnumerator HandleZoom()
+    {
+        while (true)
+        {
+            ppc.assetsPPU = 32;
+            yield return new WaitUntil(() => toggleZoomOut);
+            if (CookingManager.Singleton.IsCooking()) 
+            {
+                toggleZoomOut = false;
+            } else
+            {
+                ppc.assetsPPU = 20;
+                yield return new WaitUntil(() => !toggleZoomOut ||
+                    CookingManager.Singleton.IsCooking());
+            }
+
+        }
+    }
+
 
     private void Update()
     {
@@ -68,7 +90,7 @@ public class CameraMover : MonoBehaviour
         }      
     }
 
-    private IEnumerator ZoomFollow()
+    private IEnumerator TargetFollow()
     {
         while (true)
         {

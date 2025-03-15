@@ -18,6 +18,7 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
     // Slightly modifying OnDrop From the base class
     public new void OnDrop(PointerEventData eventData)
     {
+        print("OnDrop");
         if (CursorManager.Singleton.cookingCursor.currentCollectableReference == null)
         {
             CursorManager.Singleton.cookingCursor.removeCursorImage();
