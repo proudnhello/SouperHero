@@ -139,8 +139,9 @@ MonoBehaviour:
   IgnitionFlashStartInterval: 0.23
   IgnitionFlashIntervalMultiplier: 0.6
   IgnitionFlashIntervalToTriggerExplosion: 0.02
-  PostExplosionWaitTime: 1
+  PostExplosionWaitTime: 0.5
   explosion: {fileID: 7686657727603210441, guid: fbc0519ad3be0e3459884de4360d2239, type: 3}
+  ExplosionSpawnOffset: {x: 0, y: -0.325, z: 0}
 --- !u!50 &7615248112675207824
 Rigidbody2D:
   serializedVersion: 4
@@ -280,7 +281,7 @@ MonoBehaviour:
   - {x: 0.1626451, y: -0.22310197, z: 0}
   m_ShapePathHash: 327602469
   m_Mesh: {fileID: 0}
-  m_InstanceId: 137274
+  m_InstanceId: 67250
   m_LocalBounds:
     m_Center: {x: -0.0058574677, y: -0.20464, z: 0}
     m_Extent: {x: 0.18824077, y: 0.019226193, z: 0}
