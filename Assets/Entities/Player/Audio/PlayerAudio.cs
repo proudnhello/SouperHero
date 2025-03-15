@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerAudio
 {
     List<EventInstance> swingSpoon;
+    EventInstance cookSoup;
     public PlayerAudio()
     {
         // Create event pools
@@ -16,6 +17,9 @@ public class PlayerAudio
             AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[0])
         };
         PlayerInventory.UsedSpoon += SwingSpoon;
+
+        cookSoup = AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[1]);
+        CookingManager.CookSoup += CookSoup;
     }
 
     public void SwingSpoon()
@@ -37,6 +41,11 @@ public class PlayerAudio
 
         EventInstance instance = GetSwingSpoon();
         instance.start();
+    }
+
+    public void CookSoup()
+    {
+        cookSoup.start();
     }
     
 }
