@@ -8,6 +8,7 @@ public class BasketUI : MonoBehaviour
 {
 
     public static BasketUI Singleton;
+    public BoxCollider2D basketChange;
     [SerializeField] Transform SpawnPoint;
     [SerializeField] float offsetYSpawn = 85;
     [SerializeField] Vector2 dropForceRangeX= new Vector2(0, 0);
