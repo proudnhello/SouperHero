@@ -26,6 +26,7 @@ public class PlayerInventory : MonoBehaviour
     List<SoupSpoon> spoons;
 
     int currentSpoon = 0;
+    //[SerializeField] List<int> spoonIndexes = new List<int>(); //Move to SpoonsEquipped
 
     void Awake()
     {
@@ -51,6 +52,8 @@ public class PlayerInventory : MonoBehaviour
     {
         PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
         PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
+
+        //spoonIndexes.Add(0);
     }
 
     private void OnDisable()
@@ -61,7 +64,6 @@ public class PlayerInventory : MonoBehaviour
 
     public void CollectIngredientCollectable(Collectable collectable)
     {
-        //Debug.Log($"Collected Ingredient {collectable.ingredient}");
         collectablesHeld.Add(collectable);
         BasketUI.Singleton.AddIngredient(collectable, true);
     }
@@ -73,7 +75,6 @@ public class PlayerInventory : MonoBehaviour
     // (The collider under the basket calls it in reverse, the cook button calls it forward)
     public void RemoveIngredientCollectable(Collectable collectable, bool needsDestroy)
     {
-        //Debug.Log("Remove Ingredient Called");
         collectablesHeld.Remove(collectable);
         BasketUI.Singleton.RemoveIngredient(collectable, needsDestroy);
     }
@@ -84,6 +85,7 @@ public class PlayerInventory : MonoBehaviour
 
         spoons.Add(new SoupSpoon(ingredients));
         currentSpoon = spoons.Count - 1;
+        //spoonIndexes.Add(currentSpoon);
         AddSpoon?.Invoke(currentSpoon);
         ChangedSpoon?.Invoke(currentSpoon);
 
@@ -96,6 +98,7 @@ public class PlayerInventory : MonoBehaviour
 
         if (ctx.ReadValue<float>() > 0)
         {
+            //currentSpoon = currentSpoon >= spoonIndexes.Count - 1 ? currentSpoon = 0 : spoonIndexes[currentSpoon + 1];
             currentSpoon++;
             currentSpoon = currentSpoon >= spoons.Count ? currentSpoon = 0 : currentSpoon;
         }
@@ -127,6 +130,7 @@ public class PlayerInventory : MonoBehaviour
 
         if (spoon.uses == 0)
         {
+            //spoonIndexes.Remove(currentSpoon);
             spoons.RemoveAt(currentSpoon);
             RemoveSpoon?.Invoke(currentSpoon);
             currentSpoon--;

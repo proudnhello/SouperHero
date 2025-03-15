@@ -23,6 +23,13 @@ public class SpoonsEquipped : MonoBehaviour
         ChangeSpoon(0); //Start with default spoon
     }
 
+    private void OnDisable()
+    {
+        PlayerInventory.ChangedSpoon -= ChangeSpoon;
+        PlayerInventory.AddSpoon -= AddSpoon;
+        PlayerInventory.RemoveSpoon -= RemoveSpoon;
+    }
+
     void ChangeSpoon(int spoon)
     {
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
@@ -34,22 +41,26 @@ public class SpoonsEquipped : MonoBehaviour
         //Highlight current spoon
         prevSpoon = spoon;
         imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f);
-        imageComponents[prevSpoon].rectTransform.sizeDelta = selectedSize;
+        imageComponents[spoon].rectTransform.sizeDelta = selectedSize;
         SetUsesText(spoon);
     }
 
     //Enable spoon image when cooked
     void AddSpoon(int spoon)
     {
-        this.gameObject.transform.GetChild(spoon).gameObject.SetActive(true);
-        //imageComponents[spoon].enabled = true;
+        transform.GetChild(spoon).gameObject.SetActive(true);
     }
 
-    //Disable spoon image when uses run out
+    //Disable last spoon image when uses run out
     void RemoveSpoon(int spoon)
     {
-        this.gameObject.transform.GetChild(spoon).gameObject.SetActive(false);
-        //imageComponents[spoon].enabled = false;
+        int spoonsLength = PlayerInventory.Singleton.GetSpoons().Count;
+
+        transform.GetChild(spoonsLength).gameObject.SetActive(false);
+        for(var i = 0; i < spoonsLength; i++) //Update new uses
+        {
+            SetUsesText(i);
+        }
     }
 
     void SetUsesText(int spoon)
