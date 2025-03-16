@@ -30,6 +30,8 @@ public class CookingManager : MonoBehaviour
 
     public List<CookingSlot> cookingSlots;
 
+    public static event Action CookSoup;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -52,7 +54,6 @@ public class CookingManager : MonoBehaviour
         CursorManager.Singleton.ShowCookingCursor();
         ResetStatsText();
         CookingCanvas.SetActive(true);
-        basketDrop.SetActive(true);
         CookingCanvas.transform.position = source.GetCanvasPosition();
         isCooking = true;
         ClearCookingManagerSprites();
@@ -62,7 +63,6 @@ public class CookingManager : MonoBehaviour
             c.ingredientReference = null;
             c.faceImage.sprite = null;
             c.usesText.text = "";
-
         }
     }
 
@@ -74,16 +74,26 @@ public class CookingManager : MonoBehaviour
             CurrentCampfire.StopCooking();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
+
+            if(CursorManager.Singleton.cookingCursor.currentCollectableReference != null)
+            {
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
+
+                CursorManager.Singleton.cookingCursor.removeCursorImage();
+                CursorManager.Singleton.cursorObject.SetActive(true);
+                Encyclopedia.Singleton.setInActive();
+            }
+
             CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
-            basketDrop.SetActive(false);
             ResetStatsText();
             isCooking = false;
             foreach(Collectable c in cookingIngredients)
             {
                 c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 c.collectableUI.GetComponent<Image>().raycastTarget = true;
-                c.collectableUI.GetComponent<DraggableItem>().previousParent = basketDrop.transform;
+                c.collectableUI.GetComponent<DraggableItem>().previousParent = c.transform;
             }
             cookingIngredients.Clear();
 
@@ -220,6 +230,8 @@ public class CookingManager : MonoBehaviour
         ResetStatsText();
 
         ClearCookingManagerSprites();
+
+        CookSoup?.Invoke();
     }
 
     // Sets all the sprites in the cooking slot to null and 0 alpha
@@ -413,15 +425,5 @@ public class CookingManager : MonoBehaviour
         {
             InflictionText.text += $"<color=#{greasyColor}>Greasy (Knockback):</color>\n" + (totalAddKnockback > 0 ? $"+{totalAddKnockback} " : "") + (totalMultKnockback != 1 ? $"x{totalMultKnockback} " : "") + "\n";
         }
-    }
-
-    public void enableWorldDrop()
-    {
-        worldDrop.SetActive(true);
-    }
-
-    public void disableWorldDrop()
-    {
-        worldDrop.SetActive(false);
     }
 }

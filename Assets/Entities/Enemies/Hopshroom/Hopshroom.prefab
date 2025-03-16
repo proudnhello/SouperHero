@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 9008640461073123377}
   - component: {fileID: 5307198346894179568}
   - component: {fileID: 7882611762265642453}
+  - component: {fileID: 5308693484591392831}
   m_Layer: 7
   m_Name: Hopshroom
   m_TagString: Enemy
@@ -59,7 +60,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b9ef61fd433d800439ae066e90e3081e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -78,9 +79,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 11
-  m_Sprite: {fileID: 1541153362, guid: eeb291dc900b9994fa2c8b23bf2788df, type: 3}
+  m_Sprite: {fileID: 109721477, guid: eeb291dc900b9994fa2c8b23bf2788df, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -116,6 +117,7 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
+  enemyEmitter: {fileID: 0}
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -131,7 +133,7 @@ MonoBehaviour:
   DistanceRangeToPlayerForShoot: {x: 5, y: 8}
   AttackDistanceCheckInterval: 0.3
   AttackMoveCheckMinimumDistance: 0.35
-  DistanceFromPlayerToDisengage: 20
+  DistanceFromPlayerToDisengage: 10
   TimeToStartShooting: 0.5
   ShotAnimDelay: 0.3
   ShotCount: 3
@@ -242,6 +244,44 @@ CapsuleCollider2D:
   m_Offset: {x: -0.07076426, y: -0.033815816}
   m_Size: {x: 0.3415285, y: 0.38748714}
   m_Direction: 0
+--- !u!114 &5308693484591392831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168831875005999359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 0
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000dd9d7a5c6dd40f9fa19cb278
+  m_ShapePath:
+  - {x: -0.23869753, y: -0.22405404, z: 0}
+  - {x: -0.23873329, y: -0.21404111, z: 0}
+  - {x: -0.24907625, y: -0.2140271, z: -0.000000011175871}
+  - {x: -0.24894297, y: -0.19590253, z: -0.000000011175871}
+  - {x: -0.23896289, y: -0.19612986, z: -0.000000011175871}
+  - {x: -0.23887396, y: -0.18560165, z: -0.000000011175871}
+  - {x: 0.069153786, y: -0.18627155, z: 0}
+  - {x: 0.06936014, y: -0.19616562, z: 0.000000018626451}
+  - {x: 0.07854712, y: -0.19647008, z: 0.000000018626451}
+  - {x: 0.07876992, y: -0.21386284, z: 0.000000018626451}
+  - {x: 0.068857074, y: -0.21392018, z: 0.000000018626451}
+  - {x: 0.06910169, y: -0.22408378, z: 0}
+  m_ShapePathHash: 1027420725
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 137186
+  m_LocalBounds:
+    m_Center: {x: -0.08515316, y: -0.20484272, z: 0}
+    m_Extent: {x: 0.16392308, y: 0.019241065, z: 0}
 --- !u!1 &3628500641113481724
 GameObject:
   m_ObjectHideFlags: 0

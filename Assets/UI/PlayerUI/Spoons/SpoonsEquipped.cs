@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class SpoonsEquipped : MonoBehaviour
 {
     [SerializeField] Image[] imageComponents;
+    [SerializeField] TMP_Text[] usesTextComponents;
     private int prevSpoon = -1;
 
     private Vector2 normalSize = new Vector2(82, 50);
@@ -33,26 +34,44 @@ public class SpoonsEquipped : MonoBehaviour
     {
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
         {
-            imageComponents[prevSpoon].color = Color.white;
-            imageComponents[prevSpoon].rectTransform.sizeDelta = normalSize;
+            //imageComponents[prevSpoon].color = Color.white;
+            imageComponents[prevSpoon].rectTransform.sizeDelta = normalSize; //Reset to normal size
         }
 
         //Highlight current spoon
         prevSpoon = spoon;
-        imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f);
-        imageComponents[prevSpoon].rectTransform.sizeDelta = selectedSize;
+        //imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f); //Turn icon yellow
+        imageComponents[spoon].rectTransform.sizeDelta = selectedSize; //Increase size
+        SetUsesText(spoon);
     }
 
     //Enable spoon image when cooked
     void AddSpoon(int spoon)
     {
-        imageComponents[spoon].enabled = true;
+        transform.GetChild(spoon).gameObject.SetActive(true);
     }
 
-    //Disable spoon image when uses run out
-    //FIX: Not working correctly
+    //Disable last spoon image when uses run out
     void RemoveSpoon(int spoon)
     {
-        imageComponents[spoon].enabled = false;
+        int spoonsLength = PlayerInventory.Singleton.GetSpoons().Count;
+
+        transform.GetChild(spoonsLength).gameObject.SetActive(false);
+        for(var i = 0; i < spoonsLength; i++) //Update new uses
+        {
+            SetUsesText(i);
+        }
+    }
+
+    void SetUsesText(int spoon)
+    {
+        int uses = PlayerInventory.Singleton.GetSpoons()[spoon].uses;
+        if (uses != -1)
+        {
+            usesTextComponents[spoon].text = uses.ToString();
+        } else
+        {
+            usesTextComponents[spoon].text = "∞";
+        }
     }
 }

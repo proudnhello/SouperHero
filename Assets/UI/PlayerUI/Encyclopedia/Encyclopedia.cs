@@ -7,6 +7,7 @@ using TMPro;
 using BuffType = FlavorIngredient.BuffFlavor.BuffType;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 using System;
+using JetBrains.Annotations;
 public class Encyclopedia : MonoBehaviour
 {
     [Serializable]
@@ -117,7 +118,10 @@ public class Encyclopedia : MonoBehaviour
             FlavorProfile.SetActive(false);
             AbilityEntry.text = ((AbilityIngredient)ing).AbilityDescription;         
         }
+    }
 
-
+    public void setInActive()
+    {
+        this.RenderedObject.SetActive(false);
     }
 }

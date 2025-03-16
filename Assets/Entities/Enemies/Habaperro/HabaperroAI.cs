@@ -46,6 +46,7 @@ public class HabaperroAI : EnemyBaseClass
     [SerializeField] protected float IgnitionFlashIntervalToTriggerExplosion;
     [SerializeField] protected float PostExplosionWaitTime = 1f;
     [SerializeField] private Explosion explosion;
+    [SerializeField] protected Vector3 ExplosionSpawnOffset;
 
     protected Animator animator;
     internal List<IState> states;
@@ -262,7 +263,7 @@ public class HabaperroAI : EnemyBaseClass
             sm._sprite.color = Color.white;
             sm._collider.enabled = false;
             sm.animator.Play("Boom");
-            Instantiate(sm.explosion, sm.transform.position, Quaternion.identity);
+            Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
             yield return new WaitForSeconds(sm.PostExplosionWaitTime);
             Destroy(sm.gameObject); // <-------- probably change this eventually with spawn system idek
 

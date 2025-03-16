@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8930589966554415787}
   - component: {fileID: 3577121339610121893}
   - component: {fileID: 7540946205643007163}
+  - component: {fileID: 4803089474065556423}
   m_Layer: 7
   m_Name: Flettuce
   m_TagString: Enemy
@@ -58,7 +59,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b9ef61fd433d800439ae066e90e3081e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,9 +78,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 11
-  m_Sprite: {fileID: 21300000, guid: a704f79a908609340a0bb0bffdab6c34, type: 3}
+  m_Sprite: {fileID: 1794586888, guid: 02b6befd16f09894c87236ecdb6f7938, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -115,6 +116,7 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
+  enemyEmitter: {fileID: 0}
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -136,7 +138,7 @@ MonoBehaviour:
   ConsecutiveCharges: 3
   ChargeCooldownTime: {x: 0.3, y: 0.4}
   FinalChargeCooldownTime: 1.62
-  DistanceFromPlayerToDisengage: 12
+  DistanceFromPlayerToDisengage: 7
 --- !u!50 &3527386940917697244
 Rigidbody2D:
   serializedVersion: 4
@@ -242,6 +244,44 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4803089474065556423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726252843407693719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 0
+  m_CastsShadows: 1
+  m_SelfShadows: 1
+  m_ApplyToSortingLayers: 00000000dd9d7a5c6dd40f9fa19cb278
+  m_ShapePath:
+  - {x: -0.10589385, y: -0.5084804, z: 0}
+  - {x: -0.12788427, y: -0.49646142, z: 0}
+  - {x: -0.1372397, y: -0.47327408, z: -0.000000011175871}
+  - {x: -0.13533473, y: -0.42375323, z: -0.000000011175871}
+  - {x: -0.12278843, y: -0.40271458, z: -0.000000011175871}
+  - {x: -0.1039083, y: -0.39042196, z: -0.000000011175871}
+  - {x: 0.039171576, y: -0.39240992, z: 0}
+  - {x: 0.061928034, y: -0.40205973, z: 0.000000018626451}
+  - {x: 0.07201898, y: -0.42434743, z: 0.000000018626451}
+  - {x: 0.07106674, y: -0.4776775, z: 0.000000018626451}
+  - {x: 0.061442018, y: -0.50064236, z: 0.000000018626451}
+  - {x: 0.0379256, y: -0.50806874, z: 0}
+  m_ShapePathHash: -891751775
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 56518
+  m_LocalBounds:
+    m_Center: {x: -0.032610357, y: -0.4494512, z: 0}
+    m_Extent: {x: 0.10462934, y: 0.059029236, z: 0}
 --- !u!1001 &1890135895716152096
 PrefabInstance:
   m_ObjectHideFlags: 0

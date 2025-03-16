@@ -32,7 +32,6 @@ public class EnemyHealthBar : MonoBehaviour
         float healthRatio = (float)enemyClass.GetHealth() / enemyClass.GetBaseStats().maxHealth;
         slider.value = healthRatio;
 
-        Debug.Log(healthRatio);
 
         if (healthRatio < 1)
         {

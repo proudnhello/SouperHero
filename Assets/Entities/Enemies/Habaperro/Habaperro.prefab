@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2500294073309246183}
   - component: {fileID: 7564214022553614057}
   - component: {fileID: 3601704232280265975}
+  - component: {fileID: 487329169421168256}
   m_Layer: 7
   m_Name: Habaperro
   m_TagString: Enemy
@@ -58,7 +59,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b9ef61fd433d800439ae066e90e3081e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 11
   m_Sprite: {fileID: -1522402420, guid: 9fc2b30b0bb274a04ac4fe5cb2b8b6a8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -115,6 +116,7 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
+  enemyEmitter: {fileID: 0}
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -131,14 +133,15 @@ MonoBehaviour:
   AttackSpeedMultiplier: 1.5
   DistanceToPlayerForExplosion: 2.07
   AttackDistanceCheckInterval: 0.15
-  DistanceFromPlayerToDisengage: 15
+  DistanceFromPlayerToDisengage: 9
   TimeForIgniteAnim: 1
   IgnitionFlashColor: {r: 0.8553459, g: 0.45874828, b: 0.23400962, a: 1}
   IgnitionFlashStartInterval: 0.23
   IgnitionFlashIntervalMultiplier: 0.6
   IgnitionFlashIntervalToTriggerExplosion: 0.02
-  PostExplosionWaitTime: 1
+  PostExplosionWaitTime: 0.5
   explosion: {fileID: 7686657727603210441, guid: fbc0519ad3be0e3459884de4360d2239, type: 3}
+  ExplosionSpawnOffset: {x: 0, y: -0.325, z: 0}
 --- !u!50 &7615248112675207824
 Rigidbody2D:
   serializedVersion: 4
@@ -244,6 +247,44 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &487329169421168256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6001375706453813211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 0
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000dd9d7a5c6dd40f9fa19cb278
+  m_ShapePath:
+  - {x: -0.1740036, y: -0.2238662, z: 0}
+  - {x: -0.17403936, y: -0.2138533, z: 0}
+  - {x: -0.19405723, y: -0.21418798, z: -0.000000011175871}
+  - {x: -0.19409823, y: -0.19580191, z: -0.000000011175871}
+  - {x: -0.17426896, y: -0.19594207, z: -0.000000011175871}
+  - {x: -0.17418003, y: -0.18541381, z: -0.000000011175871}
+  - {x: 0.16300774, y: -0.18606597, z: 0}
+  - {x: 0.16259313, y: -0.19658098, z: 0.000000018626451}
+  - {x: 0.1823833, y: -0.19613928, z: 0.000000018626451}
+  - {x: 0.18231463, y: -0.21236631, z: 0.000000018626451}
+  - {x: 0.16240048, y: -0.21177271, z: 0.000000018626451}
+  - {x: 0.1626451, y: -0.22310197, z: 0}
+  m_ShapePathHash: 327602469
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 67250
+  m_LocalBounds:
+    m_Center: {x: -0.0058574677, y: -0.20464, z: 0}
+    m_Extent: {x: 0.18824077, y: 0.019226193, z: 0}
 --- !u!1001 &9221002677371496876
 PrefabInstance:
   m_ObjectHideFlags: 0

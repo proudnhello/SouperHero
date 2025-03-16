@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6857497994059370591}
   - component: {fileID: 443627030062101057}
   - component: {fileID: 2093811017660686194}
+  - component: {fileID: 8322816779300415102}
   m_Layer: 7
   m_Name: Taterhop
   m_TagString: Enemy
@@ -32,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.9, y: -3.11, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5949603728792445354}
@@ -58,7 +59,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 11
   m_Sprite: {fileID: -255279486, guid: 0e519f27535a3ab4ebf202b8871a21be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -135,7 +136,7 @@ MonoBehaviour:
   ChargeSpeed: 4.01
   ChargeForce: 51229
   ChargeTime: 1.27
-  DistanceFromPlayerToDisengage: 16
+  DistanceFromPlayerToDisengage: 10
 --- !u!50 &6808612831671540774
 Rigidbody2D:
   serializedVersion: 4
@@ -238,9 +239,47 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.034460664, y: -0.048059136}
-  m_Size: {x: 0.1534946, y: 0.234788}
+  m_Offset: {x: -0.13784264, y: -0.19223656}
+  m_Size: {x: 0.6139784, y: 0.939152}
   m_Direction: 0
+--- !u!114 &8322816779300415102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249368151804887405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 0
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000dd9d7a5c6dd40f9fa19cb278
+  m_ShapePath:
+  - {x: -0.36959028, y: -0.51365286, z: 0}
+  - {x: -0.36571598, y: -0.47604436, z: 0}
+  - {x: -0.40093613, y: -0.4784466, z: -0.000000011175871}
+  - {x: -0.39903116, y: -0.42892575, z: -0.000000011175871}
+  - {x: -0.36474752, y: -0.42797345, z: -0.000000011175871}
+  - {x: -0.36760473, y: -0.39559448, z: -0.000000011175871}
+  - {x: 0.24569893, y: -0.3941313, z: 0}
+  - {x: 0.24616766, y: -0.42606884, z: 0.000000018626451}
+  - {x: 0.27854633, y: -0.42606884, z: 0.000000018626451}
+  - {x: 0.2775941, y: -0.4793989, z: 0.000000018626451}
+  - {x: 0.24045372, y: -0.48035127, z: 0.000000018626451}
+  - {x: 0.24445295, y: -0.5097902, z: 0}
+  m_ShapePathHash: -40836439
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 137350
+  m_LocalBounds:
+    m_Center: {x: -0.061194897, y: -0.45389208, z: 0}
+    m_Extent: {x: 0.33974123, y: 0.05976078, z: 0}
 --- !u!1001 &3943763176302807041
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -292,6 +331,18 @@ PrefabInstance:
     - target: {fileID: 7217637047413565867, guid: b690481935ca75e4fa4e30abbcd9178a, type: 3}
       propertyPath: m_SizeDelta.y
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217637047413565867, guid: b690481935ca75e4fa4e30abbcd9178a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.028
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217637047413565867, guid: b690481935ca75e4fa4e30abbcd9178a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.028
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217637047413565867, guid: b690481935ca75e4fa4e30abbcd9178a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.028
       objectReference: {fileID: 0}
     - target: {fileID: 7217637047413565867, guid: b690481935ca75e4fa4e30abbcd9178a, type: 3}
       propertyPath: m_LocalPosition.x
