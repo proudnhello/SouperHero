@@ -12,6 +12,7 @@ public class CollectableObject : Interactable
     private float collectionSpeed = 6f;
     Collider2D _collider;
     Collectable _Collectable;
+    public static event System.Action Collected;
     protected const float dropLifetime = 30f; //How long object will last once dropped
 
     public void Init(Collectable col)
@@ -35,6 +36,7 @@ public class CollectableObject : Interactable
     {
         SetInteractable(false);  //Cannot interact multiple times
         SetHighlighted(false);
+        Collected?.Invoke();
         StartCoroutine (CollectionAnimation());
     }
 
