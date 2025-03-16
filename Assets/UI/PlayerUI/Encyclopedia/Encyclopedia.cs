@@ -68,13 +68,20 @@ public class Encyclopedia : MonoBehaviour
 
     public void PullUpEntry(Ingredient ing)
     {
+        /*
+        Note: Right now the localization table is storing the key to each string as whatever text is stored in the ingredient csv file.
+        This is fine for now, but if we want to change the key to be something more readable, we should do that, but we'll need
+        to change how the ingredient spreadsheets are organized so that they use keys instead of the raw text.
+        - Igor 
+        */
+
         RenderedObject.SetActive(true);
         foreach (var icon in FlavorIcons) icon.gameObject.SetActive(false);
 
         if (!collectedEntries.Contains(ing)) collectedEntries.Add(ing);
-        Title.text = ing.IngredientName;
+        Title.text = LocalizationManager.GetLocalizedString(ing.IngredientName);    // Localize ingredient name
         EntryImage.sprite = ing.EncyclopediaImage;
-        SourceText.text = ing.Source;
+        SourceText.text = LocalizationManager.GetLocalizedString(ing.Source);    // Localize ingredient source
 
         if (ing.GetType() == typeof(FlavorIngredient))
         {
@@ -82,7 +89,8 @@ public class Encyclopedia : MonoBehaviour
             AbilityEntry.gameObject.SetActive(false);
 
             // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
-            string[] words = ((FlavorIngredient)ing).FlavorProfile.Split(' ');
+            string localizedstr = LocalizationManager.GetLocalizedString(((FlavorIngredient)ing).FlavorProfile);    // Localize flavor profile
+            string[] words = localizedstr.Split(' ');
             string display = "";
             int icon = 0;
             for (int i = 0; i < words.Length; i++)
@@ -116,7 +124,7 @@ public class Encyclopedia : MonoBehaviour
         {
             AbilityEntry.gameObject.SetActive(true);
             FlavorProfile.SetActive(false);
-            AbilityEntry.text = ((AbilityIngredient)ing).AbilityDescription;         
+            AbilityEntry.text = LocalizationManager.GetLocalizedString(((AbilityIngredient)ing).AbilityDescription);   // Localize ability description
         }
     }
 

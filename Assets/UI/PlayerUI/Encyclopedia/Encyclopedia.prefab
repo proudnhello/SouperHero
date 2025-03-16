@@ -361,6 +361,7 @@ GameObject:
   - component: {fileID: 7632246679639329624}
   - component: {fileID: 4282665873456412503}
   - component: {fileID: 8046321901669729733}
+  - component: {fileID: 8995838843404479627}
   m_Layer: 5
   m_Name: FlavorProfile
   m_TagString: Untagged
@@ -488,6 +489,46 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8995838843404479627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4498806697032329457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:fe5ff73fe7e8744b4b289753ee6ed37c
+    m_TableEntryReference:
+      m_KeyId: 3796977211924480
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8046321901669729733}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &5882205888832283567
 GameObject:
   m_ObjectHideFlags: 0
@@ -972,43 +1013,43 @@ MonoBehaviour:
   - KEY: SOUR_Duration
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: bdee7cd5e02d3f741ac10e76a1995cff, type: 3}
-    TOOLTIP_TEXT: Increases ability duration
+    TOOLTIP_TEXT: Sour Tooltip
   - KEY: SALTY_Crit
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: 2f3d2edb37f26a048afcda9dd54e9a59, type: 3}
-    TOOLTIP_TEXT: Not implemented
+    TOOLTIP_TEXT: Salty Tooltip
   - KEY: BITTER_Size
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: 56397224442b80c4cbacc62d39a4feb2, type: 3}
-    TOOLTIP_TEXT: Increases ability size
+    TOOLTIP_TEXT: Bitter Tooltip
   - KEY: SWEET_Speed
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: 9359ff82776d9a649a0b0f421d730dc1, type: 3}
-    TOOLTIP_TEXT: Increases ability speed
+    TOOLTIP_TEXT: Sweet Tooltip
   - KEY: UMAMI_Vampirism
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: 76e21c9ee3f0a754386e36b7d0e52a98, type: 3}
-    TOOLTIP_TEXT: Steals health from enemies
+    TOOLTIP_TEXT: Umami Tooltip
   - KEY: SPICY_Burn
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: 5f300c1c7f260b94e9f9c80e8df8e6b9, type: 3}
-    TOOLTIP_TEXT: Sets enemies ablaze over time
+    TOOLTIP_TEXT: Spicy Tooltip
   - KEY: FROSTY_Freeze
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: f95bcc535b8098348a19af53ccae1100, type: 3}
-    TOOLTIP_TEXT: Slows down enemies
+    TOOLTIP_TEXT: Frosty Tooltip
   - KEY: HEARTY_Health
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: 2eecc6ad584635a4ab0a51d436313ab6, type: 3}
-    TOOLTIP_TEXT: Grants health
+    TOOLTIP_TEXT: Hearty Tooltip
   - KEY: SPIKY_Damage
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: 4f4dd4397eaeb7e45a75211e68aee234, type: 3}
-    TOOLTIP_TEXT: Increases damage
+    TOOLTIP_TEXT: Spiky Tooltip
   - KEY: GREASY_Knockback
     REPLACEMENT_TEXT: ~sour.........
     ICON: {fileID: 21300000, guid: ad8255223419aa2449bb77fa8e9211f4, type: 3}
-    TOOLTIP_TEXT: Increases knockback
+    TOOLTIP_TEXT: Greasy Tooltip
 --- !u!1001 &615028925072525916
 PrefabInstance:
   m_ObjectHideFlags: 0
