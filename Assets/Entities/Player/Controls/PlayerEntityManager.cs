@@ -47,6 +47,7 @@ public class PlayerEntityManager : Entity
             if (IsDead())
             {
                 MetricsManager.Singleton.EndTimer();
+                MetricsManager.Singleton.RecordNumDeaths();
                 MetricsManager.Singleton.SaveToMetricsToSO();
                 GameManager.instance.DeathScreen();
                 return;
