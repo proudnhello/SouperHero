@@ -7,7 +7,7 @@ Shader "Hidden/Downscale"
 
     SubShader
     {
-        ZTest [unity_GUIZTestMode]
+        ZTest Always
 
         Tags 
         {
