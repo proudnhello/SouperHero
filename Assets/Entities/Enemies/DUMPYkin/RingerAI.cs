@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -44,6 +45,7 @@ public class RingerAI : EnemyBaseClass
     {
         public override void Enter(RingerAI ringer)
         {
+            ringer.animator.Play("DUMPYkin");
             ringer.agent.isStopped = true;
         }
 
@@ -84,9 +86,12 @@ public class RingerAI : EnemyBaseClass
 
         public override void Update(RingerAI ringer, float deltaT)
         {
+            ringer.animator.Play("DUMPYrun");
             float distance = Vector2.Distance(ringer.transform.position, PlayerEntityManager.Singleton.GetPlayerPosition());
+            ringer._sprite.flipX = ringer.agent.destination.x <= ringer.transform.position.x;
+
             // If the player is out of range, go back to idle
-            if(distance > ringer.followingRadius && !ringer.alwaysAggro)
+            if (distance > ringer.followingRadius && !ringer.alwaysAggro)
             {
                 rotationDirection = 0;
                 ringer.currentState.Exit(ringer);
@@ -190,6 +195,8 @@ public class RingerAI : EnemyBaseClass
 
         currentState = idle;
         shootTimer = timeBetweenShots;
+
+        animator = GetComponent<Animator>();
 
         StartCoroutine(DetectionCoroutine());
     }
