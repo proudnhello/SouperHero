@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
 
@@ -28,6 +29,12 @@ public class LocalizationManager : MonoBehaviour
     public static TableReference GetTable()
     {
         return tableReference;
+    }
+
+    public static string GetLocalizedString(string key)
+    {
+        LocalizedString localString = new LocalizedString(LocalizationManager.GetTable(), key);
+        return localString.GetLocalizedString();
     }
 
     public void ChangeLanguage(int langID)

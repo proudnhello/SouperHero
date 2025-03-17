@@ -114,8 +114,17 @@ public class AbilityCSVtoSO
             if (splitData[0] != "Default Spoon")
             {
                 // Set This To a Collectable
-                Collectable ingredientCollectable = FindCollectableByName(splitData[0]);
-                ingredientCollectable.ingredient = abilityIngredient;
+                GameObject ingredientCollectable = FindCollectableByName(splitData[0]);
+
+                // set to dirty to mark it has unsaved changes
+                EditorUtility.SetDirty(ingredientCollectable);
+
+                // change prefab
+                ingredientCollectable.GetComponent<Collectable>().ingredient = abilityIngredient;
+
+                // save to asset database
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
             }
             else
             {
@@ -209,7 +218,7 @@ public class AbilityCSVtoSO
 
     // Find the collectables with same name as AbilityIngredient SOs
     // To set the collectable with the new SO
-    static Collectable FindCollectableByName(string name)
+    static GameObject FindCollectableByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -218,7 +227,7 @@ public class AbilityCSVtoSO
         }
 
         // sprites need to be in Resources folder to be found when unused
-        var foundCollectable = Resources.Load<Collectable>($"{collectablePath}{name}");
+        GameObject foundCollectable = Resources.Load<GameObject>($"{collectablePath}{name}");
 
         if (foundCollectable == null)
         {

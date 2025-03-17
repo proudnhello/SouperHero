@@ -5,7 +5,7 @@ using UnityEngine;
 public class EntityManager : MonoBehaviour
 {
     internal int difficulty;
-    internal int lootLevel;
+    internal int lootLevel = 3;
 
     [Serializable]
     public class SpawnableEnemy {

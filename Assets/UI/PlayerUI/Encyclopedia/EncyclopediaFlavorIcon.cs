@@ -11,12 +11,13 @@ public class EncyclopediaFlavorIcon : MonoBehaviour
     [SerializeField] CanvasGroup Tooltip;
     [SerializeField] AnimationCurve FadeCurve;
     [SerializeField] float FadeAnimTime;
-    [SerializeField] TMP_Text TooltipText;
+    [SerializeField] TMP_Text TooltipText;      // this just holds a key now
+                                                // key references the actual text we want to display in the tooltip
 
     public void SetIcon(Icon icon)
     {
         FlavorIconDisplay.sprite = icon.ICON;
-        TooltipText.text = icon.TOOLTIP_TEXT;
+        TooltipText.text = LocalizationManager.GetLocalizedString(icon.TOOLTIP_TEXT);       // get the localized version of the tooltip text using the key
         gameObject.SetActive(true);
         Tooltip.gameObject.SetActive(false);
     }

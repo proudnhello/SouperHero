@@ -30,6 +30,8 @@ public class CookingManager : MonoBehaviour
 
     public List<CookingSlot> cookingSlots;
 
+    public static event Action CookSoup;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -228,6 +230,8 @@ public class CookingManager : MonoBehaviour
         ResetStatsText();
 
         ClearCookingManagerSprites();
+
+        CookSoup?.Invoke();
     }
 
     // Sets all the sprites in the cooking slot to null and 0 alpha

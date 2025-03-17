@@ -21,7 +21,7 @@ public class FlavorCSVtoSO
     // The path to the flavor CSV
     private static string flavorCSVPath = "/Resources/CSVs/Flavor Ingredients.csv";
     // Path to where collectables are
-    static readonly string collectablePath = "Ingredients/Flavors/Collectables/";
+    static readonly string collectablePath = "Assets/Resources/Ingredients/Flavors/Collectables/";
 
 
     [MenuItem("Utilities/Generate Flavors")]
@@ -114,11 +114,20 @@ public class FlavorCSVtoSO
             AssetDatabase.CreateAsset(flavorIngredient, $"{writeFolderPath}{flavorIngredient.IngredientName}.asset");
 
             // Set This To a Collectable
-            Collectable ingredientCollectable = FindCollectableByName(splitData[0]);
-            ingredientCollectable.ingredient = flavorIngredient;
+            GameObject ingredientCollectable = FindCollectableByName(splitData[0]);
+
+            // Mark Dirty so Unity knows it has unsaved changes
+            EditorUtility.SetDirty(ingredientCollectable);
+
+            Debug.Log($"Assigned {splitData[0]} to prefab.");
+            ingredientCollectable.GetComponent<Collectable>().ingredient = flavorIngredient;
+
+            // Save changes
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
         }
 
-        AssetDatabase.SaveAssets();
     }
 
     static void ClearFolderBeforeCreatingAssets(string folderPath)
@@ -196,7 +205,7 @@ public class FlavorCSVtoSO
 
     // Find the collectables with same name as AbilityIngredient SOs
     // To set the collectable with the new SO
-    static Collectable FindCollectableByName(string name)
+    static GameObject FindCollectableByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -205,7 +214,8 @@ public class FlavorCSVtoSO
         }
 
         // sprites need to be in Resources folder to be found when unused
-        var foundCollectable = Resources.Load<Collectable>($"{collectablePath}{name}");
+        //var foundCollectable = Resources.Load<Collectable>($"{collectablePath}{name}");
+        GameObject foundCollectable = AssetDatabase.LoadAssetAtPath<GameObject>($"{collectablePath}{name}.prefab");
 
         if (foundCollectable == null)
         {
