@@ -85,7 +85,6 @@ public class BossRoom : MonoBehaviour
             }
             else
             {
-                MetricsManager.Singleton.RecordNumWins();
                 GameManager.instance.WinScreen();
             }
         }
