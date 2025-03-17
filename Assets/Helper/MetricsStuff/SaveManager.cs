@@ -20,15 +20,22 @@ public class SaveManager : MonoBehaviour
 
     public void Start()
     {
+  
+        // Get DeathMetrics INstance
+        deathMetrics = DeathMetrics.Instance;
+
+
         // Reliable Path Across Devices
         saveDataPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
 
         // Debug Path Save in Assets Folder
         //saveDataPath = Path.Combine(Application.dataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
 
-        deathMetrics = DeathMetrics.Instance;
+        // Reliable Path Across Devices
+        saveDataPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
 
-        //Debug.Log($"Save path: {saveDataPath}");
+        DeathMetricsManager.Singleton.ProcessStats();
+        DeathMetricsManager.Singleton.DisplayStats();
 
     }
 
