@@ -15,7 +15,6 @@ public class MetricsManager : MonoBehaviour
         else Singleton = this;
     }
 
-    private TimeSpan timePlaying;
     private bool isTimerGoing;
     private float elapsedTime;
 
