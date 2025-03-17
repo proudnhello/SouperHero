@@ -12,8 +12,6 @@ public class SaveManager : MonoBehaviour
     {
         if (Singleton != null && Singleton != this) Destroy(this);
         else Singleton = this;
-
-        deathMetrics = DeathMetrics.Instance;
     }
 
     // Class that saves metrics across plays
@@ -28,7 +26,7 @@ public class SaveManager : MonoBehaviour
         // Debug Path Save in Assets Folder
         //saveDataPath = Path.Combine(Application.dataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
 
-        //Debug.Log("Start is being called");
+        deathMetrics = DeathMetrics.Instance;
 
         //Debug.Log($"Save path: {saveDataPath}");
 

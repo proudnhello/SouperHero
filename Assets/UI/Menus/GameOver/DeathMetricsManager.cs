@@ -51,34 +51,34 @@ public class DeathMetricsManager : MonoBehaviour
 
     public void DisplayStats()
     {
-        //metricsText.text = "";
-        //metricsText.text += LocalizationManager.GetLocalizedString("Monsters Slain") + $"<color=#F4B07D>{metricsSO.NumEnemiesKilled}</color>" + "\n";
-        //metricsText.text += LocalizationManager.GetLocalizedString("Ingredients Collected") + $"<color=#F4B07D>{metricsSO.NumIngredientsCollected}</color>" + "\n";
-        //metricsText.text += LocalizationManager.GetLocalizedString("Soups Cooked") + $"<color=#F4B07D>{metricsSO.NumSoupsCooked}</color>" + "\n";
+        metricsText.text = "";
+        metricsText.text += LocalizationManager.GetLocalizedString("Monsters Slain") + $"<color=#F4B07D>{metricsSO.NumEnemiesKilled}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Ingredients Collected") + $"<color=#F4B07D>{metricsSO.NumIngredientsCollected}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Soups Cooked") + $"<color=#F4B07D>{metricsSO.NumSoupsCooked}</color>" + "\n";
         
-        //// Format time from seconds to minutes (and hours if needed)
-        //timeFormatter = TimeSpan.FromSeconds(metricsSO.TimeElapsed);
-        //string timeElapsed;
-        //if (metricsSO.TimeElapsed < 3600)
+        // Format time from seconds to minutes (and hours if needed)
+        timeFormatter = TimeSpan.FromSeconds(metricsSO.TimeElapsed);
+        string timeElapsed;
+        if (metricsSO.TimeElapsed < 3600)
 
-        //if (newMaxNumEnemiesKilled)
-        //{
-        //    metricsText.text += "Monsters Slain: " +
-        //        $"<color=#F4B07D>{numEnemiesKilled}</color>" +
-        //        $"<color=#A9A9A9> (New Best!)</color>" +
-        //        "\n";
-        //}
-        //else
-        //{
-        //    metricsText.text += "Monsters Slain: " +
-        //        $"<color=#F4B07D>{numEnemiesKilled}</color>" +
-        //        $"<color=#A9A9A9> (Best: {maxNumEnemiesKilled})</color>" +
-        //        "\n";
-        //}
-        //metricsText.text += LocalizationManager.GetLocalizedString("Time Elapsed") + $"<color=#F4B07D>{timeElapsed}</color>" + "\n";
+        if (newMaxNumEnemiesKilled)
+        {
+            metricsText.text += "Monsters Slain: " +
+                $"<color=#F4B07D>{numEnemiesKilled}</color>" +
+                $"<color=#A9A9A9> (New Best!)</color>" +
+                "\n";
+        }
+        else
+        {
+            metricsText.text += "Monsters Slain: " +
+                $"<color=#F4B07D>{numEnemiesKilled}</color>" +
+                $"<color=#A9A9A9> (Best: {maxNumEnemiesKilled})</color>" +
+                "\n";
+        }
+        metricsText.text += LocalizationManager.GetLocalizedString("Time Elapsed") + $"<color=#F4B07D>{timeElapsed}</color>" + "\n";
 
-        //metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{metricsSO.NumDeaths}</color>" + "\n";
-        //metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{metricsSO.NumWins}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{metricsSO.NumDeaths}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{metricsSO.NumWins}</color>" + "\n";
 
         if (newMaxNumIngredientsCollected)
         {
@@ -171,19 +171,6 @@ public class DeathMetricsManager : MonoBehaviour
     private void LoadMaxStats()
     {
         SaveManager.Singleton.LoadGameStats();
-
-        if (SaveManager.Singleton == null)
-        {
-            Debug.LogError("SaveManager.Singleton is null!");
-            return;
-        }
-
-        if (SaveManager.Singleton.deathMetrics == null)
-        {
-            Debug.LogError("SaveManager.Singleton.deathMetrics is null!");
-            return;
-        }
-
         maxNumEnemiesKilled = SaveManager.Singleton.deathMetrics.maxNumEnemiesKilled;
         maxNumIngredientsCollected = SaveManager.Singleton.deathMetrics.maxNumIngredientsCollected;
         maxNumSoupsCooked = SaveManager.Singleton.deathMetrics.maxNumSoupsCooked;
