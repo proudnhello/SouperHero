@@ -6,6 +6,8 @@ public class EndGame : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            MetricsManager.Singleton.RecordNumWins();
+            MetricsManager.Singleton.SaveToMetricsToSO();
             GameManager.instance.WinScreen();
         }
     }
