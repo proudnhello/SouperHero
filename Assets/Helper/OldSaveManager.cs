@@ -9,9 +9,9 @@ using Unity.Profiling;
 //Input manager finds the current input system being used
 //In theory, should swap between UI and Player input when pausing the game
 //Right now the input is simply disabled. This is controlled in the GameManager
-public class SaveManager : MonoBehaviour
+public class OldSaveManager : MonoBehaviour
 {
-    public static SaveManager Singleton { get; private set; }
+    public static OldSaveManager Singleton { get; private set; }
     private String saveDataPath;
     public void Awake()
     {

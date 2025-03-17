@@ -108,6 +108,7 @@ public abstract class EnemyBaseClass : Entity
         if (IsDead() && !hasDied)
         {
             hasDied = true;
+            MetricsManager.Singleton.RecordEnemyKilled();
             Die();
         }
     }
