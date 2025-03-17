@@ -62,6 +62,7 @@ public class PlayerInventory : MonoBehaviour
     public void CollectIngredientCollectable(Collectable collectable)
     {
         collectablesHeld.Add(collectable);
+        MetricsManager.Singleton.RecordIngredientCollected();
         BasketUI.Singleton.AddIngredient(collectable, true);
     }
 
@@ -84,6 +85,8 @@ public class PlayerInventory : MonoBehaviour
         currentSpoon = spoons.Count - 1;
         AddSpoon?.Invoke(currentSpoon);
         ChangedSpoon?.Invoke(currentSpoon);
+
+        MetricsManager.Singleton.RecordSoupsCooked();
 
         return true;
     }
