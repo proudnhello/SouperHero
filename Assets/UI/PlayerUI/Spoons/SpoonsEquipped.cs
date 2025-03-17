@@ -5,10 +5,13 @@ using TMPro;
 using System;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using UnityEditor.Rendering.LookDev;
 
 public class SpoonsEquipped : MonoBehaviour
 {
-    [SerializeField] Image[] imageComponents;
+    [SerializeField] List<Image> imageComponents; //Image components of each spoon (no need to call GetComponent)
+    [SerializeField] List<Sprite> spoonSprites; //Spoon sprites
+
     [SerializeField] TMP_Text[] usesTextComponents;
     private int prevSpoon = -1;
 
@@ -34,13 +37,11 @@ public class SpoonsEquipped : MonoBehaviour
     {
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
         {
-            //imageComponents[prevSpoon].color = Color.white;
             imageComponents[prevSpoon].rectTransform.sizeDelta = normalSize; //Reset to normal size
         }
 
         //Highlight current spoon
         prevSpoon = spoon;
-        //imageComponents[spoon].color = new Color(252f/255f, 173f/255f, 3f/255f, 1.0f); //Turn icon yellow
         imageComponents[spoon].rectTransform.sizeDelta = selectedSize; //Increase size
         SetUsesText(spoon);
     }
@@ -55,9 +56,14 @@ public class SpoonsEquipped : MonoBehaviour
     void RemoveSpoon(int spoon)
     {
         int spoonsLength = PlayerInventory.Singleton.GetSpoons().Count;
+        transform.GetChild(spoonsLength).gameObject.SetActive(false); //Remove last spoon
 
-        transform.GetChild(spoonsLength).gameObject.SetActive(false);
-        for(var i = 0; i < spoonsLength; i++) //Update new uses
+        spoonSprites.RemoveAt(spoon);
+        spoonSprites.Insert(3, imageComponents[spoon].sprite); //3 is last index
+
+        UpdateSpoonImageComponents();
+
+        for (var i = 0; i < spoonsLength; i++) //Update new uses
         {
             SetUsesText(i);
         }
@@ -72,6 +78,13 @@ public class SpoonsEquipped : MonoBehaviour
         } else
         {
             usesTextComponents[spoon].text = "∞";
+        }
+    }
+
+    void UpdateSpoonImageComponents()
+    {
+        for (var i = 0; i < 4; i++) {
+            imageComponents[i].sprite = spoonSprites[i];
         }
     }
 }
