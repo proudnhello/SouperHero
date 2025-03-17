@@ -61,20 +61,22 @@ public class DeathMetricsManager : MonoBehaviour
         //string timeElapsed;
         //if (metricsSO.TimeElapsed < 3600)
 
-        //if (newMaxNumEnemiesKilled)
-        //{
-        //    metricsText.text += "Monsters Slain: " +
-        //        $"<color=#F4B07D>{numEnemiesKilled}</color>" +
-        //        $"<color=#A9A9A9> (New Best!)</color>" +
-        //        "\n";
-        //}
-        //else
-        //{
-        //    metricsText.text += "Monsters Slain: " +
-        //        $"<color=#F4B07D>{numEnemiesKilled}</color>" +
-        //        $"<color=#A9A9A9> (Best: {maxNumEnemiesKilled})</color>" +
-        //        "\n";
-        //}
+        if (newMaxNumEnemiesKilled)
+        {
+            metricsText.text += "Monsters Slain: " +
+                $"<color=#F4B07D>{numEnemiesKilled}</color>" +
+                $"<color=#A9A9A9> (New Best!)</color>" +
+                "\n";
+        }
+        else
+        {
+            metricsText.text += "Monsters Slain: " +
+                $"<color=#F4B07D>{numEnemiesKilled}</color>" +
+                $"<color=#A9A9A9> (Best: {maxNumEnemiesKilled})</color>" +
+                "\n";
+        }
+
+
         //metricsText.text += LocalizationManager.GetLocalizedString("Time Elapsed") + $"<color=#F4B07D>{timeElapsed}</color>" + "\n";
 
         //metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{metricsSO.NumDeaths}</color>" + "\n";
