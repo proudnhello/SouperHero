@@ -15,9 +15,9 @@ public class DeathMetricsManager : MonoBehaviour
     void Start()
     {
         metricsText.text = "";
-        metricsText.text += "Monsters Slain: " + $"<color=#F4B07D>{metricsSO.NumEnemiesKilled}</color>" + "\n";
-        metricsText.text += "Ingredients Collected: " + $"<color=#F4B07D>{metricsSO.NumIngredientsCollected}</color>" + "\n";
-        metricsText.text += "Soups Cooked: " + $"<color=#F4B07D>{metricsSO.NumSoupsCooked}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Monsters Slain") + $"<color=#F4B07D>{metricsSO.NumEnemiesKilled}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Ingredients Collected") + $"<color=#F4B07D>{metricsSO.NumIngredientsCollected}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Soups Cooked") + $"<color=#F4B07D>{metricsSO.NumSoupsCooked}</color>" + "\n";
         
         // Format time from seconds to minutes (and hours if needed)
         timeFormatter = TimeSpan.FromSeconds(metricsSO.TimeElapsed);
@@ -30,10 +30,10 @@ public class DeathMetricsManager : MonoBehaviour
         {
             timeElapsed = timeFormatter.ToString("hh':'mm':'ss'.'ff");
         }
-        metricsText.text += "Time Elapsed: " + $"<color=#F4B07D>{timeElapsed}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Time Elapsed") + $"<color=#F4B07D>{timeElapsed}</color>" + "\n";
 
-        metricsText.text += "Total Deaths: " + $"<color=#F4B07D>{metricsSO.NumDeaths}</color>" + "\n";
-        metricsText.text += "Total Wins: " + $"<color=#F4B07D>{metricsSO.NumWins}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{metricsSO.NumDeaths}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{metricsSO.NumWins}</color>" + "\n";
     }
 
     // Update is called once per frame
