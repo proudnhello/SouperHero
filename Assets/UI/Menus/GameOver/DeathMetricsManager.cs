@@ -45,17 +45,17 @@ public class DeathMetricsManager : MonoBehaviour
     // On start add the stats text from the scriptable object that saves the stats
     void Start()
     {
-        ProcessStats();
-        DisplayStats();
+        //ProcessStats();
+        //DisplayStats();
     }
 
     public void DisplayStats()
     {
-        //metricsText.text = "";
+        metricsText.text = "";
         //metricsText.text += LocalizationManager.GetLocalizedString("Monsters Slain") + $"<color=#F4B07D>{metricsSO.NumEnemiesKilled}</color>" + "\n";
         //metricsText.text += LocalizationManager.GetLocalizedString("Ingredients Collected") + $"<color=#F4B07D>{metricsSO.NumIngredientsCollected}</color>" + "\n";
         //metricsText.text += LocalizationManager.GetLocalizedString("Soups Cooked") + $"<color=#F4B07D>{metricsSO.NumSoupsCooked}</color>" + "\n";
-        
+
         //// Format time from seconds to minutes (and hours if needed)
         //timeFormatter = TimeSpan.FromSeconds(metricsSO.TimeElapsed);
         //string timeElapsed;
