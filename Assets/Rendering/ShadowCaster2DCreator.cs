@@ -6,8 +6,6 @@ using UnityEngine.Rendering.Universal;
 
 // from https://www.youtube.com/watch?v=n3tgimClTrI
 
-#if UNITY_EDITOR
-
 [RequireComponent(typeof(CompositeCollider2D))]
 public class ShadowCaster2DCreator : MonoBehaviour
 {
@@ -88,5 +86,3 @@ public class ShadowCaster2DTileMapEditor : Editor
     }
 
 }
-
-#endif
