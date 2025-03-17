@@ -51,6 +51,7 @@ public class RoomGenerator : MonoBehaviour
     public int mapSeed = -1;
 
     public int numIntermediates = 10;
+    public float difficultyMultiplier = 3f;
 
     public GameObject spawnObject;
 
@@ -1201,7 +1202,7 @@ public class RoomGenerator : MonoBehaviour
                 if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    m.difficulty = (int)Mathf.Min(m.difficulty, Mathf.Sqrt(new Coordinate(i, j).squaredDistanceTo(startCoordinate) * 1.5f));
+                    m.difficulty = (int)Mathf.Min(m.difficulty, Mathf.Sqrt(new Coordinate(i, j).squaredDistanceTo(startCoordinate) * difficultyMultiplier));
                 }
             }
         }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EntityManager : MonoBehaviour
 {
-    [Header("Spawning Parameters")]
-    [SerializeField] public int difficulty;
-    [SerializeField] int lootLevel;
+    internal int difficulty;
+    internal int lootLevel;
+
     [Serializable]
     public class SpawnableEnemy {
         public GameObject enemy;
@@ -42,13 +42,17 @@ public class EntityManager : MonoBehaviour
     //    createEnemies();
     //    createForagables();
     //}
-
+    bool hasSpawned = false;
     public void SpawnEnemies()
     {
+        if (hasSpawned) return;
+
         BuildEnemyDictionary();
         BuildForagableDictionary();
         CreateEnemies();
         CreateForagables();
+
+        hasSpawned = true;
     }
 
     public void BuildEnemyDictionary()
@@ -76,10 +80,11 @@ public class EntityManager : MonoBehaviour
             }
         }
     }
-
-    public void CreateEnemies(){
+    
+    public void CreateEnemies()
+    {
         int difficultyCounter = 0;
-        while(difficultyCounter < difficulty && totalEnemies < enemySpawns.Count){
+        while (difficultyCounter < difficulty && totalEnemies < enemySpawns.Count){
             // Generate a random enemy using the weighted dictionary
             int x = UnityEngine.Random.Range(0, totalEnemyWeight);
             GameObject enemy = Instantiate(enemyDict[x].enemy, enemySpawns[totalEnemies].transform);
