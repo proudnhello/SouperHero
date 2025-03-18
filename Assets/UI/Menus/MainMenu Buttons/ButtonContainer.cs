@@ -68,7 +68,7 @@ public class ButtonContainer : MonoBehaviour
                     // Button's spoon here :)
                     button._spoon1.SetActive(true);
 
-                    rect.DOLocalMoveX(originalPositions[button] * _xScaleFactor, _animTime).SetEase(Ease.OutQuad);
+                    //rect.DOLocalMoveX(originalPositions[button] * _xScaleFactor, _animTime).SetEase(Ease.OutQuad);
                 }
                 else
                 {
@@ -78,7 +78,7 @@ public class ButtonContainer : MonoBehaviour
                     // Button's spoon gone :(
                     button._spoon1.SetActive(false);
 
-                    rect.DOLocalMoveX(originalPositions[button], _animTime).SetEase(Ease.OutQuad);
+                    //rect.DOLocalMoveX(originalPositions[button], _animTime).SetEase(Ease.OutQuad);
                 }
             }
         }
