@@ -8,7 +8,7 @@ public class Campfire : Interactable
     [Header("Campfire")]
     [SerializeField] float playerDistanceToCancelCooking = 3f;
     public Vector3 CameraOffset = new Vector3(0, 30, 0);
-    bool isCooking;
+    bool isPrepping;
 
     // Start is called before the first frame update
     private void Start()
@@ -19,27 +19,27 @@ public class Campfire : Interactable
 
     public override void Interact()
     {
-        if (CanInteract() && !isCooking)
+        if (CanInteract() && !isPrepping)
         {       
-            Cook();
+            Prep();
         } 
     }
 
-    private void Cook()
+    private void Prep()
     {
         CookingManager.Singleton.EnterCooking(this);
-        isCooking = true;
+        isPrepping = true;
         StartCoroutine(TrackPlayerDistance());
     }
 
-    public void StopCooking()
+    public void StopPrepping()
     {
-        isCooking = false;
+        isPrepping = false;
     }
 
     IEnumerator TrackPlayerDistance()
     {
-        while (isCooking)
+        while (isPrepping)
         {
             //Debug.Log(Vector2.Distance(PlayerEntityManager.Singleton.transform.position, transform.position));
             if (Vector2.Distance(PlayerEntityManager.Singleton.transform.position, transform.position) > playerDistanceToCancelCooking)
