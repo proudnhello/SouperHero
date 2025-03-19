@@ -63,10 +63,6 @@ public class RingerAI : EnemyBaseClass
                 ringer.currentState = ringer.chasing;
                 ringer.currentState.Enter(ringer);
             }
-            else
-            {
-                ringer.agent.SetDestination(ringer.transform.position);
-            }
         }
     }
 
@@ -81,6 +77,7 @@ public class RingerAI : EnemyBaseClass
 
         public override void Exit(RingerAI ringer)
         {
+            ringer.agent.SetDestination(ringer.transform.position);
             rotationDirection = 0;
             ringer.agent.isStopped = true;
         }
@@ -170,6 +167,7 @@ public class RingerAI : EnemyBaseClass
             ringer.agent.speed = ringer.GetMoveSpeed();
             ringer.agent.isStopped = false;
             ringer._sprite.color = Color.white;
+            ringer.agent.SetDestination(ringer.transform.position);
         }
 
         public override void Update(RingerAI ringer, float deltaT)

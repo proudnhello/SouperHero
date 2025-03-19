@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
 using UnityEngine.UI;
+using TMPro;
 /*
 #if UNITY_EDITOR
 #else
@@ -34,6 +35,10 @@ public class GameManager : MonoBehaviour
     public GameObject blackFade;
     public RectTransform loadingProgress;
     private bool isLoading = false;
+
+    public GameObject find;
+    public GameObject the;
+    public GameObject exit;
 
     void Update()
     {
@@ -95,9 +100,23 @@ public class GameManager : MonoBehaviour
         #if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
         #endif
-        
-        StartCoroutine(LoadScene());
-        Time.timeScale = 1;
+
+        if (isLoading)
+        {
+            return;
+        }
+
+        isLoading = true;
+        Sequence loadSequence = DOTween.Sequence();
+        loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
+        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
+        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
+        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
+        loadSequence.AppendInterval(2f);
+        loadSequence.OnComplete(() =>
+        {
+            StartCoroutine(LoadScene());
+        });
 
         IEnumerator LoadScene() // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
         {
@@ -145,6 +164,10 @@ public class GameManager : MonoBehaviour
         isLoading = true;
         Sequence loadSequence = DOTween.Sequence();
         loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
+        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
+        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
+        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
+        loadSequence.AppendInterval(2f);
         loadSequence.OnComplete(() =>
         {
             StartCoroutine(LoadScene());
@@ -180,9 +203,10 @@ public class GameManager : MonoBehaviour
             // there will be no delay in starting events
             async.allowSceneActivation = true;
 
+            loadingProgress.DOSizeDelta(new Vector2(100, 100), 0.1f);
+
             // Keep yielding the co-routine until scene loading and activation is done.
             yield return new WaitUntil(() => async.isDone);
-            loadingProgress.DOSizeDelta(new Vector2(async.progress * 100, 100), 0.1f);
         }
     }
 
