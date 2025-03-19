@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EntityManager : MonoBehaviour
 {
@@ -42,10 +43,12 @@ public class EntityManager : MonoBehaviour
     //    createEnemies();
     //    createForagables();
     //}
-    bool hasSpawned = false;
-    public void SpawnEntities()
+    public bool hasSpawned = false;
+    public bool hasExportedEnemies = false;
+    public bool hasExportedForagables = false;
+    public bool SpawnEntities()
     {
-        if (hasSpawned) return;
+        if (hasSpawned) return false;
 
         BuildEnemyDictionary();
         BuildForagableDictionary();
@@ -53,6 +56,23 @@ public class EntityManager : MonoBehaviour
         CreateForagables();
 
         hasSpawned = true;
+
+        return hasSpawned;
+    }
+
+    public bool LoadEntities(String enemies, String foragables)
+    {
+        if (hasSpawned) return false;
+        
+        BuildEnemyDictionary();
+        BuildForagableDictionary();
+
+        ImportEnemies(enemies);
+        ImportForagables(foragables);
+
+        hasSpawned = true;
+
+        return true;
     }
 
     public void BuildEnemyDictionary()
@@ -102,6 +122,7 @@ public class EntityManager : MonoBehaviour
     }
 
     public String ExportEnemies(){
+        if (hasExportedEnemies) return ":(";
         String ret = "";
         for(int i = 0; i < enemySpawns.Count; i++){
             if(enemySpawns[i].enemy != null){
@@ -114,14 +135,20 @@ public class EntityManager : MonoBehaviour
                 ret += ",";
             }
         }
+        hasExportedEnemies = true;
         return ret;
     }
 
     public void ImportEnemies(String import){
         String[] strings = import.Split(',');
         for(int i = 0; i < strings.Length; i++){
-            if(strings[i] == "-1"){
-                enemySpawns[i].enemy = possibleEnemies[Int32.Parse(strings[i])].enemy;
+            if(strings[i] != "-1" && i < enemySpawns.Count){
+                GameObject enemy = Instantiate(possibleEnemies[Int32.Parse(strings[i])].enemy);
+                enemy.transform.position = enemySpawns[i].transform.position;
+                enemy.GetComponent<EnemyBaseClass>().setSpawn(enemySpawns[i]);
+
+                enemySpawns[i].enemy = enemy;
+                enemySpawns[i].index = possibleEnemies[Int32.Parse(strings[i])].index;
             }
         }
     }
@@ -164,6 +191,7 @@ public class EntityManager : MonoBehaviour
     }
 
     public String ExportForagables(){
+        if(hasExportedForagables) return ":(";
         String ret = "";
         for(int i = 0; i < foragableSpawns.Count; i++){
             if(foragableSpawns[i].foragable != null){
@@ -176,13 +204,14 @@ public class EntityManager : MonoBehaviour
                 ret += ",";
             }
         }
+        hasExportedForagables = true;
         return ret;
     }
 
     public void ImportForagables(String import){
         String[] strings = import.Split(',');
         for(int i = 0; i < strings.Length; i++){
-            if(strings[i] == "-1"){
+            if(strings[i] != "-1" && i < foragableSpawns.Count){
                 foragableSpawns[i].foragable = possibleForagables[Int32.Parse(strings[i])].foragable;
             }
         }

@@ -87,6 +87,7 @@ public class SaveManager : MonoBehaviour
             }
 
             EntitiesClass data = JsonUtility.FromJson<EntitiesClass>(json);
+            Debug.Log(data.enemies.Count);
 
             roomGenerator.importEnemyStrings(data.enemies);
             roomGenerator.importForagableStrings(data.foragables);
