@@ -8,6 +8,8 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
+using UnityEngine.UI;
 /*
 #if UNITY_EDITOR
 #else
@@ -28,6 +30,10 @@ public class GameManager : MonoBehaviour
 
     [Header("Keybinds")]
     public KeyCode pauseKey = KeyCode.Escape;
+
+    public GameObject blackFade;
+    public RectTransform loadingProgress;
+    private bool isLoading = false;
 
     void Update()
     {
@@ -128,8 +134,20 @@ public class GameManager : MonoBehaviour
 
     public void LoadSave()
     {
-        StartCoroutine(LoadScene());
         Time.timeScale = 1;
+
+        if(isLoading)
+        {
+            return;
+        }
+
+        isLoading = true;
+        Sequence loadSequence = DOTween.Sequence();
+        loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
+        loadSequence.OnComplete(() =>
+        {
+            StartCoroutine(LoadScene());
+        });
 
         IEnumerator LoadScene() // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
         {
@@ -137,7 +155,6 @@ public class GameManager : MonoBehaviour
 
             // Don't let the scene start until all Studio Banks have finished loading
             async.allowSceneActivation = false;
-
 
             // Iterate all the Studio Banks and start them loading in the background
             // including the audio sample data
@@ -149,10 +166,12 @@ public class GameManager : MonoBehaviour
             // Keep yielding the co-routine until all the bank loading is done
             // (for platforms with asynchronous bank loading)
             yield return new WaitUntil(() => FMODUnity.RuntimeManager.HaveAllBanksLoaded);
+            loadingProgress.DOSizeDelta(new Vector2(async.progress * 100, 100), 0.1f);
 
 
             // Keep yielding the co-routine until all the sample data loading is done
             yield return new WaitUntil(() => !FMODUnity.RuntimeManager.AnySampleDataLoading());
+            loadingProgress.DOSizeDelta(new Vector2(async.progress * 100, 100), 0.1f);
 
 
             // Allow the scene to be activated. This means that any OnActivated() or Start()
@@ -162,6 +181,7 @@ public class GameManager : MonoBehaviour
 
             // Keep yielding the co-routine until scene loading and activation is done.
             yield return new WaitUntil(() => async.isDone);
+            loadingProgress.DOSizeDelta(new Vector2(async.progress * 100, 100), 0.1f);
         }
     }
 
