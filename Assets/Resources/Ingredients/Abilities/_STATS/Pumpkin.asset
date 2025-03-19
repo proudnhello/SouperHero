@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a185cc953ce35a64d8887da9800b40b4, type: 3}
+  m_Name: Pumpkin
+  m_EditorClassIdentifier: 
+  IngredientName: Pumpkin
+  Icon: {fileID: 0}
+  EncyclopediaImage: {fileID: 21300000, guid: a3cdb1ee57690cc41ba7c3790900b814, type: 3}
+  Source: Dropped by Dumpkins
+  AbilityDescription: Creates a zone that heals the player
+  abilityType: {fileID: 11400000, guid: 9e4a6e70f045ff847907b4b7efa9880c, type: 2}
+  baseStats:
+    BaseDuration: 1
+    BaseSize: 5
+    BaseCrit: 0
+    BaseSpeed: 0
+    cooldown: 1
+  inherentInflictionFlavors:
+  - inflictionType: 2
+    amount: 5
+    statusEffectDuration: 0
+  - inflictionType: 4
+    amount: 5
+    statusEffectDuration: 0
+  uses: 5

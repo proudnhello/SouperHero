@@ -19,6 +19,7 @@ public class ZoneCore : MonoBehaviour
         this.stats = passedStats;
         this.inflictions = inflictions;
         persistenceTime = 0;
+        print("WHAT THE FUCK");
 
         transform.position = spawnPoint;
         Debug.Log($"Zone Size Stats in Spawn Zone {passedStats.size}");
@@ -43,6 +44,7 @@ public class ZoneCore : MonoBehaviour
     {
         if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject))
         {
+            print("WHY COLIDE");
             gameObject.SetActive(false);
         }
     }
@@ -63,10 +65,6 @@ public class ZoneCore : MonoBehaviour
         }
         else
         {
-            if(stuckToPlayer && playerCenteredZone)
-            {
-                playerCenteredZone.Deactivate();
-            }
             gameObject.SetActive(false);
         }
     }

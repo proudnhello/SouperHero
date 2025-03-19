@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 7195886257577792553}
   - component: {fileID: 4694473580982490268}
   - component: {fileID: 2114876611178202012}
-  - component: {fileID: 6601114932964998674}
+  - component: {fileID: 1232112795048564092}
   m_Layer: 8
-  m_Name: ShroomHead
+  m_Name: Spuds
   m_TagString: Ingredient
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 326946545
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2036761594, guid: d9528a1aceeb6a04f91926eb1dbb0781, type: 3}
+  m_Sprite: {fileID: -791377896, guid: d9528a1aceeb6a04f91926eb1dbb0781, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 069c261416e037e4c827f4bee54c0cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!61 &6601114932964998674
+--- !u!61 &1232112795048564092
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,7 +130,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.016482651, y: -0.0061808825}
+  m_Offset: {x: 0.012098551, y: -0.0069134235}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -141,7 +141,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.0329653, y: 1.0618098}
+  m_Size: {x: 1.0241971, y: 1.062221}
   m_EdgeRadius: 0
 --- !u!1 &3388838937524246683
 GameObject:
@@ -155,11 +155,11 @@ GameObject:
   - component: {fileID: 155414985996046896}
   - component: {fileID: 7855966722942875405}
   - component: {fileID: 1152078203828340505}
-  - component: {fileID: 6578791662792246296}
-  - component: {fileID: 69721934101930075}
-  - component: {fileID: 5430084951889693701}
+  - component: {fileID: 6834714729904923402}
+  - component: {fileID: 2804046324513310002}
+  - component: {fileID: 6621155585423889570}
   m_Layer: 5
-  m_Name: ShroomHeadUI
+  m_Name: SpudsUI
   m_TagString: Ingredient
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -182,7 +182,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 108, y: 100}
+  m_SizeDelta: {x: 108.7, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!50 &155414985996046896
 Rigidbody2D:
@@ -239,7 +239,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2036761594, guid: d9528a1aceeb6a04f91926eb1dbb0781, type: 3}
+  m_Sprite: {fileID: -791377896, guid: d9528a1aceeb6a04f91926eb1dbb0781, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -249,7 +249,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6578791662792246296
+--- !u!114 &6834714729904923402
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3840ada9edf0af45a838800545b7415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &69721934101930075
+--- !u!114 &2804046324513310002
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -281,7 +281,7 @@ MonoBehaviour:
   isDragging: 0
   droppedOn: 0
   worldDropped: 0
---- !u!60 &5430084951889693701
+--- !u!60 &6621155585423889570
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -325,15 +325,15 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 30.735352, y: 50.11328}
-      - {x: -5.979492, y: 50.31543}
-      - {x: -46.046387, y: 30.583008}
-      - {x: -34.402832, y: 4.5371094}
-      - {x: -54.176155, y: -20.11481}
-      - {x: 27.193848, y: -51.341797}
-      - {x: 31.347271, y: -17.147884}
-      - {x: 53.317764, y: -9.226009}
-      - {x: 50.58631, y: 34.225033}
+    - - {x: -32.750977, y: 51.589844}
+      - {x: -50.828613, y: 33.99707}
+      - {x: -51.862793, y: -12.130859}
+      - {x: -35.771973, y: -46.408203}
+      - {x: 8.5801935, y: -50.192936}
+      - {x: 40.46582, y: -21.374023}
+      - {x: 42.73497, y: 12.807194}
+      - {x: 54.68007, y: 28.898014}
+      - {x: 37.466682, y: 43.756283}
   m_UseDelaunayMesh: 0
 --- !u!1 &5854243488706272828
 GameObject:
@@ -346,7 +346,7 @@ GameObject:
   - component: {fileID: 6063786777005417206}
   - component: {fileID: 165481585712337600}
   m_Layer: 8
-  m_Name: Shroom Head
+  m_Name: Pumpkin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -381,6 +381,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a51c79d69a0aa4e9f039927f214b99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingredient: {fileID: 11400000, guid: 744c5f35f066f684b89a670879b08154, type: 2}
+  ingredient: {fileID: 11400000, guid: 5c5c0ce085f5cec4da1d9d7893329d70, type: 2}
   collectableObj: {fileID: 2114876611178202012}
-  collectableUI: {fileID: 6578791662792246296}
+  collectableUI: {fileID: 6834714729904923402}

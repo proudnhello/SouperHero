@@ -33,6 +33,8 @@ public class RingerAI : EnemyBaseClass
     RingerState chasing;
     RingerState shooting;
 
+    float initialFiringPointX;
+
     public abstract class RingerState
     {
         abstract public void Update(RingerAI ringer, float deltaT);
@@ -90,10 +92,12 @@ public class RingerAI : EnemyBaseClass
             if(PlayerEntityManager.Singleton.GetPlayerPosition().x < ringer.transform.position.x)
             {
                 ringer._sprite.flipX = false;
+                ringer.firingPoint.localPosition = new Vector3(ringer.initialFiringPointX, ringer.firingPoint.localPosition.y, ringer.firingPoint.localPosition.z);
             }
             else
             {
                 ringer._sprite.flipX = true;
+                ringer.firingPoint.localPosition = new Vector3(-ringer.initialFiringPointX, ringer.firingPoint.localPosition.y, ringer.firingPoint.localPosition.z);
             }
 
             // If the player is out of range, go back to idle
@@ -205,6 +209,7 @@ public class RingerAI : EnemyBaseClass
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         agent.speed = GetMoveSpeed();
+        initialFiringPointX = firingPoint.localPosition.x;
 
         idle = new IdleState();
         chasing = new ChasingState();
