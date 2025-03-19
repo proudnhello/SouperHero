@@ -18,6 +18,8 @@ public class MainMenuAnims : MonoBehaviour
 
     private Sequence s;
 
+    private bool isDone = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,7 @@ public class MainMenuAnims : MonoBehaviour
         s.Append(secondButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
         s.Append(thirdButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
         s.Append(fourthButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
+        s.OnComplete(() => { isDone = true; });
     }
 
     // Update is called once per frame
@@ -38,6 +41,17 @@ public class MainMenuAnims : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             playerAnimator.SetTrigger("Left Click");
+            if(!isDone)
+            {
+                s.Kill();
+                titleText.transform.localPosition = new Vector3(titleText.transform.localPosition.x, 0, titleText.transform.localPosition.z);
+                blackFade.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+                book.transform.localPosition = new Vector3(0, book.transform.localPosition.y, book.transform.localPosition.z);
+                firstButton.anchoredPosition = new Vector2(42, firstButton.anchoredPosition.y);
+                secondButton.anchoredPosition = new Vector2(42, secondButton.anchoredPosition.y);
+                thirdButton.anchoredPosition = new Vector2(42, thirdButton.anchoredPosition.y);
+                fourthButton.anchoredPosition = new Vector2(42, fourthButton.anchoredPosition.y);
+            }
         }
     }
 
