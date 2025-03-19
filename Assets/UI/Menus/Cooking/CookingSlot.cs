@@ -119,11 +119,11 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
                 }
             }
 
-            Vector2 mPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Bounds b = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Collider2D>().bounds;
-
             if (dropTarget == null)
             {
+                Vector2 mPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Bounds b = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Collider2D>().bounds;
+
                 // spawn in UI space
                 Image draggableImage = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().image;
                 draggableImage.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
