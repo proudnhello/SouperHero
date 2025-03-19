@@ -16,10 +16,6 @@ public class PlayerCenteredZone : AbilityAbstractClass
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
-        if(active == true)
-        {
-            return;
-        }
         Debug.Log($"Is spawner null?: {spawner}");
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();
@@ -29,10 +25,5 @@ public class PlayerCenteredZone : AbilityAbstractClass
             PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
             stats, inflictions, true, this);
         active = true;
-    }
-
-    public void Deactivate()
-    {
-        active = false;
     }
 }
