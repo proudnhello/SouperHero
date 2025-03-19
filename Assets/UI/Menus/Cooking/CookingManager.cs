@@ -211,6 +211,7 @@ public class CookingManager : MonoBehaviour
 
         // turn off interactable after cooking once
         CurrentCampfire.SetInteractable(false);
+        CurrentCampfire.SetHighlighted(false);
 
         // Cook the soup with what is currently in the pot
         List<Ingredient> cookedIngredients = new();
