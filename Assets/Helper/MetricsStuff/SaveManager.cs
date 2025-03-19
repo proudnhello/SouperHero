@@ -4,6 +4,8 @@ using UnityEngine;
 using System.IO;
 using System;
 using System.Data.Common;
+using System.Numerics;
+using UnityEngine.InputSystem;
 
 [Serializable]
 public class EntitiesClass
@@ -11,6 +13,12 @@ public class EntitiesClass
     public List<String> enemies;
     public List<String> foragables;
     public int seed;
+}
+
+[Serializable]
+public class PlayerDataClass
+{
+    public UnityEngine.Vector2 playerPos;
 }
 
 public class SaveManager : MonoBehaviour
@@ -36,7 +44,7 @@ public class SaveManager : MonoBehaviour
         // Reliable Path Across Devices
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
         entitiesPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Entities.json");
-
+        playerPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Player.json");
         Load();
     }
 
@@ -45,6 +53,7 @@ public class SaveManager : MonoBehaviour
     public RoomGenerator roomGenerator;
     private string statsPath;
     private string entitiesPath;
+    private string playerPath;
 
     public void Start()
     {
@@ -53,13 +62,43 @@ public class SaveManager : MonoBehaviour
     }
 
     public void Save(){
+        SavePlayer();
         SaveEntities();
         SaveGameStats();
     }
 
     public void Load(){
+        LoadPlayerData();
         LoadGameStats();
         LoadEntities();
+    }
+
+    public void SavePlayer(){
+        PlayerDataClass pdc = new PlayerDataClass();
+        pdc.playerPos = PlayerEntityManager.Singleton.transform.position;
+
+        string json = JsonUtility.ToJson(pdc, true);  // Pretty print for readability
+
+        using (StreamWriter writer = new StreamWriter(playerPath))
+        {
+            writer.Write(json);
+        }
+    }
+
+    public void LoadPlayerData(){
+        if (File.Exists(playerPath))
+        {
+            string json = string.Empty;
+            
+            using(StreamReader reader = new StreamReader(playerPath))
+            {
+                json = reader.ReadToEnd();
+            }
+
+            PlayerDataClass data = JsonUtility.FromJson<PlayerDataClass>(json);
+
+            PlayerEntityManager.Singleton.transform.position = data.playerPos;
+        }
     }
 
     public void SaveEntities(){
