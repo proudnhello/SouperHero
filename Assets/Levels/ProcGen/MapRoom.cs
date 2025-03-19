@@ -1,3 +1,5 @@
+using skner.DualGrid;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +11,11 @@ public class MapRoom : MonoBehaviour
     private int _blockWidth;
     [SerializeField]
     private int _blockHeight;
+
+    private void Start()
+    {
+        Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), x => x.RefreshRenderTilemap());
+    }
 
     // ORDERED FROM TOP LEFT TO BOTTOM RIGHT
     public List<Block> blocks = new List<Block>();
