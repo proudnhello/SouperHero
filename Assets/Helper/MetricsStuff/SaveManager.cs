@@ -4,6 +4,14 @@ using UnityEngine;
 using System.IO;
 using System;
 
+[Serializable]
+public class EntitiesClass
+{
+    public List<String> enemies;
+    public List<String> foragables;
+    public int seed;
+}
+
 public class SaveManager : MonoBehaviour
 {
 
@@ -13,12 +21,17 @@ public class SaveManager : MonoBehaviour
     {
         if (Singleton != null && Singleton != this) Destroy(this);
         else Singleton = this;
+        Load();
     }
 
     // Class that saves metrics across plays
     public DeathMetrics deathMetrics;
     public RoomGenerator roomGenerator;
-    private string saveDataPath;
+    StreamWriter writer;
+    StreamWriter reader;
+    private string statsPath;
+    private string enemiesPath;
+    private string foragablesPath;
 
     public void Start()
     {
@@ -28,13 +41,15 @@ public class SaveManager : MonoBehaviour
 
 
         // Reliable Path Across Devices
-        saveDataPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
+        statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
 
         // Debug Path Save in Assets Folder
-        //saveDataPath = Path.Combine(Application.dataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
+        //statsPath = Path.Combine(Application.dataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
 
         // Reliable Path Across Devices
-        saveDataPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
+        statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
+        enemiesPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Enemies.json");
+        foragablesPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Foragables.json");
 
         DeathMetricsManager.Singleton.ProcessStats();
         DeathMetricsManager.Singleton.DisplayStats();
@@ -48,23 +63,39 @@ public class SaveManager : MonoBehaviour
 
     public void Load(){
         LoadGameStats();
-    }
-
-    public void Reset()
-    {
-        ResetGameStats();   
+        LoadEntities();
     }
 
     public void SaveEntities(){
-        List<String> enemies = roomGenerator.exportEnemyStrings();
-        string json = JsonUtility.ToJson(enemies, true);  // Pretty print for readability
+        EntitiesClass et = new EntitiesClass();
+        et.enemies = roomGenerator.exportEnemyStrings();
+        et.foragables = roomGenerator.exportForagableStrings();
+        et.seed = roomGenerator.mapSeed;
+        string json = JsonUtility.ToJson(et, true);  // Pretty print for readability
+        Debug.Log(json);
 
-        using (StreamWriter writer = new StreamWriter(saveDataPath))
+        using (StreamWriter writer = new StreamWriter(enemiesPath))
         {
             writer.Write(json);
         }
+    }
 
-        Debug.Log($"Saving New Stats Json at path: {saveDataPath}");
+    public void LoadEntities(){
+        if (File.Exists(enemiesPath))
+        {
+            string json = string.Empty;
+            
+            using(StreamReader reader = new StreamReader(statsPath))
+            {
+                json = reader.ReadToEnd();
+            }
+
+            EntitiesClass data = JsonUtility.FromJson<EntitiesClass>(json);
+
+            roomGenerator.importEnemyStrings(data.enemies);
+            roomGenerator.importForagableStrings(data.foragables);
+            roomGenerator.mapSeed = data.seed;
+        }
     }
 
     public void SaveGameStats()
@@ -72,22 +103,20 @@ public class SaveManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(deathMetrics, true);  // Pretty print for readability
 
-        using (StreamWriter writer = new StreamWriter(saveDataPath))
+        using (StreamWriter writer = new StreamWriter(statsPath))
         {
             writer.Write(json);
         }
-
-        Debug.Log($"Saving New Stats Json at path: {saveDataPath}");
 
     }
 
     public void LoadGameStats()
     {
-        if (File.Exists(saveDataPath))
+        if (File.Exists(statsPath))
         {
             string json = string.Empty;
             
-            using(StreamReader reader = new StreamReader(saveDataPath))
+            using(StreamReader reader = new StreamReader(statsPath))
             {
                 json = reader.ReadToEnd();
             }
@@ -111,16 +140,12 @@ public class SaveManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(deathMetrics, true);  // Pretty print for readability
 
-        using (StreamWriter writer = new StreamWriter(saveDataPath))
+        using (StreamWriter writer = new StreamWriter(statsPath))
         {
             writer.Write(json);
         }
 
-        Debug.Log($"Saving New Stats Json at path: {saveDataPath}");
-
-    }
-
-    public void SaveEnemies(){
+        Debug.Log($"Saving New Stats Json at path: {statsPath}");
 
     }
 }
