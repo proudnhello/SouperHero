@@ -22,7 +22,6 @@ public class RingerAI : EnemyBaseClass
     private float detectionDelay = 0.3f;
     [SerializeField] protected LayerMask playerLayer;
     //[SerializeField] private float distanceToStop = 5f;
-    [SerializeField] private float timeToShoot = 0.5f;
     [SerializeField] private float timeBetweenShots = 2.0f;
     [SerializeField] private int numberOfShots = 18;
     public Transform firingPoint;
@@ -88,7 +87,14 @@ public class RingerAI : EnemyBaseClass
         {
             ringer.animator.Play("DUMPYrun");
             float distance = Vector2.Distance(ringer.transform.position, PlayerEntityManager.Singleton.GetPlayerPosition());
-            ringer._sprite.flipX = ringer.agent.destination.x <= ringer.transform.position.x;
+            if(PlayerEntityManager.Singleton.GetPlayerPosition().x < ringer.transform.position.x)
+            {
+                ringer._sprite.flipX = false;
+            }
+            else
+            {
+                ringer._sprite.flipX = true;
+            }
 
             // If the player is out of range, go back to idle
             if (distance > ringer.followingRadius && !ringer.alwaysAggro)
@@ -146,13 +152,13 @@ public class RingerAI : EnemyBaseClass
 
     public class ShootingState : RingerState
     {
-        float waitTillShoot = 0.0f;
+        bool shot;
         public override void Enter(RingerAI ringer)
         {
-            waitTillShoot = ringer.timeToShoot;
-            ringer.StartCoroutine(ringer.ShootingCoroutine());
             ringer.agent.speed = ringer.GetMoveSpeed()/4;
             ringer.agent.isStopped = true;
+            ringer.animator.Play("DUMPYattack");
+            shot = false;
         }
 
         public override void Exit(RingerAI ringer)
@@ -164,16 +170,27 @@ public class RingerAI : EnemyBaseClass
 
         public override void Update(RingerAI ringer, float deltaT)
         {
-            waitTillShoot -= deltaT;
-            if (waitTillShoot <= 0)
+            // Animation end detection from https://discussions.unity.com/t/how-to-check-if-animator-animations-has-finished/838670/5
+            // normalizedTime is the time of the animation normalized to 0-1, so >1 means it's done
+            AnimatorStateInfo info = ringer.animator.GetCurrentAnimatorStateInfo(0);
+            float time = info.normalizedTime;
+
+            // Shoot the bullets when the dumpy hits the ground
+            // Attack animation is 19 frames, they hit the ground on 16, so 16/19 = 0.84
+            // Then we do slightly before b/c the bullets get hidden behind the sprite, so they appear at roughly 0.84
+            if (time >= 0.80 && !shot)
             {
                 ringer.Shoot();
+                shot = true;
                 float angle = 360 / ringer.numberOfShots;
                 for(float i = 0; i <= 360; i += angle)
                 {
                     HopShroomSpore bullet = Instantiate(ringer.bullet, ringer.firingPoint.position, Quaternion.Euler(0, 0, i));
                     bullet.SetDirection(new Vector2(Mathf.Cos(i * Mathf.Deg2Rad), Mathf.Sin(i * Mathf.Deg2Rad)));
                 }
+            }
+            else if (time >= 1)
+            {
                 ringer.currentState.Exit(ringer);
                 ringer.currentState = ringer.chasing;
                 ringer.currentState.Enter(ringer);
@@ -212,17 +229,6 @@ public class RingerAI : EnemyBaseClass
         yield return new WaitForSeconds(detectionDelay);
         CheckDetection();
         StartCoroutine(DetectionCoroutine());
-    }
-
-    IEnumerator ShootingCoroutine()
-    {
-        int blinks = (int)(timeToShoot / 0.1f);
-        for (int i = 0; i < blinks; i++)
-        {
-            yield return new WaitForSeconds(0.1f);
-            _sprite.color = _sprite.color == Color.white ? Color.green : Color.white;
-        }
-        _sprite.color = Color.white;
     }
 
     bool canShoot()
