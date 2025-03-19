@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 using Infliction = SoupSpoon.SpoonInfliction;
+using skner.DualGrid;
 
 public class PlayerEntityManager : Entity
 {
@@ -15,6 +16,7 @@ public class PlayerEntityManager : Entity
     public PlayerMovement playerMovement;
     public PlayerAudio playerAudio;
     private bool cooked = false;
+
 
     private void Awake()
     {

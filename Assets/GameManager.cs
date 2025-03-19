@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
         {
             pauseScreen.SetActive(false);
         }
+        isPaused = false;
     }
 
     public void PauseGame() {
