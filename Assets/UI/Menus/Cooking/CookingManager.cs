@@ -107,6 +107,9 @@ public class CookingManager : MonoBehaviour
             }
 
             PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
+
+            // Save game after cooking
+            SaveManager.Singleton.Save();
         }
     }
     

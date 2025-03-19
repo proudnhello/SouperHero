@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using NavMeshPlus.Components;
 using skner.DualGrid;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
@@ -50,11 +51,15 @@ public class RoomGenerator : MonoBehaviour
     public NavMeshSurface NavMesh;
     [Header("Generation Parameters")]
     public int mapSeed = -1;
+    public int newSeed = -1;
 
     public int numIntermediates = 10;
     public float difficultyMultiplier = 3f;
 
     public GameObject spawnObject;
+
+    private List<String> enemiesList;
+    private List<String> foragablesList;
 
     void Start()
     {
@@ -70,6 +75,13 @@ public class RoomGenerator : MonoBehaviour
             {
                 _map[i].Add(null);
             }
+        }
+
+        if(enemiesList == null){
+            enemiesList = new List<String>();
+        }
+        if(foragablesList == null){
+            foragablesList = new List<String>();
         }
         // After map is created, generate the rooms
         GenerateRoom();
@@ -1045,14 +1057,16 @@ public class RoomGenerator : MonoBehaviour
 
     // Main generation function
     void GenerateRoom() {
-        int seed = seed = UnityEngine.Random.Range(0, int.MaxValue);
+        int seed = UnityEngine.Random.Range(0, int.MaxValue);
 
         if(mapSeed < 0) {
             UnityEngine.Random.InitState(seed);
+            newSeed = seed;
             Debug.Log("SEED: " + seed);
         } else
         {
             UnityEngine.Random.InitState(mapSeed);
+            newSeed = mapSeed;
             Debug.Log("SEED: " + mapSeed);
         }
 
@@ -1209,7 +1223,20 @@ public class RoomGenerator : MonoBehaviour
                 }
             }
         }
+        Debug.Log(foragablesList.Count);
+        Debug.Log(enemiesList.Count);
+        if(foragablesList.Count == 0 || enemiesList.Count == 0){
+            generateNewContent();
+        }
+        else{
+            loadContent();
+        }
 
+        // Debug purposes, color the grid with debug lines
+        colorGrid();
+    }
+
+    public void generateNewContent(){
         for (int i = 0; i < _mapWidth; i++)
         {
             for (int j = 0; j < _mapHeight; j++)
@@ -1217,13 +1244,85 @@ public class RoomGenerator : MonoBehaviour
                 if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    m.SpawnEnemies();
+                    m.SpawnEntities();
                 }
             }
         }
+    }
 
-        // Debug purposes, color the grid with debug lines
-        colorGrid();
+    public void loadContent(){
+        int count = 0;
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    if(count >= enemiesList.Count) return;
+                    if(m.LoadEntities(enemiesList[count], foragablesList[count])) count++;
+                }
+            }
+        }
+    }
+
+    public List<String> exportEnemyStrings(){
+        List<String> list = new List<String>();
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    String res = m.ExportEnemies();
+                    if(res != ":(") list.Add(res);
+                }
+            }
+        }
+        flushExportBooleans();
+        return list;
+    }
+
+    public void importEnemyStrings(List<String> list){
+        enemiesList = list;
+    }
+
+    public List<String> exportForagableStrings(){
+        List<String> list = new List<String>();
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    String res = m.ExportForagables();
+                    if(res != ":(") list.Add(res);
+                }
+            }
+        }
+        flushExportBooleans();
+        return list;
+    }
+
+    public void importForagableStrings(List<String> list){
+        foragablesList = list;
+    }
+
+    public void flushExportBooleans(){
+        for (int i = 0; i < _mapWidth; i++)
+        {
+            for (int j = 0; j < _mapHeight; j++)
+            {
+                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                {
+                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
+                    m.hasExportedEnemies = false;
+                    m.hasExportedForagables = false;
+                }
+            }
+        }
     }
 
     private void colorGrid()
