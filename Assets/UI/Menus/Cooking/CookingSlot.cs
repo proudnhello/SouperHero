@@ -119,6 +119,9 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
                 }
             }
 
+            Vector2 mPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Bounds b = CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Collider2D>().bounds;
+
             if (dropTarget == null)
             {
                 // spawn in UI space
@@ -139,10 +142,14 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
                 CookingManager.Singleton.currentCookingSlot = null;
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<DraggableItem>().previousParent = CursorManager.Singleton.cookingCursor.currentCollectableReference.gameObject.transform;
 
-                Vector2 position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.transform.position = position;
+                CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.gameObject.transform.position = mPos;
 
                 CursorManager.Singleton.cookingCursor.removeCursorImage();
+
+                if (BasketUI.Singleton.basketChange.bounds.Intersects(new Bounds(new Vector3(mPos.x, mPos.y, draggableImage.gameObject.transform.root.position.z), b.size)))
+                {
+                    draggableImage.raycastTarget = true;
+                }
             }
         }
     }
