@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using NavMeshPlus.Components;
+using skner.DualGrid;
 using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
@@ -119,6 +120,7 @@ public class RoomGenerator : MonoBehaviour
         {
             int blockType = UnityEngine.Random.Range(0, _intermediateBlocks.Count);
             MapRoom b = Instantiate(_intermediateBlocks[blockType], spawnObject.transform).GetComponent<MapRoom>();
+            Array.ForEach(b.GetComponentsInChildren<DualGridTilemapModule>(), x => x.RefreshRenderTilemap());
 
             bool placed = false;
             while (!placed)
@@ -1061,6 +1063,7 @@ public class RoomGenerator : MonoBehaviour
         Coordinate startCoordinate = new Coordinate(midWidth, midHeight);
 
         MapRoom b = Instantiate(_startBlock, spawnObject.transform).GetComponent<MapRoom>();
+
         _intermediateRooms.Add(b);
         b.gameObject.transform.position = getOffset(midWidth - 1, midHeight, b);
         _map[midWidth - 1][midHeight] = b.At(0, 0);

@@ -48,14 +48,15 @@ public class CameraMover : MonoBehaviour
         {
             ppc.assetsPPU = 32;
             yield return new WaitUntil(() => toggleZoomOut);
-            if (CookingManager.Singleton.IsCooking()) 
+            if (CookingManager.Singleton.IsCooking() || PlayerEntityManager.Singleton.playerMovement.IsMoving()) 
             {
                 toggleZoomOut = false;
             } else
             {
                 ppc.assetsPPU = 20;
                 yield return new WaitUntil(() => !toggleZoomOut ||
-                    CookingManager.Singleton.IsCooking());
+                    CookingManager.Singleton.IsCooking() ||
+                    PlayerEntityManager.Singleton.playerMovement.IsMoving());
             }
 
         }

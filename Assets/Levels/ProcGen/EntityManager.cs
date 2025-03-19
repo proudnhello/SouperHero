@@ -155,7 +155,6 @@ public class EntityManager : MonoBehaviour
         int lootCounter = 0;
         while(lootCounter < lootLevel && totalForagables < foragableSpawns.Count){
             int x = UnityEngine.Random.Range(0, totalForagableWeight);
-            Debug.Log(foragableSpawns[0]);
             GameObject foragable = Instantiate(foragableDict[x].foragable, foragableSpawns[totalForagables].transform);
             foragable.transform.position = foragableSpawns[totalForagables].transform.position;
             foragableSpawns[totalForagables].foragable = foragable;

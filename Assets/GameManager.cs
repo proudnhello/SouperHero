@@ -1,3 +1,4 @@
+using FMOD.Studio;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,9 @@ public class GameManager : MonoBehaviour
     public static bool isPaused = false;
     public GameObject pauseScreen;
     [SerializeField] GameObject exitPanel;
+
+    [FMODUnity.BankRef]
+    public List<string> FMOD_Banks = new List<string>();
 
     [Header("Keybinds")]
     public KeyCode pauseKey = KeyCode.Escape;
@@ -50,6 +54,7 @@ public class GameManager : MonoBehaviour
         {
             pauseScreen.SetActive(false);
         }
+        isPaused = false;
     }
 
     public void PauseGame() {
@@ -74,8 +79,41 @@ public class GameManager : MonoBehaviour
 
     public void LoadGameLevel()
     {
+        StartCoroutine(LoadScene());
         Time.timeScale = 1;
-        SceneManager.LoadScene(1);
+
+        IEnumerator LoadScene() // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
+        {
+            AsyncOperation async = SceneManager.LoadSceneAsync(1);
+
+            // Don't let the scene start until all Studio Banks have finished loading
+            async.allowSceneActivation = false;
+
+
+            // Iterate all the Studio Banks and start them loading in the background
+            // including the audio sample data
+            foreach (var bank in FMOD_Banks)
+            {
+                FMODUnity.RuntimeManager.LoadBank(bank, true);
+            }
+
+            // Keep yielding the co-routine until all the bank loading is done
+            // (for platforms with asynchronous bank loading)
+            yield return new WaitUntil(() => FMODUnity.RuntimeManager.HaveAllBanksLoaded);
+
+
+            // Keep yielding the co-routine until all the sample data loading is done
+            yield return new WaitUntil(() => !FMODUnity.RuntimeManager.AnySampleDataLoading());
+
+
+            // Allow the scene to be activated. This means that any OnActivated() or Start()
+            // methods will be guaranteed that all FMOD Studio loading will be completed and
+            // there will be no delay in starting events
+            async.allowSceneActivation = true;
+
+            // Keep yielding the co-routine until scene loading and activation is done.
+            yield return new WaitUntil(() => async.isDone);
+        }
     }
 
     // Goes to Death Scene

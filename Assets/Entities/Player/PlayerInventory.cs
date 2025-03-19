@@ -95,15 +95,20 @@ public class PlayerInventory : MonoBehaviour
     {
         if (spoons.Count <= 1) return;
 
-        if (ctx.ReadValue<float>() > 0)
-        {
-            currentSpoon++;
-            currentSpoon = currentSpoon >= spoons.Count ? currentSpoon = 0 : currentSpoon;
-        }
-        else
+        if (ctx.ReadValue<float>() < 0)
         {
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+        }
+        else if(ctx.ReadValue<float>() > 4) //4 is the number of hotkeys
+        {
+            currentSpoon++;
+            currentSpoon = currentSpoon >= spoons.Count ? currentSpoon = 0 : currentSpoon;
+        } 
+        else
+        {
+            //TODO: Add check for count
+            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon = currentSpoon : (int)ctx.ReadValue<float>() - 1;
         }
         ChangedSpoon?.Invoke(currentSpoon);
     }
