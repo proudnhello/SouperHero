@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System;
 
 public class SaveManager : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class SaveManager : MonoBehaviour
 
     // Class that saves metrics across plays
     public DeathMetrics deathMetrics;
+    public RoomGenerator roomGenerator;
     private string saveDataPath;
 
     public void Start()
@@ -37,6 +39,32 @@ public class SaveManager : MonoBehaviour
         DeathMetricsManager.Singleton.ProcessStats();
         DeathMetricsManager.Singleton.DisplayStats();
 
+    }
+
+    public void Save(){
+        SaveEntities();
+        SaveGameStats();
+    }
+
+    public void Load(){
+        LoadGameStats();
+    }
+
+    public void Reset()
+    {
+        ResetGameStats();   
+    }
+
+    public void SaveEntities(){
+        List<String> enemies = roomGenerator.exportEnemyStrings();
+        string json = JsonUtility.ToJson(enemies, true);  // Pretty print for readability
+
+        using (StreamWriter writer = new StreamWriter(saveDataPath))
+        {
+            writer.Write(json);
+        }
+
+        Debug.Log($"Saving New Stats Json at path: {saveDataPath}");
     }
 
     public void SaveGameStats()
@@ -89,6 +117,10 @@ public class SaveManager : MonoBehaviour
         }
 
         Debug.Log($"Saving New Stats Json at path: {saveDataPath}");
+
+    }
+
+    public void SaveEnemies(){
 
     }
 }

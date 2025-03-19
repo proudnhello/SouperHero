@@ -43,7 +43,7 @@ public class EntityManager : MonoBehaviour
     //    createForagables();
     //}
     bool hasSpawned = false;
-    public void SpawnEnemies()
+    public void SpawnEntities()
     {
         if (hasSpawned) return;
 

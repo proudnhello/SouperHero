@@ -23,6 +23,7 @@ public class Campfire : Interactable
         {       
             Cook();
         } 
+        SaveManager.Singleton.Save();
     }
 
     private void Cook()
