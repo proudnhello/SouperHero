@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using System.Data.Common;
 
 [Serializable]
 public class EntitiesClass
@@ -21,21 +22,7 @@ public class SaveManager : MonoBehaviour
     {
         if (Singleton != null && Singleton != this) Destroy(this);
         else Singleton = this;
-        Load();
-    }
 
-    // Class that saves metrics across plays
-    public DeathMetrics deathMetrics;
-    public RoomGenerator roomGenerator;
-    StreamWriter writer;
-    StreamWriter reader;
-    private string statsPath;
-    private string enemiesPath;
-    private string foragablesPath;
-
-    public void Start()
-    {
-  
         // Get DeathMetrics INstance
         deathMetrics = DeathMetrics.Instance;
 
@@ -48,12 +35,21 @@ public class SaveManager : MonoBehaviour
 
         // Reliable Path Across Devices
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
-        enemiesPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Enemies.json");
-        foragablesPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Foragables.json");
+        entitiesPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Entities.json");
 
+        Load();
+    }
+
+    // Class that saves metrics across plays
+    public DeathMetrics deathMetrics;
+    public RoomGenerator roomGenerator;
+    private string statsPath;
+    private string entitiesPath;
+
+    public void Start()
+    {
         DeathMetricsManager.Singleton.ProcessStats();
         DeathMetricsManager.Singleton.DisplayStats();
-
     }
 
     public void Save(){
@@ -70,22 +66,22 @@ public class SaveManager : MonoBehaviour
         EntitiesClass et = new EntitiesClass();
         et.enemies = roomGenerator.exportEnemyStrings();
         et.foragables = roomGenerator.exportForagableStrings();
-        et.seed = roomGenerator.mapSeed;
+        et.seed = roomGenerator.newSeed;
         string json = JsonUtility.ToJson(et, true);  // Pretty print for readability
-        Debug.Log(json);
 
-        using (StreamWriter writer = new StreamWriter(enemiesPath))
+        using (StreamWriter writer = new StreamWriter(entitiesPath))
         {
             writer.Write(json);
         }
     }
 
     public void LoadEntities(){
-        if (File.Exists(enemiesPath))
+        Debug.Log(entitiesPath);
+        if (File.Exists(entitiesPath))
         {
             string json = string.Empty;
             
-            using(StreamReader reader = new StreamReader(statsPath))
+            using(StreamReader reader = new StreamReader(entitiesPath))
             {
                 json = reader.ReadToEnd();
             }

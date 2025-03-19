@@ -50,6 +50,7 @@ public class RoomGenerator : MonoBehaviour
     public NavMeshSurface NavMesh;
     [Header("Generation Parameters")]
     public int mapSeed = -1;
+    public int newSeed = -1;
 
     public int numIntermediates = 10;
     public float difficultyMultiplier = 3f;
@@ -1051,14 +1052,16 @@ public class RoomGenerator : MonoBehaviour
 
     // Main generation function
     void GenerateRoom() {
-        int seed = seed = UnityEngine.Random.Range(0, int.MaxValue);
+        int seed = UnityEngine.Random.Range(0, int.MaxValue);
 
         if(mapSeed < 0) {
             UnityEngine.Random.InitState(seed);
+            newSeed = seed;
             Debug.Log("SEED: " + seed);
         } else
         {
             UnityEngine.Random.InitState(mapSeed);
+            newSeed = mapSeed;
             Debug.Log("SEED: " + mapSeed);
         }
 
