@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
     public void NewGame()
     {
         // Delete previous save
-        File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json"));
+        //File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json"));
         File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Entities.json"));
         File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Player.json"));
         
@@ -234,6 +234,9 @@ public class GameManager : MonoBehaviour
     // Restarts the Game
     public void RestartGame()
     {
+        File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Entities.json"));
+        File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Player.json"));
+
         Time.timeScale = 1;
         SceneManager.LoadScene(1);
     }
