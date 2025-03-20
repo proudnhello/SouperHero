@@ -5,6 +5,7 @@ using TMPro;
 using System;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using static SoupSpoon;
 
 public class SpoonsEquipped : MonoBehaviour
 {
@@ -41,6 +42,8 @@ public class SpoonsEquipped : MonoBehaviour
 
         //Highlight current spoon
         prevSpoon = spoon;
+
+        Debug.Log($"INDEXING INTO THE SPOON INDEX ${spoon}");
         imageComponents[spoon].rectTransform.sizeDelta = selectedSize; //Increase size
         SetUsesText(spoon);
     }
@@ -70,10 +73,26 @@ public class SpoonsEquipped : MonoBehaviour
 
     void SetUsesText(int spoon)
     {
-        int uses = PlayerInventory.Singleton.GetSpoons()[spoon].uses;
-        if (uses != -1)
+
+        int maxUses = 0;
+        foreach (SpoonAbility ability in PlayerInventory.Singleton.GetSpoons()[spoon].spoonAbilities)
         {
-            usesTextComponents[spoon].text = uses.ToString();
+            // check if we have an infinite use ingredient
+            if (ability.uses == -1)
+            {
+                maxUses = -1;
+                break;
+            }
+
+            if (ability.uses > maxUses)
+            {
+                maxUses = ability.uses;
+            }
+        }
+
+        if (maxUses != -1)
+        {
+            usesTextComponents[spoon].text = maxUses.ToString();
         } else
         {
             usesTextComponents[spoon].text = "∞";

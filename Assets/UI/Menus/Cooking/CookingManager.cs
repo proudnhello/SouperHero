@@ -301,7 +301,7 @@ public class CookingManager : MonoBehaviour
     public void CookingSlotSetTransparent(CookingSlot slot)
     {
         // index into first child slot bc should only be 1 child
-        //slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
+        // slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
         Image image = slot.transform.GetChild(0).GetComponent<Image>();
         Color tempColor = image.color;
         tempColor.a = 0;
@@ -325,7 +325,7 @@ public class CookingManager : MonoBehaviour
     }
 
 
-
+    // Outdated
     public void UpdateStatsText()
     {
         // Clear the text except for the headers
@@ -346,8 +346,8 @@ public class CookingManager : MonoBehaviour
         float totalSpeed = 0;
         float totalCooldown = 0;
 
-        // Display Uses
-        UsesText.text += statSpoon.uses;
+        //// Display Uses
+        //UsesText.text += statSpoon.uses;
 
         // Show The Abilities and Calculate Buff Stats
         foreach(var spoonAbility in statSpoon.spoonAbilities){
