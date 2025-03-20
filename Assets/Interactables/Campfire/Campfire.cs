@@ -23,7 +23,7 @@ public class Campfire : Interactable
         {       
             Prep();
         } 
-        SaveManager.Singleton.Save();
+        SaveManager.Singleton.SaveGameScene();
     }
 
     private void Prep()

@@ -8,7 +8,7 @@ public class DeathMetrics
     public int maxNumEnemiesKilled;
     public int maxNumIngredientsCollected;
     public int maxNumSoupsCooked;
-    public float minTimeElapsed;
+    public float minWinTimeElapsed;
     public int totalDeaths;
     public int totalWins;
 
@@ -27,12 +27,12 @@ public class DeathMetrics
 
     }
 
-    private DeathMetrics(int maxNumEnemiesKilled, int maxNumIngredientsCollected, int maxNumSoupsCooked, float minTimeElapsed, int totalDeaths, int totalWins)
+    private DeathMetrics(int maxNumEnemiesKilled, int maxNumIngredientsCollected, int maxNumSoupsCooked, float minWinTimeElapsed, int totalDeaths, int totalWins)
     {
         this.maxNumEnemiesKilled = maxNumEnemiesKilled;
         this.maxNumIngredientsCollected = maxNumIngredientsCollected;
         this.maxNumSoupsCooked = maxNumSoupsCooked;
-        this.minTimeElapsed = minTimeElapsed;
+        this.minWinTimeElapsed = minWinTimeElapsed;
         this.totalDeaths = totalDeaths;
         this.totalWins = totalWins;
     }
@@ -42,7 +42,7 @@ public class DeathMetrics
         this.maxNumEnemiesKilled = 0;
         this.maxNumIngredientsCollected = 0;
         this.maxNumSoupsCooked = 0;
-        this.minTimeElapsed = Mathf.Infinity;
+        this.minWinTimeElapsed = Mathf.Infinity;
         this.totalDeaths = 0;
         this.totalWins = 0;
     }
