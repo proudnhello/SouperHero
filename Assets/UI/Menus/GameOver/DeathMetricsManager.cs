@@ -129,6 +129,7 @@ public class DeathMetricsManager : MonoBehaviour
             $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
             "\n";
 
+
         if (numWins > 0)
         {
             // Format time from seconds to minutes (and hours if needed)
@@ -145,14 +146,14 @@ public class DeathMetricsManager : MonoBehaviour
 
             if (newMinWinTimeElapsed)
             {
-                metricsText.text += "Best Win Time: " +
+                metricsText.text += "Win Time Elapsed: " +
                     $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
                      $"<color=#A9A9A9> (New Best!)</color>" +
                     "\n";
             }
             else
             {
-                metricsText.text += "Best Win Time: " +
+                metricsText.text += "Win Time Elapsed: " +
                     $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
                      $"<color=#A9A9A9> (Best: {minWinTimeElapsedStr})</color>" +
                     "\n";

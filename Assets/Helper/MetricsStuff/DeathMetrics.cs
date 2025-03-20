@@ -27,12 +27,12 @@ public class DeathMetrics
 
     }
 
-    private DeathMetrics(int maxNumEnemiesKilled, int maxNumIngredientsCollected, int maxNumSoupsCooked, float minTimeElapsed, int totalDeaths, int totalWins)
+    private DeathMetrics(int maxNumEnemiesKilled, int maxNumIngredientsCollected, int maxNumSoupsCooked, float minWinTimeElapsed, int totalDeaths, int totalWins)
     {
         this.maxNumEnemiesKilled = maxNumEnemiesKilled;
         this.maxNumIngredientsCollected = maxNumIngredientsCollected;
         this.maxNumSoupsCooked = maxNumSoupsCooked;
-        this.minWinTimeElapsed = minTimeElapsed;
+        this.minWinTimeElapsed = minWinTimeElapsed;
         this.totalDeaths = totalDeaths;
         this.totalWins = totalWins;
     }
