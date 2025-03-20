@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 using TMPro;
+using static SoupSpoon;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class PlayerInventory : MonoBehaviour
         if (Singleton == null) Singleton = this;
         spoons = new()
         {
-            new SoupSpoon(defaultSpoonIngredients, true)
+            new SoupSpoon(defaultSpoonIngredients)
         };
         collectablesHeld = new();
     }
@@ -115,13 +116,16 @@ public class PlayerInventory : MonoBehaviour
 
     void UseSpoon(InputAction.CallbackContext ctx)
     {
-
+        // Don't Use Spoon if In Cooking Screen
         if (CookingManager.Singleton.IsCooking())
         {
             return;
         }
 
+        // Index into current spoon
         SoupSpoon spoon = spoons[currentSpoon];
+        
+        // See if spoon is on cooldown
         bool notOnCD = spoon.UseSpoon();
 
         if (!notOnCD)
@@ -129,9 +133,35 @@ public class PlayerInventory : MonoBehaviour
             return;
         }
 
+        // Invoke That You are using a spoon
+        // Audio and Animation are currently subscribed
         UsedSpoon?.Invoke();
 
-        if (spoon.uses == 0)
+
+        //// Remove Spoon if Uses are 0
+        //if (spoon.uses == 0)
+        //{
+        //    spoons.RemoveAt(currentSpoon);
+        //    RemoveSpoon?.Invoke(currentSpoon);
+        //    currentSpoon--;
+        //    currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+        //}
+
+        // check if any of the abilities have uses left
+        bool noUsesLeft = true;
+        foreach (SpoonAbility ability in spoon.spoonAbilities)
+        {
+            Debug.Log("Ability Uses: " + ability.GetUses());
+            if (ability.GetUses() > 0 || ability.GetUses() == -1)
+            {
+                noUsesLeft = false;
+            }
+        }
+
+        Debug.Log("CURRENT SPOON: " + currentSpoon);
+
+        // remove spoon if no uses left
+        if (noUsesLeft)
         {
             spoons.RemoveAt(currentSpoon);
             RemoveSpoon?.Invoke(currentSpoon);
@@ -139,6 +169,9 @@ public class PlayerInventory : MonoBehaviour
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         }
 
+        Debug.Log("CURRENT SPOON: " + currentSpoon);
+
+        // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
     }
 }
