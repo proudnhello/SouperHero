@@ -22,7 +22,7 @@ public class DeathMetricsManager : MonoBehaviour
     public int maxNumEnemiesKilled;
     public int maxNumIngredientsCollected;
     public int maxNumSoupsCooked;
-    public float minTimeElapsed;
+    public float minWinTimeElapsed;
     public int totalDeaths;
     public int totalWins;
 
@@ -30,7 +30,7 @@ public class DeathMetricsManager : MonoBehaviour
     bool newMaxNumEnemiesKilled;
     bool newMaxNumIngredientsCollected;
     bool newMaxNumSoupsCooked;
-    bool newMinTimeElapsed;
+    bool newMinWinTimeElapsed;
 
     private TimeSpan timeFormatter;
 
@@ -115,46 +115,49 @@ public class DeathMetricsManager : MonoBehaviour
 
         // Format time from seconds to minutes (and hours if needed)
         timeFormatter = TimeSpan.FromSeconds(timeElapsed);
-        string timeElapsedStr;
+        string winTimeElapsedStr;
         if (metricsSO.TimeElapsed < 3600)
         {
-            timeElapsedStr = timeFormatter.ToString("mm':'ss'.'ff");
+            winTimeElapsedStr = timeFormatter.ToString("mm':'ss'.'ff");
         }
         else
         {
-            timeElapsedStr = timeFormatter.ToString("hh':'mm':'ss'.'ff");
+            winTimeElapsedStr = timeFormatter.ToString("hh':'mm':'ss'.'ff");
         }
 
-        //// Format time from seconds to minutes (and hours if needed)
-        //timeFormatter = TimeSpan.FromSeconds(minTimeElapsed);
-        //string minTimeElapsedStr;
-        //if (metricsSO.TimeElapsed < 3600)
-        //{
-        //    minTimeElapsedStr = timeFormatter.ToString("mm':'ss'.'ff");
-        //}
-        //else
-        //{
-        //    minTimeElapsedStr = timeFormatter.ToString("hh':'mm':'ss'.'ff");
-        //}
-
-        //if (newMinTimeElapsed)
-        //{
-        //    metricsText.text += "Time Elapsed: " +
-        //        $"<color=#F4B07D>{timeElapsedStr}</color>" +
-        //         $"<color=#A9A9A9> (New Best!)</color>" +
-        //        "\n";
-        //}
-        //else
-        //{
-        //    metricsText.text += "Time Elapsed: " +
-        //        $"<color=#F4B07D>{timeElapsedStr}</color>" +
-        //         $"<color=#A9A9A9> (Best: {minTimeElapsedStr})</color>" +
-        //        "\n";
-        //}
-
         metricsText.text += LocalizationManager.GetLocalizedString("Time Elapsed") +
-            $"<color=#F4B07D>{timeElapsedStr}</color>" +
+            $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
             "\n";
+
+        if (numWins > 0)
+        {
+            // Format time from seconds to minutes (and hours if needed)
+            timeFormatter = TimeSpan.FromSeconds(minWinTimeElapsed);
+            string minWinTimeElapsedStr;
+            if (metricsSO.TimeElapsed < 3600)
+            {
+                minWinTimeElapsedStr = timeFormatter.ToString("mm':'ss'.'ff");
+            }
+            else
+            {
+                minWinTimeElapsedStr = timeFormatter.ToString("hh':'mm':'ss'.'ff");
+            }
+
+            if (newMinWinTimeElapsed)
+            {
+                metricsText.text += "Best Win Time: " +
+                    $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
+                     $"<color=#A9A9A9> (New Best!)</color>" +
+                    "\n";
+            }
+            else
+            {
+                metricsText.text += "Best Win Time: " +
+                    $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
+                     $"<color=#A9A9A9> (Best: {minWinTimeElapsedStr})</color>" +
+                    "\n";
+            }
+        }
 
         metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{totalDeaths}</color>" + "\n";
         metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{totalWins}</color>" + "\n";
@@ -189,7 +192,7 @@ public class DeathMetricsManager : MonoBehaviour
         maxNumEnemiesKilled = SaveManager.Singleton.deathMetrics.maxNumEnemiesKilled;
         maxNumIngredientsCollected = SaveManager.Singleton.deathMetrics.maxNumIngredientsCollected;
         maxNumSoupsCooked = SaveManager.Singleton.deathMetrics.maxNumSoupsCooked;
-        minTimeElapsed = SaveManager.Singleton.deathMetrics.minTimeElapsed;
+        minWinTimeElapsed = SaveManager.Singleton.deathMetrics.minWinTimeElapsed;
         totalDeaths = SaveManager.Singleton.deathMetrics.totalDeaths;
         totalWins = SaveManager.Singleton.deathMetrics.totalWins;
     }
@@ -237,14 +240,14 @@ public class DeathMetricsManager : MonoBehaviour
             newMaxNumSoupsCooked = false;
         }
 
-        if (timeElapsed < minTimeElapsed)
+        if (timeElapsed < minWinTimeElapsed && numWins > 0)
         {
-            newMinTimeElapsed = true;
-            minTimeElapsed = timeElapsed;
+            newMinWinTimeElapsed = true;
+            minWinTimeElapsed = timeElapsed;
         }
         else
         {
-            newMinTimeElapsed = false;
+            newMinWinTimeElapsed = false;
         }
 
         totalDeaths += numDeaths;
@@ -265,9 +268,9 @@ public class DeathMetricsManager : MonoBehaviour
         {
             SaveManager.Singleton.deathMetrics.maxNumSoupsCooked = maxNumSoupsCooked;
         }
-        if (newMinTimeElapsed)
+        if (newMinWinTimeElapsed)
         {
-            SaveManager.Singleton.deathMetrics.minTimeElapsed = minTimeElapsed;
+            SaveManager.Singleton.deathMetrics.minWinTimeElapsed = minWinTimeElapsed;
         }
 
         SaveManager.Singleton.deathMetrics.totalDeaths = totalDeaths;
