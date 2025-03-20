@@ -115,22 +115,22 @@ public class DeathMetricsManager : MonoBehaviour
 
         // Format time from seconds to minutes (and hours if needed)
         timeFormatter = TimeSpan.FromSeconds(timeElapsed);
-        string winTimeElapsedStr;
+        string timeElapsedStr;
         if (metricsSO.TimeElapsed < 3600)
         {
-            winTimeElapsedStr = timeFormatter.ToString("mm':'ss'.'ff");
+            timeElapsedStr = timeFormatter.ToString("mm':'ss'.'ff");
         }
         else
         {
-            winTimeElapsedStr = timeFormatter.ToString("hh':'mm':'ss'.'ff");
+            timeElapsedStr = timeFormatter.ToString("hh':'mm':'ss'.'ff");
         }
 
         metricsText.text += LocalizationManager.GetLocalizedString("Time Elapsed") +
-            $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
+            $"<color=#F4B07D>{timeElapsedStr}</color>" +
             "\n";
 
-
-        if (numWins > 0)
+        // check if they have won before
+        if (totalWins > 0)
         {
             // Format time from seconds to minutes (and hours if needed)
             timeFormatter = TimeSpan.FromSeconds(minWinTimeElapsed);
@@ -144,19 +144,30 @@ public class DeathMetricsManager : MonoBehaviour
                 minWinTimeElapsedStr = timeFormatter.ToString("hh':'mm':'ss'.'ff");
             }
 
-            if (newMinWinTimeElapsed)
+            // check if they won this time
+            if (numWins > 0)
             {
-                metricsText.text += "Win Time Elapsed: " +
-                    $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
-                     $"<color=#A9A9A9> (New Best!)</color>" +
-                    "\n";
+                if (newMinWinTimeElapsed)
+                {
+                    metricsText.text += "Win Time Elapsed: " +
+                        $"<color=#F4B07D>{timeElapsedStr}</color>" +
+                         $"<color=#A9A9A9> (New Best!)</color>" +
+                        "\n";
+                }
+                else
+                {
+                    metricsText.text += "Win Time Elapsed: " +
+                        $"<color=#F4B07D>{timeElapsedStr}</color>" +
+                         $"<color=#A9A9A9> (Best: {minWinTimeElapsedStr})</color>" +
+                        "\n";
+                }
             }
             else
             {
                 metricsText.text += "Win Time Elapsed: " +
-                    $"<color=#F4B07D>{winTimeElapsedStr}</color>" +
-                     $"<color=#A9A9A9> (Best: {minWinTimeElapsedStr})</color>" +
-                    "\n";
+                        $"<color=#F4B07D>N/A</color>" +
+                         $"<color=#A9A9A9> (Best: {minWinTimeElapsedStr})</color>" +
+                        "\n";
             }
         }
 
