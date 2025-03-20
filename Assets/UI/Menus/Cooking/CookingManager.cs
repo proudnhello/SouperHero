@@ -250,6 +250,7 @@ public class CookingManager : MonoBehaviour
         List<Ingredient> cookedIngredients = new();
         foreach (Collectable ingredient in cookingIngredients)
         {
+            ingredient.ingredient.Icon = ingredient.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite;
             cookedIngredients.Add(ingredient.ingredient);
         }
         PlayerInventory.Singleton.CookSoup(cookedIngredients);

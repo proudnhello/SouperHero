@@ -4,11 +4,13 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 using static SoupSpoon;
+using UnityEngine.Rendering;
+using Unity.VisualScripting;
 
 public class SoupAbilitiesUI : MonoBehaviour
 {
 
-    public List<Image> children;
+    public List<Image> soupAbilityIcons;
     public List<TextMeshProUGUI> usesTexts;
 
     // Start is called before the first frame update
@@ -17,12 +19,24 @@ public class SoupAbilitiesUI : MonoBehaviour
         // Fillout Lists
         foreach(Transform child in transform)
         {
-            children.Add(child.GetComponent<Image>());
+            soupAbilityIcons.Add(child.GetComponent<Image>());
             usesTexts.Add(child.GetChild(0).GetComponent<TextMeshProUGUI>());
         }
 
         // Subscribe to event
         PlayerInventory.ChangedSpoon += UpdateUsesText;
+        PlayerInventory.ChangedSpoon += UpdateIcons;
+
+        // Update On Start
+        UpdateUsesText(PlayerInventory.Singleton.GetCurrentSpoon());
+        UpdateIcons(PlayerInventory.Singleton.GetCurrentSpoon());
+    }
+
+    private void OnDisable()
+    {
+        // Subscribe from event
+        PlayerInventory.ChangedSpoon -= UpdateUsesText;
+        PlayerInventory.ChangedSpoon -= UpdateIcons;
     }
 
     void UpdateUsesText(int spoonIdx)
@@ -51,9 +65,42 @@ public class SoupAbilitiesUI : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void UpdateIcons(int spoonIdx)
     {
-        
+        SoupSpoon currentSpoon = PlayerInventory.Singleton.GetSpoons()[spoonIdx];
+
+        // set the uses text for each ability
+        int abilityIdx = 0;
+        foreach (SpoonAbility spoonAbility in currentSpoon.spoonAbilities)
+        {
+            if (spoonAbility.uses == -1)
+            {
+                soupAbilityIcons[abilityIdx].sprite = spoonAbility.icon;
+            }
+            else
+            {
+                soupAbilityIcons[abilityIdx].sprite = spoonAbility.icon;
+            }
+
+            Color tempColor = soupAbilityIcons[abilityIdx].color;
+            tempColor.a = 1;
+            soupAbilityIcons[abilityIdx].color = tempColor;
+
+            abilityIdx++;
+
+            Debug.Log("currentSpoon.spoonAbilities.Count: " + currentSpoon.spoonAbilities.Count);
+        }
+
+        // set the rest of the icons to none
+        for (int i = abilityIdx; i < CookingManager.Singleton.cookingSlots.Count; i++)
+        {
+            soupAbilityIcons[i].sprite = null;
+
+            Color tempColor = soupAbilityIcons[i].color;
+            tempColor.a = 0;
+            soupAbilityIcons[i].color = tempColor;
+        }
     }
+
+
 }

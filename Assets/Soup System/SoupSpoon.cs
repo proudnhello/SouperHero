@@ -21,16 +21,19 @@ public class SoupSpoon
         public float lastUseTime;
         public int uses = 0;
 
+        public Sprite icon;
+
+        // New spoon ability for new ability ingredient in the soup
         public SpoonAbility(AbilityIngredient ingredient, List<FlavorIngredient.BuffFlavor> buffs)
-        {
+        {         
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
-
-            Debug.Log($"ABILITY USES IN SPOON ABILITY: {ingredient.uses}");
+            icon = ingredient.Icon;
             uses = ingredient.uses;
-            //Debug.Log($"SIZE STATS WITH BUFFS {statsWithBuffs.size}");
         }
+        
 
+        // This is called if we are adding an ability ingredient we already added
         public void AddIngredient(AbilityIngredient ingredient)
         {
             uses += ingredient.uses;
@@ -111,23 +114,21 @@ public class SoupSpoon
 
         float totalCooldown = 0;
 
-        foreach (var ability in abilityIngredients)
-        {
-            Debug.Log("Ability Ingredient Uses: " + ability.uses);
-        }
+        //foreach (var ability in abilityIngredients)
+        //{
+        //    Debug.Log("Ability Ingredient Uses: " + ability.uses);
+        //}
         
-        Debug.Log("Ability Ingredient List Count: " + abilityIngredients.Count);
+        //Debug.Log("Ability Ingredient List Count: " + abilityIngredients.Count);
 
         // Populate ability tracker and calculate total uses and cooldown
         foreach (var ingredient in abilityIngredients)
         {
             if (!abilityTracker.ContainsKey(ingredient))
             {
-                Debug.Log(".Add is called");
                 abilityTracker.Add(ingredient, new(ingredient, buffFlavors));              
             } else
             {
-                Debug.Log(".AddIngredient is called");
                 abilityTracker[ingredient].AddIngredient(ingredient);
             }
 

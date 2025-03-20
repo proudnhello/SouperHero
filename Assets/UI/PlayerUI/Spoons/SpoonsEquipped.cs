@@ -43,7 +43,7 @@ public class SpoonsEquipped : MonoBehaviour
         //Highlight current spoon
         prevSpoon = spoon;
 
-        Debug.Log($"INDEXING INTO THE SPOON INDEX ${spoon}");
+        //Debug.Log($"INDEXING INTO THE SPOON INDEX ${spoon}");
         imageComponents[spoon].rectTransform.sizeDelta = selectedSize; //Increase size
         SetUsesText(spoon);
     }
