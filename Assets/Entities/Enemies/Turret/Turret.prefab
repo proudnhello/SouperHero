@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6931330501110685399}
   - component: {fileID: 4810343062406600075}
   - component: {fileID: 8563248886766643163}
+  - component: {fileID: 1609973868980418863}
   m_Layer: 7
   m_Name: Turret
   m_TagString: Enemy
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 52.45, y: 70.9, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7364293318301084351}
@@ -76,10 +77,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 11
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: -1362180755, guid: c545134645dc3674ebb46c71fe14bee1, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -193,11 +194,12 @@ MonoBehaviour:
     health: 0
     moveSpeed: 0
   hitmarker: {fileID: 594101713564386973, guid: 88876a640853de543b8ab5cacc641fba, type: 3}
-  collectable: {fileID: 165481585712337600, guid: 9e8d1a10c86d6544abe66fa3979bb99d, type: 3}
+  collectable: {fileID: 165481585712337600, guid: 0aa4baa4dfbf2674ab3b1322c8e33553, type: 3}
   playerCollisionDamage: 10
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
+  enemyEmitter: {fileID: 0}
   shootingRadius: 9
   playerLayer:
     serializedVersion: 2
@@ -209,6 +211,27 @@ MonoBehaviour:
   hideAlphaMultiplier: 0.1
   firingPoint: {fileID: 2308621309380939610}
   bullet: {fileID: 6867430482067145103, guid: 6ba6e3b9ccdd54741981009e0c197fce, type: 3}
+--- !u!95 &1609973868980418863
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 558365570551301719}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9a92f6035c9d5ed43a28d59858bf6205, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &151164596077888276
 PrefabInstance:
   m_ObjectHideFlags: 0

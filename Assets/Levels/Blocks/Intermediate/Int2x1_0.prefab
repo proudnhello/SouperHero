@@ -64,7 +64,7 @@ MonoBehaviour:
   - {x: 22.000029, y: -8, z: 0}
   m_ShapePathHash: -2111557399
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75492
+  m_InstanceId: 112610
   m_LocalBounds:
     m_Center: {x: 23.5, y: -6.5, z: 0}
     m_Extent: {x: 1.5, y: 1.5, z: 0}
@@ -7085,7 +7085,7 @@ MonoBehaviour:
   - {x: 6.031261, y: 4, z: 0}
   m_ShapePathHash: 452391889
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75162
+  m_InstanceId: 112280
   m_LocalBounds:
     m_Center: {x: 10.5, y: 6, z: 0}
     m_Extent: {x: 4.5, y: 2, z: 0}
@@ -7739,7 +7739,7 @@ MonoBehaviour:
   - {x: 6.000029, y: -8, z: 0}
   m_ShapePathHash: 1540716912
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75388
+  m_InstanceId: 112506
   m_LocalBounds:
     m_Center: {x: 10.999986, y: -7.5, z: 0}
     m_Extent: {x: 4.9999857, y: 0.5, z: 0}
@@ -7928,7 +7928,7 @@ MonoBehaviour:
   - {x: -2.999971, y: 3, z: 0}
   m_ShapePathHash: 1965392316
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75314
+  m_InstanceId: 112432
   m_LocalBounds:
     m_Center: {x: -1.5, y: 4.5, z: 0}
     m_Extent: {x: 1.5, y: 1.5, z: 0}
@@ -9772,7 +9772,7 @@ MonoBehaviour:
   - {x: -2.999971, y: -8, z: 0}
   m_ShapePathHash: 350975933
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75190
+  m_InstanceId: 112308
   m_LocalBounds:
     m_Center: {x: -0.000014543533, y: -7.5, z: 0}
     m_Extent: {x: 2.9999855, y: 0.5, z: 0}
@@ -9841,7 +9841,7 @@ MonoBehaviour:
   - {x: 5.000029, y: -5, z: 0}
   m_ShapePathHash: 1629339319
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75496
+  m_InstanceId: 112614
   m_LocalBounds:
     m_Center: {x: 6.5, y: 0.5, z: 0}
     m_Extent: {x: 1.5, y: 5.5, z: 0}
@@ -11681,7 +11681,7 @@ MonoBehaviour:
   - {x: -1.9999708, y: -8, z: 0}
   m_ShapePathHash: -2076070495
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75620
+  m_InstanceId: 112738
   m_LocalBounds:
     m_Center: {x: -1.5000074, y: -5.5, z: 0}
     m_Extent: {x: 1.4999926, y: 2.5, z: 0}
@@ -16286,7 +16286,7 @@ MonoBehaviour:
   - {x: -1.9999384, y: 4.031188, z: 0}
   m_ShapePathHash: -1459307733
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75124
+  m_InstanceId: 112242
   m_LocalBounds:
     m_Center: {x: -1.984406, y: 4.015609, z: 0}
     m_Extent: {x: 0.015594065, y: 0.015579224, z: 0}
@@ -18499,6 +18499,10 @@ MonoBehaviour:
     weight: 1
     difficulty: 5
     index: -1
+  - enemy: {fileID: 558365570551301719, guid: 0d94b0bf3cdde4f47a4ca1d6d37cafcc, type: 3}
+    weight: 1
+    difficulty: 3
+    index: -1
   enemySpawns:
   - {fileID: 4420062399866039068}
   - {fileID: 3673647054915048889}
@@ -18542,6 +18546,9 @@ MonoBehaviour:
   - {fileID: 2916763960536270757}
   - {fileID: 8010436754206188191}
   - {fileID: 8127739811316368555}
+  hasSpawned: 0
+  hasExportedEnemies: 0
+  hasExportedForagables: 0
 --- !u!1 &5539072796006702930
 GameObject:
   m_ObjectHideFlags: 0
@@ -18716,7 +18723,7 @@ MonoBehaviour:
   - {x: -2.999971, y: -8, z: 0}
   m_ShapePathHash: -708903157
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75650
+  m_InstanceId: 112768
   m_LocalBounds:
     m_Center: {x: -0.000014543533, y: -7.5, z: 0}
     m_Extent: {x: 2.9999855, y: 0.5, z: 0}
@@ -23316,13 +23323,13 @@ Tilemap:
       e33: 1
   m_TileColorArray:
   - m_RefCount: 56
-    m_Data: {r: 0.96579695, g: 0.54915136, b: 0.6664549, a: 1}
+    m_Data: {r: 0.75221604, g: 0.41483426, b: 0.46710712, a: 1}
   - m_RefCount: 84
-    m_Data: {r: 0.9958879, g: 0.46114647, b: 0.6283417, a: 1}
+    m_Data: {r: 0.8646752, g: 0.56641126, b: 0.6541702, a: 1}
   - m_RefCount: 0
-    m_Data: {r: 1.05983e-40, g: 1.05983e-40, b: 1.05983e-40, a: 1.05983e-40}
+    m_Data: {r: 1.57996e-40, g: 1.57996e-40, b: 1.57996e-40, a: 1.57996e-40}
   - m_RefCount: 0
-    m_Data: {r: 1.05983e-40, g: 1.05983e-40, b: 1.05983e-40, a: 1.05983e-40}
+    m_Data: {r: 1.57996e-40, g: 1.57996e-40, b: 1.57996e-40, a: 1.57996e-40}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -24270,7 +24277,7 @@ MonoBehaviour:
   - {x: -3.999971, y: 4, z: 0}
   m_ShapePathHash: 1289061676
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75338
+  m_InstanceId: 112456
   m_LocalBounds:
     m_Center: {x: 0, y: 6.5, z: 0}
     m_Extent: {x: 4, y: 2.5, z: 0}
@@ -28240,7 +28247,7 @@ Tilemap:
   - m_RefCount: 155
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   - m_RefCount: 1
-    m_Data: {r: 0.7828578, g: 0.37529007, b: 0.43104893, a: 1}
+    m_Data: {r: 0.8476427, g: 0.4459041, b: 0.5476973, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -28825,7 +28832,7 @@ MonoBehaviour:
   - {x: 23.000029, y: 4, z: 0}
   m_ShapePathHash: 370282046
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75350
+  m_InstanceId: 112468
   m_LocalBounds:
     m_Center: {x: 23.5, y: 5, z: 0}
     m_Extent: {x: 0.5, y: 1, z: 0}
@@ -32414,7 +32421,7 @@ MonoBehaviour:
   - {x: -6.9999704, y: -3, z: 0}
   m_ShapePathHash: 1971996552
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75560
+  m_InstanceId: 112678
   m_LocalBounds:
     m_Center: {x: -6, y: 0, z: 0}
     m_Extent: {x: 1, y: 3, z: 0}
@@ -32495,7 +32502,7 @@ MonoBehaviour:
   - {x: -3.999971, y: 4, z: 0}
   m_ShapePathHash: -1256005530
   m_Mesh: {fileID: 0}
-  m_InstanceId: 75384
+  m_InstanceId: 112502
   m_LocalBounds:
     m_Center: {x: 0, y: 6, z: 0}
     m_Extent: {x: 4, y: 2, z: 0}

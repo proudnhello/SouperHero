@@ -53,10 +53,10 @@ public class TurretAI : EnemyBaseClass
 
         public override void Enter(TurretAI turret, TurretState _previousState)
         {
+            turret.animator.Play("Retreating");
             turret.c.enabled = false;
             print(turret.c.enabled);
             hideTimer = turret.hideTime;
-            turret.sprite.color = new Color(turret.initialColor.r, turret.initialColor.g, turret.initialColor.b, turret.initialColor.a / 10);
         }
 
         public override void Update(TurretAI turret, float deltaT)
@@ -64,6 +64,7 @@ public class TurretAI : EnemyBaseClass
             hideTimer -= deltaT;
             if((turret.playerDetected || turret.alwaysAggro) && hideTimer <= 0)
             {
+                turret.animator.Play("Emerge");
                 turret.SwapState(turret.emerging);
             }
         }
@@ -132,6 +133,7 @@ public class TurretAI : EnemyBaseClass
             if(shotTimer <= 0)
             {
                 turret.Shoot();
+                turret.animator.Play("Attack");
                 remainingShots--;
                 shotTimer = turret.timeBetweenShots;
             }
@@ -187,6 +189,7 @@ public class TurretAI : EnemyBaseClass
 
     public void Shoot()
     {
+        animator.Play("Attack");
         HopShroomSpore bulletInstance = Instantiate(bullet, firingPoint.position, firingPoint.rotation);
         Vector2 playerDirection = PlayerEntityManager.Singleton.transform.position - transform.position;
         bulletInstance.SetDirection(playerDirection);
@@ -205,6 +208,8 @@ public class TurretAI : EnemyBaseClass
         c = GetComponent<Collider2D>();
         sprite = GetComponent<SpriteRenderer>();
         initialColor = new Color(sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a);
+
+        animator = GetComponent<Animator>();
 
         hiding.Enter(this, null);
     }
