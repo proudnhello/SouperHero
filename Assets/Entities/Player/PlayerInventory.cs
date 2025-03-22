@@ -137,28 +137,16 @@ public class PlayerInventory : MonoBehaviour
         // Audio and Animation are currently subscribed
         UsedSpoon?.Invoke();
 
-
-        //// Remove Spoon if Uses are 0
-        //if (spoon.uses == 0)
-        //{
-        //    spoons.RemoveAt(currentSpoon);
-        //    RemoveSpoon?.Invoke(currentSpoon);
-        //    currentSpoon--;
-        //    currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
-        //}
-
         // check if any of the abilities have uses left
         bool noUsesLeft = true;
         foreach (SpoonAbility ability in spoon.spoonAbilities)
         {
-            Debug.Log("Ability Uses: " + ability.GetUses());
             if (ability.GetUses() > 0 || ability.GetUses() == -1)
             {
                 noUsesLeft = false;
             }
         }
 
-        Debug.Log("CURRENT SPOON: " + currentSpoon);
 
         // remove spoon if no uses left
         if (noUsesLeft)
@@ -168,8 +156,6 @@ public class PlayerInventory : MonoBehaviour
             currentSpoon--;
             currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         }
-
-        Debug.Log("CURRENT SPOON: " + currentSpoon);
 
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);

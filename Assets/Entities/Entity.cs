@@ -79,6 +79,11 @@ public class Entity : MonoBehaviour
         inflictionHandler.DealDamage(damage);
     }
 
+    public virtual void SetHealth(int health)
+    {
+        currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
+    }
+
     public bool IsDead()
     {
         return currentStats.health <= 0;

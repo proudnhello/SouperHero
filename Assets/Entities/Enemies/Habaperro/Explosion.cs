@@ -13,11 +13,13 @@ public class Explosion : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(timer());
+        StartCoroutine(DestroyTimer());
         transform.localScale = new Vector3(radius, radius, radius);
         Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, radius * radiusToCollider, CollisionLayers.Singleton.GetEntityLayer());
+        string s = "";
         foreach (var col in cols)
         {
+            s += col.name + " ";
             try
             {
                 Entity entity = col.GetComponent<Entity>();
@@ -32,14 +34,10 @@ public class Explosion : MonoBehaviour
 
             }
         }
+        Debug.Log(s);
     }
 
-    private void Update()
-    {
-        
-    }
-
-    IEnumerator timer(){
+    IEnumerator DestroyTimer(){
         yield return new WaitForSeconds(timeActive);
         Destroy(gameObject);
     }
