@@ -267,6 +267,9 @@ public class CookingManager : MonoBehaviour
         ClearCookingManagerSprites();
 
         CookSoup?.Invoke();
+
+        // Exit Cooking
+        ExitCooking();
     }
 
     // Sets all the sprites in the cooking slot to null and 0 alpha
