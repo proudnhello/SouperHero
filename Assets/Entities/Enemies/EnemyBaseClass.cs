@@ -1,3 +1,4 @@
+// This file was edited with help from GitHub Copilot
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ public abstract class EnemyBaseClass : Entity
 
     private bool hasDied = false;
 
+    // TODO: make this override InitEntity and call base.InitEntity. Who did it this way?
     protected void initEnemy()
     {
         _sprite = GetComponent<SpriteRenderer>();

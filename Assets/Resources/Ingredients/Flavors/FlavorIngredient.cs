@@ -51,7 +51,7 @@ public class FlavorIngredient : Ingredient
         public enum BuffType
         {
             SOUR_Duration,
-            SALTY_Crit,
+            SALTY_Crit, // TODO: Remove crits, as they no longer exist
             BITTER_Size,
             SWEET_Speed,
         }

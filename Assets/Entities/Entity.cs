@@ -51,6 +51,7 @@ public class Entity : MonoBehaviour
         inflictionHandler.ApplyInflictions(spoonInflictions, source);
     }
 
+    // Displays hitmarkers
     public void DisplayHitmarker(Color color, string text)
     {
         GameObject hitmarkerInstance = Instantiate(hitmarker, transform.position, Quaternion.identity);
@@ -66,19 +67,22 @@ public class Entity : MonoBehaviour
     public int GetHealth()
     {
         return currentStats.health;
-    }  
+    }
+
+    // Directly edit the health of the entity, will not trigger damage effects
     public virtual void ModifyHealth(int amount)
     {
         currentStats.health += amount;
         currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
     }
 
-    // Deal damage to the entity.
+    // Deal damage to the entity. Use this to trigger damage effects
     public virtual void DealDamage(int damage)
     {
         inflictionHandler.DealDamage(damage);
     }
 
+    // Directly set the health of the entity, will not trigger damage effects
     public virtual void SetHealth(int health)
     {
         currentStats.health = Mathf.Clamp(currentStats.health, 0, baseStats.maxHealth);
