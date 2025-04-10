@@ -109,7 +109,7 @@ public class CookingManager : MonoBehaviour
             PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
 
             // Save game after cooking
-            SaveManager.Singleton.Save();
+            SaveManager.Singleton.SaveGameScene();
         }
     }
     
@@ -207,6 +207,12 @@ public class CookingManager : MonoBehaviour
             HideAbilityIngWarning();
         }
 
+        // Don't cook if max spoons
+        if (PlayerInventory.Singleton.GetSpoons().Count == PlayerInventory.Singleton.maxSpoons)
+        {
+            return;
+        }
+
         //if (!PlayerEntityManager.Singleton.HasCooked())
         //{
         //    ShowCampfireWarning();
@@ -244,6 +250,7 @@ public class CookingManager : MonoBehaviour
         List<Ingredient> cookedIngredients = new();
         foreach (Collectable ingredient in cookingIngredients)
         {
+            ingredient.ingredient.Icon = ingredient.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite;
             cookedIngredients.Add(ingredient.ingredient);
         }
         PlayerInventory.Singleton.CookSoup(cookedIngredients);
@@ -260,6 +267,9 @@ public class CookingManager : MonoBehaviour
         ClearCookingManagerSprites();
 
         CookSoup?.Invoke();
+
+        // Exit Cooking
+        ExitCooking();
     }
 
     // Sets all the sprites in the cooking slot to null and 0 alpha
@@ -301,7 +311,7 @@ public class CookingManager : MonoBehaviour
     public void CookingSlotSetTransparent(CookingSlot slot)
     {
         // index into first child slot bc should only be 1 child
-        //slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
+        // slot.transform.GetChild(0).GetComponent<Image>().sprite = null;
         Image image = slot.transform.GetChild(0).GetComponent<Image>();
         Color tempColor = image.color;
         tempColor.a = 0;
@@ -325,7 +335,7 @@ public class CookingManager : MonoBehaviour
     }
 
 
-
+    // Outdated
     public void UpdateStatsText()
     {
         // Clear the text except for the headers
@@ -346,8 +356,8 @@ public class CookingManager : MonoBehaviour
         float totalSpeed = 0;
         float totalCooldown = 0;
 
-        // Display Uses
-        UsesText.text += statSpoon.uses;
+        //// Display Uses
+        //UsesText.text += statSpoon.uses;
 
         // Show The Abilities and Calculate Buff Stats
         foreach(var spoonAbility in statSpoon.spoonAbilities){

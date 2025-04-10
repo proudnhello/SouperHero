@@ -6,6 +6,7 @@ using System;
 using System.Data.Common;
 using System.Numerics;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class EntitiesClass
@@ -45,7 +46,13 @@ public class SaveManager : MonoBehaviour
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
         entitiesPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Entities.json");
         playerPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Player.json");
-        Load();
+
+        // Load game scene if game scene
+        if (SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            LoadGameScene();
+        }
+        
     }
 
     // Class that saves metrics across plays
@@ -61,15 +68,13 @@ public class SaveManager : MonoBehaviour
         DeathMetricsManager.Singleton.DisplayStats();
     }
 
-    public void Save(){
+    public void SaveGameScene(){
         SavePlayer();
         SaveEntities();
-        SaveGameStats();
     }
 
-    public void Load(){
+    public void LoadGameScene(){
         LoadPlayerData();
-        LoadGameStats();
         LoadEntities();
     }
 

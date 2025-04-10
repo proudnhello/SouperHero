@@ -12,8 +12,26 @@ public class RoomGenerator : MonoBehaviour
     public int TILE_WIDTH;
     public int TILE_HEIGHT;
 
-    public int _mapWidth;
-    public int _mapHeight;
+    public int _mapBaseWidth;
+    
+    public int _mapBaseHeight;
+    public int _mapPadding;
+    int _mapWidth
+    {
+        get { return _mapBaseWidth + _mapPadding*2; }
+    }
+    int _mapHeight
+    {
+        get { return _mapBaseHeight + _mapPadding*2; }
+    }
+    int _mapMinWidth
+    {
+        get { return _mapPadding; }
+    }
+    int _mapMinHeight
+    {
+        get { return _mapPadding; }
+    }
 
     private List<List<Block>> _map;
     private List<MapRoom> _intermediateRooms;
@@ -66,12 +84,12 @@ public class RoomGenerator : MonoBehaviour
         // Need to create a new map full of nulls, placeholders for the Blocks and to determine if there is/isnt a block at a position
         _map = new List<List<Block>>();
         _intermediateRooms = new List<MapRoom>();
-        for(int i = 0; i < _mapWidth; i++)
+        for(int i = 0; i < _mapWidth+_mapPadding; i++)
         {
             _map.Add(new List<Block>());
         }
-        for(int i = 0; i < _mapWidth; i++) { 
-            for (int j = 0; j < _mapHeight; j++)
+        for(int i = 0; i < _mapWidth+_mapPadding; i++) { 
+            for (int j = 0; j < _mapHeight+_mapPadding; j++)
             {
                 _map[i].Add(null);
             }
@@ -128,20 +146,25 @@ public class RoomGenerator : MonoBehaviour
     // BFS Random Placement for intermediates. CHATGPT GAVE ME PSEUDO CODE
     void placeIntermediates(int numIntermediates)
     {
+
         for (int i = 0; i < numIntermediates; i++)
         {
             int blockType = UnityEngine.Random.Range(0, _intermediateBlocks.Count);
             MapRoom b = Instantiate(_intermediateBlocks[blockType], spawnObject.transform).GetComponent<MapRoom>();
-            Array.ForEach(b.GetComponentsInChildren<DualGridTilemapModule>(), x => x.RefreshRenderTilemap());
 
             bool placed = false;
             while (!placed)
             {
-                int row = UnityEngine.Random.Range(0, _mapWidth);
-                int col = UnityEngine.Random.Range(0, _mapHeight);
+                int row = UnityEngine.Random.Range(_mapMinWidth, _mapBaseWidth+_mapMinWidth+1);
+                int col = UnityEngine.Random.Range(_mapMinHeight, _mapBaseHeight+_mapMinHeight+1);
+
 
                 b.gameObject.transform.rotation = Quaternion.identity;
-                if (row + b.BlockWidth() < _mapWidth && canPlaceIntermediate(row, col, b))
+                if (row + b.BlockWidth() < (_mapMinWidth + _mapBaseWidth+1) && 
+                    col + b.BlockHeight() < (_mapMinHeight + _mapBaseHeight+1) &&
+                    row >= _mapMinWidth &&
+                    col >= _mapMinHeight &&
+                    canPlaceIntermediate(row, col, b))
                 {
                     fillBlock(row, col, b);
                     placed = true;
@@ -941,6 +964,9 @@ public class RoomGenerator : MonoBehaviour
     private void placeEnd(List<Coordinate> allIntermediates, Coordinate start)
     {
         List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.squaredDistanceTo(start)).ToList();
+        //string ts = "";
+        //foreach (var c in sortedCoordinates) ts += $"({c.row}, {c.col}) ";
+        //Debug.Log(ts);
         foreach (Coordinate c in sortedCoordinates)
         {
             string s = getConnectionsSelf(c.row, c.col);
@@ -958,57 +984,85 @@ public class RoomGenerator : MonoBehaviour
             {
                 continue;
             }
-            if (s.Contains('N'))
+
+            void NCheck()
             {
-                found = true;
-                north = true;
-                dstCoord.col += 2;
-                frstCoord.col += 1;
-                connCord.col += 4;
-                bossCoord.col += 5;
-                bossCoord.row -= 1;
-                _map[c.row][c.col].northDoor.SetActive(false);
-                _map[c.row][c.col].northDoorOpen.SetActive(true);
-                b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
+                if (s.Contains('N'))
+                {
+                    found = true;
+                    north = true;
+                    dstCoord.col += 2;
+                    frstCoord.col += 1;
+                    connCord.col += 4;
+                    bossCoord.col += 5;
+                    bossCoord.row -= 1;
+                    _map[c.row][c.col].northDoor.SetActive(false);
+                    _map[c.row][c.col].northDoorOpen.SetActive(true);
+                    b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
+                }
             }
-            if (s.Contains('E') && !found)
+
+            void ECheck()
             {
-                found = true;
-                east = true;
-                dstCoord.row += 2;
-                frstCoord.row += 1;
-                connCord.row += 4;
-                bossCoord.row += 5;
-                bossCoord.col -= 1;
-                _map[c.row][c.col].eastDoor.SetActive(false);
-                _map[c.row][c.col].eastDoorOpen.SetActive(true);
-                b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
+                if (s.Contains('E'))
+                {
+                    found = true;
+                    east = true;
+                    dstCoord.row += 2;
+                    frstCoord.row += 1;
+                    connCord.row += 4;
+                    bossCoord.row += 5;
+                    bossCoord.col -= 1;
+                    _map[c.row][c.col].eastDoor.SetActive(false);
+                    _map[c.row][c.col].eastDoorOpen.SetActive(true);
+                    b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
+                }
             }
-            if (s.Contains('S') && !found)
+
+            void SCheck()
             {
-                found = true;
-                south = true;
-                dstCoord.col -= 3;
-                frstCoord.col -= 1;
-                connCord.col -= 4;
-                bossCoord.col -= 7;
-                bossCoord.row -= 1;
-                _map[c.row][c.col].southDoor.SetActive(false);
-                _map[c.row][c.col].southDoorOpen.SetActive(true);
-                b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
+                if (s.Contains('S'))
+                {
+                    found = true;
+                    south = true;
+                    dstCoord.col -= 3;
+                    frstCoord.col -= 1;
+                    connCord.col -= 4;
+                    bossCoord.col -= 7;
+                    bossCoord.row -= 1;
+                    _map[c.row][c.col].southDoor.SetActive(false);
+                    _map[c.row][c.col].southDoorOpen.SetActive(true);
+                    b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
+                }
             }
-            if (s.Contains('W') && !found)
+            
+            void WCheck()
             {
-                west = true;
-                _map[c.row][c.col].westDoor.SetActive(false);
-                _map[c.row][c.col].westDoorOpen.SetActive(true);
-                dstCoord.row -= 3;
-                frstCoord.row -= 1;
-                connCord.row -= 4;
-                bossCoord.row -= 7;
-                bossCoord.col -= 1;
-                b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
+                if (s.Contains('W'))
+                {
+                    found = true;
+                    west = true;
+                    _map[c.row][c.col].westDoor.SetActive(false);
+                    _map[c.row][c.col].westDoorOpen.SetActive(true);
+                    dstCoord.row -= 3;
+                    frstCoord.row -= 1;
+                    connCord.row -= 4;
+                    bossCoord.row -= 7;
+                    bossCoord.col -= 1;
+                    b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
+                }
             }
+
+            
+            for (int count = 0, i = UnityEngine.Random.Range(0, 4); count < 4 && !found; count++, i=(i+1)%4)
+            {
+                if (i == 0) NCheck();
+                else if (i == 1) ECheck();
+                else if (i == 2) SCheck();
+                else if (i == 3) WCheck();
+            }
+            
+            
             b.gameObject.transform.position = getOffset(dstCoord.row, dstCoord.col, b); // place 1x2 or 2x1 
 
             if (north || south)

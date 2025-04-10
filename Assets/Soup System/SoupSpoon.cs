@@ -18,25 +18,35 @@ public class SoupSpoon
         //[SerializeField]
         public AbilityStats statsWithBuffs;
 
-        float lastUseTime;
-        int uses = 0;
+        public float lastUseTime;
+        public int uses = 0;
 
+        public Sprite icon;
+
+        // New spoon ability for new ability ingredient in the soup
         public SpoonAbility(AbilityIngredient ingredient, List<FlavorIngredient.BuffFlavor> buffs)
-        {
+        {         
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
+            icon = ingredient.Icon;
             uses = ingredient.uses;
-            //Debug.Log($"SIZE STATS WITH BUFFS {statsWithBuffs.size}");
         }
+        
 
+        // This is called if we are adding an ability ingredient we already added
         public void AddIngredient(AbilityIngredient ingredient)
         {
             uses += ingredient.uses;
         }
 
-        public bool Use()
+        public bool OnCooldown()
         {
             return (Time.time - lastUseTime) < statsWithBuffs.cooldown;
+        }
+
+        public int GetUses()
+        {
+            return uses;
         }
     }
 
@@ -71,11 +81,11 @@ public class SoupSpoon
     // ~~~ VARIABLES ~~~
     public List<SpoonAbility> spoonAbilities;
     public List<SpoonInfliction> spoonInflictions;
-    public int uses; // -1 = infinite
+    //public int uses; // -1 = infinite
     public float cooldown;
 
     // Makes a Soup Spoon
-    public SoupSpoon(List<Ingredient> ingredients, bool infinite = false)
+    public SoupSpoon(List<Ingredient> ingredients)
     {
         // Track abilities and inflictions using dictionaries
         Dictionary<AbilityIngredient, SpoonAbility> abilityTracker = new();
@@ -94,15 +104,23 @@ public class SoupSpoon
         flavorIngredients.ForEach(f => buffFlavors = buffFlavors.Concat(f.buffFlavors).ToList());
         //buffFlavors = buffFlavors.OrderBy(x => x.operation).ToList();
 
-        // Collect infliction flavors from both flavor and ability ingredients
+        // Collect infliction flavors from flavor ingredients //both flavor and ability ingredients
         List<InflictionFlavor> inflictionFlavors = new();
         flavorIngredients.ForEach(f => inflictionFlavors = inflictionFlavors.Concat(f.inflictionFlavors).ToList());
 
         // Initialize uses and cooldown
-        uses = 0;
+        //uses = 0;
         cooldown = 0;
 
         float totalCooldown = 0;
+
+        //foreach (var ability in abilityIngredients)
+        //{
+        //    Debug.Log("Ability Ingredient Uses: " + ability.uses);
+        //}
+        
+        //Debug.Log("Ability Ingredient List Count: " + abilityIngredients.Count);
+
         // Populate ability tracker and calculate total uses and cooldown
         foreach (var ingredient in abilityIngredients)
         {
@@ -113,6 +131,7 @@ public class SoupSpoon
             {
                 abilityTracker[ingredient].AddIngredient(ingredient);
             }
+
             foreach (var infliction in ingredient.inherentInflictionFlavors)
             {
                 if (!inflictionTracker.ContainsKey(infliction.inflictionType)) // only add each infliction type once
@@ -126,13 +145,13 @@ public class SoupSpoon
             }
                 
 
-            uses += ingredient.uses; // <- ONCE EQUIPPED SPOON UI IS WORKING DELETE
+            //uses += ingredient.uses; // <- ONCE EQUIPPED SPOON UI IS WORKING DELETE
             totalCooldown += ingredient.baseStats.cooldown;
         }
         foreach (var ingredient in abilityIngredients) cooldown += Mathf.Pow(ingredient.baseStats.cooldown, 2) / totalCooldown;
 
         // Set uses to infinite if specified
-        if (infinite) uses = -1;
+        //if (infinite) uses = -1;
         
         // Calculate average cooldown based on number of ability ingredients
         cooldown /= abilityIngredients.Count;
@@ -235,14 +254,24 @@ public class SoupSpoon
         if ((Time.time - lastTimeUsed) < cooldown) return false;
         lastTimeUsed = Time.time;
 
-        // Apply each ability using the spoon
-        foreach (var ability in spoonAbilities)
+        // Apply each ability using the spoon if there are uses left
+        foreach (SpoonAbility ability in spoonAbilities)
         {
-            ability.ability.UseAbility(ability.statsWithBuffs, spoonInflictions);
+            // use ability if there are uses left
+            if (ability.uses > 0 || ability.uses == -1)
+            {
+                ability.ability.UseAbility(ability.statsWithBuffs, spoonInflictions);
+            }
+            
+            // decrement if uses > 0
+            if (ability.uses > 0)
+            {
+                ability.uses--;
+            }
         }
 
         // Decrement uses if applicable
-        if (uses > 0) uses--;
+        //if (uses > 0) uses--;
 
         return true;
     }

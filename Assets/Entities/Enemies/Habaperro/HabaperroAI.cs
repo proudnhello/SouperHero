@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static Entity;
 
 public class HabaperroAI : EnemyBaseClass
 {
@@ -85,7 +86,9 @@ public class HabaperroAI : EnemyBaseClass
     protected override void Die()
     {
         currentState.OnExit();
-        base.Die();
+        agent.updatePosition = false;
+        SetHealth(0);
+        Destroy(gameObject);
     }
 
     public class IdleState : IState
@@ -225,8 +228,7 @@ public class HabaperroAI : EnemyBaseClass
         }
 
         IEnumerator HandleMovementExplosion()
-        {
-                
+        {            
             sm.animator.Play("Walk");
             sm.agent.isStopped = false;
             float dist = 0;
@@ -259,14 +261,17 @@ public class HabaperroAI : EnemyBaseClass
                     
                 interval *= sm.IgnitionFlashIntervalMultiplier;
             } while (interval > sm.IgnitionFlashIntervalToTriggerExplosion);
-
+            Debug.Log("Got here1");
             sm._sprite.color = Color.white;
             sm._collider.enabled = false;
             sm.animator.Play("Boom");
+            Debug.Log("Got here2");
             Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
+            Debug.Log("Got here3");
             yield return new WaitForSeconds(sm.PostExplosionWaitTime);
-            Destroy(sm.gameObject); // <-------- probably change this eventually with spawn system idek
-
+            Debug.Log("Got here4");
+            IHandleMovementExplosion = null;
+            sm.Die();
         }
 
         public void OnExit()
