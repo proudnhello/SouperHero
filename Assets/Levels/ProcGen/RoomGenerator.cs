@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using NavMeshPlus.Components;
-using skner.DualGrid;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +14,7 @@ public class RoomGenerator : MonoBehaviour
     
     public int _mapBaseHeight;
     public int _mapPadding;
+
     int _mapWidth
     {
         get { return _mapBaseWidth + _mapPadding*2; }
@@ -112,38 +111,45 @@ public class RoomGenerator : MonoBehaviour
         return new Vector2((row + (b.BlockWidth() / 2.0f)) * TILE_WIDTH, (col + (b.BlockHeight() / 2.0f)) * TILE_HEIGHT);
     }
 
-    // Checks to see if an intermediate can be placed by checking bounds and if potential spot has blocks already there
-    private bool canPlaceIntermediate(int row, int col, MapRoom b)
-    {
-        b.gameObject.transform.position = getOffset(row, col, b);
-        for (int i = 0; i < b.BlockWidth(); ++i)
-        {
-            for (int j = 0; j < b.BlockHeight(); ++j)
-            {
-                if (row + i >= _mapWidth || col + j >= _mapHeight || _map[row + i][col + j] != null)
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     // Fills map blocks to properly represent the room being placed
     private void fillBlock(int row, int col, MapRoom b)
     {
         for (int i = 0; i < b.BlockWidth(); ++i)
         {
-            for(int j = 0; j < b.BlockHeight(); j++) 
+            for (int j = 0; j < b.BlockHeight(); j++)
             {
                 _map[row + i][col + j] = b.At(i, j);
             }
         }
     }
 
+    // Checks to see if an intermediate can be placed by checking bounds and if potential spot has blocks already there
+    private bool canPlaceIntermediate(int row, int col, MapRoom b)
+    {
+        if (row + b.BlockWidth() >= (_mapMinWidth + _mapBaseWidth + 1) ||
+            col + b.BlockHeight() >= (_mapMinHeight + _mapBaseHeight + 1) ||
+            row < _mapMinWidth ||
+            col < _mapMinHeight)
+        {
+            return false;
+        }
 
+        for (int i = 0; i < b.BlockWidth(); ++i)
+        {
+            for (int j = 0; j < b.BlockHeight(); ++j)
+            {
+                if (_map[row + i][col + j] != null)
+                {
+                    return false;
+                }
+            }
+        }
 
-    // BFS Random Placement for intermediates. CHATGPT GAVE ME PSEUDO CODE
+        b.gameObject.transform.position = getOffset(row, col, b);
+        fillBlock(row, col, b);
+        return true;
+    }
+
     void placeIntermediates(int numIntermediates)
     {
 
@@ -158,15 +164,8 @@ public class RoomGenerator : MonoBehaviour
                 int row = UnityEngine.Random.Range(_mapMinWidth, _mapBaseWidth+_mapMinWidth+1);
                 int col = UnityEngine.Random.Range(_mapMinHeight, _mapBaseHeight+_mapMinHeight+1);
 
-
-                b.gameObject.transform.rotation = Quaternion.identity;
-                if (row + b.BlockWidth() < (_mapMinWidth + _mapBaseWidth+1) && 
-                    col + b.BlockHeight() < (_mapMinHeight + _mapBaseHeight+1) &&
-                    row >= _mapMinWidth &&
-                    col >= _mapMinHeight &&
-                    canPlaceIntermediate(row, col, b))
+                if (canPlaceIntermediate(row, col, b))
                 {
-                    fillBlock(row, col, b);
                     placed = true;
                     Vector2 offset = getOffset(row, col, b);
                 }
@@ -175,25 +174,31 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-
-    // Checks for all blocks other than connectors
-    private bool checkForBlock(int row, int col)
+    private bool checkForBlock(Coordinate c, RoomType r, char dir)
     {
-        Block b = _map[row][col];
-        return b != null && b.BlockType() != "Connector";
-    }
-
-    // Checks for all blocks other than the start
-    private bool checkForBlockAll(Coordinate c)
-    {
+        if(!c.blockExists(_map))
+        {
+            return false;
+        }
         Block b = _map[c.row][c.col];
-        return b != null && b.BlockType() != "Start";
-    }
-
-    // Checks if a grid coordinate is empty (doesnt have a block)
-    private bool checkForBlockAdvanced(Coordinate c)
-    {
-        return _map[c.row][c.col] == null;
+        bool ret = b != null && ((b.BlockType() & r) != 0);
+        switch (dir) {
+            case 'N':
+                ret = ret && b.north;
+                break;
+            case 'S':
+                ret = ret && b.south;
+                break;
+            case 'E':
+                ret = ret && b.east;
+                break;
+            case 'W':
+                ret = ret && b.west;
+                break;
+            default:
+                break;
+        }
+        return ret;
     }
 
     private bool checkForBlockExtent(Coordinate c, int width, int height, char dir)
@@ -248,55 +253,40 @@ public class RoomGenerator : MonoBehaviour
     // Returns the string representation of the connections possible at a certain position
     private string getConnectionsAt(int row, int col)
     {
-        int rowPlus = row + 1;
-        int rowMinus = row - 1;
-        int colPlus = col + 1;
-        int colMinus = col - 1;
-
+        Coordinate c = new Coordinate(row, col);
+        Coordinate rowPlus = new Coordinate(row + 1, col);
+        Coordinate rowMinus = new Coordinate(row - 1, col);
+        Coordinate colPlus = new Coordinate(row, col + 1);
+        Coordinate colMinus = new Coordinate(row, col - 1);
         string s = "";
 
-        if (colPlus < _mapHeight)
+        if (checkForBlock(colPlus, RoomType.NOT_CONNECTOR, 'S'))
         {
-            if (checkForBlock(row, colPlus) && _map[row][colPlus].south)
-            {
-                s += "N";
-            }
+            s += "N";
         }
-        if (colMinus >= 0)
+        if (checkForBlock(colMinus, RoomType.NOT_CONNECTOR, 'N'))
         {
-            if (checkForBlock(row, colMinus) && _map[row][colMinus].north)
-            {
-                s += "S";
-            }
+            s += "S";
         }
-        if (rowPlus < _mapWidth)
+        if (checkForBlock(rowPlus, RoomType.NOT_CONNECTOR, 'W'))
         {
-            if (checkForBlock(rowPlus, col) && _map[rowPlus][col].west)
-            {
-                s += "E";
-            }
+            s += "E";
         }
-        if (rowMinus >= 0)
+        if (checkForBlock(rowMinus, RoomType.NOT_CONNECTOR, 'E'))
         {
-            if (checkForBlock(rowMinus, col) && _map[rowMinus][col].east)
-            {
-                s += "W";
-            }
+            s += "W";
         }
         return s;
     }
 
     // Returns the string representation of the connections possible at a certain position
-    private string getConnectionsSelf(int row, int col)
+    private string getConnectionsEnd(int row, int col)
     {
         Coordinate c = new Coordinate(row, col);
         Coordinate rowPlus = new Coordinate(row + 1, col);
         Coordinate rowMinus = new Coordinate(row - 1, col);
         Coordinate colPlus = new Coordinate(row, col + 1);
         Coordinate colMinus = new Coordinate(row, col - 1);
-
-        //int endWidth = _bossRoom.GetComponent<MapRoom>().BlockWidth();
-        //int endHeight = _bossRoom.GetComponent<MapRoom>().BlockHeight();
 
         int endWidth = 3;
         int endHeight = 7;
@@ -333,72 +323,25 @@ public class RoomGenerator : MonoBehaviour
 
         string s = "";
 
-        if (colPlus.col < _mapHeight)
+        var cell = colPlus.getBlock(_map);
+        if (cell?.compareType(RoomType.CONNECTOR) == true || cell?.south == true)
         {
-            if (!checkForBlockAdvanced(colPlus))
-            {
-                if (_map[colPlus.row][colPlus.col].BlockType() == "Connector")
-                {
-                    s += "N";
-                } else
-                {
-                    if(_map[colPlus.row][colPlus.col].south)
-                    {
-                        s += "N";
-                    }
-                }
-            }
+            s += "N";
         }
-        if (colMinus.col >= 0)
+        cell = colMinus.getBlock(_map);
+        if (cell?.compareType(RoomType.CONNECTOR) == true || cell?.north == true)
         {
-            if (!checkForBlockAdvanced(colMinus))
-            {
-                if (_map[colMinus.row][colMinus.col].BlockType() == "Connector")
-                {
-                    s += "S";
-                }
-                else
-                {
-                    if (_map[colMinus.row][colMinus.col].north)
-                    {
-                        s += "S";
-                    }
-                }
-            }
+            s += "S";
         }
-        if (rowPlus.row < _mapWidth)
+        cell = rowPlus.getBlock(_map);
+        if (cell?.compareType(RoomType.CONNECTOR) == true || cell?.west == true)
         {
-            if (!checkForBlockAdvanced(rowPlus))
-            {
-                if (_map[rowPlus.row][rowPlus.col].BlockType() == "Connector")
-                {
-                    s += "E";
-                }
-                else
-                {
-                    if (_map[rowPlus.row][rowPlus.col].west)
-                    {
-                        s += "E";
-                    }
-                }
-            }
+            s += "E";
         }
-        if (rowMinus.row >= 0)
+        cell = rowMinus.getBlock(_map);
+        if (cell?.compareType(RoomType.CONNECTOR) == true || cell?.east == true)
         {
-            if (!checkForBlockAdvanced(rowMinus))
-            {
-                if (_map[rowMinus.row][rowMinus.col].BlockType() == "Connector")
-                {
-                    s += "W";
-                }
-                else
-                {
-                    if (_map[rowMinus.row][rowMinus.col].east)
-                    {
-                        s += "W";
-                    }
-                }
-            }
+            s += "W";
         }
         return s;
     }
@@ -462,8 +405,6 @@ public class RoomGenerator : MonoBehaviour
                 break;
         }
         canPlaceIntermediate(row, col, b);
-        fillBlock(row, col, b);
-        _map[row][col] = b.At(0, 0);
     }
 
     // Technically used for both first pass and second pass connecting
@@ -480,7 +421,7 @@ public class RoomGenerator : MonoBehaviour
                 if (!_map[row][col])
                 {
                     c = getConnectionsAt(row, col);
-                } else if (_map[row][col].BlockType() == "Connector")
+                } else if (_map[row][col].compareType(RoomType.CONNECTOR))
                 {
                     c = getConnectionsAtAdvanced(row, col);
                     DestroyImmediate(_map[row][col].gameObject);
@@ -516,8 +457,6 @@ public class RoomGenerator : MonoBehaviour
                                 break;
                         }
                         canPlaceIntermediate(row, col, b);
-                        fillBlock(row, col, b);
-                        _map[row][col] = b.At(0, 0);
                         break;
                     case 3:
                         MapRoom b2 = null;
@@ -537,14 +476,10 @@ public class RoomGenerator : MonoBehaviour
                                 break;
                         }
                         canPlaceIntermediate(row, col, b2);
-                        fillBlock(row, col, b2);
-                        _map[row][col] = b2.At(0, 0);
                         break;
                     case 4:
                         MapRoom b3 = Instantiate(connector4, spawnObject.transform).GetComponent<MapRoom>();
                         canPlaceIntermediate(row, col, b3);
-                        fillBlock(row, col, b3);
-                        _map[row][col] = b3.At(0, 0);
                         b3.At(0, 0).setDirections(true, true, true, true);
                         break;
                     default:
@@ -619,6 +554,18 @@ public class RoomGenerator : MonoBehaviour
             return row + ", " + col;
         }
 
+        public Block getBlock(List<List<Block>> map)
+        {
+            if (row < 0 || row >= map.Count) return null;
+            if (col < 0 || col >= map[row].Count) return null;
+            return map[row][col];
+        }
+
+        public bool blockExists(List<List<Block>> map)
+        {
+            return getBlock(map) != null;
+        }
+
         public float squaredDistanceTo(Coordinate other)
         {
             int dX = other.col - col;
@@ -647,75 +594,63 @@ public class RoomGenerator : MonoBehaviour
             Coordinate colPlus = new Coordinate(b.row, b.col + 1);
             Coordinate colMinus = new Coordinate(b.row, b.col - 1);
 
-            if (rowMinus.row >= 0)
+            if (!rowMinus.blockExists(_map) && !visited.Contains(rowMinus))
             {
-                if (checkForBlockAdvanced(rowMinus) && !visited.Contains(rowMinus))
+                queue.Enqueue(rowMinus);
+                visited.Add(rowMinus);
+                parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
+            }
+            else
+            {
+                if (rowMinus.blockExists(_map) && _map[rowMinus.row][rowMinus.col].compareType(RoomType.INTERMEDIATE))
                 {
-                    queue.Enqueue(rowMinus);
-                    visited.Add(rowMinus);
                     parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
-                }
-                else
-                {
-                    if (!checkForBlockAdvanced(rowMinus) && _map[rowMinus.row][rowMinus.col].BlockType() == "Intermediate")
-                    {
-                        parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
-                        closestIntermediate = rowMinus;
-                        break;
-                    }
+                    closestIntermediate = rowMinus;
+                    break;
                 }
             }
-            if (rowPlus.row < _mapWidth)
+            if (!rowPlus.blockExists(_map) && !visited.Contains(rowPlus))
             {
-                if (checkForBlockAdvanced(rowPlus) && !visited.Contains(rowPlus))
+                queue.Enqueue(rowPlus);
+                visited.Add(rowPlus);
+                parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
+            }
+            else
+            {
+                if (rowPlus.blockExists(_map) && _map[rowPlus.row][rowPlus.col].compareType(RoomType.INTERMEDIATE))
                 {
-                    queue.Enqueue(rowPlus);
-                    visited.Add(rowPlus);
                     parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
-                }
-                else
-                {
-                    if (!checkForBlockAdvanced(rowPlus) && _map[rowPlus.row][rowPlus.col].BlockType() == "Intermediate")
-                    {
-                        parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
-                        closestIntermediate = rowPlus;
-                        break;
-                    }
+                    closestIntermediate = rowPlus;
+                    break;
                 }
             }
-            if (colPlus.col < _mapHeight)
+            if (!colPlus.blockExists(_map) && !visited.Contains(colPlus))
             {
-                if (checkForBlockAdvanced(colPlus) && !visited.Contains(colPlus))
+                queue.Enqueue(colPlus);
+                visited.Add(colPlus);
+                parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
+            }
+            else
+            {
+                if (colPlus.blockExists(_map) && _map[colPlus.row][colPlus.col].compareType(RoomType.INTERMEDIATE))
                 {
-                    queue.Enqueue(colPlus);
-                    visited.Add(colPlus);
                     parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
-                }
-                else
-                {
-                    if (!checkForBlockAdvanced(colPlus) && _map[colPlus.row][colPlus.col].BlockType() == "Intermediate")
-                    {
-                        parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
-                        closestIntermediate = colPlus;
-                        break;
-                    }
+                    closestIntermediate = colPlus;
+                    break;
                 }
             }
-            if (colMinus.col >= 0)
+            if (!colMinus.blockExists(_map) && !visited.Contains(colMinus))
             {
-                if (checkForBlockAdvanced(colMinus) && !visited.Contains(colMinus))
+                queue.Enqueue(colMinus);
+                visited.Add(colMinus);
+                parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
+            } else
+            {
+                if (colMinus.blockExists(_map) && _map[colMinus.row][colMinus.col].compareType(RoomType.INTERMEDIATE))
                 {
-                    queue.Enqueue(colMinus);
-                    visited.Add(colMinus);
                     parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
-                } else
-                {
-                    if (!checkForBlockAdvanced(colMinus) && _map[colMinus.row][colMinus.col].BlockType() == "Intermediate")
-                    {
-                        parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
-                        closestIntermediate = colMinus;
-                        break;
-                    }
+                    closestIntermediate = colMinus;
+                    break;
                 }
             }
         }
@@ -748,7 +683,7 @@ public class RoomGenerator : MonoBehaviour
             return ret;
         }
 
-        if (checkForBlockAll(start))
+        if (start.blockExists(_map))
         {
             ret.Add(start);
         }
@@ -766,7 +701,7 @@ public class RoomGenerator : MonoBehaviour
 
             if (rowMinus.row >= 0)
             {
-                if (checkForBlockAll(rowMinus) && !visitedStart.Contains(rowMinus) && _map[rowMinus.row][rowMinus.col].east)
+                if (rowMinus.blockExists(_map) && !visitedStart.Contains(rowMinus) && _map[rowMinus.row][rowMinus.col].east)
                 {
                     queue.Enqueue(rowMinus);
                     visitedStart.Add(rowMinus);
@@ -775,7 +710,7 @@ public class RoomGenerator : MonoBehaviour
             }
             if (rowPlus.row < _mapWidth)
             {
-                if (checkForBlockAll(rowPlus) && !visitedStart.Contains(rowPlus) && _map[rowPlus.row][rowPlus.col].west)
+                if (rowPlus.blockExists(_map) && !visitedStart.Contains(rowPlus) && _map[rowPlus.row][rowPlus.col].west)
                 {
                     queue.Enqueue(rowPlus);
                     visitedStart.Add(rowPlus);
@@ -784,7 +719,7 @@ public class RoomGenerator : MonoBehaviour
             }
             if (colPlus.col < _mapHeight)
             {
-                if (checkForBlockAll(colPlus) && !visitedStart.Contains(colPlus) && _map[colPlus.row][colPlus.col].south)
+                if (colPlus.blockExists(_map) && !visitedStart.Contains(colPlus) && _map[colPlus.row][colPlus.col].south)
                 {
                     queue.Enqueue(colPlus);
                     visitedStart.Add(colPlus);
@@ -793,7 +728,7 @@ public class RoomGenerator : MonoBehaviour
             }
             if (colMinus.col >= 0)
             {
-                if (checkForBlockAll(colMinus) && !visitedStart.Contains(colMinus) && _map[colMinus.row][colMinus.col].north)
+                if (colMinus.blockExists(_map) && !visitedStart.Contains(colMinus) && _map[colMinus.row][colMinus.col].north)
                 {
                     queue.Enqueue(colMinus);
                     visitedStart.Add(colMinus);
@@ -831,76 +766,64 @@ public class RoomGenerator : MonoBehaviour
             Coordinate colPlus = new Coordinate(b.row, b.col + 1);
             Coordinate colMinus = new Coordinate(b.row, b.col - 1);
 
-            if (rowMinus.row >= 0)
+            if (!rowMinus.blockExists(_map) && !visited.Contains(rowMinus))
             {
-                if (checkForBlockAdvanced(rowMinus) && !visited.Contains(rowMinus))
+                queue.Enqueue(rowMinus);
+                visited.Add(rowMinus);
+                parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
+            }
+            else
+            {
+                if (rowMinus.blockExists(_map) && destinations.Contains(rowMinus))
                 {
-                    queue.Enqueue(rowMinus);
-                    visited.Add(rowMinus);
                     parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
-                }
-                else
-                {
-                    if (!checkForBlockAdvanced(rowMinus) && destinations.Contains(rowMinus))
-                    {
-                        parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
-                        closestIntermediate = rowMinus;
-                        break;
-                    }
+                    closestIntermediate = rowMinus;
+                    break;
                 }
             }
-            if (rowPlus.row < _mapWidth)
+            if (!rowPlus.blockExists(_map) && !visited.Contains(rowPlus))
             {
-                if (checkForBlockAdvanced(rowPlus) && !visited.Contains(rowPlus))
+                queue.Enqueue(rowPlus);
+                visited.Add(rowPlus);
+                parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
+            }
+            else
+            {
+                if (rowPlus.blockExists(_map) && destinations.Contains(rowPlus))
                 {
-                    queue.Enqueue(rowPlus);
-                    visited.Add(rowPlus);
                     parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
-                }
-                else
-                {
-                    if (!checkForBlockAdvanced(rowPlus) && destinations.Contains(rowPlus))
-                    {
-                        parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
-                        closestIntermediate = rowPlus;
-                        break;
-                    }
+                    closestIntermediate = rowPlus;
+                    break;
                 }
             }
-            if (colPlus.col < _mapHeight)
+            if (!colPlus.blockExists(_map) && !visited.Contains(colPlus))
             {
-                if (checkForBlockAdvanced(colPlus) && !visited.Contains(colPlus))
+                queue.Enqueue(colPlus);
+                visited.Add(colPlus);
+                parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
+            }
+            else
+            {
+                if (colPlus.blockExists(_map) && destinations.Contains(colPlus))
                 {
-                    queue.Enqueue(colPlus);
-                    visited.Add(colPlus);
                     parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
-                }
-                else
-                {
-                    if (!checkForBlockAdvanced(colPlus) && destinations.Contains(colPlus))
-                    {
-                        parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
-                        closestIntermediate = colPlus;
-                        break;
-                    }
+                    closestIntermediate = colPlus;
+                    break;
                 }
             }
-            if (colMinus.col >= 0)
+            if (!colMinus.blockExists(_map) && !visited.Contains(colMinus))
             {
-                if (checkForBlockAdvanced(colMinus) && !visited.Contains(colMinus))
+                queue.Enqueue(colMinus);
+                visited.Add(colMinus);
+                parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
+            }
+            else
+            {
+                if (colMinus.blockExists(_map) && destinations.Contains(colMinus))
                 {
-                    queue.Enqueue(colMinus);
-                    visited.Add(colMinus);
                     parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
-                }
-                else
-                {
-                    if (!checkForBlockAdvanced(colMinus) && destinations.Contains(colMinus))
-                    {
-                        parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
-                        closestIntermediate = colMinus;
-                        break;
-                    }
+                    closestIntermediate = colMinus;
+                    break;
                 }
             }
         }
@@ -932,7 +855,8 @@ public class RoomGenerator : MonoBehaviour
             for (int j = 0; j < _mapHeight; j++)
             {
                 Coordinate c = new Coordinate(i, j);
-                if (!checkForBlockAdvanced(c) && _map[c.row][c.col].BlockType() == "Intermediate")
+                var cell = c.getBlock(_map);
+                if (cell?.compareType(RoomType.INTERMEDIATE) == true)
                 {
                     Block I = _map[c.row][c.col];
                     string s = getConnectionsAtAdvanced(c.row, c.col);
@@ -964,12 +888,9 @@ public class RoomGenerator : MonoBehaviour
     private void placeEnd(List<Coordinate> allIntermediates, Coordinate start)
     {
         List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.squaredDistanceTo(start)).ToList();
-        //string ts = "";
-        //foreach (var c in sortedCoordinates) ts += $"({c.row}, {c.col}) ";
-        //Debug.Log(ts);
         foreach (Coordinate c in sortedCoordinates)
         {
-            string s = getConnectionsSelf(c.row, c.col);
+            string s = getConnectionsEnd(c.row, c.col);
             bool found = false;
             bool north = false;
             bool south = false;
@@ -1112,30 +1033,24 @@ public class RoomGenerator : MonoBehaviour
     // Main generation function
     void GenerateRoom() {
         int seed = UnityEngine.Random.Range(0, int.MaxValue);
-
-        if(mapSeed < 0) {
+        if(mapSeed < 0) { // random seed if the seed value is -1
             UnityEngine.Random.InitState(seed);
             newSeed = seed;
-            Debug.Log("SEED: " + seed);
-        } else
+        } else // else we are being given a seed value for debug testing
         {
             UnityEngine.Random.InitState(mapSeed);
             newSeed = mapSeed;
-            Debug.Log("SEED: " + mapSeed);
         }
+        Debug.Log("SEED: " + newSeed);
 
         // Get mid width and height to place the start block
         int midWidth = (_mapWidth - 1) / 2;
         int midHeight = (_mapHeight - 1) / 2;
-
         Coordinate startCoordinate = new Coordinate(midWidth, midHeight);
 
-        MapRoom b = Instantiate(_startBlock, spawnObject.transform).GetComponent<MapRoom>();
-
-        _intermediateRooms.Add(b);
-        b.gameObject.transform.position = getOffset(midWidth - 1, midHeight, b);
-        _map[midWidth - 1][midHeight] = b.At(0, 0);
-        _map[midWidth][midHeight] = b.At(1, 0);
+        MapRoom startRoom = Instantiate(_startBlock, spawnObject.transform).GetComponent<MapRoom>();
+        canPlaceIntermediate(startCoordinate.row - 1, startCoordinate.col, startRoom);
+        _intermediateRooms.Add(startRoom);
 
         // Randomly sparse intermediate blocks
         placeIntermediates(numIntermediates);
@@ -1156,8 +1071,6 @@ public class RoomGenerator : MonoBehaviour
         MapRoom b2 = Instantiate(connector4, spawnObject.transform).GetComponent<MapRoom>();
         if (canPlaceIntermediate(midWidth + 1, midHeight, b2))
         {
-            fillBlock(midWidth + 1, midHeight, b2);
-            _map[midWidth + 1][midHeight] = b2.At(0, 0);
             b2.At(0, 0).setDirections(true, true, true, true);
         } else
         {
@@ -1169,7 +1082,7 @@ public class RoomGenerator : MonoBehaviour
         List<Coordinate> startIsland = BFSGetGroup(new Coordinate(midWidth + 1, midHeight));
         foreach(Coordinate c in startIsland)
         {
-            if (_map[c.row][c.col].BlockType() == "Intermediate")
+            if (_map[c.row][c.col].compareType(RoomType.INTERMEDIATE))
             {
                 startIntermediates.Add(c);
             }
@@ -1183,7 +1096,7 @@ public class RoomGenerator : MonoBehaviour
             for (int j = 0; j < _mapHeight; j++)
             {
                 Coordinate c = new Coordinate(i, j);
-                if (checkForBlockAll(c) && !visitedStart.Contains(c))
+                if (checkForBlock(c, RoomType.ALL, 'X') && !visitedStart.Contains(c))
                 {
                     disconnectedGroups.Add(BFSGetGroup(c));
                 }
@@ -1214,7 +1127,7 @@ public class RoomGenerator : MonoBehaviour
                         {
                             continue;
                         }
-                        if (_map[inter.row][inter.col].BlockType() == "Intermediate" && coord.squaredDistanceTo(inter) < closestDistance)
+                        if (_map[inter.row][inter.col].compareType(RoomType.INTERMEDIATE) && coord.squaredDistanceTo(inter) < closestDistance)
                         {
                             disconnectedCoordinate = coord;
                             closestInter = inter;
@@ -1237,7 +1150,7 @@ public class RoomGenerator : MonoBehaviour
             }
             foreach (Coordinate coord in list)
             {
-                if (_map[coord.row][coord.col].BlockType() == "Intermediate")
+                if (_map[coord.row][coord.col].compareType(RoomType.INTERMEDIATE))
                 {
                     startIntermediates.Add(coord);
                 }
@@ -1258,7 +1171,7 @@ public class RoomGenerator : MonoBehaviour
         {
             for (int j = 0; j < _mapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     m.difficulty = int.MaxValue;
@@ -1270,15 +1183,15 @@ public class RoomGenerator : MonoBehaviour
         {
             for (int j = 0; j < _mapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     m.difficulty = (int)Mathf.Min(m.difficulty, Mathf.Sqrt(new Coordinate(i, j).squaredDistanceTo(startCoordinate) * difficultyMultiplier));
                 }
             }
         }
-        Debug.Log(foragablesList.Count);
-        Debug.Log(enemiesList.Count);
+        Debug.Log("ForgablesList: " + foragablesList.Count);
+        Debug.Log("Enemies List: " + enemiesList.Count);
         if(foragablesList.Count == 0 || enemiesList.Count == 0){
             generateNewContent();
         }
@@ -1295,7 +1208,7 @@ public class RoomGenerator : MonoBehaviour
         {
             for (int j = 0; j < _mapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     m.SpawnEntities();
@@ -1310,7 +1223,7 @@ public class RoomGenerator : MonoBehaviour
         {
             for (int j = 0; j < _mapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     if(count >= enemiesList.Count) return;
@@ -1326,7 +1239,7 @@ public class RoomGenerator : MonoBehaviour
         {
             for (int j = 0; j < _mapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     String res = m.ExportEnemies();
@@ -1348,7 +1261,7 @@ public class RoomGenerator : MonoBehaviour
         {
             for (int j = 0; j < _mapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     String res = m.ExportForagables();
@@ -1369,7 +1282,7 @@ public class RoomGenerator : MonoBehaviour
         {
             for (int j = 0; j < _mapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].BlockType() == "Intermediate")
+                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     m.hasExportedEnemies = false;
@@ -1381,33 +1294,30 @@ public class RoomGenerator : MonoBehaviour
 
     private void colorGrid()
     {
-        for (int i = 0; i < _mapWidth; ++i)
+        for (int i = 0; i < _mapBaseWidth; ++i)
         {
-            for (int j = 0; j < _mapHeight; ++j)
+            for (int j = 0; j < _mapBaseHeight; ++j)
             {
-                DrawRect(new Vector3(i * TILE_WIDTH, j * TILE_WIDTH, 0), new Vector3((i + 1) * TILE_WIDTH, (j + 1) * TILE_HEIGHT, 0), Color.red);
+                DrawRect(new Vector3((i + _mapPadding) * TILE_WIDTH, (j + _mapPadding) * TILE_WIDTH, 0), new Vector3(((i + _mapPadding) + 1) * TILE_WIDTH, ((j + _mapPadding) + 1) * TILE_HEIGHT, 0), Color.red);
             }
         }
-        for (int i = 0; i < _mapWidth; ++i)
+        for (int i = _mapPadding; i < _mapBaseWidth + _mapPadding; ++i)
         {
-            for (int j = 0; j < _mapHeight; ++j)
+            for (int j = _mapPadding; j < _mapBaseHeight + +_mapPadding; ++j)
             {
                 if (_map[i][j])
                 {
                     Color c;
                     switch (_map[i][j].BlockType())
                     {
-                        case "Start":
+                        case RoomType.START:
                             c = Color.yellow;
                             break;
-                        case "Connector":
+                        case RoomType.CONNECTOR:
                             c = Color.green;
                             break;
-                        case "Intermediate":
+                        case RoomType.INTERMEDIATE:
                             c = Color.cyan;
-                            break;
-                        case "End":
-                            c = new Color(1, 0.5f, 0f);
                             break;
                         default:
                             c = Color.magenta;

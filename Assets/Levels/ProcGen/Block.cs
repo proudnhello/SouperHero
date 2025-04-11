@@ -5,7 +5,7 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     [SerializeField]
-    private string _blockType = "null";
+    private RoomType _blockType;
     public bool connected = false;
 
     public bool west;
@@ -24,9 +24,15 @@ public class Block : MonoBehaviour
     public GameObject eastDoorOpen;
     public GameObject westDoorOpen;
 
-    public string BlockType()
+    public RoomType BlockType()
     {
         return _blockType;
+    }
+
+    public bool compareType(RoomType roomType)
+    {
+        if (roomType == _blockType) { return true; };
+        return false;
     }
 
     public void setDirections(bool north, bool south, bool east, bool west)

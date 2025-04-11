@@ -55,7 +55,6 @@ public class TurretAI : EnemyBaseClass
         {
             turret.animator.Play("Retreating");
             turret.c.enabled = false;
-            print(turret.c.enabled);
             hideTimer = turret.hideTime;
         }
 

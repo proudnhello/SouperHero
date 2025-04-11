@@ -5,6 +5,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
+[Flags]
+public enum RoomType
+{
+    START = 0,
+    INTERMEDIATE = 1,
+    CONNECTOR = 2,
+    ALL = START | INTERMEDIATE | CONNECTOR,
+    NOT_CONNECTOR = START | INTERMEDIATE
+}
+
 public class MapRoom : MonoBehaviour
 {
     [SerializeField]
