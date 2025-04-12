@@ -34,6 +34,7 @@ public class RoomGenerator : MonoBehaviour
 
     private List<List<Block>> _map;
     private List<MapRoom> _intermediateRooms;
+    private List<Coordinate> _intermediateCoordinates;
 
     [Header("START BLOCK")]
     public GameObject _startBlock;
@@ -78,11 +79,49 @@ public class RoomGenerator : MonoBehaviour
     private List<String> enemiesList;
     private List<String> foragablesList;
 
+    // Coordinate struct to make row and column passing easier
+    struct Coordinate
+    {
+        public int row;
+        public int col;
+
+        public Coordinate(int x, int y)
+        {
+            row = x;
+            col = y;
+        }
+
+        public override string ToString()
+        {
+            return row + ", " + col;
+        }
+
+        public Block getBlock(List<List<Block>> map)
+        {
+            if (row < 0 || row >= map.Count) return null;
+            if (col < 0 || col >= map[row].Count) return null;
+            return map[row][col];
+        }
+
+        public bool blockExists(List<List<Block>> map)
+        {
+            return getBlock(map) != null;
+        }
+
+        public float squaredDistanceTo(Coordinate other)
+        {
+            int dX = other.col - col;
+            int dY = other.row - row;
+            return (dX * dX) + (dY * dY);
+        }
+    }
+
     void Start()
     {
         // Need to create a new map full of nulls, placeholders for the Blocks and to determine if there is/isnt a block at a position
         _map = new List<List<Block>>();
         _intermediateRooms = new List<MapRoom>();
+        _intermediateCoordinates = new List<Coordinate>();
         for(int i = 0; i < _mapWidth+_mapPadding; i++)
         {
             _map.Add(new List<Block>());
@@ -167,7 +206,7 @@ public class RoomGenerator : MonoBehaviour
                 if (canPlaceIntermediate(row, col, b))
                 {
                     placed = true;
-                    Vector2 offset = getOffset(row, col, b);
+                    _intermediateCoordinates.Add(new Coordinate(row, col));
                 }
             }
             _intermediateRooms.Add(b);
@@ -201,41 +240,23 @@ public class RoomGenerator : MonoBehaviour
         return ret;
     }
 
-    private bool checkForBlockExtent(Coordinate c, int width, int height, char dir)
+    private bool checkForBlockExtentEnd(Coordinate c, Coordinate src, int width, int height, char dir)
     {
-        int startRow = 0;
-        int endRow = 0;
-        int startCol = 0;
-        int endCol = 0;
+        // I didnt even know you could inline a switch statement into a variable declaration like this WTF? THANKS CHATGPT
+
+        int halfW = Mathf.FloorToInt(width / 2f);
+        int halfH = Mathf.FloorToInt(height / 2f);
+        var cell = src.getBlock(_map);
         bool ret = true;
-        if (dir == 'N')
+
+        (int startRow, int endRow, int startCol, int endCol, bool doorActive) = dir switch
         {
-            startRow = -Mathf.FloorToInt(width / 2.0f);
-            endRow = Mathf.FloorToInt(width / 2.0f);
-            startCol = 0;
-            endCol = height;
-        }
-        else if (dir == 'S')
-        {
-            startRow = -Mathf.FloorToInt(width / 2.0f);
-            endRow = Mathf.FloorToInt(width / 2.0f);
-            startCol = -height;
-            endCol = 0;
-        }
-        else if (dir == 'E')
-        {
-            startRow = 0;
-            endRow = width;
-            startCol = -Mathf.FloorToInt(height / 2.0f);
-            endCol = Mathf.FloorToInt(height / 2.0f);
-        }
-        else if (dir == 'W')
-        {
-            startRow = -width;
-            endRow = 0;
-            startCol = -Mathf.FloorToInt(height / 2.0f);
-            endCol = Mathf.FloorToInt(height / 2.0f);
-        }
+            'N' => (-halfW, halfW, 0, height, cell?.northDoor != null && cell.northDoor.activeInHierarchy == true),
+            'S' => (-halfW, halfW, -height, 0, cell?.southDoor != null && cell.southDoor.activeInHierarchy == true),
+            'E' => (0, width, -halfH, halfH, cell?.eastDoor != null && cell.eastDoor.activeInHierarchy == true),
+            'W' => (-width, 0, -halfH, halfH, cell?.westDoor != null && cell.westDoor.activeInHierarchy == true),
+            _ => (0, 0, 0, 0, false)
+        };
 
         for (int i = startRow; i < endRow; i++)
         {
@@ -247,7 +268,7 @@ public class RoomGenerator : MonoBehaviour
                 }
             }
         }
-        return ret;
+        return ret && doorActive;
     }
 
     // Returns the string representation of the connections possible at a certain position
@@ -293,19 +314,19 @@ public class RoomGenerator : MonoBehaviour
 
         string s = "";
 
-        if (checkForBlockExtent(colPlus, endWidth, endHeight, 'N') && _map[row][col].northDoor && _map[row][col].northDoor.activeInHierarchy)
+        if (checkForBlockExtentEnd(colPlus, c, endWidth, endHeight, 'N'))
         {
             s += "N";
         }
-        if (checkForBlockExtent(colMinus, endWidth, endHeight, 'S') && _map[row][col].southDoor && _map[row][col].southDoor.activeInHierarchy)
+        if (checkForBlockExtentEnd(colMinus, c, endWidth, endHeight, 'S'))
         {
             s += "S";
         }
-        if (checkForBlockExtent(rowPlus, endHeight, endWidth, 'E') && _map[row][col].eastDoor && _map[row][col].eastDoor.activeInHierarchy)
+        if (checkForBlockExtentEnd(rowPlus, c, endHeight, endWidth, 'E'))
         {
             s += "E";
         }
-        if (checkForBlockExtent(rowMinus, endHeight, endWidth, 'W') && _map[row][col].westDoor && _map[row][col].westDoor.activeInHierarchy)
+        if (checkForBlockExtentEnd(rowMinus, c, endHeight, endWidth, 'W'))
         {
             s += "W";
         }
@@ -346,7 +367,7 @@ public class RoomGenerator : MonoBehaviour
         return s;
     }
 
-    // Giiven a string of connections, represented in pairs (source direction_destination direction), selects
+    // Given a string of connections, represented in pairs (source direction_destination direction), selects
     // the appropriate connector block and rotates it to properly connect its surroundings
     private void pickAndPlaceDoubleAlternate(int row, int col, string c)
     {
@@ -480,7 +501,6 @@ public class RoomGenerator : MonoBehaviour
                     case 4:
                         MapRoom b3 = Instantiate(connector4, spawnObject.transform).GetComponent<MapRoom>();
                         canPlaceIntermediate(row, col, b3);
-                        b3.At(0, 0).setDirections(true, true, true, true);
                         break;
                     default:
                         break;
@@ -489,7 +509,7 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    // Function to create the path from one block to another giiven a string path, that contains direction pairs
+    // Function to create the path from one block to another given a string path, that contains direction pairs
     private void pathFromString(int row, int col, string path, bool isStart)
     {
         if (path.Length <= 1)
@@ -535,138 +555,6 @@ public class RoomGenerator : MonoBehaviour
                 }
             }
         }
-    }
-
-    // Coordinate struct to make row and column passing easier
-    struct Coordinate
-    {
-        public int row;
-        public int col;
-
-        public Coordinate(int x, int y)
-        {
-            row = x;
-            col = y;
-        }
-
-        public override string ToString()
-        {
-            return row + ", " + col;
-        }
-
-        public Block getBlock(List<List<Block>> map)
-        {
-            if (row < 0 || row >= map.Count) return null;
-            if (col < 0 || col >= map[row].Count) return null;
-            return map[row][col];
-        }
-
-        public bool blockExists(List<List<Block>> map)
-        {
-            return getBlock(map) != null;
-        }
-
-        public float squaredDistanceTo(Coordinate other)
-        {
-            int dX = other.col - col;
-            int dY = other.row - row;
-            return (dX * dX) + (dY * dY);
-        }
-    }
-
-    // Flood fill BFS from a source block that gets the path to the nearest intermediate
-    private string BFSPathFromStart(Coordinate start)
-    {
-        string path = "";
-        Dictionary<Coordinate, Tuple<Coordinate, char>> parents = new Dictionary<Coordinate, Tuple<Coordinate, char>>();
-        HashSet<Coordinate> visited = new HashSet<Coordinate>();
-        Queue<Coordinate> queue = new Queue<Coordinate>();
-
-        queue.Enqueue(start);
-        visited.Add(start);
-        parents[start] = new Tuple<Coordinate, char>(new Coordinate(-1, -1), ' ');
-        Coordinate closestIntermediate = new Coordinate(-1, -1);
-        while (queue.Count > 0)
-        {
-            Coordinate b = queue.Dequeue();
-            Coordinate rowPlus = new Coordinate(b.row + 1, b.col);
-            Coordinate rowMinus = new Coordinate(b.row - 1, b.col);
-            Coordinate colPlus = new Coordinate(b.row, b.col + 1);
-            Coordinate colMinus = new Coordinate(b.row, b.col - 1);
-
-            if (!rowMinus.blockExists(_map) && !visited.Contains(rowMinus))
-            {
-                queue.Enqueue(rowMinus);
-                visited.Add(rowMinus);
-                parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
-            }
-            else
-            {
-                if (rowMinus.blockExists(_map) && _map[rowMinus.row][rowMinus.col].compareType(RoomType.INTERMEDIATE))
-                {
-                    parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
-                    closestIntermediate = rowMinus;
-                    break;
-                }
-            }
-            if (!rowPlus.blockExists(_map) && !visited.Contains(rowPlus))
-            {
-                queue.Enqueue(rowPlus);
-                visited.Add(rowPlus);
-                parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
-            }
-            else
-            {
-                if (rowPlus.blockExists(_map) && _map[rowPlus.row][rowPlus.col].compareType(RoomType.INTERMEDIATE))
-                {
-                    parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
-                    closestIntermediate = rowPlus;
-                    break;
-                }
-            }
-            if (!colPlus.blockExists(_map) && !visited.Contains(colPlus))
-            {
-                queue.Enqueue(colPlus);
-                visited.Add(colPlus);
-                parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
-            }
-            else
-            {
-                if (colPlus.blockExists(_map) && _map[colPlus.row][colPlus.col].compareType(RoomType.INTERMEDIATE))
-                {
-                    parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
-                    closestIntermediate = colPlus;
-                    break;
-                }
-            }
-            if (!colMinus.blockExists(_map) && !visited.Contains(colMinus))
-            {
-                queue.Enqueue(colMinus);
-                visited.Add(colMinus);
-                parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
-            } else
-            {
-                if (colMinus.blockExists(_map) && _map[colMinus.row][colMinus.col].compareType(RoomType.INTERMEDIATE))
-                {
-                    parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
-                    closestIntermediate = colMinus;
-                    break;
-                }
-            }
-        }
-
-        while(closestIntermediate.row != -1 && closestIntermediate.col != -1)
-        {
-            path += parents[closestIntermediate].Item2;
-            closestIntermediate = parents[closestIntermediate].Item1;
-        }
-
-        char[] charArray = path.ToCharArray();
-        Array.Reverse(charArray);
-        string ret = new string(charArray);
-        ret = ret.Substring(1, ret.Length - 1);
-
-        return "E" + ret;
     }
 
     // Contains the set of coordinates that are reachable from the start. Gets updated as the islands get joined
@@ -741,7 +629,7 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Another flood fill BFS that gets the path from an intermediate "start" to its closest other intermediate that is in the start island block group
-    private string BFSPathFromIntermediate(Coordinate start, List<Coordinate> startIsland)
+    private string BFSPathToClosestIntermediate(Coordinate start, List<Coordinate> startIsland, bool fromStart)
     {
         string path = "";
         Dictionary<Coordinate, Tuple<Coordinate, char>> parents = new Dictionary<Coordinate, Tuple<Coordinate, char>>();
@@ -766,64 +654,30 @@ public class RoomGenerator : MonoBehaviour
             Coordinate colPlus = new Coordinate(b.row, b.col + 1);
             Coordinate colMinus = new Coordinate(b.row, b.col - 1);
 
-            if (!rowMinus.blockExists(_map) && !visited.Contains(rowMinus))
-            {
-                queue.Enqueue(rowMinus);
-                visited.Add(rowMinus);
-                parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
-            }
-            else
-            {
-                if (rowMinus.blockExists(_map) && destinations.Contains(rowMinus))
+            var directions = new List<(Coordinate offset, char dir)>
                 {
-                    parents[rowMinus] = new Tuple<Coordinate, char>(b, 'W');
-                    closestIntermediate = rowMinus;
-                    break;
+                    (rowMinus, 'W'),
+                    (rowPlus, 'E'),
+                    (colPlus, 'N'),
+                    (colMinus, 'S'),
+                };
+
+            foreach (var (offset, dir) in directions)
+            {
+                if (!offset.blockExists(_map) && !visited.Contains(offset))
+                {
+                    queue.Enqueue(offset);
+                    visited.Add(offset);
+                    parents[offset] = new Tuple<Coordinate, char>(b, dir);
                 }
-            }
-            if (!rowPlus.blockExists(_map) && !visited.Contains(rowPlus))
-            {
-                queue.Enqueue(rowPlus);
-                visited.Add(rowPlus);
-                parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
-            }
-            else
-            {
-                if (rowPlus.blockExists(_map) && destinations.Contains(rowPlus))
+                else
                 {
-                    parents[rowPlus] = new Tuple<Coordinate, char>(b, 'E');
-                    closestIntermediate = rowPlus;
-                    break;
-                }
-            }
-            if (!colPlus.blockExists(_map) && !visited.Contains(colPlus))
-            {
-                queue.Enqueue(colPlus);
-                visited.Add(colPlus);
-                parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
-            }
-            else
-            {
-                if (colPlus.blockExists(_map) && destinations.Contains(colPlus))
-                {
-                    parents[colPlus] = new Tuple<Coordinate, char>(b, 'N');
-                    closestIntermediate = colPlus;
-                    break;
-                }
-            }
-            if (!colMinus.blockExists(_map) && !visited.Contains(colMinus))
-            {
-                queue.Enqueue(colMinus);
-                visited.Add(colMinus);
-                parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
-            }
-            else
-            {
-                if (colMinus.blockExists(_map) && destinations.Contains(colMinus))
-                {
-                    parents[colMinus] = new Tuple<Coordinate, char>(b, 'S');
-                    closestIntermediate = colMinus;
-                    break;
+                    if (offset.blockExists(_map) && destinations.Contains(offset))
+                    {
+                        parents[offset] = new Tuple<Coordinate, char>(b, dir);
+                        closestIntermediate = offset;
+                        break;
+                    }
                 }
             }
         }
@@ -843,6 +697,12 @@ public class RoomGenerator : MonoBehaviour
         Array.Reverse(charArray);
         string ret = new string(charArray);
 
+        if(fromStart)
+        {
+            ret = ret.Substring(1, ret.Length - 1);
+            return "E" + ret;
+        }
+
         return ret;
     }
 
@@ -860,26 +720,7 @@ public class RoomGenerator : MonoBehaviour
                 {
                     Block I = _map[c.row][c.col];
                     string s = getConnectionsAtAdvanced(c.row, c.col);
-                    if(s.Contains('N') && I.northDoor)
-                    {
-                        I.northDoor.SetActive(false);
-                        I.northDoorOpen.SetActive(true);
-                    }
-                    if (s.Contains('E') && I.eastDoor)
-                    {
-                        I.eastDoor.SetActive(false);
-                        I.eastDoorOpen.SetActive(true);
-                    }
-                    if (s.Contains('S') && I.southDoor)
-                    {
-                        I.southDoor.SetActive(false);
-                        I.southDoorOpen.SetActive(true);
-                    }
-                    if (s.Contains('W') && I.westDoor)
-                    {
-                        I.westDoor.SetActive(false);
-                        I.westDoorOpen.SetActive(true);
-                    }
+                    I.setDoors(s.Contains('S'), s.Contains('N'), s.Contains('W'), s.Contains('E'));
                 }
             }
         }
@@ -1062,7 +903,7 @@ public class RoomGenerator : MonoBehaviour
         // So find the closest path from it to another intermediate and make the path
         if (_map[midWidth + 1][midHeight] == null)
         {
-            string path = BFSPathFromStart(new Coordinate(midWidth + 1, midHeight));
+            string path = BFSPathToClosestIntermediate(new Coordinate(midWidth + 1, midHeight), _intermediateCoordinates, true);
             pathFromString(midWidth + 1, midHeight, path, true);
         }
 
@@ -1137,7 +978,7 @@ public class RoomGenerator : MonoBehaviour
                 }
                 if (disconnectedCoordinate.row != -1)
                 {
-                    string s = BFSPathFromIntermediate(disconnectedCoordinate, startIntermediates);
+                    string s = BFSPathToClosestIntermediate(disconnectedCoordinate, startIntermediates, false);
                     if (s.Length <= 1)
                     {
                         iter++;

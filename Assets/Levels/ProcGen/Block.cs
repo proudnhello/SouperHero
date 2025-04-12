@@ -42,4 +42,16 @@ public class Block : MonoBehaviour
         this.east = east;
         this.west = west;
     }
+
+    public void setDoors(bool north, bool south, bool east, bool west)
+    {
+        if(westDoor) westDoor.SetActive(!east);
+        if (westDoorOpen) westDoorOpen.SetActive(east);
+        if (eastDoor) eastDoor.SetActive(!west);
+        if (eastDoorOpen) eastDoorOpen.SetActive(west);
+        if (northDoor) northDoor.SetActive(!south);
+        if (northDoorOpen) northDoorOpen.SetActive(south);
+        if (southDoor) southDoor.SetActive(!north);
+        if (southDoorOpen) southDoorOpen.SetActive(north);
+    }
 }
