@@ -50,7 +50,7 @@ public class FlettuceAI : EnemyBaseClass
     [SerializeField] protected float FinalChargeCooldownTime = 1f;
     [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
 
-
+    protected Animator animator;
     internal List<IState> states;
     internal IState currentState;
     bool freezeEnemy = false;
@@ -59,6 +59,7 @@ public class FlettuceAI : EnemyBaseClass
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         agent.speed = GetMoveSpeed();
+        animator = GetComponent<Animator>();
 
         states = new()
         {
@@ -141,6 +142,7 @@ public class FlettuceAI : EnemyBaseClass
         {
             while (true)
             {
+                sm.animator.Play("Idle");
                 if (sm.freezeEnemy)
                 {
                     yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
@@ -196,6 +198,7 @@ public class FlettuceAI : EnemyBaseClass
         {
             while (true)
             {
+                sm.animator.Play("Attack");
                 sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
                 sm.agent.isStopped = false;
                 float dist = 0;
