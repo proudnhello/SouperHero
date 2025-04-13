@@ -225,6 +225,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         print("enter");
         
         // I wanna give a huge shoutout to the person whoever wrote this 300 line function, only for it all to be thrown away.
+        // Giving credits to Cursor for helping edit this 300 line function when I wanted to put colors in
         // o7
         /*CookingManager.Singleton.DisplayItemStats();
         GameObject itemStatsScreen = CookingManager.Singleton.itemStatsScreen;
