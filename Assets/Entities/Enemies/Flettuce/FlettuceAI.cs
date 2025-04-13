@@ -140,9 +140,9 @@ public class FlettuceAI : EnemyBaseClass
 
         IEnumerator HandlePatrol()
         {
+            sm.animator.Play("Idle");
             while (true)
             {
-                sm.animator.Play("Idle");
                 if (sm.freezeEnemy)
                 {
                     yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
@@ -196,9 +196,9 @@ public class FlettuceAI : EnemyBaseClass
 
         IEnumerator HandleCharge()
         {
+            sm.animator.Play("Ready");
             while (true)
-            {
-                sm.animator.Play("Attack");
+            { 
                 sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
                 sm.agent.isStopped = false;
                 float dist = 0;
@@ -217,6 +217,7 @@ public class FlettuceAI : EnemyBaseClass
                 sm.agent.isStopped = true;
 
                 // PERFORM CHARGES
+                sm.animator.Play("Attack");
                 for (int chargeNum = 1; chargeNum <= sm.ConsecutiveCharges; chargeNum++)
                 {
                     yield return new WaitUntil(() => !sm.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
