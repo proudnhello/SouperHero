@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 8349138743299825308}
   - component: {fileID: 6154628606512588311}
   - component: {fileID: 7256827397506068133}
+  - component: {fileID: 7248096337958765174}
   m_Layer: 9
   m_Name: Barrel
-  m_TagString: Untagged
+  m_TagString: PickMeUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -158,3 +159,39 @@ MonoBehaviour:
   - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}
   - {fileID: 165481585712337600, guid: c1442435e41d43f4e90b9b6e511c8907, type: 3}
   - {fileID: 165481585712337600, guid: 60d8cef6f94a91f4bb989422f0400fe6, type: 3}
+  oddsForSomething: 0.5
+--- !u!58 &7248096337958765174
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18193000329964728}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.2975}
+  serializedVersion: 2
+  m_Radius: 0.62

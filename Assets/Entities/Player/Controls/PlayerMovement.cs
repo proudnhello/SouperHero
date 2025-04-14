@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour
 {
     Vector2 inputDir;
     Rigidbody2D rb;
+    PickUpAndThrow pickup;
+
     private bool _useMouse;
     private Vector2 _previousMousePosition;
     InputAction movementInput;
@@ -29,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _previousMousePosition = Input.mousePosition;
         rb = GetComponent<Rigidbody2D>();
+        pickup = gameObject.GetComponent<PickUpAndThrow>();
     }
 
     private void Start()
@@ -65,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isDashing)
+        if (isDashing)
         {
             return;
         }
@@ -75,12 +78,14 @@ public class PlayerMovement : MonoBehaviour
         if (((Vector2)Input.mousePosition - _previousMousePosition).sqrMagnitude > 0.01f)
         {
             _useMouse = true;
-        } else
+        }
+        else
         {
             _useMouse = false;
         }
 
         currentDirection = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y).normalized;
+        pickup.Direction = currentDirection;
 
         PlayerEntityManager.Singleton.playerAttackPoint.parent.transform.up = currentDirection; // swivel attack point around player
 
@@ -90,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(isDashing)
+        if (isDashing)
         {
             return;
         }
