@@ -103,7 +103,6 @@ public class BossRoom : MonoBehaviour
             totalEnemyWeight += possibleEnemies[i].weight;
             if (possibleEnemies[i].weight <= 0)
             {
-                Debug.LogWarning("Zero or negative weight, turned into weight of 1");
                 possibleEnemies[i].weight = 1;
             }
         }

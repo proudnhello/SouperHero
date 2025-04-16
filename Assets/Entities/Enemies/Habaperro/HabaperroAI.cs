@@ -180,7 +180,6 @@ public class HabaperroAI : EnemyBaseClass
                         NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), targetPoint,
                             NavMesh.AllAreas, path);
                         distance = CalculatePathLength();
-                        //Debug.Log("target point = " + targetPoint + " " + dist + "m away, " + distance + "steps");
                     } while (distance < 0 || distance >= sm.MaxPatrolPathLength);
                     
                     
@@ -261,15 +260,11 @@ public class HabaperroAI : EnemyBaseClass
                     
                 interval *= sm.IgnitionFlashIntervalMultiplier;
             } while (interval > sm.IgnitionFlashIntervalToTriggerExplosion);
-            Debug.Log("Got here1");
             sm._sprite.color = Color.white;
             sm._collider.enabled = false;
             sm.animator.Play("Boom");
-            Debug.Log("Got here2");
             Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
-            Debug.Log("Got here3");
             yield return new WaitForSeconds(sm.PostExplosionWaitTime);
-            Debug.Log("Got here4");
             IHandleMovementExplosion = null;
             sm.Die();
         }

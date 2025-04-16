@@ -87,7 +87,6 @@ public class MetricsManager : MonoBehaviour
     {
         isTimerGoing = false;
         timeElapsed = elapsedTime;
-        Debug.Log("Elapsed Time: " + elapsedTime.ToString("F2") + " seconds");
     }
 
     private void Update()

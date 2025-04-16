@@ -22,7 +22,6 @@ public class ZoneCore : MonoBehaviour
         print("WHAT THE FUCK");
 
         transform.position = spawnPoint;
-        Debug.Log($"Zone Size Stats in Spawn Zone {passedStats.size}");
         zoneArea.transform.localScale = new Vector3(passedStats.size, passedStats.size, passedStats.size);
         gameObject.SetActive(true);
         zoneArea.inflictions = inflictions;

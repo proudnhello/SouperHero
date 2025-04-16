@@ -83,7 +83,6 @@ public class EntityManager : MonoBehaviour
             totalEnemyWeight += possibleEnemies[i].weight;
             if (possibleEnemies[i].weight <= 0)
             {
-                Debug.LogWarning("Zero or negative weight, turned into weight of 1");
                 possibleEnemies[i].weight = 1;
             }
         }
@@ -161,7 +160,6 @@ public class EntityManager : MonoBehaviour
             totalForagableWeight += possibleForagables[i].weight;
             if (possibleForagables[i].weight <= 0)
             {
-                Debug.LogWarning("Zero or negative weight, turned into weight of 1");
                 possibleForagables[i].weight = 1;
             }
         }
@@ -219,6 +217,6 @@ public class EntityManager : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log(exportEnemies());
+
     }
 }

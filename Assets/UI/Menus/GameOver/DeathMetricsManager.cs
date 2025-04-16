@@ -191,13 +191,11 @@ public class DeathMetricsManager : MonoBehaviour
 
         if (SaveManager.Singleton == null)
         {
-            Debug.LogError("SaveManager.Singleton is null!");
             return;
         }
 
         if (SaveManager.Singleton.deathMetrics == null)
         {
-            Debug.LogError("SaveManager.Singleton.deathMetrics is null!");
             return;
         }
 

@@ -34,7 +34,6 @@ public class Explosion : MonoBehaviour
 
             }
         }
-        Debug.Log(s);
     }
 
     IEnumerator DestroyTimer(){

@@ -913,7 +913,6 @@ public class RoomGenerator : MonoBehaviour
 
         if(path.Length == 0)
         {
-            Debug.LogWarning("CANNOT FIND PATH FROM SOURCE TO DESTINATION!!");
             return "";
         }
         char[] charArray = path.Substring(0, path.Length - 1).ToCharArray();
@@ -966,7 +965,6 @@ public class RoomGenerator : MonoBehaviour
         List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.squaredDistanceTo(start)).ToList();
         //string ts = "";
         //foreach (var c in sortedCoordinates) ts += $"({c.row}, {c.col}) ";
-        //Debug.Log(ts);
         foreach (Coordinate c in sortedCoordinates)
         {
             string s = getConnectionsSelf(c.row, c.col);
@@ -1277,8 +1275,6 @@ public class RoomGenerator : MonoBehaviour
                 }
             }
         }
-        Debug.Log(foragablesList.Count);
-        Debug.Log(enemiesList.Count);
         if(foragablesList.Count == 0 || enemiesList.Count == 0){
             generateNewContent();
         }

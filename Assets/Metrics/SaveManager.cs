@@ -120,7 +120,6 @@ public class SaveManager : MonoBehaviour
     }
 
     public void LoadEntities(){
-        Debug.Log(entitiesPath);
         if (File.Exists(entitiesPath))
         {
             string json = string.Empty;
@@ -131,7 +130,6 @@ public class SaveManager : MonoBehaviour
             }
 
             EntitiesClass data = JsonUtility.FromJson<EntitiesClass>(json);
-            Debug.Log(data.enemies.Count);
 
             roomGenerator.importEnemyStrings(data.enemies);
             roomGenerator.importForagableStrings(data.foragables);

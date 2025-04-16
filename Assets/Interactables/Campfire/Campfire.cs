@@ -42,7 +42,6 @@ public class Campfire : Interactable
     {
         while (isPrepping)
         {
-            //Debug.Log(Vector2.Distance(PlayerEntityManager.Singleton.transform.position, transform.position));
             if (Vector2.Distance(PlayerEntityManager.Singleton.transform.position, transform.position) > playerDistanceToCancelCooking)
             {
                 CookingManager.Singleton.ExitCooking();

@@ -230,7 +230,6 @@ public class SoupSpoon
         {
             output += $"{infliction.InflictionFlavor.inflictionType} = {infliction.amount}";
         }
-        Debug.Log(output);
     }
 
     // Variable to track the last time the spoon was used

@@ -134,8 +134,6 @@ public class CookingManager : MonoBehaviour
     // Function to add an Ability Ingredient
     public void AddIngredient(Collectable ingredient)
     {
-
-        //Debug.Log($"Added Ingredient: {ingredient}");
         cookingIngredients.Add(ingredient);
         UpdateStatsText();
     }
@@ -143,7 +141,6 @@ public class CookingManager : MonoBehaviour
     // Function to remove an Ability Ingredient
     public void RemoveIngredient(Collectable ingredient)
     {
-        //Debug.Log($"Removed Ingredient: {ingredient}");
         cookingIngredients.Remove(ingredient);
         UpdateStatsText();
     }
@@ -154,7 +151,6 @@ public class CookingManager : MonoBehaviour
         // Don't cook if there are no ability ingredients
         foreach (Collectable ingredient in cookingIngredients)
         {
-            //Debug.Log("Has Ability Ingredient: " + ingredient.ingredient.IngredientName);
             if (ingredient.ingredient.GetType() == typeof(AbilityIngredient))
             {
                 return true;
@@ -232,16 +228,6 @@ public class CookingManager : MonoBehaviour
         if (light != null)
         {
             light.enabled = false;
-        }
-
-        if (CurrentCampfire.gameObject == null)
-        {
-            Debug.Log("Campfire Animator not found!");
-        }
-
-        if (campfireAnimator == null)
-        {
-            Debug.Log("Campfire Animator not found!");
         }
 
         campfireAnimator.SetTrigger("Cooked The Soup");
