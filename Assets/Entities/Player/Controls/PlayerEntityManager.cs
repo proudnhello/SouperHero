@@ -112,4 +112,11 @@ public class PlayerEntityManager : Entity
             }
         }
     }
+
+    public override void Fall(Transform respawnPoint)
+    {
+        DealDamage(GetBaseStats().maxHealth/9); // Deal damage to the player == 1/9 of max health or one heart
+        // TODO: Add fall animation 
+        transform.position = respawnPoint.position;
+    }
 }
