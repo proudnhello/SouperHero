@@ -4,6 +4,7 @@ using UnityEngine;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 using Infliction = SoupSpoon.SpoonInfliction;
 using skner.DualGrid;
+using System.Collections;
 
 public class PlayerEntityManager : Entity
 {
@@ -115,8 +116,27 @@ public class PlayerEntityManager : Entity
 
     public override void Fall(Transform respawnPoint)
     {
-        DealDamage(GetBaseStats().maxHealth/9); // Deal damage to the player == 1/9 of max health or one heart
-        // TODO: Add fall animation 
+        // TODO: Add good fall animation 
+        SetMoveSpeed(0);
+        StartCoroutine(FallAnimation(respawnPoint));
+    }
+
+    IEnumerator FallAnimation(Transform respawnPoint)
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color color = spriteRenderer.color;
+
+        while (color.a > 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+            color.a -= 0.2f;
+            spriteRenderer.color = color;
+        }
+
+        color.a = 1;
+        spriteRenderer.color = color;
         transform.position = respawnPoint.position;
+        ResetMoveSpeed();
+        DealDamage(GetBaseStats().maxHealth / 9); // Deal damage to the player == 1/9 of max health or one heart
     }
 }
