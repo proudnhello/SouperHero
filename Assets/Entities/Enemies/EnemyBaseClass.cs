@@ -124,4 +124,11 @@ public abstract class EnemyBaseClass : Entity
     {
         alwaysAggro = true;
     }
+
+    // Instant death for falling enemies
+    // Respawn is for players only :)
+    public override void Fall(Transform _respawnPoint)
+    {
+        Die();
+    }
 }
