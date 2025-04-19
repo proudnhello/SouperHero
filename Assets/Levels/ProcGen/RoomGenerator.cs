@@ -326,32 +326,28 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Returns the string representation of the connections possible at a certain position
-    private string getConnectionsEnd(int row, int col)
+    private string getConnectionsEnd(Coordinate c, int checkWidth, int checkHeight)
     {
-        Coordinate c = new Coordinate(row, col);
-        Coordinate rowPlus = new Coordinate(row + 1, col);
-        Coordinate rowMinus = new Coordinate(row - 1, col);
-        Coordinate colPlus = new Coordinate(row, col + 1);
-        Coordinate colMinus = new Coordinate(row, col - 1);
-
-        int endWidth = 3;
-        int endHeight = 7;
+        Coordinate rowPlus = new Coordinate(c.row + 1, c.col);
+        Coordinate rowMinus = new Coordinate(c.row - 1, c.col);
+        Coordinate colPlus = new Coordinate(c.row, c.col + 1);
+        Coordinate colMinus = new Coordinate(c.row, c.col - 1);
 
         string s = "";
 
-        if (checkForBlockExtentEnd(colPlus, c, endWidth, endHeight, 'N'))
+        if (checkForBlockExtentEnd(colPlus, c, checkWidth, checkHeight, 'N'))
         {
             s += "N";
         }
-        if (checkForBlockExtentEnd(colMinus, c, endWidth, endHeight, 'S'))
+        if (checkForBlockExtentEnd(colMinus, c, checkWidth, checkHeight, 'S'))
         {
             s += "S";
         }
-        if (checkForBlockExtentEnd(rowPlus, c, endHeight, endWidth, 'E'))
+        if (checkForBlockExtentEnd(rowPlus, c, checkHeight, checkWidth, 'E'))
         {
             s += "E";
         }
-        if (checkForBlockExtentEnd(rowMinus, c, endHeight, endWidth, 'W'))
+        if (checkForBlockExtentEnd(rowMinus, c, checkHeight, checkWidth, 'W'))
         {
             s += "W";
         }
@@ -392,7 +388,7 @@ public class RoomGenerator : MonoBehaviour
         return s;
     }
 
-    // Given a string of connections, represented in pairs (source direction_destination direction), selects
+    // Given a string of connections, represented in pairs (<DIRECTION IN SOURCE>, <DIRECTION IN CURRENT>), selects
     // the appropriate connector block
     private void pickAndPlaceDoubleAlternate(Coordinate c, string s)
     {
@@ -754,7 +750,7 @@ public class RoomGenerator : MonoBehaviour
         List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.squaredDistanceTo(start)).ToList();
         foreach (Coordinate c in sortedCoordinates)
         {
-            string s = getConnectionsEnd(c.row, c.col);
+            string s = getConnectionsEnd(c, 3, 7);
             bool found = false;
             bool north = false;
             bool south = false;
@@ -938,28 +934,21 @@ public class RoomGenerator : MonoBehaviour
         // Create a 4-way connector to symbolize that anything can connect
         // at the point right outside the start room
         MapRoom b2 = Instantiate(connector4, spawnObject.transform).GetComponent<MapRoom>();
-        if (canPlaceIntermediate(directlyWest, b2))
-        {
-            b2.At(0, 0).setDirections(true, true, true, true);
-        } else
+        if (!canPlaceIntermediate(directlyWest, b2))
         {
             DestroyImmediate(b2.gameObject);
+            if(directlyWest.getBlock(_map).compareType(RoomType.CONNECTOR))
+            {
+                directlyWest.getBlock(_map).setDirections(true, true, true, true);
+            }
         }
 
         // Get a list of all the intermediates that are in the starting "island"
-        List<Coordinate> startBlocks = new List<Coordinate>();
         List<Coordinate> startIsland = BFSGetGroup(startCoordinate);
-        if(startIsland == null)
+        if(startIsland.Count == 0)
         {
             Debug.LogError("Breakout hit for start island");
             return false;
-        }
-        foreach(Coordinate c in startIsland)
-        {
-            if (_map[c.row][c.col].compareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR))
-            {
-                startBlocks.Add(c);
-            }
         }
 
         // Now get all of the groups that are not connected to the start "island"
@@ -996,7 +985,7 @@ public class RoomGenerator : MonoBehaviour
                 Coordinate closestStartIntermediate = new Coordinate(-1, -1);
                 foreach (Coordinate currentGroupCoord in group)
                 {
-                    foreach (Coordinate currentIntermediate in startBlocks)
+                    foreach (Coordinate currentIntermediate in startIsland)
                     {
                         if (currentGroupCoord.squaredDistanceTo(currentIntermediate) < closestDistance)
                         {
@@ -1028,6 +1017,16 @@ public class RoomGenerator : MonoBehaviour
             }
             if(maxIter == group.Count)
             {
+                Debug.Log("Group: ");
+                foreach (Coordinate currentGroupCoord in group)
+                {
+                    Debug.Log(currentGroupCoord);
+                }
+                Debug.Log("Start: ");
+                foreach(Coordinate currentIntermediate in startIsland)
+                {
+                    Debug.Log(currentIntermediate);
+                }
                 Debug.LogError("Could not find a path from one island to another");
                 return false;
             }
@@ -1035,7 +1034,7 @@ public class RoomGenerator : MonoBehaviour
             {
                 if (_map[coord.row][coord.col].compareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR))
                 {
-                    startBlocks.Add(coord);
+                    startIsland.Add(coord);
                 }
             }
         }
@@ -1048,7 +1047,7 @@ public class RoomGenerator : MonoBehaviour
         openDoors();
 
         // Place the end block
-        placeEnd(startBlocks, new Coordinate(midWidth, midHeight));
+        placeEnd(startIsland, new Coordinate(midWidth, midHeight));
 
         for (int i = 0; i < _mapWidth; i++)
         {
