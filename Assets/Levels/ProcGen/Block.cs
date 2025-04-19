@@ -31,8 +31,7 @@ public class Block : MonoBehaviour
 
     public bool compareType(RoomType roomType)
     {
-        if (roomType == _blockType) { return true; };
-        return false;
+        return (roomType & _blockType) != 0;
     }
 
     public void setDirections(bool north, bool south, bool east, bool west)
