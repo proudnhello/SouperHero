@@ -28,7 +28,7 @@ public class MapRoom : MonoBehaviour
     }
 
     // ORDERED FROM TOP LEFT TO BOTTOM RIGHT
-    public List<Block> blocks = new List<Block>();
+    public List<Block> blocks = new();
 
     public int BlockWidth()
     {
@@ -43,10 +43,5 @@ public class MapRoom : MonoBehaviour
     public Block At(int row, int col)
     {
         return blocks[col * (_blockWidth) + row];
-    }
-
-    public void enableAllEnemies()
-    {
-        this.gameObject.transform.GetChild(0).gameObject.SetActive(true);
     }
 }

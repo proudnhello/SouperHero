@@ -5,6 +5,96 @@ using NavMeshPlus.Components;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// Coordinate struct to make row and column passing easier
+public struct Coordinate
+{
+    public int row;
+    public int col;
+
+    public Coordinate(int x, int y)
+    {
+        row = x;
+        col = y;
+    }
+
+    public Coordinate(Coordinate other)
+    {
+        row = other.row;
+        col = other.col;
+    }
+
+    // Check if coordinates are equal
+    public readonly bool Equals(Coordinate other)
+    {
+        return row == other.row && col == other.col;
+    }
+
+    public override readonly string ToString()
+    {
+        return row + ", " + col;
+    }
+
+    // Check if this coordinate is within the bounds of a given map
+    public readonly bool IsInBounds(List<List<Block>> map)
+    {
+        if (row < 0 || row >= map.Count) return false;
+        if (col < 0 || col >= map[row].Count) return false;
+        return true;
+    }
+
+    // Check if a block exist, if it does, put it in the out parameter
+    public readonly bool BlockExists(List<List<Block>> map, out Block block)
+    {
+        if (!IsInBounds(map))
+        {
+            block = null;
+            return false;
+        }
+        else
+        {
+            block = map[row][col];
+            if (block == null) return false;
+            return true;
+        }
+
+    }
+
+    public static Coordinate operator +(Coordinate left, Coordinate right)
+    {
+        return new(left.row + right.row, left.col + right.col);
+    }
+
+    // Get squared euclidian distance, squared for performance reasons and cuz we don't need actual distance
+    public readonly float SquaredDistanceTo(Coordinate other)
+    {
+        int dX = other.col - col;
+        int dY = other.row - row;
+        return (dX * dX) + (dY * dY);
+    }
+}
+
+public struct GenSequence
+{
+    public Coordinate first;
+    public Coordinate room;
+    public Coordinate connect;
+    public Coordinate boss;
+    public bool north;
+    public bool south;
+    public bool east;
+    public bool west;
+
+    public GenSequence(Coordinate c1, Coordinate c2, Coordinate c3, Coordinate c4, bool n, bool s, bool e, bool w)
+    {
+        room = c1; first = c2; connect = c3; boss = c4; north = n; south = s; east = e; west = w;
+    }
+
+    public override readonly string ToString()
+    {
+        return first.ToString() + ", " + room.ToString() + ", " + connect.ToString() + ", " + boss.ToString() + ": " + north + ", " + south + ", " + east + ", " + west;
+    }
+}
+
 public class RoomGenerator : MonoBehaviour
 {
     public int TILE_WIDTH;
@@ -15,19 +105,19 @@ public class RoomGenerator : MonoBehaviour
     public int _mapBaseHeight;
     public int _mapPadding;
 
-    int _mapWidth
+    int MapWidth
     {
         get { return _mapBaseWidth + _mapPadding*2; }
     }
-    int _mapHeight
+    int MapHeight
     {
         get { return _mapBaseHeight + _mapPadding*2; }
     }
-    int _mapMinWidth
+    int MapMinWidth
     {
         get { return _mapPadding; }
     }
-    int _mapMinHeight
+    int MapMinHeight
     {
         get { return _mapPadding; }
     }
@@ -78,101 +168,38 @@ public class RoomGenerator : MonoBehaviour
     private List<String> enemiesList;
     private List<String> foragablesList;
 
-    // Coordinate struct to make row and column passing easier
-    struct Coordinate
-    {
-        public int row;
-        public int col;
-
-        public Coordinate(int x, int y)
-        {
-            row = x;
-            col = y;
-        }
-
-        public Coordinate(Coordinate other)
-        {
-            row = other.row;
-            col = other.col;
-        }
-
-        // Check if coordinates are equal
-        public bool equals(Coordinate other)
-        {
-            return row == other.row && col == other.col;
-        }
-
-        public override string ToString()
-        {
-            return row + ", " + col;
-        }
-
-        // Given a map, get get the block at a current position, or return null if the block does not exist
-        public Block getBlock(List<List<Block>> map)
-        {
-            if (!isInBounds(map)) return null;
-            return map[row][col];
-        }
-
-        // Check if this coordinate is within the bounds of a given map
-        public bool isInBounds(List<List<Block>> map)
-        {
-            if (row < 0 || row >= map.Count) return false;
-            if (col < 0 || col >= map[row].Count) return false;
-            return true;
-        }
-
-        // Check if a block exists // TODO: combine this with the getBlock and that out variable bullshit that C# has
-        public bool blockExists(List<List<Block>> map)
-        {
-            return getBlock(map) != null;
-        }
-
-        // Get squared euclidian distance, squared for performance reasons and cuz we don't need actual distance
-        public float squaredDistanceTo(Coordinate other)
-        {
-            int dX = other.col - col;
-            int dY = other.row - row;
-            return (dX * dX) + (dY * dY);
-        }
-    }
-
     void Start()
     {
         // Need to create a new map full of nulls, placeholders for the Blocks and to determine if there is/isnt a block at a position
         _map = new List<List<Block>>();
         _intermediateRooms = new List<MapRoom>();
         _intermediateCoordinates = new List<Coordinate>();
-        for(int i = 0; i < _mapWidth+_mapPadding; i++)
+        for(int i = 0; i < MapWidth+_mapPadding; i++)
         {
             _map.Add(new List<Block>());
         }
-        for(int i = 0; i < _mapWidth+_mapPadding; i++) { 
-            for (int j = 0; j < _mapHeight+_mapPadding; j++)
+        for(int i = 0; i < MapWidth+_mapPadding; i++) { 
+            for (int j = 0; j < MapHeight+_mapPadding; j++)
             {
                 _map[i].Add(null);
             }
         }
 
-        if(enemiesList == null){
-            enemiesList = new List<String>();
-        }
-        if(foragablesList == null){
-            foragablesList = new List<String>();
-        }
+        enemiesList ??= new List<String>();
+        foragablesList ??= new List<String>();
         // After map is created, generate the rooms
         bool worked = GenerateRoom();
         if (worked) NavMesh.BuildNavMeshAsync();
     }
 
     // Obtains the offset needed to position the room along grid lines given a row and column
-    private Vector2 getOffset(Coordinate c, MapRoom b)
+    private Vector2 GetOffset(Coordinate c, MapRoom b)
     {
         return new Vector2((c.row + (b.BlockWidth() / 2.0f)) * TILE_WIDTH, (c.col + (b.BlockHeight() / 2.0f)) * TILE_HEIGHT);
     }
 
     // Fills map blocks to properly represent the room being placed
-    private void fillBlock(Coordinate c, MapRoom b)
+    private void FillBlock(Coordinate c, MapRoom b)
     {
         for (int i = 0; i < b.BlockWidth(); ++i)
         {
@@ -184,12 +211,12 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Checks to see if an intermediate can be placed by checking bounds and if potential spot has blocks already there
-    private bool canPlaceIntermediate(Coordinate c, MapRoom b)
+    private bool CanPlaceIntermediate(Coordinate c, MapRoom b)
     {
-        if (c.row + b.BlockWidth() >= (_mapMinWidth + _mapBaseWidth + 1) ||
-            c.col + b.BlockHeight() >= (_mapMinHeight + _mapBaseHeight + 1) ||
-            c.row < _mapMinWidth ||
-            c.col < _mapMinHeight)
+        if (c.row + b.BlockWidth() >= (MapMinWidth + _mapBaseWidth + 1) ||
+            c.col + b.BlockHeight() >= (MapMinHeight + _mapBaseHeight + 1) ||
+            c.row < MapMinWidth ||
+            c.col < MapMinHeight)
         {
             return false;
         }
@@ -205,14 +232,14 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
-        b.gameObject.transform.position = getOffset(c, b);
-        fillBlock(c, b);
+        b.gameObject.transform.position = GetOffset(c, b);
+        FillBlock(c, b);
         return true;
     }
 
     // Break limit is the max amount of times the algorithm looks for a random block placement before it walks the plank
-    private int breakLimit = 20;
-    void placeIntermediates(int numIntermediates)
+    private readonly int breakLimit = 20;
+    void PlaceIntermediates(int numIntermediates)
     {
         for (int i = 0; i < numIntermediates; i++)
         {
@@ -224,10 +251,10 @@ public class RoomGenerator : MonoBehaviour
                 int blockType = UnityEngine.Random.Range(0, _intermediateBlocks.Count);
                 b = Instantiate(_intermediateBlocks[blockType], spawnObject.transform).GetComponent<MapRoom>();
 
-                Coordinate newCord = new Coordinate(UnityEngine.Random.Range(_mapMinWidth, _mapBaseWidth+_mapMinWidth+1),
-                UnityEngine.Random.Range(_mapMinHeight, _mapBaseHeight+_mapMinHeight+1));
+                Coordinate newCord = new(UnityEngine.Random.Range(MapMinWidth, _mapBaseWidth+MapMinWidth+1),
+                UnityEngine.Random.Range(MapMinHeight, _mapBaseHeight+MapMinHeight+1));
 
-                if (canPlaceIntermediate(newCord, b))
+                if (CanPlaceIntermediate(newCord, b))
                 {
                     placed = true;
                     _intermediateCoordinates.Add(newCord);
@@ -245,13 +272,12 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Check if block exists and the connections returned have viable connections
-    private bool checkForBlock(Coordinate c, RoomType r, char dir)
+    private bool CheckForBlock(Coordinate c, RoomType r, char dir)
     {
-        if(!c.blockExists(_map))
+        if (!c.BlockExists(_map, out Block b))
         {
             return false;
         }
-        Block b = _map[c.row][c.col];
         bool ret = b != null && ((b.BlockType() & r) != 0);
         switch (dir) {
             case 'N':
@@ -273,27 +299,27 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Returns the string representation of the connections possible at a certain position
-    private string getConnectionsAt(Coordinate c)
+    private string GetConnectionsAt(Coordinate c)
     {
-        Coordinate rowPlus = new Coordinate(c.row + 1, c.col);
-        Coordinate rowMinus = new Coordinate(c.row - 1, c.col);
-        Coordinate colPlus = new Coordinate(c.row, c.col + 1);
-        Coordinate colMinus = new Coordinate(c.row, c.col - 1);
+        Coordinate rowPlus = new(c.row + 1, c.col);
+        Coordinate rowMinus = new(c.row - 1, c.col);
+        Coordinate colPlus = new(c.row, c.col + 1);
+        Coordinate colMinus = new(c.row, c.col - 1);
         string s = "";
 
-        if (checkForBlock(colPlus, RoomType.NOT_CONNECTOR, 'N'))
+        if (CheckForBlock(colPlus, RoomType.NOT_CONNECTOR, 'N'))
         {
             s += "N";
         }
-        if (checkForBlock(colMinus, RoomType.NOT_CONNECTOR, 'S'))
+        if (CheckForBlock(colMinus, RoomType.NOT_CONNECTOR, 'S'))
         {
             s += "S";
         }
-        if (checkForBlock(rowPlus, RoomType.NOT_CONNECTOR, 'E'))
+        if (CheckForBlock(rowPlus, RoomType.NOT_CONNECTOR, 'E'))
         {
             s += "E";
         }
-        if (checkForBlock(rowMinus, RoomType.NOT_CONNECTOR, 'W'))
+        if (CheckForBlock(rowMinus, RoomType.NOT_CONNECTOR, 'W'))
         {
             s += "W";
         }
@@ -301,21 +327,21 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Check for the possibility of the end block being placed at a certain position and direction
-    private bool checkForBlockExtentEnd(Coordinate c, Coordinate src, int width, int height, char dir)
+    private bool CheckForBlockExtentEnd(Coordinate c, Coordinate src, int width, int height, char dir)
     {
         // I didnt even know you could inline a switch statement into a variable declaration like this WTF? THANKS CHATGPT
 
         int halfW = Mathf.FloorToInt(width / 2f);
         int halfH = Mathf.FloorToInt(height / 2f);
-        var cell = src.getBlock(_map);
+        bool cellExists = src.BlockExists(_map, out Block cell);
         bool ret = true;
 
         (int startRow, int endRow, int startCol, int endCol, bool doorActive) = dir switch
         {
-            'N' => (-halfW, halfW, 0, height, cell?.northDoor != null && cell.northDoor.activeInHierarchy == true),
-            'S' => (-halfW, halfW, -height, 0, cell?.southDoor != null && cell.southDoor.activeInHierarchy == true),
-            'E' => (0, width, -halfH, halfH, cell?.eastDoor != null && cell.eastDoor.activeInHierarchy == true),
-            'W' => (-width, 0, -halfH, halfH, cell?.westDoor != null && cell.westDoor.activeInHierarchy == true),
+            'N' => (-halfW, halfW, 0, height, cellExists && cell.northDoor != null && cell.northDoor.activeInHierarchy == true),
+            'S' => (-halfW, halfW, -height, 0, cellExists && cell.southDoor != null && cell.southDoor.activeInHierarchy == true),
+            'E' => (0, width, -halfH, halfH, cellExists && cell.eastDoor != null && cell.eastDoor.activeInHierarchy == true),
+            'W' => (-width, 0, -halfH, halfH, cellExists && cell.westDoor != null && cell.westDoor.activeInHierarchy == true),
             _ => (0, 0, 0, 0, false)
         };
 
@@ -323,7 +349,7 @@ public class RoomGenerator : MonoBehaviour
         {
             for (int j = startCol; j < endCol; j++)
             {
-                if(c.row + i >= 0 && c.row + i < _mapWidth && c.col + j >= 0 && c.col + j < _mapHeight)
+                if(c.row + i >= 0 && c.row + i < MapWidth && c.col + j >= 0 && c.col + j < MapHeight)
                 {
                     ret = ret && _map[c.row + i][c.col + j] == null;
                 }
@@ -333,28 +359,28 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Returns the string representation of the connections possible at a certain position
-    private string getConnectionsEnd(Coordinate c, int checkWidth, int checkHeight)
+    private string GetConnectionsEnd(Coordinate c, int checkWidth, int checkHeight)
     {
-        Coordinate rowPlus = new Coordinate(c.row + 1, c.col);
-        Coordinate rowMinus = new Coordinate(c.row - 1, c.col);
-        Coordinate colPlus = new Coordinate(c.row, c.col + 1);
-        Coordinate colMinus = new Coordinate(c.row, c.col - 1);
+        Coordinate rowPlus = new(c.row + 1, c.col);
+        Coordinate rowMinus = new(c.row - 1, c.col);
+        Coordinate colPlus = new(c.row, c.col + 1);
+        Coordinate colMinus = new(c.row, c.col - 1);
 
         string s = "";
 
-        if (checkForBlockExtentEnd(colPlus, c, checkWidth, checkHeight, 'N'))
+        if (CheckForBlockExtentEnd(colPlus, c, checkWidth, checkHeight, 'N'))
         {
             s += "N";
         }
-        if (checkForBlockExtentEnd(colMinus, c, checkWidth, checkHeight, 'S'))
+        if (CheckForBlockExtentEnd(colMinus, c, checkWidth, checkHeight, 'S'))
         {
             s += "S";
         }
-        if (checkForBlockExtentEnd(rowPlus, c, checkHeight, checkWidth, 'E'))
+        if (CheckForBlockExtentEnd(rowPlus, c, checkHeight, checkWidth, 'E'))
         {
             s += "E";
         }
-        if (checkForBlockExtentEnd(rowMinus, c, checkHeight, checkWidth, 'W'))
+        if (CheckForBlockExtentEnd(rowMinus, c, checkHeight, checkWidth, 'W'))
         {
             s += "W";
         }
@@ -363,32 +389,28 @@ public class RoomGenerator : MonoBehaviour
 
     // Alternate version of above, checks for connectors, intermediates, and other blocks
     // Needed to use because of second pass connector updates - need to recgnize where other connectors are
-    private string getConnectionsAtAdvanced(Coordinate c)
+    private string GetConnectionsAtAdvanced(Coordinate c)
     {
-        Coordinate rowPlus = new Coordinate(c.row + 1, c.col);
-        Coordinate rowMinus = new Coordinate(c.row - 1, c.col);
-        Coordinate colPlus = new Coordinate(c.row, c.col + 1);
-        Coordinate colMinus = new Coordinate(c.row, c.col - 1);
+        Coordinate rowPlus = new(c.row + 1, c.col);
+        Coordinate rowMinus = new(c.row - 1, c.col);
+        Coordinate colPlus = new(c.row, c.col + 1);
+        Coordinate colMinus = new(c.row, c.col - 1);
 
         string s = "";
 
-        var cell = colPlus.getBlock(_map);
-        if (cell?.compareType(RoomType.CONNECTOR) == true || cell?.south == true)
+        if (colPlus.BlockExists(_map, out Block cell) && (cell.CompareType(RoomType.CONNECTOR) == true || cell.south == true))
         {
             s += "N";
         }
-        cell = colMinus.getBlock(_map);
-        if (cell?.compareType(RoomType.CONNECTOR) == true || cell?.north == true)
+        if (colMinus.BlockExists(_map, out Block cell1) && (cell1.CompareType(RoomType.CONNECTOR) == true || cell1.north == true))
         {
             s += "S";
         }
-        cell = rowPlus.getBlock(_map);
-        if (cell?.compareType(RoomType.CONNECTOR) == true || cell?.west == true)
+        if (rowPlus.BlockExists(_map, out Block cell2) && (cell2.CompareType(RoomType.CONNECTOR) == true || cell2.west == true))
         {
             s += "E";
         }
-        cell = rowMinus.getBlock(_map);
-        if (cell?.compareType(RoomType.CONNECTOR) == true || cell?.east == true)
+        if (rowMinus.BlockExists(_map, out Block cell3) && (cell3.CompareType(RoomType.CONNECTOR) == true || cell3.east == true))
         {
             s += "W";
         }
@@ -407,7 +429,7 @@ public class RoomGenerator : MonoBehaviour
     //
     // This would be represented as "SEE". The first block is coming from the previous block's south, going to the east,
     // and the next block is coming from the previous block's east going east as well.
-    private void pickAndPlaceDoubleAlternate(Coordinate c, string s)
+    private void PickAndPlaceDoubleAlternate(Coordinate c, string s)
     {
         MapRoom b = null;
         switch (s)
@@ -439,7 +461,7 @@ public class RoomGenerator : MonoBehaviour
             default:
                 break;
         }
-        if(!canPlaceIntermediate(c, b))
+        if(!CanPlaceIntermediate(c, b))
         {
             DestroyImmediate(b.gameObject);
         }
@@ -449,21 +471,21 @@ public class RoomGenerator : MonoBehaviour
     // Loops over all grid spaces, then finds adjacent blocks in the map
     // Based on the number and direction of adjacent blocks, selects the appropriate connector block and rotates it
     // NOTE: Second pass has connectors already placed. If it encounters a conector, it deletes and replaces it.
-    private void firstSweepConnect()
+    private void FirstSweepConnect()
     {
-        for (int row = 0; row < _mapWidth; row++)
+        for (int row = 0; row < MapWidth; row++)
         {
-            for (int col = 0; col < _mapHeight; col++)
+            for (int col = 0; col < MapHeight; col++)
             {
-                string c = "";
-                Coordinate currentCoord = new Coordinate(row, col);
-                var block = currentCoord.getBlock(_map);
-                if (!block)
+                string c;
+                Coordinate currentCoord = new(row, col);
+                bool exists = currentCoord.BlockExists(_map, out Block block);
+                if (!exists)
                 {
-                    c = getConnectionsAt(currentCoord);
-                } else if (block.compareType(RoomType.CONNECTOR))
+                    c = GetConnectionsAt(currentCoord);
+                } else if (block.CompareType(RoomType.CONNECTOR))
                 {
-                    c = getConnectionsAtAdvanced(currentCoord);
+                    c = GetConnectionsAtAdvanced(currentCoord);
                     DestroyImmediate(block.gameObject);
                 } else
                 {
@@ -496,7 +518,7 @@ public class RoomGenerator : MonoBehaviour
                             default:
                                 break;
                         }
-                        if(!canPlaceIntermediate(currentCoord, b))
+                        if(!CanPlaceIntermediate(currentCoord, b))
                         {
                             DestroyImmediate(b.gameObject);
                         }
@@ -518,14 +540,14 @@ public class RoomGenerator : MonoBehaviour
                                 b2 = Instantiate(connectorNEW, spawnObject.transform).GetComponent<MapRoom>();
                                 break;
                         }
-                        if (!canPlaceIntermediate(currentCoord, b2))
+                        if (!CanPlaceIntermediate(currentCoord, b2))
                         {
                             DestroyImmediate(b2.gameObject);
                         }
                         break;
                     case 4:
                         MapRoom b3 = Instantiate(connector4, spawnObject.transform).GetComponent<MapRoom>();
-                        if (!canPlaceIntermediate(currentCoord, b3))
+                        if (!CanPlaceIntermediate(currentCoord, b3))
                         {
                             DestroyImmediate(b3.gameObject);
                         }
@@ -539,7 +561,7 @@ public class RoomGenerator : MonoBehaviour
 
     // Function to create the path from one block to another given a string path, that contains direction pairs,
     // as specified in the comment block above.
-    private bool pathFromString(Coordinate c, string path)
+    private bool PathFromString(Coordinate c, string path)
     {
         if (path.Length <= 1)
         {
@@ -563,7 +585,7 @@ public class RoomGenerator : MonoBehaviour
         }
         for (int i = 0; i < path.Length-1; i++)
         {
-            pickAndPlaceDoubleAlternate(c, path.Substring(i, 2));
+            PickAndPlaceDoubleAlternate(c, path.Substring(i, 2));
             char dir = path[i + 1];
             switch (dir)
             {
@@ -585,67 +607,62 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Contains the set of coordinates that are reachable from the start. Gets updated as the islands get joined
-    HashSet<Coordinate> visitedStart = new HashSet<Coordinate>();
+    readonly HashSet<Coordinate> visitedStart = new();
 
     // Flood fill BFS to find islands of blocks
     // Only goes in directions that are accepted by the surrounding blocks, i.e to go left, the block on the left must have its "EAST" (right) connection open.
     private List<Coordinate> BFSGetGroup(Coordinate start)
     {
-        Queue<Coordinate> queue = new Queue<Coordinate>();
-        List<Coordinate> ret = new List<Coordinate>();
+        Queue<Coordinate> queue = new();
+        List<Coordinate> ret = new();
         if (_map[start.row][start.col] == null)
         {
             return ret;
         }
 
-        if (start.blockExists(_map))
+        // if dont want, just use discard _
+        if (start.BlockExists(_map, out _))
         {
             ret.Add(start);
             visitedStart.Add(start);
         }
-        
+
         // Enqueue the starting block. While blocks are needed to be searched, search them, dafuq?
         queue.Enqueue(start);
         while (queue.Count > 0)
         {
             Coordinate b = queue.Dequeue();
-            Coordinate rowPlus = new Coordinate(b.row + 1, b.col);
-            Coordinate rowMinus = new Coordinate(b.row - 1, b.col);
-            Coordinate colPlus = new Coordinate(b.row, b.col + 1);
-            Coordinate colMinus = new Coordinate(b.row, b.col - 1);
+            Coordinate rowPlus = new(b.row + 1, b.col);
+            Coordinate rowMinus = new(b.row - 1, b.col);
+            Coordinate colPlus = new(b.row, b.col + 1);
+            Coordinate colMinus = new(b.row, b.col - 1);
 
-            // TODO: can wrap this like the other BFS function
-
-            var block = rowMinus.getBlock(_map);
-            if (block != null && block.compareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(rowMinus) && block.east)
+            // TODO: can wrap this like the other BFS function. Not important, still readable
+            if (rowMinus.BlockExists(_map, out Block block) && block.CompareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(rowMinus) && block.east)
             {
                 queue.Enqueue(rowMinus);
                 visitedStart.Add(rowMinus);
                 ret.Add(rowMinus);
             }
-            block = rowPlus.getBlock(_map);
-            if (block != null && block.compareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(rowPlus) && block.west)
+            if (rowPlus.BlockExists(_map, out Block block2) && block2.CompareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(rowPlus) && block2.west)
             {
                 queue.Enqueue(rowPlus);
                 visitedStart.Add(rowPlus);
                 ret.Add(rowPlus);
             }
-            block = colPlus.getBlock(_map);
-            if (block != null && block.compareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(colPlus) && block.south)
+            if (colPlus.BlockExists(_map, out Block block3) && block3.CompareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(colPlus) && block3.south)
             {
                 queue.Enqueue(colPlus);
                 visitedStart.Add(colPlus);
                 ret.Add(colPlus);
             }
-            block = colMinus.getBlock(_map);
-            if (block != null && block.compareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(colMinus) && block.north)
+            if (colMinus.BlockExists(_map, out Block block4) && block4.CompareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(colMinus) && block4.north)
             {
                 queue.Enqueue(colMinus);
                 visitedStart.Add(colMinus);
                 ret.Add(colMinus);
             }
         }
-
         return ret;
     }
 
@@ -653,11 +670,11 @@ public class RoomGenerator : MonoBehaviour
     private string BFSPathToClosestIntermediate(Coordinate start, List<Coordinate> startIsland, bool fromStart)
     {
         string path = "";
-        Dictionary<Coordinate, Tuple<Coordinate, char>> parents = new Dictionary<Coordinate, Tuple<Coordinate, char>>();
-        HashSet<Coordinate> visited = new HashSet<Coordinate>();
+        Dictionary<Coordinate, Tuple<Coordinate, char>> parents = new();
+        HashSet<Coordinate> visited = new();
         // move this out
-        HashSet<Coordinate> destinations = new HashSet<Coordinate>();
-        Queue<Coordinate> queue = new Queue<Coordinate>();
+        HashSet<Coordinate> destinations = new();
+        Queue<Coordinate> queue = new();
 
         foreach (Coordinate c in startIsland) {
             destinations.Add(c);
@@ -669,16 +686,16 @@ public class RoomGenerator : MonoBehaviour
         // back to the start)
         queue.Enqueue(start);
         visited.Add(start);
-        parents[start] = new Tuple<Coordinate, char>(new Coordinate(-1, -1), ' ');
-        Coordinate closestIntermediate = new Coordinate(-1, -1);
+        parents[start] = new Tuple<Coordinate, char>(new(-1, -1), ' ');
+        Coordinate closestIntermediate = new(-1, -1);
         float minDistance = float.MaxValue;
         while (queue.Count > 0)
         {
             Coordinate b = queue.Dequeue();
-            Coordinate rowPlus = new Coordinate(b.row + 1, b.col);
-            Coordinate rowMinus = new Coordinate(b.row - 1, b.col);
-            Coordinate colPlus = new Coordinate(b.row, b.col + 1);
-            Coordinate colMinus = new Coordinate(b.row, b.col - 1);
+            Coordinate rowPlus = new(b.row + 1, b.col);
+            Coordinate rowMinus = new(b.row - 1, b.col);
+            Coordinate colPlus = new(b.row, b.col + 1);
+            Coordinate colMinus = new(b.row, b.col - 1);
 
             var directions = new List<(Coordinate offset, char dir)>
                 {
@@ -690,11 +707,11 @@ public class RoomGenerator : MonoBehaviour
 
             foreach (var (offset, dir) in directions)
             {
-                if(!offset.isInBounds(_map))
+                if(!offset.IsInBounds(_map))
                 {
                     continue;
                 }
-                if (offset.getBlock(_map) == null && !visited.Contains(offset))
+                if (!offset.BlockExists(_map, out Block block) && !visited.Contains(offset))
                 {
                     queue.Enqueue(offset);
                     visited.Add(offset);
@@ -702,14 +719,14 @@ public class RoomGenerator : MonoBehaviour
                 }
                 else
                 {
-                    if (offset.getBlock(_map) != null && destinations.Contains(offset))
+                    if (offset.BlockExists(_map, out Block bloock) && destinations.Contains(offset))
                     {
                         visited.Add(offset);
                         parents[offset] = new Tuple<Coordinate, char>(b, dir);
-                        if (start.squaredDistanceTo(offset) < minDistance)
+                        if (start.SquaredDistanceTo(offset) < minDistance)
                         {
                             closestIntermediate = offset;
-                            minDistance = start.squaredDistanceTo(offset);
+                            minDistance = start.SquaredDistanceTo(offset);
                         }
                         path += dir;
                         break;
@@ -726,7 +743,7 @@ public class RoomGenerator : MonoBehaviour
         while (closestIntermediate.row != -1 && closestIntermediate.col != -1)
         {
             path += parents[closestIntermediate].Item2;
-            if (closestIntermediate.equals(parents[closestIntermediate].Item1))
+            if (closestIntermediate.Equals(parents[closestIntermediate].Item1))
             {
                 Debug.LogError("NAHHHHHH UR FUCKED LMFAOOOO");
                 return "";
@@ -742,10 +759,10 @@ public class RoomGenerator : MonoBehaviour
             return "";
         }
 
-        // Since the path is currently from the destination to the start, we need to reverse it.
-        char[] charArray = path.Substring(0, path.Length - 1).ToCharArray();
+        // Since the path is currently from the destination to the start, we need to reverse it. WTF IS A RANGE OPERATOR COPILOT??
+        char[] charArray = path[..^1].ToCharArray();
         Array.Reverse(charArray);
-        string ret = new string(charArray);
+        string ret = new(charArray);
 
         // The starting path works a bit differently. Since we are going from the block next to it instead of
         // the starting block itself, we have to add an "EAST" to the start of the path.
@@ -763,44 +780,45 @@ public class RoomGenerator : MonoBehaviour
 
     // Loop over all blocks to find which outlets lead to null
     // If direction is valid and has another block with accepting opposite direction, then open the door (deactivate the gameobject)
-    private void openDoors()
+    private void OpenDoors()
     {
-        for (int i = 0; i < _mapWidth; i++)
+        for (int i = 0; i < MapWidth; i++)
         {
-            for (int j = 0; j < _mapHeight; j++)
+            for (int j = 0; j < MapHeight; j++)
             {
-                Coordinate c = new Coordinate(i, j);
-                var cell = c.getBlock(_map);
-                if (cell?.compareType(RoomType.INTERMEDIATE) == true)
+                Coordinate c = new(i, j);
+                if (c.BlockExists(_map, out Block b) && b.CompareType(RoomType.INTERMEDIATE) == true)
                 {
                     Block I = _map[c.row][c.col];
-                    string s = getConnectionsAtAdvanced(c);
-                    I.setDoors(s.Contains('S'), s.Contains('N'), s.Contains('W'), s.Contains('E'));
+                    string s = GetConnectionsAtAdvanced(c);
+                    I.SetDoors(s.Contains('S'), s.Contains('N'), s.Contains('W'), s.Contains('E'));
                 }
             }
         }
     }
+
+    // list of potential boss generation sequences
+    readonly List<GenSequence> sequences = new()
+    {
+        new(new(0, 2), new(0, 1), new(0, 4), new(-1, 5), true, false, false, false), // north sequence
+        new(new(0, -3), new(0, -1), new(0, -4), new(-1, -7), false, true, false, false), // south sequence
+        new(new(2, 0), new(1, 0), new(4, 0), new(5, -1), false, false, true, false), // east sequence
+        new(new(-3, 0), new(-1, 0), new(-4, 0), new(-7, -1), false, false, false, true), // west sequence
+    };
 
     // Big function to generate the end sequence. Currently places a single I connctor, followed by a 1x2 or a 2x1 depending
     // on the direction it is going, followed by another I connector and finally the 3x3 boss room.
 
     // This means that we have to search for a 7x3 or 3x7 empty space to be able to place all the blocks. Goes outside the map
     // cuz it would be impossible to place it in the map, no shit.
-    private void placeEnd(List<Coordinate> allIntermediates, Coordinate start)
+    private void PlaceEnd(List<Coordinate> allIntermediates, Coordinate start)
     {
-        List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.squaredDistanceTo(start)).ToList();
+        List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.SquaredDistanceTo(start)).ToList();
         foreach (Coordinate c in sortedCoordinates)
         {
-            string s = getConnectionsEnd(c, 3, 7);
+            string s = GetConnectionsEnd(c, 3, 7);
             bool found = false;
-            bool north = false;
-            bool south = false;
-            bool east = false;
-            bool west = false;
-            Coordinate dstCoord = new Coordinate(c.row, c.col);
-            Coordinate frstCoord = new Coordinate(c.row, c.col);
-            Coordinate connCord = new Coordinate(c.row, c.col);
-            Coordinate bossCoord = new Coordinate(c.row, c.col);
+            GenSequence chosenSequence = new();
             MapRoom b = null;
             if(s.Length == 0)
             {
@@ -808,125 +826,70 @@ public class RoomGenerator : MonoBehaviour
             }
 
             // This looks disgusting and ugly and stupid and needs to be reworked. TODO: Smite this shit
-            void NCheck()
+
+            // GPT at it again, what the fuck is even an action????? All bless our AI overlord
+            var directions = new[]
             {
-                if (s.Contains('N'))
-                {
-                    found = true;
-                    north = true;
-                    dstCoord.col += 2;
-                    frstCoord.col += 1;
-                    connCord.col += 4;
-                    bossCoord.col += 5;
-                    bossCoord.row -= 1;
+                ('N', 0, new Action(() => {
                     _map[c.row][c.col].northDoor.SetActive(false);
                     _map[c.row][c.col].northDoorOpen.SetActive(true);
-                    b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
-                }
-            }
-
-            void ECheck()
-            {
-                if (s.Contains('E'))
-                {
-                    found = true;
-                    east = true;
-                    dstCoord.row += 2;
-                    frstCoord.row += 1;
-                    connCord.row += 4;
-                    bossCoord.row += 5;
-                    bossCoord.col -= 1;
-                    _map[c.row][c.col].eastDoor.SetActive(false);
-                    _map[c.row][c.col].eastDoorOpen.SetActive(true);
-                    b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
-                }
-            }
-
-            void SCheck()
-            {
-                if (s.Contains('S'))
-                {
-                    found = true;
-                    south = true;
-                    dstCoord.col -= 3;
-                    frstCoord.col -= 1;
-                    connCord.col -= 4;
-                    bossCoord.col -= 7;
-                    bossCoord.row -= 1;
+                })),
+                ('S', 1, new Action(() => {
                     _map[c.row][c.col].southDoor.SetActive(false);
                     _map[c.row][c.col].southDoorOpen.SetActive(true);
-                    b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
-                }
-            }
-            
-            void WCheck()
-            {
-                if (s.Contains('W'))
-                {
-                    found = true;
-                    west = true;
+                })),
+                ('E', 2, new Action(() => {
+                    _map[c.row][c.col].eastDoor.SetActive(false);
+                    _map[c.row][c.col].eastDoorOpen.SetActive(true);
+                })),
+                ('W', 3, new Action(() => {
                     _map[c.row][c.col].westDoor.SetActive(false);
                     _map[c.row][c.col].westDoorOpen.SetActive(true);
-                    dstCoord.row -= 3;
-                    frstCoord.row -= 1;
-                    connCord.row -= 4;
-                    bossCoord.row -= 7;
-                    bossCoord.col -= 1;
-                    b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
+                }))
+            };
+
+
+            while (!found)
+            {
+                var (dirChar, seqIndex, openDoor) = directions[UnityEngine.Random.Range(0, 4)];
+                if (s.Contains(dirChar))
+                {
+                    found = true;
+                    chosenSequence = sequences[seqIndex];
+                    openDoor(); // apparently actions can be used like named functions just stored as variables???? WOW!
                 }
-            }
-
-            
-            for (int count = 0, i = UnityEngine.Random.Range(0, 4); count < 4 && !found; count++, i=(i+1)%4)
-            {
-                if (i == 0) NCheck();
-                else if (i == 1) ECheck();
-                else if (i == 2) SCheck();
-                else if (i == 3) WCheck();
-            }
-            
-            
-            b.gameObject.transform.position = getOffset(dstCoord, b); // place 1x2 or 2x1 
-
-            if (north || south)
-            {
-                b.At(0, 0).southDoor.SetActive(false);
-                b.At(0, 0).southDoorOpen.SetActive(true);
-                b.At(0, 1).northDoor.SetActive(false);
-                b.At(0, 1).northDoorOpen.SetActive(true);
-            }
-            else
-            {
-                b.At(0, 0).westDoor.SetActive(false);
-                b.At(0, 0).westDoorOpen.SetActive(true);
-                b.At(1, 0).eastDoor.SetActive(false);
-                b.At(1, 0).eastDoorOpen.SetActive(true);
             }
 
             MapRoom connector;
             MapRoom connector1;
-            if (north || south)
+
+            if (chosenSequence.north || chosenSequence.south)
             {
+                b = Instantiate(_restRoomVertical, spawnObject.transform).GetComponent<MapRoom>();
+                b.gameObject.transform.position = GetOffset(c + chosenSequence.room, b); // place 1x2 or 2x1 
+                b.At(0, 0).SetDoors(true, true, false, false);
+                b.At(0, 1).SetDoors(true, true, false, false);
+
                 connector = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
                 connector1 = Instantiate(connectorNS, spawnObject.transform).GetComponent<MapRoom>();
-            } else
+            }
+            else
             {
+                b = Instantiate(_restRoomHorizontal, spawnObject.transform).GetComponent<MapRoom>();
+                b.gameObject.transform.position = GetOffset(c + chosenSequence.room, b); // place 1x2 or 2x1 
+                b.At(0, 0).SetDoors(false, false, true, true);
+                b.At(1, 0).SetDoors(false, false, true, true);
+
                 connector = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
                 connector1 = Instantiate(connectorEW, spawnObject.transform).GetComponent<MapRoom>();
             }
-            connector.gameObject.transform.position = getOffset(connCord, connector);
-            connector1.gameObject.transform.position = getOffset(frstCoord, connector1);
+
+            connector.gameObject.transform.position = GetOffset(c + chosenSequence.connect, connector);
+            connector1.gameObject.transform.position = GetOffset(c + chosenSequence.first, connector1);
 
             MapRoom bossRoom = Instantiate(_bossRoom, spawnObject.transform).GetComponent<MapRoom>();
-            bossRoom.gameObject.transform.position = getOffset(bossCoord, bossRoom);
-            bossRoom.At(0, 0).westDoor.SetActive(!east);
-            bossRoom.At(0, 0).westDoorOpen.SetActive(east);
-            bossRoom.At(0, 0).eastDoor.SetActive(!west);
-            bossRoom.At(0, 0).eastDoorOpen.SetActive(west);
-            bossRoom.At(0, 0).northDoor.SetActive(!south);
-            bossRoom.At(0, 0).northDoorOpen.SetActive(south);
-            bossRoom.At(0, 0).southDoor.SetActive(!north);
-            bossRoom.At(0, 0).southDoorOpen.SetActive(north);
+            bossRoom.gameObject.transform.position = GetOffset(c + chosenSequence.boss, bossRoom);
+            bossRoom.At(0, 0).SetDoors(chosenSequence.north, chosenSequence.south, chosenSequence.east, chosenSequence.west);
 
             break;
         }
@@ -946,27 +909,27 @@ public class RoomGenerator : MonoBehaviour
         Debug.Log("SEED: " + newSeed);
 
         // Get mid width and height to place the start block
-        int midWidth = (_mapWidth - 1) / 2;
-        int midHeight = (_mapHeight - 1) / 2;
-        Coordinate startCoordinate = new Coordinate(midWidth, midHeight);
+        int midWidth = (MapWidth - 1) / 2;
+        int midHeight = (MapHeight - 1) / 2;
+        Coordinate startCoordinate = new(midWidth, midHeight);
 
         MapRoom startRoom = Instantiate(_startBlock, spawnObject.transform).GetComponent<MapRoom>();
-        canPlaceIntermediate(new Coordinate(startCoordinate.row - 1, startCoordinate.col), startRoom);
+        CanPlaceIntermediate(new(startCoordinate.row - 1, startCoordinate.col), startRoom);
         _intermediateRooms.Add(startRoom);
 
         // Randomly sparse intermediate blocks
-        placeIntermediates(numIntermediates);
+        PlaceIntermediates(numIntermediates);
 
         // Connect all adjacent blocks together
-        firstSweepConnect();
+        FirstSweepConnect();
 
         // If there is no connecting block already, the start needs to be hooked up
         // So find the closest path from it to another intermediate and make the path
-        Coordinate directlyWest = new Coordinate(midWidth + 1, midHeight);
-        if (!directlyWest.blockExists(_map))
+        Coordinate directlyWest = new(midWidth + 1, midHeight);
+        if (!directlyWest.BlockExists(_map, out Block bl))
         {
             string path = BFSPathToClosestIntermediate(directlyWest, _intermediateCoordinates, true);
-            if (!pathFromString(startCoordinate, path))
+            if (!PathFromString(startCoordinate, path))
             {
                 Debug.LogError("failed to make path from start");
                 return false;
@@ -976,12 +939,12 @@ public class RoomGenerator : MonoBehaviour
         // Create a 4-way connector to symbolize that anything can connect
         // at the point right outside the start room
         MapRoom b2 = Instantiate(connector4, spawnObject.transform).GetComponent<MapRoom>();
-        if (!canPlaceIntermediate(directlyWest, b2))
+        if (!CanPlaceIntermediate(directlyWest, b2))
         {
             DestroyImmediate(b2.gameObject);
-            if(directlyWest.getBlock(_map).compareType(RoomType.CONNECTOR))
+            if(directlyWest.BlockExists(_map, out Block blo) && blo.CompareType(RoomType.CONNECTOR))
             {
-                directlyWest.getBlock(_map).setDirections(true, true, true, true);
+                blo.SetDirections(true, true, true, true);
             }
         }
 
@@ -994,13 +957,13 @@ public class RoomGenerator : MonoBehaviour
         }
 
         // Now get all of the groups that are not connected to the start "island"
-        List<List<Coordinate>> disconnectedGroups = new List<List<Coordinate>>();
-        for (int i = 0; i < _mapWidth; i++)
+        List<List<Coordinate>> disconnectedGroups = new();
+        for (int i = 0; i < MapWidth; i++)
         {
-            for (int j = 0; j < _mapHeight; j++)
+            for (int j = 0; j < MapHeight; j++)
             {
-                Coordinate c = new Coordinate(i, j);
-                if (checkForBlock(c, RoomType.ALL, 'X') && !visitedStart.Contains(c))
+                Coordinate c = new(i, j);
+                if (CheckForBlock(c, RoomType.ALL, 'X') && !visitedStart.Contains(c))
                 {
                     List<Coordinate> newGroup = BFSGetGroup(c);
                     if(newGroup == null)
@@ -1018,33 +981,33 @@ public class RoomGenerator : MonoBehaviour
         foreach (List<Coordinate> group in disconnectedGroups)
         {
             int maxIter = 0;
-            HashSet<Coordinate> visited = new HashSet<Coordinate>();
+            HashSet<Coordinate> visited = new();
             while (maxIter < group.Count && maxIter >= 0)
             {
                 // find mid dist between intermediate from start group and list
                 float closestDistance = int.MaxValue;
-                Coordinate disconnectedCoordinate = new Coordinate(-1, -1);
-                Coordinate closestStartIntermediate = new Coordinate(-1, -1);
+                Coordinate disconnectedCoordinate = new(-1, -1);
+                Coordinate closestStartIntermediate = new(-1, -1);
                 foreach (Coordinate currentGroupCoord in group)
                 {
                     foreach (Coordinate currentIntermediate in startIsland)
                     {
-                        if (currentGroupCoord.squaredDistanceTo(currentIntermediate) < closestDistance)
+                        if (currentGroupCoord.SquaredDistanceTo(currentIntermediate) < closestDistance)
                         {
                             disconnectedCoordinate = currentGroupCoord;
                             closestStartIntermediate = currentIntermediate;
-                            closestDistance = currentGroupCoord.squaredDistanceTo(currentIntermediate);
+                            closestDistance = currentGroupCoord.SquaredDistanceTo(currentIntermediate);
                         }
                     }
                 }
                 if (disconnectedCoordinate.row != -1 && closestStartIntermediate.row != -1)
                 {
-                    List<Coordinate> oneStartCoord = new List<Coordinate>
+                    List<Coordinate> oneStartCoord = new()
                     {
                         closestStartIntermediate
                     };
                     string s = BFSPathToClosestIntermediate(disconnectedCoordinate, oneStartCoord, false);
-                    if(!pathFromString(disconnectedCoordinate, s))
+                    if(!PathFromString(disconnectedCoordinate, s))
                     {
                         maxIter++;
                         visited.Add(closestStartIntermediate);
@@ -1074,7 +1037,7 @@ public class RoomGenerator : MonoBehaviour
             }
             foreach (Coordinate coord in group)
             {
-                if (_map[coord.row][coord.col].compareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR))
+                if (_map[coord.row][coord.col].CompareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR))
                 {
                     startIsland.Add(coord);
                 }
@@ -1083,22 +1046,22 @@ public class RoomGenerator : MonoBehaviour
 
         // After all connectors have been placed, touch up the connectors by looping again
         // and re-doing the connections with new adjacencies
-        firstSweepConnect();
+        FirstSweepConnect();
 
         // Open the doors and cap the doors leading to nowhere
-        openDoors();
+        OpenDoors();
 
         // Place the end block
-        placeEnd(startIsland, new Coordinate(midWidth, midHeight));
+        PlaceEnd(startIsland, new(midWidth, midHeight));
 
-        for (int i = 0; i < _mapWidth; i++)
+        for (int i = 0; i < MapWidth; i++)
         {
-            for (int j = 0; j < _mapHeight; j++)
+            for (int j = 0; j < MapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
+                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    m.difficulty = (int)Mathf.Sqrt(new Coordinate(i, j).squaredDistanceTo(startCoordinate) * difficultyMultiplier);
+                    m.difficulty = (int)Mathf.Sqrt(new Coordinate(i, j).SquaredDistanceTo(startCoordinate) * difficultyMultiplier);
                 }
             }
         }
@@ -1112,17 +1075,17 @@ public class RoomGenerator : MonoBehaviour
 
         // Debug purposes, color the grid with debug lines
 #if DEBUG
-        colorGrid();
+        ColorGrid();
 #endif
         return true;
     }
 
     public void generateNewContent(){
-        for (int i = 0; i < _mapWidth; i++)
+        for (int i = 0; i < MapWidth; i++)
         {
-            for (int j = 0; j < _mapHeight; j++)
+            for (int j = 0; j < MapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
+                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     m.SpawnEntities();
@@ -1133,11 +1096,11 @@ public class RoomGenerator : MonoBehaviour
 
     public void loadContent(){
         int count = 0;
-        for (int i = 0; i < _mapWidth; i++)
+        for (int i = 0; i < MapWidth; i++)
         {
-            for (int j = 0; j < _mapHeight; j++)
+            for (int j = 0; j < MapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
+                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     if(count >= enemiesList.Count) return;
@@ -1149,11 +1112,11 @@ public class RoomGenerator : MonoBehaviour
 
     public List<String> exportEnemyStrings(){
         List<String> list = new List<String>();
-        for (int i = 0; i < _mapWidth; i++)
+        for (int i = 0; i < MapWidth; i++)
         {
-            for (int j = 0; j < _mapHeight; j++)
+            for (int j = 0; j < MapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
+                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     String res = m.ExportEnemies();
@@ -1171,11 +1134,11 @@ public class RoomGenerator : MonoBehaviour
 
     public List<String> exportForagableStrings(){
         List<String> list = new List<String>();
-        for (int i = 0; i < _mapWidth; i++)
+        for (int i = 0; i < MapWidth; i++)
         {
-            for (int j = 0; j < _mapHeight; j++)
+            for (int j = 0; j < MapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
+                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     String res = m.ExportForagables();
@@ -1192,11 +1155,11 @@ public class RoomGenerator : MonoBehaviour
     }
 
     public void flushExportBooleans(){
-        for (int i = 0; i < _mapWidth; i++)
+        for (int i = 0; i < MapWidth; i++)
         {
-            for (int j = 0; j < _mapHeight; j++)
+            for (int j = 0; j < MapHeight; j++)
             {
-                if (_map[i][j] != null && _map[i][j].compareType(RoomType.INTERMEDIATE))
+                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
                 {
                     EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
                     m.hasExportedEnemies = false;
@@ -1208,7 +1171,7 @@ public class RoomGenerator : MonoBehaviour
 
 #if DEBUG
     // DEBUG DRAWING
-    private void colorGrid()
+    private void ColorGrid()
     {
         for (int i = 0; i < _mapBaseWidth; ++i)
         {

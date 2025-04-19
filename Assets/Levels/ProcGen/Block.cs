@@ -29,12 +29,12 @@ public class Block : MonoBehaviour
         return _blockType;
     }
 
-    public bool compareType(RoomType roomType)
+    public bool CompareType(RoomType roomType)
     {
         return (roomType & _blockType) != 0;
     }
 
-    public void setDirections(bool north, bool south, bool east, bool west)
+    public void SetDirections(bool north, bool south, bool east, bool west)
     {
         this.north = north;
         this.south = south;
@@ -42,9 +42,9 @@ public class Block : MonoBehaviour
         this.west = west;
     }
 
-    public void setDoors(bool north, bool south, bool east, bool west)
+    public void SetDoors(bool north, bool south, bool east, bool west)
     {
-        if(westDoor) westDoor.SetActive(!east);
+        if (westDoor) westDoor.SetActive(!east);
         if (westDoorOpen) westDoorOpen.SetActive(east);
         if (eastDoor) eastDoor.SetActive(!west);
         if (eastDoorOpen) eastDoorOpen.SetActive(west);
@@ -52,5 +52,10 @@ public class Block : MonoBehaviour
         if (northDoorOpen) northDoorOpen.SetActive(south);
         if (southDoor) southDoor.SetActive(!north);
         if (southDoorOpen) southDoorOpen.SetActive(north);
+    }
+
+    public void SetDoors(GenSequence s)
+    {
+        SetDoors(s.north, s.south, s.east, s.west);
     }
 }
