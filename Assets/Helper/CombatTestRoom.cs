@@ -39,11 +39,15 @@ public class CombatTestRoom : MonoBehaviour
         debugging = true;
         Time.timeScale = 0;
         CursorManager.Singleton.cursorObject.SetActive(false);
-        pauseScreen.SetActive(true);
+        debugScreen.SetActive(true);
         PlayerEntityManager.Singleton.input.Disable();
     }
 
     public void closeDebugMenu(){
-
+        debugging = false;
+        Time.timeScale = 1;
+        CursorManager.Singleton.cursorObject.SetActive(true);
+        debugScreen.SetActive(false);
+        PlayerEntityManager.Singleton.input.Enable();
     }
 }
