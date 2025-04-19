@@ -96,6 +96,7 @@ public class RoomGenerator : MonoBehaviour
             col = other.col;
         }
 
+        // Check if coordinates are equal
         public bool equals(Coordinate other)
         {
             return row == other.row && col == other.col;
@@ -106,12 +107,14 @@ public class RoomGenerator : MonoBehaviour
             return row + ", " + col;
         }
 
+        // Given a map, get get the block at a current position, or return null if the block does not exist
         public Block getBlock(List<List<Block>> map)
         {
             if (!isInBounds(map)) return null;
             return map[row][col];
         }
 
+        // Check if this coordinate is within the bounds of a given map
         public bool isInBounds(List<List<Block>> map)
         {
             if (row < 0 || row >= map.Count) return false;
@@ -119,11 +122,13 @@ public class RoomGenerator : MonoBehaviour
             return true;
         }
 
+        // Check if a block exists // TODO: combine this with the getBlock and that out variable bullshit that C# has
         public bool blockExists(List<List<Block>> map)
         {
             return getBlock(map) != null;
         }
 
+        // Get squared euclidian distance, squared for performance reasons and cuz we don't need actual distance
         public float squaredDistanceTo(Coordinate other)
         {
             int dX = other.col - col;
@@ -205,8 +210,8 @@ public class RoomGenerator : MonoBehaviour
         return true;
     }
 
+    // Break limit is the max amount of times the algorithm looks for a random block placement before it walks the plank
     private int breakLimit = 20;
-
     void placeIntermediates(int numIntermediates)
     {
         for (int i = 0; i < numIntermediates; i++)
@@ -239,6 +244,7 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+    // Check if block exists and the connections returned have viable connections
     private bool checkForBlock(Coordinate c, RoomType r, char dir)
     {
         if(!c.blockExists(_map))
@@ -266,6 +272,35 @@ public class RoomGenerator : MonoBehaviour
         return ret;
     }
 
+    // Returns the string representation of the connections possible at a certain position
+    private string getConnectionsAt(Coordinate c)
+    {
+        Coordinate rowPlus = new Coordinate(c.row + 1, c.col);
+        Coordinate rowMinus = new Coordinate(c.row - 1, c.col);
+        Coordinate colPlus = new Coordinate(c.row, c.col + 1);
+        Coordinate colMinus = new Coordinate(c.row, c.col - 1);
+        string s = "";
+
+        if (checkForBlock(colPlus, RoomType.NOT_CONNECTOR, 'N'))
+        {
+            s += "N";
+        }
+        if (checkForBlock(colMinus, RoomType.NOT_CONNECTOR, 'S'))
+        {
+            s += "S";
+        }
+        if (checkForBlock(rowPlus, RoomType.NOT_CONNECTOR, 'E'))
+        {
+            s += "E";
+        }
+        if (checkForBlock(rowMinus, RoomType.NOT_CONNECTOR, 'W'))
+        {
+            s += "W";
+        }
+        return s;
+    }
+
+    // Check for the possibility of the end block being placed at a certain position and direction
     private bool checkForBlockExtentEnd(Coordinate c, Coordinate src, int width, int height, char dir)
     {
         // I didnt even know you could inline a switch statement into a variable declaration like this WTF? THANKS CHATGPT
@@ -295,34 +330,6 @@ public class RoomGenerator : MonoBehaviour
             }
         }
         return ret && doorActive;
-    }
-
-    // Returns the string representation of the connections possible at a certain position
-    private string getConnectionsAt(Coordinate c)
-    {
-        Coordinate rowPlus = new Coordinate(c.row + 1, c.col);
-        Coordinate rowMinus = new Coordinate(c.row - 1, c.col);
-        Coordinate colPlus = new Coordinate(c.row, c.col + 1);
-        Coordinate colMinus = new Coordinate(c.row, c.col - 1);
-        string s = "";
-
-        if (checkForBlock(colPlus, RoomType.NOT_CONNECTOR, 'N'))
-        {
-            s += "N";
-        }
-        if (checkForBlock(colMinus, RoomType.NOT_CONNECTOR, 'S'))
-        {
-            s += "S";
-        }
-        if (checkForBlock(rowPlus, RoomType.NOT_CONNECTOR, 'E'))
-        {
-            s += "E";
-        }
-        if (checkForBlock(rowMinus, RoomType.NOT_CONNECTOR, 'W'))
-        {
-            s += "W";
-        }
-        return s;
     }
 
     // Returns the string representation of the connections possible at a certain position
@@ -389,7 +396,17 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Given a string of connections, represented in pairs (<DIRECTION IN SOURCE>, <DIRECTION IN CURRENT>), selects
-    // the appropriate connector block
+    // the appropriate connector block. Different because this is for placing connectors from a path.
+
+    // Paths are represented just like the tuple above, except multiple are connected in a string. For example,
+    // If I have a path that looks like this:
+
+    //         |   |____|_____|
+    //         |
+    //         |________|_____|
+    //
+    // This would be represented as "SEE". The first block is coming from the previous block's south, going to the east,
+    // and the next block is coming from the previous block's east going east as well.
     private void pickAndPlaceDoubleAlternate(Coordinate c, string s)
     {
         MapRoom b = null;
@@ -520,7 +537,8 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    // Function to create the path from one block to another given a string path, that contains direction pairs
+    // Function to create the path from one block to another given a string path, that contains direction pairs,
+    // as specified in the comment block above.
     private bool pathFromString(Coordinate c, string path)
     {
         if (path.Length <= 1)
@@ -570,7 +588,7 @@ public class RoomGenerator : MonoBehaviour
     HashSet<Coordinate> visitedStart = new HashSet<Coordinate>();
 
     // Flood fill BFS to find islands of blocks
-    // Only goes in directions that are accepted by the surrounding blocks, i.e to go left, the block on the right must have its "EAST" connection open.
+    // Only goes in directions that are accepted by the surrounding blocks, i.e to go left, the block on the left must have its "EAST" (right) connection open.
     private List<Coordinate> BFSGetGroup(Coordinate start)
     {
         Queue<Coordinate> queue = new Queue<Coordinate>();
@@ -585,7 +603,8 @@ public class RoomGenerator : MonoBehaviour
             ret.Add(start);
             visitedStart.Add(start);
         }
-
+        
+        // Enqueue the starting block. While blocks are needed to be searched, search them, dafuq?
         queue.Enqueue(start);
         while (queue.Count > 0)
         {
@@ -594,6 +613,8 @@ public class RoomGenerator : MonoBehaviour
             Coordinate rowMinus = new Coordinate(b.row - 1, b.col);
             Coordinate colPlus = new Coordinate(b.row, b.col + 1);
             Coordinate colMinus = new Coordinate(b.row, b.col - 1);
+
+            // TODO: can wrap this like the other BFS function
 
             var block = rowMinus.getBlock(_map);
             if (block != null && block.compareType(RoomType.INTERMEDIATE | RoomType.CONNECTOR) && !visitedStart.Contains(rowMinus) && block.east)
@@ -642,6 +663,10 @@ public class RoomGenerator : MonoBehaviour
             destinations.Add(c);
         }
 
+        // This follows a more traditional BFS, where because we are eventually trying to find a path, we are saving the parents of the blocks
+        // that we are able to find. This makes it so that when we find a suitable destination block we can just reverse search the parents
+        // to find a path to the start (because if we found a destination from a start, we should be able to follow parents from the destination
+        // back to the start)
         queue.Enqueue(start);
         visited.Add(start);
         parents[start] = new Tuple<Coordinate, char>(new Coordinate(-1, -1), ' ');
@@ -697,6 +722,7 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
+        // Go through the parents from the destination back to the start and collect the path.
         while (closestIntermediate.row != -1 && closestIntermediate.col != -1)
         {
             path += parents[closestIntermediate].Item2;
@@ -708,15 +734,25 @@ public class RoomGenerator : MonoBehaviour
             closestIntermediate = parents[closestIntermediate].Item1;
         }
 
+        // If the path is 0, for some reason, you probably fucked up. This means that the blocks are
+        // right next to each other, so this function shouldn't have been called in the first place.
         if(path.Length == 0)
         {
             Debug.LogError("CANNOT FIND PATH FROM SOURCE TO DESTINATION!!");
             return "";
         }
+
+        // Since the path is currently from the destination to the start, we need to reverse it.
         char[] charArray = path.Substring(0, path.Length - 1).ToCharArray();
         Array.Reverse(charArray);
         string ret = new string(charArray);
 
+        // The starting path works a bit differently. Since we are going from the block next to it instead of
+        // the starting block itself, we have to add an "EAST" to the start of the path.
+
+        // Why is the start path from the block directly east? because the current function to find paths
+        // finds in all directions, and the start block only has an opening east. It was a coing toss whether to implement
+        // the start block edge case here or above, with the choosing of directions to search,
         if(fromStart)
         {
             return "E" + ret;
@@ -745,6 +781,11 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
+    // Big function to generate the end sequence. Currently places a single I connctor, followed by a 1x2 or a 2x1 depending
+    // on the direction it is going, followed by another I connector and finally the 3x3 boss room.
+
+    // This means that we have to search for a 7x3 or 3x7 empty space to be able to place all the blocks. Goes outside the map
+    // cuz it would be impossible to place it in the map, no shit.
     private void placeEnd(List<Coordinate> allIntermediates, Coordinate start)
     {
         List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.squaredDistanceTo(start)).ToList();
@@ -766,6 +807,7 @@ public class RoomGenerator : MonoBehaviour
                 continue;
             }
 
+            // This looks disgusting and ugly and stupid and needs to be reworked. TODO: Smite this shit
             void NCheck()
             {
                 if (s.Contains('N'))
