@@ -124,19 +124,16 @@ public class PlayerEntityManager : Entity
 
     IEnumerator FallAnimation(Transform respawnPoint)
     {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        Color color = spriteRenderer.color;
-
-        while (color.a > 0)
+        Vector3 initialScale = transform.localScale;
+        while (transform.localScale.x > 0)
         {
-            yield return new WaitForSeconds(0.1f);
-            color.a -= 0.2f;
-            spriteRenderer.color = color;
+            yield return new WaitForSeconds(0.05f);
+            transform.localScale -= new Vector3(0.1f, 0.1f, 0);
+            print(transform.localScale.x);
         }
 
-        color.a = 1;
-        spriteRenderer.color = color;
         transform.position = respawnPoint.position;
+        transform.localScale = initialScale;
         ResetMoveSpeed();
         DealDamage(GetBaseStats().maxHealth / 9); // Deal damage to the player == 1/9 of max health or one heart
     }
