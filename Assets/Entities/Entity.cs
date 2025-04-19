@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using System;
 using Infliction = SoupSpoon.SpoonInfliction;
 
-public class Entity : MonoBehaviour
+public abstract class Entity : MonoBehaviour
 {
     // ~~~ DEFINITIONS ~~~
     [Serializable]
@@ -114,4 +114,6 @@ public class Entity : MonoBehaviour
         return baseStats.invincibility;
     }
 
+    // Default fall function calls for instant death. Player will overwrite this
+    public abstract void Fall(Transform respawnPoint);
 }
