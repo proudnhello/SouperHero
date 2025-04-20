@@ -129,6 +129,28 @@ public abstract class EnemyBaseClass : Entity
     // Respawn is for players only :)
     public override void Fall(Transform _respawnPoint)
     {
+        SetMoveSpeed(0);
+        agent.updatePosition = false;
+        // THIS IS BAD AND I SHOULD NOT DO IT
+        // But stupid knockback keeps messing everything up and the enemy's about to die anyway so it's probably fine
+        StopAllCoroutines(); 
+        GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        StartCoroutine(Fall(_respawnPoint, 0.05f));
+    }
+
+    public IEnumerator Fall(Transform respawnPoint, float fallSpeed)
+    {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        Vector3 initialScale = sprite.size;
+        Vector2 changeAmount = new Vector2(initialScale.x / 10, initialScale.y / 10);
+
+        while (sprite.size.x > 0)
+        {
+            yield return new WaitForSeconds(0.05f);
+            sprite.size -= changeAmount;
+
+        }
+
         Die();
     }
 }

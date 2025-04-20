@@ -37,6 +37,10 @@ public class PitHazard : MonoBehaviour
         {
             yield return new WaitForSeconds(coyoteTime);
         }
+        else
+        {
+            yield return new WaitForSeconds(coyoteTime/2);
+        }
         if (inCollider[entity])
         {
             print(entity.name + " fell into pit hazard");
