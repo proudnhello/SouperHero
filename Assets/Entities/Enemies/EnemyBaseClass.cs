@@ -134,6 +134,7 @@ public abstract class EnemyBaseClass : Entity
         agent.updatePosition = false;
         // THIS IS BAD AND I SHOULD NOT DO IT
         // But stupid knockback keeps messing everything up and the enemy's about to die anyway so it's probably fine
+        // I can't wait for us to add an enemy that doesn't die when it falls and this breaks everything
         StopAllCoroutines(); 
         GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         StartCoroutine(Fall(_respawnPoint, 0.05f));
