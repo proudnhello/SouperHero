@@ -827,8 +827,6 @@ public class RoomGenerator : MonoBehaviour
                 continue;
             }
 
-            // This looks disgusting and ugly and stupid and needs to be reworked. TODO: Smite this shit
-
             // GPT at it again, what the fuck is even an action????? All bless our AI overlord
             var directions = new[]
             {
