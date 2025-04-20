@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System;
 using System.Collections;
 using System.Collections.Generic;

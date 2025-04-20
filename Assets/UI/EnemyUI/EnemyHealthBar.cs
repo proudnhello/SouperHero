@@ -52,7 +52,7 @@ public class EnemyHealthBar : MonoBehaviour
         }
 
         // deactivate if health is 0
-        if (enemy.GetHealth() == 0) {
+        if (enemy.GetHealth() == 0 || enemy.falling == true) {
             gameObject.SetActive(false);
             statusText.enabled = false;
         }

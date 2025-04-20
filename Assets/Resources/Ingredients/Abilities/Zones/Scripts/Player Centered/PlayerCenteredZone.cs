@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections.Generic;
 using UnityEngine;
 using Infliction = SoupSpoon.SpoonInfliction;

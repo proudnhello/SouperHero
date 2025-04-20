@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -30,6 +31,7 @@ public abstract class Entity : MonoBehaviour
     internal EntityInflictionEffectHandler inflictionHandler;
     internal EntityRenderer entityRenderer;
     internal Rigidbody2D _rigidbody;
+    public bool falling = false;
 
     [SerializeField] GameObject hitmarker;
 
@@ -99,7 +101,6 @@ public abstract class Entity : MonoBehaviour
     }
     public virtual void SetMoveSpeed(float newSpeed)
     {
-        print("Changing speed to " + newSpeed);
         currentStats.moveSpeed = newSpeed;
     }
 
