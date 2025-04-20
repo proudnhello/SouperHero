@@ -35,7 +35,7 @@ public class ProjectileObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject))
+        if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject) && collider.tag != "PitHazard")
         {
             canHitPlayer = true;
             BounceOff(collider);

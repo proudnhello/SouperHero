@@ -48,7 +48,11 @@ public class HopShroomSpore : MonoBehaviour
         {
             collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
         }
-        Destroy(this.gameObject);
+
+        if (collider.gameObject.tag != "PitHazard")
+        {
+            Destroy(this.gameObject);
+        }   
     }
 
     IEnumerator HandleAnimation()

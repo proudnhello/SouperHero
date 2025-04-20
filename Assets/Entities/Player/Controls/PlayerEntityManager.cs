@@ -117,7 +117,6 @@ public class PlayerEntityManager : Entity
 
     public override void Fall(Transform respawnPoint)
     {
-        // TODO: Add good fall animation 
         GetComponent<Collider2D>().enabled = false;
         SetMoveSpeed(0);
         StartCoroutine(FallAnimation(respawnPoint));

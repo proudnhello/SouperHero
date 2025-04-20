@@ -51,11 +51,18 @@ public abstract class EnemyBaseClass : Entity
     protected virtual void UpdateAI() { }
     protected virtual void Die()
     {
+        Die(true);
+    }
+    protected virtual void Die(bool drop)
+    {
         _sprite.color = _sprite.color / 1.5f;
         _collider.enabled = false;
         _rigidbody.velocity = Vector2.zero;
         agent.updatePosition = false;
-        Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
+        if (drop)
+        {
+            Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
+        }
         entityRenderer.EnemyDeath();
         if(spawn != null){
             spawn.enemy = null;
@@ -131,6 +138,8 @@ public abstract class EnemyBaseClass : Entity
     {
         GetComponent<Collider2D>().enabled = false;
         SetMoveSpeed(0);
+        SetHealth(0);
+        falling = true;
         agent.updatePosition = false;
         // THIS IS BAD AND I SHOULD NOT DO IT
         // But stupid knockback keeps messing everything up and the enemy's about to die anyway so it's probably fine
@@ -153,6 +162,6 @@ public abstract class EnemyBaseClass : Entity
 
         }
 
-        Die();
+        Die(false);
     }
 }
