@@ -129,6 +129,7 @@ public abstract class EnemyBaseClass : Entity
     // Respawn is for players only :)
     public override void Fall(Transform _respawnPoint)
     {
+        GetComponent<Collider2D>().enabled = false;
         SetMoveSpeed(0);
         agent.updatePosition = false;
         // THIS IS BAD AND I SHOULD NOT DO IT

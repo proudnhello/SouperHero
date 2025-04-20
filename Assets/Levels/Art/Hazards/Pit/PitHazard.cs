@@ -8,7 +8,10 @@ public class PitHazard : MonoBehaviour
     [SerializeField] float coyoteTime = 0.2f; // Time entities can stay in the air before falling
     [SerializeField] Transform playerRespawnPoint;
     Dictionary<Entity, bool> inCollider = new Dictionary<Entity, bool>();
+    Collider2D collide = null;
 
+    // Scuffed version that makes large enemies fall to early
+    /*
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Entity entity = collision.GetComponent<Entity>();
@@ -29,6 +32,44 @@ public class PitHazard : MonoBehaviour
             inCollider[entity] = false;
         }
     }
+    */
+
+    // Broken version that would make enemies fall when they're entirely over the pit... if it worked
+    // Based on https://discussions.unity.com/t/how-to-check-if-one-box-collider-2d-completely-overlaps-another-box-collider-2d/828436
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        Collider2D pitCollider = GetComponent<Collider2D>();
+        Collider2D entityCollider = collision;
+        Bounds pitBounds = pitCollider.bounds;
+        Bounds entityBounds = entityCollider.bounds;
+        Entity entity = collision.GetComponent<Entity>();
+        bool fullyInside =
+            entityBounds.min.x >= pitBounds.min.x &&
+            entityBounds.max.x <= pitBounds.max.x &&
+            entityBounds.min.y >= pitBounds.min.y &&
+            entityBounds.max.y <= pitBounds.max.y;
+        bool val;
+        if (fullyInside && entity != null && (!inCollider.TryGetValue(entity, out val) || !val))
+        {
+            inCollider[entity] = true;
+            print(entity.name + " is falling");
+            StartCoroutine(Fall(entity));
+        }
+        else
+        {
+            print(entity.name + " is not in pit hazard collider bounds, but is not falling");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        Entity entity = other.GetComponent<Entity>();
+        if (entity != null)
+        {
+            print(entity.name + " exited pit hazard collider");
+            inCollider[entity] = false;
+        }
+    }
 
     private IEnumerator Fall(Entity entity)
     {
@@ -37,13 +78,10 @@ public class PitHazard : MonoBehaviour
         {
             yield return new WaitForSeconds(coyoteTime);
         }
-        else
-        {
-            yield return new WaitForSeconds(coyoteTime/2);
-        }
         if (inCollider[entity])
         {
             print(entity.name + " fell into pit hazard");
+            inCollider[entity] = false;
             entity.Fall(playerRespawnPoint);
         }
         else
