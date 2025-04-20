@@ -54,6 +54,11 @@ public class FlettuceAI : EnemyBaseClass
     internal List<IState> states;
     internal IState currentState;
     bool freezeEnemy = false;
+
+    public override void Fall(Transform _respawnPoint)
+    {
+        return; // flettuce fly lmao they're immune to pits
+    }
     void Start(){
         initEnemy();
         agent.updateRotation = false;

@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,7 +48,11 @@ public class HopShroomSpore : MonoBehaviour
         {
             collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
         }
-        Destroy(this.gameObject);
+
+        if (collider.gameObject.tag != "PitHazard")
+        {
+            Destroy(this.gameObject);
+        }   
     }
 
     IEnumerator HandleAnimation()

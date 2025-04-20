@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -116,27 +117,28 @@ public class PlayerEntityManager : Entity
 
     public override void Fall(Transform respawnPoint)
     {
-        // TODO: Add good fall animation 
+        GetComponent<Collider2D>().enabled = false;
         SetMoveSpeed(0);
         StartCoroutine(FallAnimation(respawnPoint));
     }
 
     IEnumerator FallAnimation(Transform respawnPoint)
     {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        Color color = spriteRenderer.color;
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        Vector3 initialScale = sprite.size;
+        Vector2 changeAmount = new Vector2(initialScale.x/10, initialScale.y/10); 
 
-        while (color.a > 0)
+        while(sprite.size.x > 0)
         {
-            yield return new WaitForSeconds(0.1f);
-            color.a -= 0.2f;
-            spriteRenderer.color = color;
+            yield return new WaitForSeconds(0.05f);
+            sprite.size -= changeAmount;
+
         }
 
-        color.a = 1;
-        spriteRenderer.color = color;
-        transform.position = respawnPoint.position;
+        sprite.size = initialScale;
         ResetMoveSpeed();
         DealDamage(GetBaseStats().maxHealth / 9); // Deal damage to the player == 1/9 of max health or one heart
+        transform.position = respawnPoint.position;
+        GetComponent<Collider2D>().enabled = true;
     }
 }
