@@ -27,7 +27,7 @@ public class MapRoom : MonoBehaviour
         Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), x => x.RefreshRenderTilemap());
     }
 
-    // ORDERED FROM TOP LEFT TO BOTTOM RIGHT
+    // ORDERED FROM BOTTOM LEFT TO TOP RIGHT
     public List<Block> blocks = new();
 
     public int BlockWidth()

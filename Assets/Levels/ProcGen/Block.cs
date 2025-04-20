@@ -42,16 +42,17 @@ public class Block : MonoBehaviour
         this.west = west;
     }
 
+    // Directions needed to be opened from the block's point of view
     public void SetDoors(bool north, bool south, bool east, bool west)
     {
-        if (westDoor) westDoor.SetActive(!east);
-        if (westDoorOpen) westDoorOpen.SetActive(east);
-        if (eastDoor) eastDoor.SetActive(!west);
-        if (eastDoorOpen) eastDoorOpen.SetActive(west);
-        if (northDoor) northDoor.SetActive(!south);
-        if (northDoorOpen) northDoorOpen.SetActive(south);
-        if (southDoor) southDoor.SetActive(!north);
-        if (southDoorOpen) southDoorOpen.SetActive(north);
+        if (westDoor) westDoor.SetActive(!west);
+        if (westDoorOpen) westDoorOpen.SetActive(west);
+        if (eastDoor) eastDoor.SetActive(!east);
+        if (eastDoorOpen) eastDoorOpen.SetActive(east);
+        if (northDoor) northDoor.SetActive(!north);
+        if (northDoorOpen) northDoorOpen.SetActive(north);
+        if (southDoor) southDoor.SetActive(!south);
+        if (southDoorOpen) southDoorOpen.SetActive(south);
     }
 
     public void SetDoors(GenSequence s)

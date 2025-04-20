@@ -791,7 +791,7 @@ public class RoomGenerator : MonoBehaviour
                 {
                     Block I = _map[c.row][c.col];
                     string s = GetConnectionsAtAdvanced(c);
-                    I.SetDoors(s.Contains('S'), s.Contains('N'), s.Contains('W'), s.Contains('E'));
+                    I.SetDoors(s.Contains('N'), s.Contains('S'), s.Contains('E'), s.Contains('W'));
                 }
             }
         }
@@ -800,10 +800,11 @@ public class RoomGenerator : MonoBehaviour
     // list of potential boss generation sequences
     readonly List<GenSequence> sequences = new()
     {
-        new(new(0, 2), new(0, 1), new(0, 4), new(-1, 5), true, false, false, false), // north sequence
-        new(new(0, -3), new(0, -1), new(0, -4), new(-1, -7), false, true, false, false), // south sequence
-        new(new(2, 0), new(1, 0), new(4, 0), new(5, -1), false, false, true, false), // east sequence
-        new(new(-3, 0), new(-1, 0), new(-4, 0), new(-7, -1), false, false, false, true), // west sequence
+        // In the order: room pos, first connector, second connector, boss room
+        new(new(0, 2), new(0, 1), new(0, 4), new(-1, 5), false, true, false, false), // north sequence
+        new(new(0, -3), new(0, -1), new(0, -4), new(-1, -7), true, false, false, false), // south sequence
+        new(new(2, 0), new(1, 0), new(4, 0), new(5, -1), false, false, false, true), // east sequence
+        new(new(-3, 0), new(-1, 0), new(-4, 0), new(-7, -1), false, false, true, false), // west sequence
     };
 
     // Big function to generate the end sequence. Currently places a single I connctor, followed by a 1x2 or a 2x1 depending
@@ -816,6 +817,7 @@ public class RoomGenerator : MonoBehaviour
         List<Coordinate> sortedCoordinates = allIntermediates.OrderByDescending(c => c.SquaredDistanceTo(start)).ToList();
         foreach (Coordinate c in sortedCoordinates)
         {
+            // 3 and 7 are the current width and height of the boss sequence
             string s = GetConnectionsEnd(c, 3, 7);
             bool found = false;
             GenSequence chosenSequence = new();
@@ -848,16 +850,19 @@ public class RoomGenerator : MonoBehaviour
                 }))
             };
 
-
-            while (!found)
-            {
-                var (dirChar, seqIndex, openDoor) = directions[UnityEngine.Random.Range(0, 4)];
+            var (dirChar, seqIndex, openDoor) = directions[UnityEngine.Random.Range(0, 4)];
+            int i = 0;
+            for (; i < directions.Length; i++) {
                 if (s.Contains(dirChar))
                 {
                     found = true;
                     chosenSequence = sequences[seqIndex];
                     openDoor(); // apparently actions can be used like named functions just stored as variables???? WOW!
                 }
+            }
+            if(!found)
+            {
+                continue;
             }
 
             MapRoom connector;
@@ -1044,7 +1049,7 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
-        // After all connectors have been placed, touch up the connectors by looping again
+        // After all connectors have been placed, touch up the connectors by looping again (SECOND SWEEP CONNECT)
         // and re-doing the connections with new adjacencies
         FirstSweepConnect();
 
