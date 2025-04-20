@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class CombatTestRoom : MonoBehaviour
@@ -15,6 +16,8 @@ public class CombatTestRoom : MonoBehaviour
     public List<GameObject> enemyList;
     public List<GameObject> destroyableList;
     public List<GameObject> forageableList;
+
+    private List<List<GameObject>> objectsToSpawn;
     void Start()
     {
         
@@ -50,4 +53,10 @@ public class CombatTestRoom : MonoBehaviour
         debugScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Enable();
     }
+
+    public void spawnAllObjects(){
+        //loop through and spawn things at respective locations
+    }
+    
+
 }
