@@ -7,12 +7,14 @@ public class CookingCursor : MonoBehaviour
 {
     public Image currentImage;
     public Collectable currentCollectableReference;
+    private Color originalImageColor;
 
     public void switchCursorImageTo(Collectable selectedCollectable, Image newImage)
     {
         currentImage.enabled = true;
         currentImage.sprite = newImage.sprite;
         currentCollectableReference = selectedCollectable;
+        originalImageColor = currentImage.color;
     }
 
     public void removeCursorImage()
@@ -28,6 +30,17 @@ public class CookingCursor : MonoBehaviour
         {
             currentImage.sprite = null;
         }
+    }
+
+    public void changeToInvalidColor()
+    {
+        Debug.Log(currentImage.color);
+        currentImage.color = new Color(255, 0, 0, 255);
+    }
+
+    public void resetImageColor()
+    {
+        currentImage.color = originalImageColor;
     }
 
     // Update is called once per frame

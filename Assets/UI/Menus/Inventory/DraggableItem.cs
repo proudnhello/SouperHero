@@ -18,6 +18,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public bool isDragging = false;
     public bool droppedOn = false;
     public bool worldDropped = false;
+    public bool validPlacement = true;
 
     Collectable collectable;
     public static float alphaOnPickup = .25f;
@@ -51,6 +52,30 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnDrag(PointerEventData eventData)
     {
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
+
+        // Checking ingredient placement position
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = Input.mousePosition
+        };
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        if(results.Count == 0)
+        {   // Nothing in raycast which means no collisions
+            CursorManager.Singleton.cookingCursor.resetImageColor();
+            validPlacement = true;
+        }
+        foreach (RaycastResult result in results)
+        {
+            if(result.gameObject.CompareTag("Ingredient") || result.gameObject.CompareTag("BasketWall"))
+            {   // Collision with other ingredients or the basket collider which means invalid placement
+                Debug.Log(result);
+                CursorManager.Singleton.cookingCursor.changeToInvalidColor();
+                validPlacement = false;
+                break;
+            }
+        }
     }
 
     public bool resetParent()
@@ -107,6 +132,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         foreach (RaycastResult result in results)
         {
+            Debug.Log(result);
             dropTarget = result.gameObject.GetComponent<CookingSlot>();
             if (dropTarget != null)
             {
