@@ -29,7 +29,6 @@ public class Collectable : MonoBehaviour
         if (ingredient.GetType() == typeof(AbilityIngredient))
         {
             AbilityIngredient ability = (AbilityIngredient)ingredient;
-            //Debug.Log("SPAWNING: " + ability.abilityType._abilityName);
             promptText += ability.abilityType._abilityName;
         }
         else if (ingredient.GetType() == typeof(FlavorIngredient))

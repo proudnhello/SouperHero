@@ -25,7 +25,6 @@ public class Inflictions
 
     public static IEnumerator Damage(StatusEffectInstance instance)
     {
-        //Debug.Log("adding " + instance.amount + " damage to " + instance.entity.gameObject.name);
         instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
         instance.entity.entityRenderer.TakeDamage();
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
@@ -57,7 +56,6 @@ public class Inflictions
 
     public static IEnumerator Freeze(StatusEffectInstance instance)
     {
-        Debug.Log("adding " + instance.amount + " freeze to " + instance.entity.gameObject.name);
         instance.entity.SetMoveSpeed(instance.entity.GetMoveSpeed() / instance.amount);
         yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
         instance.entity.ResetMoveSpeed();
@@ -66,7 +64,6 @@ public class Inflictions
 
     public static IEnumerator Knockback(StatusEffectInstance instance, Rigidbody2D target, Transform source)
     {
-        //Debug.Log("adding " + instance.amount + " knockback to " + instance.entity.gameObject.name);
         NavMeshAgent agent = target.GetComponent<NavMeshAgent>();
         if (agent)
         {

@@ -19,10 +19,6 @@ public class ZoneArea : MonoBehaviour
             {
                 // Apply the infliction to the enemy
                 entity.ApplyInfliction(inflictions, gameObject.transform);
-                foreach (Infliction infliction in inflictions)
-                {
-                    print(infliction.InflictionFlavor.inflictionType.ToString());
-                }
             }
          
         }

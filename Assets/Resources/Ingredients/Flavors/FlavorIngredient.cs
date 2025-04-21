@@ -25,18 +25,12 @@ public class FlavorIngredient : Ingredient
             {
                 isBuff = true;
                 FlavorPairingBuff = buffType;
-                Debug.Log("Pairs with " + FlavorPairingBuff);
             }
             else if (Enum.TryParse(pairing, out InflictionFlavor.InflictionType inflictionType))
             {
                 isBuff = false;
                 FlavorPairingInfliction = inflictionType;
-                Debug.Log("Pairs with " + FlavorPairingInfliction);
             } 
-            else
-            {
-                Debug.LogError($"Invalid flavor type enum name: {pairing}.");
-            }
         } 
 
         public int GetPairing()

@@ -38,7 +38,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         CursorManager.Singleton.cookingCursor.switchCursorImageTo(collectable, image);
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
-        print("Begin Drag");
 
         parentAfterDrag = previousParent;
 
@@ -112,7 +111,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     if (previousCookingSlot != null)
                     {
                         CookingManager.Singleton.CookingSlotSetTransparent(previousCookingSlot);
-                        Debug.Log("PREVIOUS COOKING SLOT: " + previousCookingSlot.name);
                     }
                 }
             }
@@ -143,7 +141,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             if (dropTarget != null)
             {
                 dropTarget.OnDrop(eventData);
-                Debug.Log("dropped!");
                 break;
             }
         }
@@ -195,7 +192,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         {   // Dropped when not in cooking UI
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-            Debug.Log("Third drop check");
             if(validPlacement)
             {   // Places into new position only if area is clear
                 transform.position = new Vector3(position.x, position.y, transform.root.position.z);
@@ -216,11 +212,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Ingredient") || collision.gameObject.CompareTag("BasketWall"))
-        {
-            Debug.Log("ITEM COLLISION");
-        }
-
         if(collision.gameObject.CompareTag("WorldDrop"))
         {
             if(previousParent.TryGetComponent<CookingSlot>(out CookingSlot previousSlot))
@@ -264,7 +255,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         ingredient = transform.parent.GetComponent<Collectable>().ingredient;
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
-        print("enter");
         
         // I wanna give a huge shoutout to the person whoever wrote this 300 line function, only for it all to be thrown away.
         // Giving credits to Cursor for helping edit this 300 line function when I wanted to put colors in
@@ -281,9 +271,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //RectTransform rt = GetComponent<RectTransform>();
         //Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
         //itemStatsScreen.transform.position = new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2(actualSize.x / 2, -actualSize.y / 2);
-        ////Debug.Log(itemStatsScreen.transform.position);
-        ////Debug.Log(rt.rect.size);
-        ////Debug.Log(this.transform.position);
 
         //// bring to the front
         //itemStatsScreen.transform.SetParent(transform.root);

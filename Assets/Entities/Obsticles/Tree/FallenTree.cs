@@ -48,7 +48,6 @@ public class FallenTree : Entity
     {
         foreach (SoupSpoon.SpoonInfliction infliction in spoonInflictions)
         {
-            print(infliction.InflictionFlavor.inflictionType);
             if (infliction.InflictionFlavor.inflictionType == FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage)
             {
                 DealDamage((int)infliction.amount);

@@ -17,7 +17,6 @@ public class PlayerCenteredZone : AbilityAbstractClass
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
-        Debug.Log($"Is spawner null?: {spawner}");
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();
         stats.size *= SIZE_MULTIPLIER;

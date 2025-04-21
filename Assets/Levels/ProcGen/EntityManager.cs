@@ -141,10 +141,10 @@ public class EntityManager : MonoBehaviour
 
     public void ImportEnemies(String import){
         String[] strings = import.Split(',');
-        Debug.Log("EnemyList Size: " + possibleEnemies.Count);
+        //Debug.Log("EnemyList Size: " + possibleEnemies.Count);
         for(int i = 0; i < strings.Length; i++){
             if(strings[i] != "-1" && i < enemySpawns.Count){
-                Debug.Log("String index: " + strings[i]);
+                //Debug.Log("String index: " + strings[i]);
                 GameObject enemy = Instantiate(possibleEnemies[Int32.Parse(strings[i])].enemy);
                 enemy.transform.position = enemySpawns[i].transform.position;
                 enemy.GetComponent<EnemyBaseClass>().setSpawn(enemySpawns[i]);
@@ -221,6 +221,6 @@ public class EntityManager : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log(exportEnemies());
+
     }
 }

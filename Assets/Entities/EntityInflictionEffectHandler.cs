@@ -66,7 +66,6 @@ public class EntityInflictionEffectHandler
             string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(infliction.InflictionFlavor.inflictionType);
             if(hitmarkerColor == null) hitmarkerColor = Color.white;
             if(hitmarkerText == null) hitmarkerText = "DEFAULT HITMARKER TEXT";
-            //Debug.Log("applying infliction " + infliction.InflictionFlavor.inflictionType);
             if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType)) 
                 activeStatuses[infliction.InflictionFlavor.inflictionType].WorsenStatusEffect(infliction);
             else
@@ -106,7 +105,6 @@ public class EntityInflictionEffectHandler
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
-                    Debug.Log("Freezing " + entity.gameObject.name);
                     instance.StartStatusEffect(Inflictions.Freeze(instance));
                 }
             }

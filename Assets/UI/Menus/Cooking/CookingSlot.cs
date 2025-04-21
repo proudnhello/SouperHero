@@ -51,8 +51,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
 
         if (ingredientReference == null && this != CookingManager.Singleton.currentCookingSlot && !draggableItem.worldDropped)
         {
-            //Debug.Log("Set!");
-
             draggableItem.image.color = new Color(1.0f, 1.0f, 1.0f, DraggableItem.alphaOnPickup);
             draggableItem.image.raycastTarget = false;
 
@@ -134,7 +132,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
                     previousSlot.ingredientReference = null;
                     previousSlot.faceImage.sprite = null;
                     previousSlot.usesText.text = "";
-                    Debug.Log(previousSlot.gameObject.name);
                     CookingManager.Singleton.CookingSlotSetTransparent(previousSlot);
                     previousSlot = null;    
                 }
