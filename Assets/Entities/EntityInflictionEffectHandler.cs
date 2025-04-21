@@ -118,9 +118,13 @@ public class EntityInflictionEffectHandler
     {
         if (!activeStatuses.ContainsKey(InflictionType.SPIKY_Damage))
         {
+            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[InflictionType.SPIKY_Damage];
+            string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(InflictionType.SPIKY_Damage);
             StatusEffectInstance instance = new(entity, dmg, InflictionType.SPIKY_Damage);
             activeStatuses.Add(InflictionType.SPIKY_Damage, instance);
             instance.StartStatusEffect(Inflictions.Damage(instance));
+            hitmarkerText = "-" + dmg + " " + hitmarkerText;
+            entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
         }
 
     }

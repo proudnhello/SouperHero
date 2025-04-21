@@ -24,7 +24,7 @@ public class Hitmarker : MonoBehaviour
         Color color = GetComponentInChildren<TextMeshPro>().color;
         color.a = alpha;
         GetComponentInChildren<TextMeshPro>().color = color;
-        if (lifetime <= 0)
+        if (timeLeft <= 0)
         {
             Destroy(gameObject);
         }
