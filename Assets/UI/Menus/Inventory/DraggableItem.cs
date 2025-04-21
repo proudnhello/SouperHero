@@ -19,6 +19,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public bool droppedOn = false;
     public bool worldDropped = false;
     public bool validPlacement = true;
+    [SerializeField] private float ingredientRadius;
 
     Collectable collectable;
     public static float alphaOnPickup = .25f;
@@ -26,6 +27,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void Awake()
     {
         collectable = transform.parent.gameObject.GetComponent<Collectable>();
+        ingredientRadius = 0.5f;
     }
 
     public void OnBeginDrag(PointerEventData eventData)         
@@ -54,28 +56,33 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
 
         // Checking ingredient placement position
-        PointerEventData pointerData = new PointerEventData(EventSystem.current)
-        {
-            position = Input.mousePosition
-        };
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, results);
+        // PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        // {
+        //     position = Input.mousePosition
+        // };
+        // List<RaycastResult> results = new List<RaycastResult>();
+        // EventSystem.current.RaycastAll(pointerData, results);
 
-        if(results.Count == 0)
-        {   // Nothing in raycast which means no collisions
-            CursorManager.Singleton.cookingCursor.resetImageColor();
-            validPlacement = true;
-        }
-        foreach (RaycastResult result in results)
+        // if(results.Count == 0)
+        // {   // Nothing in raycast which means no collisions
+        //     CursorManager.Singleton.cookingCursor.resetImageColor();
+        //     validPlacement = true;
+        // }
+
+        // Checking for the basket colliders and ingredients using physics because UI raycasts suck I guess
+        Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(worldPoint, ingredientRadius);
+        foreach (var collider in colliders)
         {
-            if(result.gameObject.CompareTag("Ingredient") || result.gameObject.CompareTag("BasketWall"))
-            {   // Collision with other ingredients or the basket collider which means invalid placement
-                Debug.Log(result);
+            if (collider.CompareTag("Ingredient") || collider.CompareTag("BasketWall"))
+            {
                 CursorManager.Singleton.cookingCursor.changeToInvalidColor();
                 validPlacement = false;
-                break;
+                return;
             }
         }
+        CursorManager.Singleton.cookingCursor.resetImageColor();
+        validPlacement = true;
     }
 
     public bool resetParent()
@@ -132,7 +139,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         foreach (RaycastResult result in results)
         {
-            Debug.Log(result);
             dropTarget = result.gameObject.GetComponent<CookingSlot>();
             if (dropTarget != null)
             {
@@ -149,8 +155,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (dropTarget == null && !isDragging && !droppedOn)
         {
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
             worldDropped = true;
 
             previousParent = collectable.gameObject.transform;
@@ -163,7 +167,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 image.raycastTarget = true;
             }
         } else if (CookingManager.Singleton.IsCooking() && isDragging)
-        {
+        {   // When in the cooking UI
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             if (droppedOn)  // dropped on an already occupied slot
             {
@@ -172,7 +176,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 CursorManager.Singleton.cursorObject.SetActive(true);
             }
 
-            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            if(validPlacement)
+            {   // Places into new position only if area is clear
+                transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            }
             worldDropped = true;
 
             previousParent = collectable.gameObject.transform;
@@ -185,10 +192,14 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 image.raycastTarget = true;
             }
         } else if (!CookingManager.Singleton.IsCooking() && dropTarget == null && isDragging)
-        {
+        {   // Dropped when not in cooking UI
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            Debug.Log("Third drop check");
+            if(validPlacement)
+            {   // Places into new position only if area is clear
+                transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            }
             worldDropped = true;
             isDragging = false;
 
@@ -205,6 +216,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
+        if(collision.gameObject.CompareTag("Ingredient") || collision.gameObject.CompareTag("BasketWall"))
+        {
+            Debug.Log("ITEM COLLISION");
+        }
+
         if(collision.gameObject.CompareTag("WorldDrop"))
         {
             if(previousParent.TryGetComponent<CookingSlot>(out CookingSlot previousSlot))
