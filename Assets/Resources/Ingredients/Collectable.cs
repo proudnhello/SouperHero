@@ -14,12 +14,21 @@ public class Collectable : MonoBehaviour
 
     public void Spawn(Vector2 spawnPoint)
     {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(spawnPoint, 0.01f);
+        foreach (Collider2D collider in colliders)
+        {
+            // If the collectable were to be spawned in a pit hazard, don't spawn it
+            if (collider.gameObject.CompareTag("PitHazard"))
+            {
+                return;
+            }
+        }
+
         promptText = ingredient.name + "\n";
 
         if (ingredient.GetType() == typeof(AbilityIngredient))
         {
             AbilityIngredient ability = (AbilityIngredient)ingredient;
-            //Debug.Log("SPAWNING: " + ability.abilityType._abilityName);
             promptText += ability.abilityType._abilityName;
         }
         else if (ingredient.GetType() == typeof(FlavorIngredient))

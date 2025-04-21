@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,10 +19,6 @@ public class ZoneArea : MonoBehaviour
             {
                 // Apply the infliction to the enemy
                 entity.ApplyInfliction(inflictions, gameObject.transform);
-                foreach (Infliction infliction in inflictions)
-                {
-                    print(infliction.InflictionFlavor.inflictionType.ToString());
-                }
             }
          
         }

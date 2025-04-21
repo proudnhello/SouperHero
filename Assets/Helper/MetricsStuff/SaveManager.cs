@@ -120,7 +120,6 @@ public class SaveManager : MonoBehaviour
     }
 
     public void LoadEntities(){
-        Debug.Log(entitiesPath);
         if (File.Exists(entitiesPath))
         {
             string json = string.Empty;
@@ -131,7 +130,6 @@ public class SaveManager : MonoBehaviour
             }
 
             EntitiesClass data = JsonUtility.FromJson<EntitiesClass>(json);
-            Debug.Log(data.enemies.Count);
 
             roomGenerator.importEnemyStrings(data.enemies);
             roomGenerator.importForagableStrings(data.foragables);
@@ -165,8 +163,6 @@ public class SaveManager : MonoBehaviour
             DeathMetrics data = JsonUtility.FromJson<DeathMetrics>(json);
 
             deathMetrics = data;
-
-            Debug.Log("Game loaded");
         }
         else
         {
@@ -186,7 +182,6 @@ public class SaveManager : MonoBehaviour
             writer.Write(json);
         }
 
-        Debug.Log($"Saving New Stats Json at path: {statsPath}");
-
+        //Debug.Log($"Saving New Stats Json at path: {statsPath}");
     }
 }

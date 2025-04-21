@@ -5,6 +5,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
+[Flags]
+public enum RoomType
+{
+    START = 0,
+    INTERMEDIATE = 1,
+    CONNECTOR = 2,
+    ALL = START | INTERMEDIATE | CONNECTOR,
+    NOT_CONNECTOR = START | INTERMEDIATE
+}
+
 public class MapRoom : MonoBehaviour
 {
     [SerializeField]
@@ -17,8 +27,8 @@ public class MapRoom : MonoBehaviour
         Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), x => x.RefreshRenderTilemap());
     }
 
-    // ORDERED FROM TOP LEFT TO BOTTOM RIGHT
-    public List<Block> blocks = new List<Block>();
+    // ORDERED FROM BOTTOM LEFT TO TOP RIGHT
+    public List<Block> blocks = new();
 
     public int BlockWidth()
     {
@@ -33,10 +43,5 @@ public class MapRoom : MonoBehaviour
     public Block At(int row, int col)
     {
         return blocks[col * (_blockWidth) + row];
-    }
-
-    public void enableAllEnemies()
-    {
-        this.gameObject.transform.GetChild(0).gameObject.SetActive(true);
     }
 }

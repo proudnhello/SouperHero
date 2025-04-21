@@ -114,13 +114,6 @@ public class SoupSpoon
 
         float totalCooldown = 0;
 
-        //foreach (var ability in abilityIngredients)
-        //{
-        //    Debug.Log("Ability Ingredient Uses: " + ability.uses);
-        //}
-        
-        //Debug.Log("Ability Ingredient List Count: " + abilityIngredients.Count);
-
         // Populate ability tracker and calculate total uses and cooldown
         foreach (var ingredient in abilityIngredients)
         {
@@ -230,7 +223,6 @@ public class SoupSpoon
         {
             output += $"{infliction.InflictionFlavor.inflictionType} = {infliction.amount}";
         }
-        Debug.Log(output);
     }
 
     // Variable to track the last time the spoon was used
