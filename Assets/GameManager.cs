@@ -76,8 +76,6 @@ public class GameManager : MonoBehaviour
         CursorManager.Singleton.cursorObject.SetActive(false);
         pauseScreen.SetActive(true);
         PlayerEntityManager.Singleton.input.Disable();
-
-        //InputManager.playerInput.SwitchCurrentActionMap("UI");
     }
 
     public void ResumeGame() {
@@ -86,8 +84,6 @@ public class GameManager : MonoBehaviour
         CursorManager.Singleton.cursorObject.SetActive(true);
         pauseScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Enable();
-
-        //InputManager.playerInput.SwitchCurrentActionMap("Player");
     }
 
     public void NewGame()
