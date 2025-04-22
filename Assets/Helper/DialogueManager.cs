@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
+    public TextMeshProUGUI nameText;
+    public TextMeshProUGUI dialogueText;
+    private Queue<string> sentences;
     public static DialogueManager Singleton { get; private set; }
     private void Awake()
     {
@@ -18,16 +23,17 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private Queue<string> sentences;
     // Start is called before the first frame update
     void Start()
     {
         sentences = new Queue<string>();
+        nameText.text = "";
+        dialogueText.text = "";
     }
 
     public void StartDialogue(Dialogue dialogue)
     {
-        Debug.Log("Starting conversation with " + dialogue.name);
+        nameText.text = dialogue.name;
         sentences.Clear();
 
         foreach (string sentence in dialogue.sentences)
@@ -47,7 +53,9 @@ public class DialogueManager : MonoBehaviour
 
         // ----- ONCE WORKING SWAP THIS OUT FOR A LOCALIZATION CALL ------
         string sentence = sentences.Dequeue(); 
+        dialogueText.text = sentence;
         Debug.Log(sentence);
+        // -------------------------------------------------------------
     }
 
     void EndDialogue()
