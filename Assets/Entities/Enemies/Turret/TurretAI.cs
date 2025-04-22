@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -55,7 +56,6 @@ public class TurretAI : EnemyBaseClass
         {
             turret.animator.Play("Retreating");
             turret.c.enabled = false;
-            print(turret.c.enabled);
             hideTimer = turret.hideTime;
         }
 

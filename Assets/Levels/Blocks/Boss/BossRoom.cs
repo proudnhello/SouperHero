@@ -43,7 +43,6 @@ public class BossRoom : MonoBehaviour
         {
             return;
         }
-        print("Begin Boss Fight");
         fightStarted = true;
         foreach (var door in closedDoors)
         {
@@ -72,7 +71,6 @@ public class BossRoom : MonoBehaviour
                 GameObject enemy = holder.Item1;
                 if (enemy != null)
                 {
-                    print(enemy.name + " is still alive");
                     return;
                 }
             }
@@ -193,7 +191,6 @@ public class BossRoom : MonoBehaviour
         GameObject spawnPoint = holder.Item2;
 
         enemy.SetActive(true);
-        print(enemy.name + " spawned at " + spawnPoint.name);
         EnemyBaseClass e = enemy.GetComponent<EnemyBaseClass>();
         ParticleSystem spawnEffect = spawnPoint.GetComponentInChildren<ParticleSystem>();
         if(spawnEffect != null)

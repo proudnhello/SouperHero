@@ -9,23 +9,32 @@ public class PitHazard : MonoBehaviour
     [SerializeField] Transform playerRespawnPoint;
     Dictionary<Entity, bool> inCollider = new Dictionary<Entity, bool>();
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    // Based on https://discussions.unity.com/t/how-to-check-if-one-box-collider-2d-completely-overlaps-another-box-collider-2d/828436
+    private void OnTriggerStay2D(Collider2D collision)
     {
+        Collider2D pitCollider = GetComponent<Collider2D>();
+        Collider2D entityCollider = collision;
+        Bounds pitBounds = pitCollider.bounds;
+        Bounds entityBounds = entityCollider.bounds;
         Entity entity = collision.GetComponent<Entity>();
-        if (entity != null)
+        bool fullyInside =
+            entityBounds.min.x >= pitBounds.min.x &&
+            entityBounds.max.x <= pitBounds.max.x &&
+            entityBounds.min.y >= pitBounds.min.y &&
+            entityBounds.max.y <= pitBounds.max.y;
+        bool val;
+        if (fullyInside && entity != null && (!inCollider.TryGetValue(entity, out val) || !val))
         {
-            print(entity.name + " entered pit hazard collider");
             inCollider[entity] = true;
             StartCoroutine(Fall(entity));
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit(Collider other)
     {
-        Entity entity = collision.GetComponent<Entity>();
+        Entity entity = other.GetComponent<Entity>();
         if (entity != null)
         {
-            print(entity.name + " exited pit hazard collider");
             inCollider[entity] = false;
         }
     }
@@ -39,12 +48,8 @@ public class PitHazard : MonoBehaviour
         }
         if (inCollider[entity])
         {
-            print(entity.name + " fell into pit hazard");
+            inCollider[entity] = false;
             entity.Fall(playerRespawnPoint);
-        }
-        else
-        {
-            print(entity.name + " did not fall into pit hazard");
         }
     }
 }

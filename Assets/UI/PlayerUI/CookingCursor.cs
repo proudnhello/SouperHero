@@ -30,6 +30,16 @@ public class CookingCursor : MonoBehaviour
         }
     }
 
+    public void changeToInvalidColor()
+    {
+        currentImage.color = new Color(255, 0, 0, 255);
+    }
+
+    public void resetImageColor()
+    {
+        currentImage.color = new Color(255, 255, 255, 255);
+    }
+
     // Update is called once per frame
     void Update()
     {

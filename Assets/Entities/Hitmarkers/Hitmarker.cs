@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -23,7 +24,7 @@ public class Hitmarker : MonoBehaviour
         Color color = GetComponentInChildren<TextMeshPro>().color;
         color.a = alpha;
         GetComponentInChildren<TextMeshPro>().color = color;
-        if (lifetime <= 0)
+        if (timeLeft <= 0)
         {
             Destroy(gameObject);
         }
