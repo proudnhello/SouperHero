@@ -30,12 +30,29 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("Starting conversation with " + dialogue.name);
         sentences.Clear();
 
-        // foreach (string sentence in dialogue.sentences)
-        // {
-        //     sentences.Enqueue(sentence);
-        // }
+        foreach (string sentence in dialogue.sentences)
+        {
+            sentences.Enqueue(sentence);
+        }
 
-        // DisplayNextSentence();
+        DisplayNextSentence();
+    }
+
+    public void DisplayNextSentence()
+    {
+        if (sentences.Count == 0){
+            EndDialogue();
+            return;
+        }
+
+        // ----- ONCE WORKING SWAP THIS OUT FOR A LOCALIZATION CALL ------
+        string sentence = sentences.Dequeue(); 
+        Debug.Log(sentence);
+    }
+
+    void EndDialogue()
+    {
+        Debug.Log("End of conversation.");
     }
 
 }
