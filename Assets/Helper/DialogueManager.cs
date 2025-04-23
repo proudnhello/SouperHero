@@ -9,6 +9,8 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;
     private Queue<string> sentences;
+
+    public Animator animator;
     public static DialogueManager Singleton { get; private set; }
     private void Awake()
     {
@@ -33,6 +35,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogue dialogue)
     {
+        animator.SetBool("IsOpen", true);
         nameText.text = dialogue.name;
         sentences.Clear();
 
@@ -53,14 +56,26 @@ public class DialogueManager : MonoBehaviour
 
         // ----- ONCE WORKING SWAP THIS OUT FOR A LOCALIZATION CALL ------
         string sentence = sentences.Dequeue(); 
-        dialogueText.text = sentence;
-        Debug.Log(sentence);
+        StopAllCoroutines();
+        StartCoroutine(TypeSentence(sentence));
+        // -------------------------------------------------------------
+        // string sentence = LocalizationManager.Singleton.GetLocalizedValue(sentences.Dequeue());        
         // -------------------------------------------------------------
     }
 
-    void EndDialogue()
+    IEnumerator TypeSentence(string sentence)
     {
-        Debug.Log("End of conversation.");
+        dialogueText.text = "";
+        foreach (char letter in sentence.ToCharArray())
+        {
+            dialogueText.text += letter;
+            yield return null;
+        }
+    }
+
+    public void EndDialogue()
+    {
+        animator.SetBool("IsOpen", false);
     }
 
 }
