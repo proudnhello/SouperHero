@@ -17,6 +17,7 @@ public class SpoonsEquipped : MonoBehaviour
 
     private Vector2 normalSize = new Vector2(82, 50);
     private Vector2 selectedSize = new Vector2(123, 75);
+    [SerializeField] private Animation activeSpoonAnim;
 
     private void Start()
     {
