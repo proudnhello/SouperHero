@@ -8,7 +8,7 @@ public class DialogueManager : MonoBehaviour
 {
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;
-    private Queue<string> sentences;
+    private Queue<string> sentenceKeys;
 
     public Animator animator;
     public static DialogueManager Singleton { get; private set; }
@@ -28,7 +28,7 @@ public class DialogueManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        sentences = new Queue<string>();
+        sentenceKeys = new Queue<string>();
         nameText.text = "";
         dialogueText.text = "";
     }
@@ -36,12 +36,12 @@ public class DialogueManager : MonoBehaviour
     public void StartDialogue(Dialogue dialogue)
     {
         animator.SetBool("IsOpen", true);
-        nameText.text = dialogue.name;
-        sentences.Clear();
+        nameText.text = LocalizationManager.GetLocalizedDialogue(dialogue.nameKey);
+        sentenceKeys.Clear();
 
-        foreach (string sentence in dialogue.sentences)
+        foreach (string sentenceKey in dialogue.sentenceKeys)
         {
-            sentences.Enqueue(sentence);
+            sentenceKeys.Enqueue(sentenceKey);
         }
 
         DisplayNextSentence();
@@ -49,17 +49,15 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        if (sentences.Count == 0){
+        if (sentenceKeys.Count == 0){
             EndDialogue();
             return;
         }
 
         // ----- ONCE WORKING SWAP THIS OUT FOR A LOCALIZATION CALL ------
-        string sentence = sentences.Dequeue(); 
+        string sentence = LocalizationManager.GetLocalizedDialogue(sentenceKeys.Dequeue()); 
         StopAllCoroutines();
         StartCoroutine(TypeSentence(sentence));
-        // -------------------------------------------------------------
-        // string sentence = LocalizationManager.Singleton.GetLocalizedValue(sentences.Dequeue());        
         // -------------------------------------------------------------
     }
 
