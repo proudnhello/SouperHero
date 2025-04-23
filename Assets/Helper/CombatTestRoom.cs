@@ -177,15 +177,15 @@ public class CombatTestRoom : MonoBehaviour
 
     public void addEnemy()
     {
-        //dropdown value and add that and amount to the dicitonary
-        string dropdownValue = enemyDropdown.options[enemyDropdown.value].text;
-        //Debug.Log(dropdownValue);
         Int32.TryParse(enemyInputNumber.text, out int numberOf);
-        // Debug.Log(numberOf);
         GameObject dropdownGO = enemyList[enemyDropdown.value];
-        //Debug.Log(dropdownGO);
 
-        enemyDict.Add(dropdownGO, numberOf);
+        try{
+            enemyDict.Add(dropdownGO, numberOf);
+        } catch (ArgumentException){
+            enemyDict[dropdownGO] += numberOf;
+        }
+        
         updateEnemyQueueText();
     }
 
@@ -196,7 +196,7 @@ public class CombatTestRoom : MonoBehaviour
         foreach (KeyValuePair<GameObject, int> kvp in enemyDict)
         {
             //textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-            enemyQueueText.text += string.Format("{0}, {1}", kvp.Key, kvp.Value);
+            enemyQueueText.text += string.Format("{0}, {1}X\n", kvp.Key.name, kvp.Value);
         }
         //Debug.Log(enemyDict.Values);
     }
