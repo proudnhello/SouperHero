@@ -5,6 +5,7 @@ using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class CombatTestRoom : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class CombatTestRoom : MonoBehaviour
     public TMP_Text forageableQueueText;
 
     public List<GameObject> spawnPoints;
-
+    private Queue<GameObject> bigQueue;
 
 
     void Start()
@@ -88,6 +89,20 @@ public class CombatTestRoom : MonoBehaviour
     public void spawnAllObjects()
     {
         //loop through and spawn things at respective locations
+        int numOfGroups = enemyDict.Count + destroyableDict.Count + forageableDict.Count;
+        int spawnPointIndex = 0;
+
+        if(enemyDict.Count >= 1){
+            foreach(KeyValuePair<GameObject,int> kvp in enemyDict){
+                for(int i = 0; i < kvp.Value; i++){
+                    Instantiate(kvp.Key, spawnPoints[spawnPointIndex].transform);
+                }
+                enemyDict.Remove(kvp.Key);
+                spawnPointIndex++;
+            }
+        }
+
+        
 
     }
 
