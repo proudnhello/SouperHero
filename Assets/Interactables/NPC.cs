@@ -8,17 +8,31 @@ public class NPC : Interactable
     [SerializeField] private DialogueTrigger dialogueTrigger;
     [SerializeField] private bool repeatable = true; // if the NPC can be interacted with multiple times
     private int _interactCount = 0; // how many times the NPC has been interacted with
+
+    private void Awake()
+    {
+        // set the interactable to be highlighted
+        SetInteractable(true);
+    }
     public override void Interact()
     {
         if(!repeatable && _interactCount > 0)
         {
-            // if the NPC is not repeatable and has already been interacted with, do nothing
-            return;
+            SetInteractable(false); // set the interactable to false so it can't be interacted with again
         }
+
         if (CanInteract())
         {
+            Debug.Log("Interacting with NPC: " + gameObject.name);
             // Trigger the dialogue
-            dialogueTrigger.TriggerDialogue();
+            if (dialogueTrigger != null)
+            {
+                dialogueTrigger.TriggerDialogue();
+            }
+            else
+            {
+                Debug.LogWarning("DialogueTrigger is not assigned for NPC: " + gameObject.name);
+            }
             _interactCount++;
         }
     }
