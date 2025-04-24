@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class CombatTestRoom : MonoBehaviour
 {
@@ -35,7 +36,8 @@ public class CombatTestRoom : MonoBehaviour
     public TMP_Text destroyableQueueText;
     public TMP_Text forageableQueueText;
 
-    private List<Dictionary<GameObject, int>> allObjectsToSpawn;
+    public List<GameObject> spawnPoints;
+
 
 
     void Start()
@@ -86,6 +88,7 @@ public class CombatTestRoom : MonoBehaviour
     public void spawnAllObjects()
     {
         //loop through and spawn things at respective locations
+
     }
 
     public void plusEnemy()
@@ -199,6 +202,109 @@ public class CombatTestRoom : MonoBehaviour
             enemyQueueText.text += string.Format("{0}, {1}X\n", kvp.Key.name, kvp.Value);
         }
         //Debug.Log(enemyDict.Values);
+    }
+
+    public void removeEnemy(){
+        Int32.TryParse(enemyInputNumber.text, out int numberOf);
+        GameObject dropdownGO = enemyList[enemyDropdown.value];
+
+        if(enemyDict.ContainsKey(dropdownGO)){
+            if(enemyDict[dropdownGO] - numberOf >= 1){
+                enemyDict[dropdownGO] -= numberOf;
+                updateEnemyQueueText();
+            } else {
+                enemyDict.Remove(dropdownGO);
+                updateEnemyQueueText();
+            }
+        } else {
+            return;
+        }
+    }
+
+    public void addDestroyable()
+    {
+        Int32.TryParse(destroyableInputNumber.text, out int numberOf);
+        GameObject dropdownGO = destroyableList[destroyableDropdown.value];
+
+        try{
+            destroyableDict.Add(dropdownGO, numberOf);
+        } catch (ArgumentException){
+            destroyableDict[dropdownGO] += numberOf;
+        }
+        
+        updateDestroyableQueueText();
+    }
+
+    public void updateDestroyableQueueText()
+    {
+        //key - value
+        destroyableQueueText.text = "";
+        foreach (KeyValuePair<GameObject, int> kvp in destroyableDict)
+        {
+            //textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+            destroyableQueueText.text += string.Format("{0}, {1}X\n", kvp.Key.name, kvp.Value);
+        }
+        //Debug.Log(enemyDict.Values);
+    }
+
+    public void removeDestroyable(){
+        Int32.TryParse(destroyableInputNumber.text, out int numberOf);
+        GameObject dropdownGO = destroyableList[destroyableDropdown.value];
+
+        if(destroyableDict.ContainsKey(dropdownGO)){
+            if(destroyableDict[dropdownGO] - numberOf >= 1){
+                destroyableDict[dropdownGO] -= numberOf;
+                updateDestroyableQueueText();
+            } else {
+                destroyableDict.Remove(dropdownGO);
+                updateDestroyableQueueText();
+            }
+        } else {
+            return;
+        }
+    }
+
+    public void addForageable()
+    {
+        Int32.TryParse(forageableInputNumber.text, out int numberOf);
+        GameObject dropdownGO = forageableList[forageableDropdown.value];
+
+        try{
+            forageableDict.Add(dropdownGO, numberOf);
+        } catch (ArgumentException){
+            forageableDict[dropdownGO] += numberOf;
+        }
+        
+        updateForageableQueueText();
+    }
+
+    public void updateForageableQueueText()
+    {
+        //key - value
+        forageableQueueText.text = "";
+        foreach (KeyValuePair<GameObject, int> kvp in forageableDict)
+        {
+            //textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+            forageableQueueText.text += string.Format("{0}, {1}X\n", kvp.Key.name, kvp.Value);
+        }
+        //Debug.Log(enemyDict.Values);
+    }
+
+    public void removeForageable(){
+        Int32.TryParse(forageableInputNumber.text, out int numberOf);
+        GameObject dropdownGO = forageableList[forageableDropdown.value];
+
+        if(forageableDict.ContainsKey(dropdownGO)){
+            if(forageableDict[dropdownGO] - numberOf >= 1){
+                forageableDict[dropdownGO] -= numberOf;
+                
+            } else {
+                forageableDict.Remove(dropdownGO);
+            }
+            updateForageableQueueText();
+        } else {
+            return;
+        }
     }
 
 
