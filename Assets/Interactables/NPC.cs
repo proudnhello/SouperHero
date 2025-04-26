@@ -10,7 +10,6 @@ public class NPC : Interactable
 
     private void Awake()
     {
-        // set the interactable to be highlighted
         //SetInteractable(true);
     }
     public override void Interact()
@@ -34,6 +33,25 @@ public class NPC : Interactable
                 SetInteractable(false);
             }
         }
+    }
+
+    public override void SetInteractable(bool value)
+    {
+        // set whether or not the interactable can be interacted with
+        canInteract = value;
+        if (value)
+        {
+            SetHighlighted(true);
+        }
+        else
+        {
+            SetHighlighted(false);
+        }
+    }
+    public override void SetHighlighted(bool isHighlighted)
+    {
+        // set the interactable prompt to be active or not
+        interactableSpriteRenderer.material.SetFloat(_OutlineThickness, isHighlighted ? 1 : 0);
     }
 
 }

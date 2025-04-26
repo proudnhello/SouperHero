@@ -10,7 +10,7 @@ public abstract class Interactable : MonoBehaviour
     [Header("Make Sure is Set")]
     protected SpriteRenderer interactableSpriteRenderer;
 
-    int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
+    protected int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
     void Awake()
     {
         interactableSpriteRenderer = GetComponent<SpriteRenderer>();
