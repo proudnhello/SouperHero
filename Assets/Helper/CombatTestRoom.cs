@@ -11,6 +11,8 @@ public class CombatTestRoom : MonoBehaviour
 {
     // Start is called before the first frame update
 
+    public GameObject playerRef;
+
     public GameObject playScreen;
     public GameObject pauseScreen;
     public GameObject debugScreen;
@@ -21,32 +23,23 @@ public class CombatTestRoom : MonoBehaviour
     public List<GameObject> destroyableList;
     public List<GameObject> forageableList;
 
-    private Dictionary<GameObject, int> enemyDict;
-    private Dictionary<GameObject, int> destroyableDict;
-    private Dictionary<GameObject, int> forageableDict;
-
-    public TMP_InputField enemyInputNumber;
-    public TMP_InputField destroyableInputNumber;
-    public TMP_InputField forageableInputNumber;
-
     public TMP_Dropdown enemyDropdown;
     public TMP_Dropdown destroyableDropdown;
     public TMP_Dropdown forageableDropdown;
 
-    public TMP_Text enemyQueueText;
-    public TMP_Text destroyableQueueText;
-    public TMP_Text forageableQueueText;
+    public GameObject theParent;
 
-    public List<GameObject> spawnPoints;
-    private Queue<GameObject> bigQueue;
+    private Vector3 spawnPos;
 
+    private int spawnIndex;
+
+    private int enemyNum = 0;
+    private int destroyableNum = 0;
+    private int forageableNum = 0;
 
     void Start()
     {
-        enemyDict = new Dictionary<GameObject, int>();
-        destroyableDict = new Dictionary<GameObject, int>();
-        forageableDict = new Dictionary<GameObject, int>();
-
+        spawnPos = playerRef.transform.position;
     }
 
     // Update is called once per frame
@@ -79,6 +72,7 @@ public class CombatTestRoom : MonoBehaviour
 
     public void closeDebugMenu()
     {
+        resetSpawnPos();
         debugging = false;
         Time.timeScale = 1;
         CursorManager.Singleton.cursorObject.SetActive(true);
@@ -86,242 +80,56 @@ public class CombatTestRoom : MonoBehaviour
         PlayerEntityManager.Singleton.input.Enable();
     }
 
-    public void spawnAllObjects()
+    void resetSpawnPos()
     {
-        //loop through and spawn things at respective locations
-        int numOfGroups = enemyDict.Count + destroyableDict.Count + forageableDict.Count;
-        int spawnPointIndex = 0;
+        spawnPos = playerRef.transform.position;
+    }
 
-        if(enemyDict.Count >= 1){
-            foreach(KeyValuePair<GameObject,int> kvp in enemyDict){
-                for(int i = 0; i < kvp.Value; i++){
-                    Instantiate(kvp.Key, spawnPoints[spawnPointIndex].transform);
-                }
-                enemyDict.Remove(kvp.Key);
-                spawnPointIndex++;
+    public void enemyButton()
+    {
+        spawn(0);
+        enemyNum++;
+    }
+
+    public void destroyableButton()
+    {
+        spawn(1);
+    }
+
+    public void forageableButton()
+    {
+        spawn(2);
+    }
+
+    public void spawn(int spawnIndex)
+    {
+        if (spawnIndex == 0)
+        { //enemy spawn
+
+            if (enemyNum == 0)
+            {
+                spawnPos.y -= 3.0f;
+                Instantiate(enemyList[enemyDropdown.value], spawnPos, Quaternion.identity, theParent.transform);
             }
-        }
-
-        
-
-    }
-
-    public void plusEnemy()
-    {
-        Int32.TryParse(enemyInputNumber.text, out int temp);
-        if (temp >= 99)
-        {
-            temp = 99;
-        }
-        else
-        {
-            temp += 1;
-        }
-        enemyInputNumber.text = temp.ToString();
-    }
-
-    public void plusDestoryable()
-    {
-        // enemyInputNumber.text -= 1;
-        Int32.TryParse(destroyableInputNumber.text, out int temp);
-        if (temp >= 99)
-        {
-            temp = 99;
-        }
-        else
-        {
-            temp += 1;
-        }
-        destroyableInputNumber.text = temp.ToString();
-
-    }
-
-    public void plusForageable()
-    {
-        Int32.TryParse(forageableInputNumber.text, out int temp);
-        if (temp >= 99)
-        {
-            temp = 99;
-        }
-        else
-        {
-            temp += 1;
-        }
-        forageableInputNumber.text = temp.ToString();
-
-    }
-
-    public void minusEnemy()
-    {
-        Int32.TryParse(enemyInputNumber.text, out int temp);
-        if (temp <= 0)
-        {
-            temp = 0;
-        }
-        else
-        {
-            temp -= 1;
-        }
-        enemyInputNumber.text = temp.ToString();
-    }
-
-    public void minusDestroyable()
-    {
-        Int32.TryParse(destroyableInputNumber.text, out int temp);
-        if (temp <= 0)
-        {
-            temp = 0;
-        }
-        else
-        {
-            temp -= 1;
-        }
-        destroyableInputNumber.text = temp.ToString();
-    }
-
-    public void minusForageable()
-    {
-        Int32.TryParse(forageableInputNumber.text, out int temp);
-        if (temp <= 0)
-        {
-            temp = 0;
-        }
-        else
-        {
-            temp -= 1;
-        }
-        forageableInputNumber.text = temp.ToString();
-    }
-
-    public void addEnemy()
-    {
-        Int32.TryParse(enemyInputNumber.text, out int numberOf);
-        GameObject dropdownGO = enemyList[enemyDropdown.value];
-
-        try{
-            enemyDict.Add(dropdownGO, numberOf);
-        } catch (ArgumentException){
-            enemyDict[dropdownGO] += numberOf;
-        }
-        
-        updateEnemyQueueText();
-    }
-
-    public void updateEnemyQueueText()
-    {
-        //key - value
-        enemyQueueText.text = "";
-        foreach (KeyValuePair<GameObject, int> kvp in enemyDict)
-        {
-            //textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-            enemyQueueText.text += string.Format("{0}, {1}X\n", kvp.Key.name, kvp.Value);
-        }
-        //Debug.Log(enemyDict.Values);
-    }
-
-    public void removeEnemy(){
-        Int32.TryParse(enemyInputNumber.text, out int numberOf);
-        GameObject dropdownGO = enemyList[enemyDropdown.value];
-
-        if(enemyDict.ContainsKey(dropdownGO)){
-            if(enemyDict[dropdownGO] - numberOf >= 1){
-                enemyDict[dropdownGO] -= numberOf;
-                updateEnemyQueueText();
-            } else {
-                enemyDict.Remove(dropdownGO);
-                updateEnemyQueueText();
+            else
+            {
+                spawnPos.y -= 2.0f;
+                Instantiate(enemyList[enemyDropdown.value], spawnPos, Quaternion.identity, theParent.transform);
             }
-        } else {
-            return;
+
+            //Debug.Log(newThing);
         }
-    }
-
-    public void addDestroyable()
-    {
-        Int32.TryParse(destroyableInputNumber.text, out int numberOf);
-        GameObject dropdownGO = destroyableList[destroyableDropdown.value];
-
-        try{
-            destroyableDict.Add(dropdownGO, numberOf);
-        } catch (ArgumentException){
-            destroyableDict[dropdownGO] += numberOf;
+        else if (spawnIndex == 1)
+        { //Destroyable Spawn
+            Instantiate(destroyableList[destroyableDropdown.value]);
         }
-        
-        updateDestroyableQueueText();
-    }
-
-    public void updateDestroyableQueueText()
-    {
-        //key - value
-        destroyableQueueText.text = "";
-        foreach (KeyValuePair<GameObject, int> kvp in destroyableDict)
-        {
-            //textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-            destroyableQueueText.text += string.Format("{0}, {1}X\n", kvp.Key.name, kvp.Value);
+        else if (spawnIndex == 2)
+        { //forageable
+            Instantiate(forageableList[forageableDropdown.value]);
         }
-        //Debug.Log(enemyDict.Values);
+
+
     }
-
-    public void removeDestroyable(){
-        Int32.TryParse(destroyableInputNumber.text, out int numberOf);
-        GameObject dropdownGO = destroyableList[destroyableDropdown.value];
-
-        if(destroyableDict.ContainsKey(dropdownGO)){
-            if(destroyableDict[dropdownGO] - numberOf >= 1){
-                destroyableDict[dropdownGO] -= numberOf;
-                updateDestroyableQueueText();
-            } else {
-                destroyableDict.Remove(dropdownGO);
-                updateDestroyableQueueText();
-            }
-        } else {
-            return;
-        }
-    }
-
-    public void addForageable()
-    {
-        Int32.TryParse(forageableInputNumber.text, out int numberOf);
-        GameObject dropdownGO = forageableList[forageableDropdown.value];
-
-        try{
-            forageableDict.Add(dropdownGO, numberOf);
-        } catch (ArgumentException){
-            forageableDict[dropdownGO] += numberOf;
-        }
-        
-        updateForageableQueueText();
-    }
-
-    public void updateForageableQueueText()
-    {
-        //key - value
-        forageableQueueText.text = "";
-        foreach (KeyValuePair<GameObject, int> kvp in forageableDict)
-        {
-            //textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-            forageableQueueText.text += string.Format("{0}, {1}X\n", kvp.Key.name, kvp.Value);
-        }
-        //Debug.Log(enemyDict.Values);
-    }
-
-    public void removeForageable(){
-        Int32.TryParse(forageableInputNumber.text, out int numberOf);
-        GameObject dropdownGO = forageableList[forageableDropdown.value];
-
-        if(forageableDict.ContainsKey(dropdownGO)){
-            if(forageableDict[dropdownGO] - numberOf >= 1){
-                forageableDict[dropdownGO] -= numberOf;
-                
-            } else {
-                forageableDict.Remove(dropdownGO);
-            }
-            updateForageableQueueText();
-        } else {
-            return;
-        }
-    }
-
 
 
 }
