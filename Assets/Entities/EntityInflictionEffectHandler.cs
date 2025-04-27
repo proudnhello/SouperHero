@@ -58,7 +58,19 @@ public class EntityInflictionEffectHandler
         }
     }
 
-    public void ApplyInflictions(List<Infliction> spoonInflictions, Transform source)
+    public bool HasInfliction(Infliction infliction)
+    {
+        if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void ApplyInflictions(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
     {
         foreach (var infliction in spoonInflictions)
         {
@@ -108,7 +120,10 @@ public class EntityInflictionEffectHandler
                     instance.StartStatusEffect(Inflictions.Freeze(instance));
                 }
             }
-            entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
+            if (!quiet)
+            {
+                entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
+            }
         }
     }
 
