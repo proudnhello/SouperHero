@@ -29,7 +29,9 @@ public class CombatTestRoom : MonoBehaviour
 
     public GameObject theParent;
 
-    private Vector3 spawnPos;
+    private Vector3 enemySpawnPos;
+    private Vector3 destoryableSpawnPos;
+    private Vector3 forageableSpawnPos;
 
     private int spawnIndex;
 
@@ -39,7 +41,10 @@ public class CombatTestRoom : MonoBehaviour
 
     void Start()
     {
-        spawnPos = playerRef.transform.position;
+        enemySpawnPos = playerRef.transform.position;
+        destoryableSpawnPos = playerRef.transform.position;
+        forageableSpawnPos = playerRef.transform.position;
+        
     }
 
     // Update is called once per frame
@@ -82,7 +87,9 @@ public class CombatTestRoom : MonoBehaviour
 
     void resetSpawnPos()
     {
-        spawnPos = playerRef.transform.position;
+        enemySpawnPos = playerRef.transform.position;
+        destoryableSpawnPos = playerRef.transform.position;
+        forageableSpawnPos = playerRef.transform.position;
     }
 
     public void enemyButton()
@@ -94,11 +101,13 @@ public class CombatTestRoom : MonoBehaviour
     public void destroyableButton()
     {
         spawn(1);
+        destroyableNum++;
     }
 
     public void forageableButton()
     {
         spawn(2);
+        forageableNum++;
     }
 
     public void spawn(int spawnIndex)
@@ -108,28 +117,46 @@ public class CombatTestRoom : MonoBehaviour
 
             if (enemyNum == 0)
             {
-                spawnPos.y -= 3.0f;
-                Instantiate(enemyList[enemyDropdown.value], spawnPos, Quaternion.identity, theParent.transform);
+                enemySpawnPos.y -= 3.0f;
+                Instantiate(enemyList[enemyDropdown.value], enemySpawnPos, Quaternion.identity, theParent.transform);
             }
             else
             {
-                spawnPos.y -= 2.0f;
-                Instantiate(enemyList[enemyDropdown.value], spawnPos, Quaternion.identity, theParent.transform);
+                enemySpawnPos.y -= 2.0f;
+                Instantiate(enemyList[enemyDropdown.value], enemySpawnPos, Quaternion.identity, theParent.transform);
             }
 
             //Debug.Log(newThing);
         }
         else if (spawnIndex == 1)
         { //Destroyable Spawn
-            Instantiate(destroyableList[destroyableDropdown.value]);
+            if (destroyableNum == 0)
+            {
+                destoryableSpawnPos.x -= 3.0f;
+                Instantiate(destroyableList[destroyableDropdown.value], destoryableSpawnPos, Quaternion.identity, theParent.transform);
+            }
+            else
+            {
+                destoryableSpawnPos.x -= 2.0f;
+                Instantiate(destroyableList[destroyableDropdown.value], destoryableSpawnPos, Quaternion.identity, theParent.transform);
+            }
         }
         else if (spawnIndex == 2)
         { //forageable
-            Instantiate(forageableList[forageableDropdown.value]);
+            if (forageableNum == 0)
+            {
+                forageableSpawnPos.x += 3.0f;
+                Instantiate(forageableList[forageableDropdown.value], forageableSpawnPos, Quaternion.identity, theParent.transform);
+            }
+            else
+            {
+                forageableSpawnPos.x += 2.0f;
+                Instantiate(forageableList[forageableDropdown.value], forageableSpawnPos, Quaternion.identity, theParent.transform);
+            }
         }
-
-
     }
+
+   
 
 
 }
