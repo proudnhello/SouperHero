@@ -28,22 +28,27 @@ public class CombatTestRoom : MonoBehaviour
     public TMP_Dropdown forageableDropdown;
 
     public GameObject theParent;
+    public GameObject campfire;
 
     private Vector3 enemySpawnPos;
     private Vector3 destoryableSpawnPos;
     private Vector3 forageableSpawnPos;
+    private Vector3 campfireSpawnPos;
 
     private int spawnIndex;
 
     private int enemyNum = 0;
     private int destroyableNum = 0;
     private int forageableNum = 0;
+    private int campfireNum = 0;
 
     void Start()
     {
         enemySpawnPos = playerRef.transform.position;
         destoryableSpawnPos = playerRef.transform.position;
         forageableSpawnPos = playerRef.transform.position;
+        campfireSpawnPos = playerRef.transform.position;
+
         
     }
 
@@ -90,6 +95,7 @@ public class CombatTestRoom : MonoBehaviour
         enemySpawnPos = playerRef.transform.position;
         destoryableSpawnPos = playerRef.transform.position;
         forageableSpawnPos = playerRef.transform.position;
+        campfireSpawnPos = playerRef.transform.position;
     }
 
     public void enemyButton()
@@ -108,6 +114,11 @@ public class CombatTestRoom : MonoBehaviour
     {
         spawn(2);
         forageableNum++;
+    }
+
+    public void campfireButton(){
+        spawn(3);
+        campfireNum++;
     }
 
     public void spawn(int spawnIndex)
@@ -152,6 +163,18 @@ public class CombatTestRoom : MonoBehaviour
             {
                 forageableSpawnPos.x += 2.0f;
                 Instantiate(forageableList[forageableDropdown.value], forageableSpawnPos, Quaternion.identity, theParent.transform);
+            }
+        }
+        else if(spawnIndex == 3){ // campfire spawn
+            if (campfireNum == 0)
+            {
+                campfireSpawnPos.y += 3.0f;
+                Instantiate(campfire, campfireSpawnPos, Quaternion.identity, theParent.transform);
+            }
+            else
+            {
+                campfireSpawnPos.y += 2.0f;
+                Instantiate(campfire, campfireSpawnPos, Quaternion.identity, theParent.transform);
             }
         }
     }
