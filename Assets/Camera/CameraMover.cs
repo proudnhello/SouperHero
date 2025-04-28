@@ -14,7 +14,6 @@ public class CameraMover : MonoBehaviour
     [SerializeField] float UNITS_PER_PIXEL;
     [SerializeField] Vector2 maxDistance;
     [SerializeField] Vector2 distanceDivider;
-    [SerializeField] Transform _target;
     Transform _player;
 
 
@@ -23,7 +22,8 @@ public class CameraMover : MonoBehaviour
     {
         // Get the player's transform from the PlayerEntityManager singleton
         _player = PlayerEntityManager.Singleton.gameObject.transform;
-        _target.position = new Vector3(_player.position.x, _player.position.y, transform.position.z);
+        transform.position = new Vector3(_player.position.x, _player.position.y, transform.position.z);
+        _cam.transform.position = transform.position;
         //StartCoroutine(TargetFollow());
         PlayerEntityManager.Singleton.input.Player.ZoomOut.started += (ctx) => toggleZoomOut = !toggleZoomOut;
         _cam.orthographicSize = 0.5f * UNITS_PER_PIXEL * Screen.height;
@@ -62,8 +62,7 @@ public class CameraMover : MonoBehaviour
     {
         if (CookingManager.Singleton.IsCooking())
         {
-            _target.position = CookingManager.Singleton.CurrentCampfire.transform.position + CookingManager.Singleton.CurrentCampfire.CameraOffset;
-            _target.position = new Vector3(_target.position.x, _target.position.y, transform.position.z);
+            transform.position = CookingManager.Singleton.CurrentCampfire.transform.position + CookingManager.Singleton.CurrentCampfire.CameraOffset;
         } else
         {
 
@@ -72,7 +71,7 @@ public class CameraMover : MonoBehaviour
             Vector3 targetDist = (mousePos - _player.position) / distanceDivider;
 
             // Clamp the target position within the specified maximum distance and add the player's position
-            _target.position = new Vector3(Mathf.Clamp(targetDist.x, -maxDistance.x, maxDistance.x) + _player.position.x,
+            transform.position = new Vector3(Mathf.Clamp(targetDist.x, -maxDistance.x, maxDistance.x) + _player.position.x,
                                     Mathf.Clamp(targetDist.y, -maxDistance.y, maxDistance.y) + _player.position.y, transform.position.z);
         }      
     }
