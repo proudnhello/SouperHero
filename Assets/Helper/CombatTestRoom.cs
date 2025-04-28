@@ -77,6 +77,7 @@ public class CombatTestRoom : MonoBehaviour
         Time.timeScale = 0;
         CursorManager.Singleton.cursorObject.SetActive(false);
         debugScreen.SetActive(true);
+        playScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Disable();
     }
 
@@ -87,6 +88,8 @@ public class CombatTestRoom : MonoBehaviour
         Time.timeScale = 1;
         CursorManager.Singleton.cursorObject.SetActive(true);
         debugScreen.SetActive(false);
+        playScreen.SetActive(true);
+
         PlayerEntityManager.Singleton.input.Enable();
     }
 
