@@ -89,6 +89,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DebugMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""3a04bbbb-6e9a-43c5-95c2-260344a5ff3b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -333,6 +342,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ZoomOut"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""260861f7-7071-490e-af75-6c5b94915761"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -362,7 +382,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Cancel"",
                     ""type"": ""Button"",
                     ""id"": ""f951d6ce-5bc3-4848-8159-1263362a89ee"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -864,6 +884,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Encyclopedia = m_Player.FindAction("Encyclopedia", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_ZoomOut = m_Player.FindAction("ZoomOut", throwIfNotFound: true);
+        m_Player_DebugMenu = m_Player.FindAction("DebugMenu", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -950,6 +971,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Encyclopedia;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_ZoomOut;
+    private readonly InputAction m_Player_DebugMenu;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -961,6 +983,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Encyclopedia => m_Wrapper.m_Player_Encyclopedia;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @ZoomOut => m_Wrapper.m_Player_ZoomOut;
+        public InputAction @DebugMenu => m_Wrapper.m_Player_DebugMenu;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -991,6 +1014,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ZoomOut.started += instance.OnZoomOut;
             @ZoomOut.performed += instance.OnZoomOut;
             @ZoomOut.canceled += instance.OnZoomOut;
+            @DebugMenu.started += instance.OnDebugMenu;
+            @DebugMenu.performed += instance.OnDebugMenu;
+            @DebugMenu.canceled += instance.OnDebugMenu;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1016,6 +1042,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ZoomOut.started -= instance.OnZoomOut;
             @ZoomOut.performed -= instance.OnZoomOut;
             @ZoomOut.canceled -= instance.OnZoomOut;
+            @DebugMenu.started -= instance.OnDebugMenu;
+            @DebugMenu.performed -= instance.OnDebugMenu;
+            @DebugMenu.canceled -= instance.OnDebugMenu;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1160,6 +1189,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnEncyclopedia(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnZoomOut(InputAction.CallbackContext context);
+        void OnDebugMenu(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
