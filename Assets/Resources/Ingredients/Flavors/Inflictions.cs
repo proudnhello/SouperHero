@@ -14,7 +14,7 @@ public class Inflictions
     #region INFLICTION PARAMETERS
     static float BURN_INTERVAL = 2f;
     static float BURN_INTERVAL_DEVIATION = .25f;
-    static float FREEZE_TIME_DEVIATION = .25f;
+    static float FREEZE_TIME_DEVIATION = 0f;
     static float KNOCKBACK_MULTIPLIER = 150f;
     #endregion
 
