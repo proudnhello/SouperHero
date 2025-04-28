@@ -44,12 +44,7 @@ public class CombatTestRoom : MonoBehaviour
 
     void Start()
     {
-        enemySpawnPos = playerRef.transform.position;
-        destoryableSpawnPos = playerRef.transform.position;
-        forageableSpawnPos = playerRef.transform.position;
-        campfireSpawnPos = playerRef.transform.position;
 
-        
     }
 
     // Update is called once per frame
@@ -73,6 +68,7 @@ public class CombatTestRoom : MonoBehaviour
 
     public void openDebugMenu()
     {
+        setPosition();
         debugging = true;
         Time.timeScale = 0;
         CursorManager.Singleton.cursorObject.SetActive(false);
@@ -95,10 +91,7 @@ public class CombatTestRoom : MonoBehaviour
 
     void resetSpawnPos()
     {
-        enemySpawnPos = playerRef.transform.position;
-        destoryableSpawnPos = playerRef.transform.position;
-        forageableSpawnPos = playerRef.transform.position;
-        campfireSpawnPos = playerRef.transform.position;
+        setPosition();
     }
 
     public void enemyButton()
@@ -183,6 +176,11 @@ public class CombatTestRoom : MonoBehaviour
     }
 
    
-
+    public void setPosition(){
+        enemySpawnPos = playerRef.transform.position;
+        destoryableSpawnPos = playerRef.transform.position;
+        forageableSpawnPos = playerRef.transform.position;
+        campfireSpawnPos = playerRef.transform.position;
+    }
 
 }
