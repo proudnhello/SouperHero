@@ -110,6 +110,7 @@ MonoBehaviour:
   currentStats:
     health: 0
     moveSpeed: 0
+  falling: 0
   hitmarker: {fileID: 594101713564386973, guid: 88876a640853de543b8ab5cacc641fba, type: 3}
   collectable: {fileID: 165481585712337600, guid: 3ba5f77c66053314293d2aaeb9b96b90, type: 3}
   playerCollisionDamage: 10
@@ -200,7 +201,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: -0.02621454, y: -0.04}
   serializedVersion: 2
-  m_Radius: 0.148752
+  m_Radius: 0.49
 --- !u!195 &3577121339610121893
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -278,7 +279,7 @@ MonoBehaviour:
   - {x: 0.0379256, y: -0.50806874, z: 0}
   m_ShapePathHash: -891751775
   m_Mesh: {fileID: 0}
-  m_InstanceId: 209448
+  m_InstanceId: 60496
   m_LocalBounds:
     m_Center: {x: -0.032610357, y: -0.4494512, z: 0}
     m_Extent: {x: 0.10462934, y: 0.059029236, z: 0}
