@@ -107,15 +107,20 @@ public class SaveManager : MonoBehaviour
     }
 
     public void SaveEntities(){
-        EntitiesClass et = new EntitiesClass();
-        et.enemies = roomGenerator.exportEnemyStrings();
-        et.foragables = roomGenerator.exportForagableStrings();
-        et.seed = roomGenerator.newSeed;
-        string json = JsonUtility.ToJson(et, true);  // Pretty print for readability
+        try{
+            EntitiesClass et = new EntitiesClass();
+            et.enemies = roomGenerator.exportEnemyStrings();
+            et.foragables = roomGenerator.exportForagableStrings();
+            et.seed = roomGenerator.newSeed;
+            string json = JsonUtility.ToJson(et, true);  // Pretty print for readability
 
-        using (StreamWriter writer = new StreamWriter(entitiesPath))
-        {
-            writer.Write(json);
+            using (StreamWriter writer = new StreamWriter(entitiesPath))
+            {
+                writer.Write(json);
+            }
+        }
+        catch(Exception e){
+            return;
         }
     }
 
