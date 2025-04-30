@@ -10,234 +10,174 @@ using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 public class FlettuceAI : EnemyBaseClass
 {
 
-    // ~~~ DEFINITIONS ~~~
-    public enum ChargerStates
-    {
-        IDLE,
-        ATTACK
-    }
-    public interface IState
-    {
-        public void OnEnter();
-        public void OnExit();
-    }
-
     // ~~~ VARIABLES ~~~
 
     [Header("General")]
-    [SerializeField] protected LayerMask playerLayer;
-    [SerializeField] protected float FreezeEnemyWhenThisFar = 30f;
-    [SerializeField] protected float PlayerDetectionIntervalWhenFrozen = 1.5f;
+    [SerializeField] public LayerMask playerLayer;
+    private float _freezeEnemyWhenThisFar = 30f;
+    private float _playerDetectionIntervalWhenFrozen = 1.5f;
 
-    [Header("Idle State")]
-    [SerializeField] protected float PlayerDetectionPathLength = 15f;
-    [SerializeField] protected float PlayerDetectionInterval = .5f;
-    [SerializeField] protected Vector2 PatrolDistance = new Vector2(2.5f, 3.5f);
-    [SerializeField] protected Vector2 PatrolWaitTime = new Vector2(1.5f, 2.5f);
-    [SerializeField] protected float WhilePatrolCheckIfStoppedInterval = .3f;
-    [SerializeField] protected float WhilePatrolCheckIfStoppedDistance = .1f;
-    [SerializeField] protected float IdleSpeedMultiplier = 1f;
+    // Idle State
+    private float _playerDetectionPathLength = 15f;
+    private float _playerDetectionInterval = .5f;
+    private Vector2 _patrolDistance = new Vector2(2.5f, 3.5f);
+    private Vector2 _patrolWaitTime = new Vector2(1.5f, 2.5f);
+    private float _whilePatrolCheckIfStoppedInterval = .3f;
+    private float _whilePatrolCheckIfStoppedDistance = .1f;
+    private float _idleSpeedMultiplier = 1f;
 
-    [Header("Attack State")]
-    [SerializeField] protected float AttackSpeedMultiplier = 1.5f;
-    [SerializeField] protected float DistanceToPlayerForCharge = 5f;
-    [SerializeField] protected float AttackDistanceCheckInterval;
-    [SerializeField] protected float ChargeSpeed = 5f;
-    [SerializeField] protected float ChargeForce = 200f;
-    [SerializeField] protected float ChargeTime = 1f;
-    [SerializeField] protected int ConsecutiveCharges = 3;
-    [SerializeField] protected Vector2 ChargeCooldownTime = new Vector2(.6f, .8f);
-    [SerializeField] protected float FinalChargeCooldownTime = 1f;
-    [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
+    // Attack State
+    private float _attackSpeedMultiplier = 1.5f;
+    private float _distanceToPlayerForCharge = 5f;
+    private float _attackDistanceCheckInterval;
+    private float _chargeSpeed = 5f;
+    private float _chargeForce = 200f;
+    private float _chargeTime = 1f;
+    private int _consecutiveCharges = 3;
+    private Vector2 _chargeCooldownTime = new Vector2(.6f, .8f);
+    private float _finalChargeCooldownTime = 1f;
+    // NOTE: This should always be higher than PlayerDetectionPathLength
+    private float _distanceFromPlayerToDisengage = 20f;
 
-    protected Animator animator;
+    // Getters and Setters
+    public float FreezeEnemyWhenThisFar { get { return _freezeEnemyWhenThisFar; } }
+    public float PlayerDetectionIntervalWhenFrozen { get { return _playerDetectionIntervalWhenFrozen; } }
+    public float PlayerDetectionPathLength { get { return _freezeEnemyWhenThisFar; } }
+    public float PlayerDetectionInterval { get { return _playerDetectionInterval; } }
+    public Vector2 PatrolDistance { get { return _patrolDistance; } }
+    public Vector2 PatrolWaitTime { get { return _patrolWaitTime; } }
+    public float WhilePatrolCheckIfStoppedInterval { get { return _whilePatrolCheckIfStoppedInterval; } }
+    public float WhilePatrolCheckIfStoppedDistance { get { return _whilePatrolCheckIfStoppedDistance; } }
+    public float IdleSpeedMultiplier { get { return _idleSpeedMultiplier; } }
+    public float AttackSpeedMultiplier { get {  return _attackSpeedMultiplier; } }
+    public float DistanceToPlayerForCharge {  get {  return _distanceToPlayerForCharge; } }
+    public float AttackDistanceCheckInterval {  get {  return _attackDistanceCheckInterval; } }
+    public float ChargeSpeed {  get { return _chargeSpeed; } }
+    public float ChargeForce {  get { return _chargeForce; } }
+    public float ChargeTime {  get  { return _chargeTime; } }   
+    public int ConsecutiveCharges {  get { return _consecutiveCharges; } }
+    public Vector2 ChargeCooldownTime {  get { return _chargeCooldownTime; } }
+    public float FinalChargeCooldownTime { get { return _finalChargeCooldownTime; } }
+    public float DistanceFromPlayerToDisengage {  get { return _distanceFromPlayerToDisengage;  } }
+
+
+
+    public Animator animator;
     internal List<IState> states;
     internal IState currentState;
-    bool freezeEnemy = false;
+    public bool freezeEnemy = false;
+
+    public NavMeshAgent Agent { get { return agent; } }
+    public Transform PlayerTransform { get { return _playerTransform; } }
+    public bool AlwaysAggro { get { return alwaysAggro; } }
+
+    public StateMachine stateMachine;
+
+    public StateFactory stateFactory;
+
+    public StateMachineEvents Events;
+
+    NavMeshPath path;
+
     void Start(){
         initEnemy();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         agent.speed = GetMoveSpeed();
         animator = GetComponent<Animator>();
+        path = new();
 
-        states = new()
-        {
-            new IdleState(this),
-            new AttackState(this)
-        };
+        // Create Root State
+        stateMachine = new();
+        stateFactory = new(this, stateMachine);
+        BaseState rootState = stateFactory.RootFlettuceState();
+        stateMachine.SetState(rootState, rootState);
 
-        currentState = states[0];
-        currentState.OnEnter();
+        // Make an Instance of the Class that defines Events
+        Events = new(this);
     }
 
-    public void ChangeState(ChargerStates state)
-    {
-        currentState.OnExit();
-        currentState = states[(int)state];
-        currentState.OnEnter();
-    }
-    protected override void Update(){
+    protected override void UpdateAI(){
+
+        // do actions
+        stateMachine.CurrentState.NextStep();
+
         if (IsDead()) return;
+
+
         freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
         _sprite.flipX = agent.destination.x > transform.position.x || _rigidbody.velocity.x > 0;
     }
 
     protected override void Die()
     {
-        currentState.OnExit();
+        stateMachine.CurrentState.ExitState();
         base.Die();
     }
 
-    public class IdleState : IState
+    public class StateMachineEvents
     {
-        FlettuceAI sm;
-        IEnumerator IHandleDetection;
-        IEnumerator IHandlePatrol;
-        Vector2 centerPoint;
-        NavMeshPath path;
-        public IdleState(FlettuceAI _sm)
+        FlettuceAI _blackboard;
+        public StateMachineEvents(FlettuceAI blackboard)
         {
-            sm = _sm;
-            path = new();
-        }
-        public void OnEnter()
-        {
-            centerPoint = sm.transform.position;
-            sm.StartCoroutine(IHandleDetection = HandleDetection());
-            sm.StartCoroutine(IHandlePatrol = HandlePatrol());
+            _blackboard = blackboard;
         }
 
-        IEnumerator HandleDetection()
+        public bool EnemyOutOfChaseEvent()
         {
-            while (true)
+            // Calculate path from enemy to player
+            NavMesh.CalculatePath(new Vector2(_blackboard.transform.position.x, _blackboard.transform.position.y), _blackboard._playerTransform.position,
+                NavMesh.AllAreas, _blackboard.path);
+
+            // Do this is the path exists
+            if (_blackboard.path.status == NavMeshPathStatus.PathComplete)
             {
-                sm.agent.speed = sm.GetMoveSpeed() * sm.IdleSpeedMultiplier;
-                if (sm.freezeEnemy)
+
+                float distance = Vector2.Distance(_blackboard.transform.position, _blackboard.path.corners[0]);
+                for (int i = 1; i < _blackboard.path.corners.Length; i++)
                 {
-                    yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
-                    continue;
+                    distance += Vector2.Distance(_blackboard.path.corners[i - 1], _blackboard.path.corners[i]);
                 }
 
-                NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), sm._playerTransform.position,
-                    NavMesh.AllAreas, path);
-                if (path.status == NavMeshPathStatus.PathComplete)
+                Debug.Log("Distance in Enemy Out Of Chase Event: " + distance);
+
+                Debug.Log("Distance to disengage in Enemy Out Of Chase Event: " + _blackboard.DistanceFromPlayerToDisengage);
+
+                if (distance > _blackboard.DistanceFromPlayerToDisengage)
                 {
-                    float distance = Vector2.Distance(sm.transform.position, path.corners[0]);
-                    for (int i = 1; i < path.corners.Length; i++)
-                    {
-                        distance += Vector2.Distance(path.corners[i-1], path.corners[i]);
-                    }
-                    if (distance < sm.PlayerDetectionPathLength || sm.alwaysAggro)
-                    {
-                        // if player is within certain distance, start attacking
-                        sm.ChangeState(ChargerStates.ATTACK);
-                    }
+                    return true;
                 }
-                yield return new WaitForSeconds(sm.PlayerDetectionInterval);
             }
+
+            return false;
         }
 
-        IEnumerator HandlePatrol()
+        public bool PlayerInDetectionRange()
         {
-            sm.animator.Play("Idle");
-            while (true)
+            // Calculate path from enemy to player
+            NavMesh.CalculatePath(new Vector2(_blackboard.transform.position.x, _blackboard.transform.position.y), _blackboard._playerTransform.position,
+                NavMesh.AllAreas, _blackboard.path);
+
+            // Do this is the path exists
+            if (_blackboard.path.status == NavMeshPathStatus.PathComplete)
             {
-                if (sm.freezeEnemy)
+
+                float distance = Vector2.Distance(_blackboard.transform.position, _blackboard.path.corners[0]);
+                for (int i = 1; i < _blackboard.path.corners.Length; i++)
                 {
-                    yield return new WaitForSeconds(sm.PlayerDetectionIntervalWhenFrozen);
-                    continue;
+                    distance += Vector2.Distance(_blackboard.path.corners[i - 1], _blackboard.path.corners[i]);
                 }
 
-                // SIT THERE FOR A BIT
-                yield return new WaitForSeconds(Random.Range(sm.PatrolWaitTime.x, sm.PatrolWaitTime.y));
+                Debug.Log("Distance in player in detection range Event: " + distance);
 
-                // FIND NEW POINT
-                float targetAngle = Random.Range(0, 2 * Mathf.PI);
-                Vector2 targetDir = new Vector3(Mathf.Cos(targetAngle), Mathf.Sin(targetAngle));
-                Vector2 targetPoint = targetDir * Random.Range(sm.PatrolDistance.x, sm.PatrolDistance.y) + centerPoint;
-
-                sm.agent.isStopped = false;
-                sm.agent.SetDestination(targetPoint);
-
-                Vector2 lastPos;
-                do
+                if (distance < _blackboard.PlayerDetectionPathLength)
                 {
-                    lastPos = sm.agent.transform.position;
-                    yield return new WaitForSeconds(sm.WhilePatrolCheckIfStoppedInterval);
-                    // check that the agent is moving far enough every interval to ensure it's not blocked
-                } while (Vector2.Distance(lastPos, sm.agent.transform.position) > sm.WhilePatrolCheckIfStoppedDistance &&
-                Vector2.Distance(targetPoint, sm.agent.transform.position) > .2f);
-                sm.agent.isStopped = true;
-            }
-        }
-
-        public void OnExit()
-        {
-            if (IHandleDetection != null) sm.StopCoroutine(IHandleDetection);
-            if (IHandlePatrol != null) sm.StopCoroutine(IHandlePatrol);
-        }
-
-        
-    }
-
-    public class AttackState : IState
-    {
-        FlettuceAI sm;
-        IEnumerator IHandleCharge;
-        public AttackState(FlettuceAI _sm)
-        {
-            sm = _sm;
-        }
-        public void OnEnter()
-        {
-            sm.StartCoroutine(IHandleCharge = HandleCharge());
-        }
-
-        IEnumerator HandleCharge()
-        {
-            sm.animator.Play("Ready");
-            while (true)
-            { 
-                sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
-                sm.agent.isStopped = false;
-                float dist = 0;
-                do
-                {
-                    sm.agent.SetDestination(sm._playerTransform.position);
-                    yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);
-                    dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
-
-                    if (dist > sm.DistanceFromPlayerToDisengage && !sm.alwaysAggro)
-                    {
-                        sm.ChangeState(ChargerStates.IDLE); // disengage if too far
-                    }
-
-                } while (dist > sm.DistanceToPlayerForCharge);
-                sm.agent.isStopped = true;
-
-                // PERFORM CHARGES
-                sm.animator.Play("Attack");
-                for (int chargeNum = 1; chargeNum <= sm.ConsecutiveCharges; chargeNum++)
-                {
-                    yield return new WaitUntil(() => !sm.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
-                    Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
-                    for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
-                    {
-                        if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);
-                        yield return null;
-                    }
-
-                    if (chargeNum < sm.ConsecutiveCharges) yield return new WaitForSeconds(Random.Range(sm.ChargeCooldownTime.x, sm.ChargeCooldownTime.y));
-                    else yield return new WaitForSeconds(sm.FinalChargeCooldownTime);
+                    return true;
                 }
             }
+
+            return false;
         }
 
-        public void OnExit()
-        {
-            if (IHandleCharge != null) sm.StopCoroutine(IHandleCharge);
-        }
     }
-
 }

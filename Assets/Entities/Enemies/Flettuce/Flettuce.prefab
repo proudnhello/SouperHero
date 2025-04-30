@@ -116,14 +116,15 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
+  _playerTransform: {fileID: 0}
   enemyEmitter: {fileID: 0}
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
-  FreezeEnemyWhenThisFar: 38
-  PlayerDetectionIntervalWhenFrozen: 1.5
-  PlayerDetectionPathLength: 8.96
-  PlayerDetectionInterval: 0.5
+  FreezeEnemyWhenThisFar: 0
+  PlayerDetectionIntervalWhenFrozen: 0
+  PlayerDetectionPathLength: 0
+  PlayerDetectionInterval: 0
   PatrolDistance: {x: 3, y: 10}
   PatrolWaitTime: {x: 1, y: 3}
   WhilePatrolCheckIfStoppedInterval: 0.15
@@ -139,6 +140,8 @@ MonoBehaviour:
   ChargeCooldownTime: {x: 0.3, y: 0.4}
   FinalChargeCooldownTime: 1.62
   DistanceFromPlayerToDisengage: 7
+  animator: {fileID: 0}
+  freezeEnemy: 0
 --- !u!50 &3527386940917697244
 Rigidbody2D:
   serializedVersion: 4
@@ -278,7 +281,7 @@ MonoBehaviour:
   - {x: 0.0379256, y: -0.50806874, z: 0}
   m_ShapePathHash: -891751775
   m_Mesh: {fileID: 0}
-  m_InstanceId: 68908
+  m_InstanceId: 45804
   m_LocalBounds:
     m_Center: {x: -0.032610357, y: -0.4494512, z: 0}
     m_Extent: {x: 0.10462934, y: 0.059029236, z: 0}
