@@ -32,6 +32,7 @@ public abstract class Entity : MonoBehaviour
     internal EntityRenderer entityRenderer;
     internal Rigidbody2D _rigidbody;
     public bool falling = false;
+    public bool flying = false;
 
     [SerializeField] GameObject hitmarker;
 
@@ -48,9 +49,15 @@ public abstract class Entity : MonoBehaviour
         currentStats.moveSpeed = baseStats.baseMoveSpeed;
     }
 
-    public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
+    // Quiet makes it so no sound or hitmarker is played. Used currently for ground hazards
+    public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
     {
-        inflictionHandler.ApplyInflictions(spoonInflictions, source);
+        inflictionHandler.ApplyInflictions(spoonInflictions, source, quiet);
+    }
+
+    public bool HasInfliction(Infliction infliction)
+    {
+        return inflictionHandler.HasInfliction(infliction);
     }
 
     // Displays hitmarkers
@@ -97,6 +104,10 @@ public abstract class Entity : MonoBehaviour
 
     public float GetMoveSpeed()
     {
+        if (currentStats.moveSpeed < 1)
+        {
+            return 1f;
+        }
         return currentStats.moveSpeed;
     }
     public virtual void SetMoveSpeed(float newSpeed)

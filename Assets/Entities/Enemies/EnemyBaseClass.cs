@@ -69,7 +69,7 @@ public abstract class EnemyBaseClass : Entity
         }
     }
 
-    public override void ApplyInfliction(List<SoupSpoon.SpoonInfliction> spoonInflictions, Transform source)
+    public override void ApplyInfliction(List<SoupSpoon.SpoonInfliction> spoonInflictions, Transform source, bool quiet = false)
     {
         // If the enemy is not currently moving towards something, make them move towards the player
         // I'm so excited for this to break when we implement enemies taking damage from things other than the player
@@ -89,9 +89,12 @@ public abstract class EnemyBaseClass : Entity
         }
 
         // Play enemy damage sfx
-        EnemyDamageEvent?.Invoke(this);
+        if (!quiet)
+        {
+            EnemyDamageEvent?.Invoke(this);
+        }
 
-        base.ApplyInfliction(spoonInflictions, source);
+        base.ApplyInfliction(spoonInflictions, source, quiet);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
