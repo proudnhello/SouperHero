@@ -48,10 +48,10 @@ public class NPC : Interactable
             SetHighlighted(false);
         }
     }
-    public override void SetHighlighted(bool isHighlighted)
-    {
-        // set the interactable prompt to be active or not
-        interactableSpriteRenderer.material.SetFloat(_OutlineThickness, isHighlighted ? 1 : 0);
-    }
+    // public override void SetHighlighted(bool isHighlighted)
+    // {
+    //     // set the interactable prompt to be active or not
+    //     interactableSpriteRenderer.material.SetFloat(_OutlineThickness, isHighlighted ? 1 : 0);
+    // }
 
 }
