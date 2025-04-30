@@ -25,6 +25,8 @@ public abstract class Entity : MonoBehaviour
         public float moveSpeed;
     }
 
+    public SpriteMask submergeMask;
+
     // ~~~ VARIABLES ~~~
     [SerializeField] BaseStats baseStats;
     [SerializeField] CurrentStats currentStats;

@@ -2,17 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Water : MonoBehaviour
+public class Water : HazardousGround
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override void EffectedAnimationStart(Entity entity)
     {
-        
+        base.EffectedAnimationStart(entity);
+        if (entity.submergeMask != null)
+        {
+            entity.submergeMask.enabled = true;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void EffectedAnimationEnd(Entity entity)
     {
-        
+        base.EffectedAnimationEnd(entity);
+        if (entity.submergeMask != null)
+        {
+            entity.submergeMask.enabled = false;
+        }
     }
 }

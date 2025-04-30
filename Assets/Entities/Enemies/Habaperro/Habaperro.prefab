@@ -1,5 +1,88 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4601113222921247247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9162757565596393640}
+  - component: {fileID: 5247703492703846194}
+  m_Layer: 0
+  m_Name: Sprite Mask
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9162757565596393640
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4601113222921247247}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.0124, y: -0.226, z: 0}
+  m_LocalScale: {x: 0.6803128, y: 0.16217366, z: 0.25}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 663827347028250028}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!331 &5247703492703846194
+SpriteMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4601113222921247247}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 15d0c3709176029428a0da2f8cecf0b5, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+  m_MaskAlphaCutoff: 0.2
+  m_FrontSortingLayerID: 1677076209
+  m_BackSortingLayerID: 1677076209
+  m_FrontSortingLayer: 4
+  m_BackSortingLayer: 4
+  m_FrontSortingOrder: 1
+  m_BackSortingOrder: 0
+  m_IsCustomRangeActive: 1
+  m_SpriteSortPoint: 0
 --- !u!1 &6001375706453813211
 GameObject:
   m_ObjectHideFlags: 0
@@ -37,6 +120,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2007945400034492423}
+  - {fileID: 9162757565596393640}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &9209293809885651711
@@ -77,9 +161,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 326946545
-  m_SortingLayer: 3
-  m_SortingOrder: 11
+  m_SortingLayerID: 1677076209
+  m_SortingLayer: 4
+  m_SortingOrder: 1
   m_Sprite: {fileID: -1522402420, guid: 9fc2b30b0bb274a04ac4fe5cb2b8b6a8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -89,7 +173,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 2
   m_SpriteSortPoint: 0
 --- !u!114 &8518740263386211223
 MonoBehaviour:
@@ -103,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f777958bef435244f983fbb5b784340a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  submergeMask: {fileID: 5247703492703846194}
   baseStats:
     maxHealth: 60
     baseMoveSpeed: 6
@@ -111,6 +196,7 @@ MonoBehaviour:
     health: 0
     moveSpeed: 0
   falling: 0
+  flying: 0
   hitmarker: {fileID: 594101713564386973, guid: 88876a640853de543b8ab5cacc641fba, type: 3}
   collectable: {fileID: 165481585712337600, guid: 59b0b827bc592c8489245701800b7d79, type: 3}
   playerCollisionDamage: 0
@@ -282,7 +368,7 @@ MonoBehaviour:
   - {x: 0.1626451, y: -0.22310197, z: 0}
   m_ShapePathHash: 327602469
   m_Mesh: {fileID: 0}
-  m_InstanceId: 203620
+  m_InstanceId: 141460
   m_LocalBounds:
     m_Center: {x: -0.0058574677, y: -0.20464, z: 0}
     m_Extent: {x: 0.18824077, y: 0.019226193, z: 0}
