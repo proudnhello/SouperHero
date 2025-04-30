@@ -244,29 +244,32 @@ public class HabaperroAI : EnemyBaseClass
                     sm.ChangeState(ChargerStates.IDLE); // disengage if too far
                 }
 
-            } while (dist > sm.DistanceToPlayerForExplosion);
+            } while (dist > sm.DistanceToPlayerForExplosion || !sm.CanAttack());
             sm.agent.isStopped = true;
 
             // EXPLODE
-            sm.animator.Play("Ignite");
-
-            float interval = sm.IgnitionFlashStartInterval;
-            do
+            if (sm.CanAttack())
             {
+                sm.animator.Play("Ignite");
+
+                float interval = sm.IgnitionFlashStartInterval;
+                do
+                {
+                    sm._sprite.color = Color.white;
+                    yield return new WaitForSeconds(interval);
+                    sm._sprite.color = sm.IgnitionFlashColor;
+                    yield return new WaitForSeconds(interval);
+
+                    interval *= sm.IgnitionFlashIntervalMultiplier;
+                } while (interval > sm.IgnitionFlashIntervalToTriggerExplosion);
                 sm._sprite.color = Color.white;
-                yield return new WaitForSeconds(interval);
-                sm._sprite.color = sm.IgnitionFlashColor;
-                yield return new WaitForSeconds(interval);
-                    
-                interval *= sm.IgnitionFlashIntervalMultiplier;
-            } while (interval > sm.IgnitionFlashIntervalToTriggerExplosion);
-            sm._sprite.color = Color.white;
-            sm._collider.enabled = false;
-            sm.animator.Play("Boom");
-            Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
-            yield return new WaitForSeconds(sm.PostExplosionWaitTime);
-            IHandleMovementExplosion = null;
-            sm.Die();
+                sm._collider.enabled = false;
+                sm.animator.Play("Boom");
+                Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
+                yield return new WaitForSeconds(sm.PostExplosionWaitTime);
+                IHandleMovementExplosion = null;
+                sm.Die();
+            }
         }
 
         public void OnExit()

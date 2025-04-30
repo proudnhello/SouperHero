@@ -135,7 +135,7 @@ public class RingerAI : EnemyBaseClass
                 Vector2 perpendicular = new Vector2(awayFromPlayer.y, -awayFromPlayer.x) * rotationDirection;
                 ringer.agent.speed = ringer.GetMoveSpeed();
                 ringer.agent.SetDestination(holder + (perpendicular * 1));
-                if(ringer.canShoot())
+                if(ringer.canShoot() && ringer.CanAttack())
                 {
                     ringer.currentState.Exit(ringer);
                     ringer.currentState = ringer.shooting;

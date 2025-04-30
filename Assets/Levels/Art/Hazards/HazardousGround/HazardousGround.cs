@@ -10,6 +10,8 @@ public class HazardousGround : MonoBehaviour
 
     [SerializeField] float leaveTimer = 0f;
 
+    // If true, the entity will be able to attack while on the ground. False will prevent attacking
+    [SerializeField] bool canAttack = true;
     private void Start()
     {
         inflictionType = new List<SoupSpoon.SpoonInfliction>();
@@ -19,6 +21,19 @@ public class HazardousGround : MonoBehaviour
             spoonInfliction.add = infliction.amount;
             spoonInfliction.mult = mult;
             inflictionType.Add(spoonInfliction);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Entity entity = collision.GetComponent<Entity>();
+        if (entity != null && !entity.flying)
+        {
+            if (!canAttack)
+            {
+                entity.AddCantAttack();
+            }
+            EffectedAnimationStart(entity);
         }
     }
 
@@ -39,6 +54,11 @@ public class HazardousGround : MonoBehaviour
         Entity entity = collision.GetComponent<Entity>();
         if (entity != null && !entity.flying)
         {
+            if (!canAttack)
+            {
+                entity.RemoveCantAttack();
+            }
+            EffectedAnimationEnd(entity);
             foreach (SoupSpoon.SpoonInfliction infliction in inflictionType)
             {
                 SoupSpoon.SpoonInfliction copy = new SoupSpoon.SpoonInfliction(infliction);
@@ -46,5 +66,16 @@ public class HazardousGround : MonoBehaviour
                 entity.ApplyInfliction(new List<SoupSpoon.SpoonInfliction> { infliction }, transform, true);
             }
         }
+    }
+
+    // By default, these are empty. They can be overridden in the child classes to add animations
+    protected virtual void EffectedAnimationStart(Entity entity)
+    {
+        return;
+    }
+
+    protected virtual void EffectedAnimationEnd(Entity entity)
+    {
+        return;
     }
 }

@@ -25,7 +25,6 @@ public class PitHazard : MonoBehaviour
         bool val;
         if (fullyInside && entity != null && (!inCollider.TryGetValue(entity, out val) || !val))
         {
-            print("Entity Bounds: " + entityBounds.min + " to " + entityBounds.max + " Pit Bounds: " + pitBounds.min + " to " + pitBounds.max);
             inCollider[entity] = true;
             StartCoroutine(Fall(entity));
         }

@@ -222,19 +222,22 @@ public class FlettuceAI : EnemyBaseClass
                 sm.agent.isStopped = true;
 
                 // PERFORM CHARGES
-                sm.animator.Play("Attack");
-                for (int chargeNum = 1; chargeNum <= sm.ConsecutiveCharges; chargeNum++)
+                if (sm.CanAttack())
                 {
-                    yield return new WaitUntil(() => !sm.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
-                    Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
-                    for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
+                    sm.animator.Play("Attack");
+                    for (int chargeNum = 1; chargeNum <= sm.ConsecutiveCharges; chargeNum++)
                     {
-                        if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);
-                        yield return null;
-                    }
+                        yield return new WaitUntil(() => !sm.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
+                        Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
+                        for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
+                        {
+                            if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);
+                            yield return null;
+                        }
 
-                    if (chargeNum < sm.ConsecutiveCharges) yield return new WaitForSeconds(Random.Range(sm.ChargeCooldownTime.x, sm.ChargeCooldownTime.y));
-                    else yield return new WaitForSeconds(sm.FinalChargeCooldownTime);
+                        if (chargeNum < sm.ConsecutiveCharges) yield return new WaitForSeconds(Random.Range(sm.ChargeCooldownTime.x, sm.ChargeCooldownTime.y));
+                        else yield return new WaitForSeconds(sm.FinalChargeCooldownTime);
+                    }
                 }
             }
         }
