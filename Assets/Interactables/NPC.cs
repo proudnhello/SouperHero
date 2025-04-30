@@ -10,6 +10,7 @@ public class NPC : Interactable
 
     private void Awake()
     {
+        base.Awake();
         //SetInteractable(true);
     }
     public override void Interact()
