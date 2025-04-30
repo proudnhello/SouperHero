@@ -11,14 +11,12 @@ public class NPC : Interactable
     private void Awake()
     {
         base.Awake();
-        //SetInteractable(true);
     }
     public override void Interact()
     {
 
         if (CanInteract())
         {
-            Debug.Log("Interacting with NPC: " + gameObject.name);
             // Trigger the dialogue
             if (dialogueTrigger != null)
             {
@@ -49,10 +47,4 @@ public class NPC : Interactable
             SetHighlighted(false);
         }
     }
-    // public override void SetHighlighted(bool isHighlighted)
-    // {
-    //     // set the interactable prompt to be active or not
-    //     interactableSpriteRenderer.material.SetFloat(_OutlineThickness, isHighlighted ? 1 : 0);
-    // }
-
 }
