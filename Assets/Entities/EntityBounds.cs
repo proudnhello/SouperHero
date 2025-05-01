@@ -24,7 +24,7 @@ public class EntityBounds : MonoBehaviour
             if (!containedHazards.ContainsKey(hazard))
             {
                 containedHazards.Add(hazard, true);
-                parent.CheckBounds(hazard);
+                parent.UpdateBounds(hazard);
             }
         }
     }
@@ -42,7 +42,7 @@ public class EntityBounds : MonoBehaviour
             if (containedHazards.ContainsKey(hazard))
             {
                 containedHazards.Remove(hazard);
-                parent.CheckBounds(hazard);
+                parent.UpdateBounds(hazard);
             }
         }
     }

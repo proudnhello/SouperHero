@@ -70,17 +70,32 @@ public abstract class Entity : MonoBehaviour
 
     // Used for hazard collision detection
     // If not all bounds are in the hazard, remove the entity from the hazard, otherwise add it
-    public void CheckBounds(Hazard hazard)
+    public void UpdateBounds(Hazard hazard)
     {
+        if (CheckBounds(hazard))
+        {
+            hazard.AddEntity(this);
+        }
+        else
+        {
+            hazard.RemoveEntity(this);
+        }
+    }
+
+    public bool CheckBounds(Hazard hazard)
+    {
+        if (bounds.Length == 0)
+        {
+            return false;
+        }
         foreach (EntityBounds bound in bounds)
         {
             if (!bound.CheckHazard(hazard))
             {
-                hazard.RemoveEntity(this);
-                return;
+                return false;
             }
         }
-        hazard.AddEntity(this);
+        return true;
     }
 
     public void RemoveCantAttack()

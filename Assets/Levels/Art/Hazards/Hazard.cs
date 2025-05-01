@@ -17,6 +17,9 @@ public abstract class Hazard : MonoBehaviour
     }
     public virtual void RemoveEntity(Entity entity)
     {
-        effectedEntities.Remove(entity);
+        if (entity != null && effectedEntities.Contains(entity))
+        {
+            effectedEntities.Remove(entity);
+        }
     }
 }
