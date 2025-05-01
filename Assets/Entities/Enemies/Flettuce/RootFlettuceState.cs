@@ -25,7 +25,7 @@ public class RootFlettuceState : BaseState
     public override void ExitState() { }
 
     public override void DoActions() {
-        
+        Debug.Log("The current state in root state is: " + machine.currentState.ToString());
     }
 
     // The Root State Has No Sibling States So Doesn't Need Switch Handling

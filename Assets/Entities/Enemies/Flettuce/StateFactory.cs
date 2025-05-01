@@ -29,6 +29,11 @@ public class StateFactory
         return new DetectionState(_blackboard);
     }
 
+    public BaseState Frozen()
+    {
+        return new FrozenState(_blackboard);
+    }
+
     public BaseState Approach()
     {
         return new ApproachState(_blackboard);

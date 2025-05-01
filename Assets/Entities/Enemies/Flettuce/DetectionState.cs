@@ -37,7 +37,6 @@ public class DetectionState : BaseState
 
     public override void DoActions()
     {
-        Debug.Log("The current state in detection state is: " + machine.currentState.ToString());
     }
 
     IEnumerator HandleCharge()

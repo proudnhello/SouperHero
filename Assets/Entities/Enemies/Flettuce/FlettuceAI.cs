@@ -73,7 +73,6 @@ public class FlettuceAI : EnemyBaseClass
     public Animator animator;
     internal List<IState> states;
     internal IState currentState;
-    public bool freezeEnemy = false;
 
     public NavMeshAgent Agent { get { return agent; } }
     public Transform PlayerTransform { get { return _playerTransform; } }
@@ -86,8 +85,6 @@ public class FlettuceAI : EnemyBaseClass
     public StateMachineEvents Events;
 
     NavMeshPath path;
-
-    bool freezeEnemy = false;
 
     public override void Fall(Transform _respawnPoint)
     {
@@ -118,8 +115,6 @@ public class FlettuceAI : EnemyBaseClass
 
         if (IsDead()) return;
 
-
-        freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
         _sprite.flipX = agent.destination.x > transform.position.x || _rigidbody.velocity.x > 0;
     }
 
@@ -243,6 +238,11 @@ public class FlettuceAI : EnemyBaseClass
             return false;
         }
 
+        public bool PlayerOutOfFrozenRangeEvent()
+        {
+            return EuclideanDist() > _blackboard.FreezeEnemyWhenThisFar;
+        }
+
 
         // returns -1 if navmesh not complete
         private float NavMeshDist()
@@ -265,6 +265,11 @@ public class FlettuceAI : EnemyBaseClass
             }
 
             return -1;
+        }
+
+        private float EuclideanDist()
+        {
+            return Vector2.Distance(_blackboard.transform.position, PlayerEntityManager.Singleton.transform.position);
         }
 
     }
