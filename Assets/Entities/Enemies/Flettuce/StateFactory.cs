@@ -24,7 +24,7 @@ public class StateFactory
         return new IdleState(_blackboard);
     }
 
-    public BaseState Attack()
+    public BaseState Detection()
     {
         return new DetectionState(_blackboard);
     }
@@ -34,10 +34,24 @@ public class StateFactory
         return new ApproachState(_blackboard);
     }
 
+    public BaseState ConsecutiveCharge()
+    {
+        return new ConsecutiveChargeState(_blackboard);
+    }
+
     public BaseState Charge()
     {
         return new ChargeState(_blackboard);
     }
 
+    public BaseState WaitState(float waitTime, BaseState switchToAfterState)
+    {
+        return new WaitState(_blackboard, waitTime, switchToAfterState);
+    }
+
+    public BaseState EndCharge()
+    {
+        return new EndChargeState(_blackboard);
+    }
 
 }

@@ -100,11 +100,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 726252843407693719}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 606e1cef5d5a34671ac4ea10cb4aeb0f, type: 3}
+  m_Script: {fileID: 11500000, guid: ba9ec7da6cea6d6429c33fd2fc407ee8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   baseStats:
-    maxHealth: 40
+    maxHealth: 30
     baseMoveSpeed: 2
     invincibility: 0.5
   currentStats:
@@ -121,25 +121,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
-  FreezeEnemyWhenThisFar: 0
-  PlayerDetectionIntervalWhenFrozen: 0
-  PlayerDetectionPathLength: 0
-  PlayerDetectionInterval: 0
-  PatrolDistance: {x: 3, y: 10}
-  PatrolWaitTime: {x: 1, y: 3}
-  WhilePatrolCheckIfStoppedInterval: 0.15
-  WhilePatrolCheckIfStoppedDistance: 0.07
-  IdleSpeedMultiplier: 1
-  AttackSpeedMultiplier: 1.5
-  DistanceToPlayerForCharge: 5.35
-  AttackDistanceCheckInterval: 0.3
-  ChargeSpeed: 6.88
-  ChargeForce: 106080
-  ChargeTime: 0.48
-  ConsecutiveCharges: 3
-  ChargeCooldownTime: {x: 0.3, y: 0.4}
-  FinalChargeCooldownTime: 1.62
-  DistanceFromPlayerToDisengage: 7
+  _chargeForce: 106080
   animator: {fileID: 0}
   freezeEnemy: 0
 --- !u!50 &3527386940917697244
@@ -281,7 +263,7 @@ MonoBehaviour:
   - {x: 0.0379256, y: -0.50806874, z: 0}
   m_ShapePathHash: -891751775
   m_Mesh: {fileID: 0}
-  m_InstanceId: 45804
+  m_InstanceId: 49282
   m_LocalBounds:
     m_Center: {x: -0.032610357, y: -0.4494512, z: 0}
     m_Extent: {x: 0.10462934, y: 0.059029236, z: 0}

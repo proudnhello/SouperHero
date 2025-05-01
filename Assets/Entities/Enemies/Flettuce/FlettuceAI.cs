@@ -14,35 +14,43 @@ public class FlettuceAI : EnemyBaseClass
 
     [Header("General")]
     [SerializeField] public LayerMask playerLayer;
-    private float _freezeEnemyWhenThisFar = 30f;
+    private float _freezeEnemyWhenThisFar = 38f;
     private float _playerDetectionIntervalWhenFrozen = 1.5f;
 
     // Idle State
-    private float _playerDetectionPathLength = 15f;
+    private float _playerDetectionPathLength = 6.5f;
     private float _playerDetectionInterval = .5f;
-    private Vector2 _patrolDistance = new Vector2(2.5f, 3.5f);
-    private Vector2 _patrolWaitTime = new Vector2(1.5f, 2.5f);
-    private float _whilePatrolCheckIfStoppedInterval = .3f;
-    private float _whilePatrolCheckIfStoppedDistance = .1f;
+    private Vector2 _patrolDistance = new Vector2(3f, 10f);
+    private Vector2 _patrolWaitTime = new Vector2(1f, 3f);
+    private float _whilePatrolCheckIfStoppedInterval = .15f;
+    private float _whilePatrolCheckIfStoppedDistance = .07f;
     private float _idleSpeedMultiplier = 1f;
 
     // Attack State
     private float _attackSpeedMultiplier = 1.5f;
-    private float _distanceToPlayerForCharge = 5f;
-    private float _attackDistanceCheckInterval;
-    private float _chargeSpeed = 5f;
-    private float _chargeForce = 200f;
-    private float _chargeTime = 1f;
-    private int _consecutiveCharges = 3;
-    private Vector2 _chargeCooldownTime = new Vector2(.6f, .8f);
-    private float _finalChargeCooldownTime = 1f;
+    private float _distanceToPlayerForCharge = 5.0f;
+    private float _attackDistanceCheckInterval = 0.3f;
+    private float _chargeSpeed = 6.88f;
+    public float _chargeForce = 106080f;
+    private float _chargeTime = 0.48f;
+    private int _numConsecutiveCharges = 3;
+    private Vector2 _chargeCooldownTime = new Vector2(.3f, .4f);
+    private float _finalChargeCooldownTime = 1.62f;
     // NOTE: This should always be higher than PlayerDetectionPathLength
-    private float _distanceFromPlayerToDisengage = 20f;
+    private float _distanceFromPlayerToDisengage = 7f;
+
+    // Consecutive Charge State
+    int _chargesCounter;
+    public int ChargesCounter { get { return _chargesCounter; } set { _chargesCounter = value; } }
+
+    bool _consecutiveChargeIsActive;
+    public bool ConsecutiveChargeIsActive { get { return _consecutiveChargeIsActive; } set { _consecutiveChargeIsActive = value; } }
+
 
     // Getters and Setters
     public float FreezeEnemyWhenThisFar { get { return _freezeEnemyWhenThisFar; } }
     public float PlayerDetectionIntervalWhenFrozen { get { return _playerDetectionIntervalWhenFrozen; } }
-    public float PlayerDetectionPathLength { get { return _freezeEnemyWhenThisFar; } }
+    public float PlayerDetectionPathLength { get { return _playerDetectionPathLength; } }
     public float PlayerDetectionInterval { get { return _playerDetectionInterval; } }
     public Vector2 PatrolDistance { get { return _patrolDistance; } }
     public Vector2 PatrolWaitTime { get { return _patrolWaitTime; } }
@@ -55,7 +63,7 @@ public class FlettuceAI : EnemyBaseClass
     public float ChargeSpeed {  get { return _chargeSpeed; } }
     public float ChargeForce {  get { return _chargeForce; } }
     public float ChargeTime {  get  { return _chargeTime; } }   
-    public int ConsecutiveCharges {  get { return _consecutiveCharges; } }
+    public int NumConsecutiveCharges {  get { return _numConsecutiveCharges; } }
     public Vector2 ChargeCooldownTime {  get { return _chargeCooldownTime; } }
     public float FinalChargeCooldownTime { get { return _finalChargeCooldownTime; } }
     public float DistanceFromPlayerToDisengage {  get { return _distanceFromPlayerToDisengage;  } }
@@ -115,6 +123,61 @@ public class FlettuceAI : EnemyBaseClass
         base.Die();
     }
 
+    float _startTime = -1;
+    float _waitSeconds;
+    // Returns True if Timer hasn't started
+    // Returns False if Timer has started
+    // Starts Timer if timer hasn't started
+    public bool StartWaitTimer(float waitSeconds)
+    {
+        if (!HasTimerStarted())
+        {
+            _waitSeconds = waitSeconds;
+            _startTime = Time.time;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool HasTimerStarted()
+    {
+        if (_startTime < 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    // returns false if time isn't up or time hasn't started
+    public bool CheckWaitTimer()
+    {
+        // check if timer hasn't started
+        if (_startTime == -1f)
+        {
+            return false;
+        }
+
+        //Debug.Log($"Wait Seconds is {_waitSeconds} and time elapsed is {Math.Abs(_startTime - Time.time)}");
+
+        /// check if wait time has elapsed
+        if (_waitSeconds < Math.Abs(_startTime - Time.time))
+        {
+            Debug.Log("Timer reset, returning true");
+            _startTime = -1;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public class StateMachineEvents
     {
         FlettuceAI _blackboard;
@@ -125,34 +188,58 @@ public class FlettuceAI : EnemyBaseClass
 
         public bool EnemyOutOfChaseEvent()
         {
-            // Calculate path from enemy to player
-            NavMesh.CalculatePath(new Vector2(_blackboard.transform.position.x, _blackboard.transform.position.y), _blackboard._playerTransform.position,
-                NavMesh.AllAreas, _blackboard.path);
+            float distance = NavMeshDist();
 
-            // Do this is the path exists
-            if (_blackboard.path.status == NavMeshPathStatus.PathComplete)
+            if (distance < 0)
             {
-
-                float distance = Vector2.Distance(_blackboard.transform.position, _blackboard.path.corners[0]);
-                for (int i = 1; i < _blackboard.path.corners.Length; i++)
-                {
-                    distance += Vector2.Distance(_blackboard.path.corners[i - 1], _blackboard.path.corners[i]);
-                }
-
-                Debug.Log("Distance in Enemy Out Of Chase Event: " + distance);
-
-                Debug.Log("Distance to disengage in Enemy Out Of Chase Event: " + _blackboard.DistanceFromPlayerToDisengage);
-
-                if (distance > _blackboard.DistanceFromPlayerToDisengage)
-                {
-                    return true;
-                }
+                return false;
+            }
+            else if (distance > _blackboard.DistanceFromPlayerToDisengage)
+            {
+                Debug.Log($"{distance} is greater than DistanceFromPlayerToDisengage: {_blackboard.DistanceFromPlayerToDisengage}");
+                return true;
             }
 
             return false;
         }
 
-        public bool PlayerInDetectionRange()
+        public bool PlayerInDetectionRangeEvent()
+        {
+            float distance = NavMeshDist();
+
+            if (distance < 0)
+            {
+                return false;
+            }
+            else if (distance < _blackboard.PlayerDetectionPathLength)
+            {
+                Debug.Log($"{distance} is less than PlayerDetectionPathLength: {_blackboard.PlayerDetectionPathLength}");
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool PlayerInChargeRangeEvent()
+        {
+            float distance = NavMeshDist();
+
+            if (distance < 0)
+            {
+                return false;
+            }
+            else if (distance < _blackboard.DistanceToPlayerForCharge)
+            {
+                Debug.Log($"{distance} ({distance.GetType()}) is less than DistanceToPlayerForCharge: {_blackboard.DistanceToPlayerForCharge} ({_blackboard.DistanceToPlayerForCharge.GetType()})");
+                return true;
+            }
+
+            return false;
+        }
+
+
+        // returns -1 if navmesh not complete
+        private float NavMeshDist()
         {
             // Calculate path from enemy to player
             NavMesh.CalculatePath(new Vector2(_blackboard.transform.position.x, _blackboard.transform.position.y), _blackboard._playerTransform.position,
@@ -168,15 +255,10 @@ public class FlettuceAI : EnemyBaseClass
                     distance += Vector2.Distance(_blackboard.path.corners[i - 1], _blackboard.path.corners[i]);
                 }
 
-                Debug.Log("Distance in player in detection range Event: " + distance);
-
-                if (distance < _blackboard.PlayerDetectionPathLength)
-                {
-                    return true;
-                }
+                return distance;
             }
 
-            return false;
+            return -1;
         }
 
     }

@@ -110,9 +110,12 @@ public class IdleState : BaseState
 
     public override void SwitchHandling()
     {
-        if (_blackboard.Events.PlayerInDetectionRange())
+        if (_blackboard.Events.PlayerInDetectionRangeEvent())
         {
-            _blackboard.stateMachine.SetState(_blackboard.stateFactory.Attack(), this.parent);
+            Debug.Log(parent is null);
+            Debug.Log(parent.machine is null);
+            Debug.Log(this.parent is null);
+            parent.machine.SetState(_blackboard.stateFactory.Detection(), this.parent);
 
             Debug.Log("Player in detection range");
         }

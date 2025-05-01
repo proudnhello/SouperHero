@@ -6,49 +6,62 @@ using static FlavorIngredient.InflictionFlavor;
 
 public class ChargeState : BaseState
 {
-    FlettuceAI sm;
-    public ChargeState(FlettuceAI _sm)
+    FlettuceAI _blackboard;
+    int _chargeNum;
+    float _chargeUpStartTime;
+    bool _endChargeState;
+    public ChargeState(FlettuceAI blackboard)
     {
-        sm = _sm;
+        _blackboard = blackboard;
     }
 
     public override void DoActions()
     {
-        throw new System.NotImplementedException();
+        //yield return new WaitUntil(() => !_blackboard.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
+
+
+        Vector2 vel = (_blackboard.PlayerTransform.position - _blackboard.transform.position).normalized * _blackboard.ChargeForce * _blackboard.GetMoveSpeed();
+        if (_blackboard.ChargeTime > Mathf.Abs(_chargeUpStartTime - Time.time)) {
+            if (_blackboard._rigidbody.velocity.magnitude < _blackboard.ChargeSpeed)
+            {
+                _blackboard._rigidbody.AddForce(vel * Time.deltaTime);
+            }
+            return;
+        }
+
+        _endChargeState=true;
+
+
+        //if (chargeNum < _blackboard.ConsecutiveCharges) yield return new WaitForSeconds(Random.Range(_blackboard.ChargeCooldownTime.x, _blackboard.ChargeCooldownTime.y));
+        //else yield return new WaitForSeconds(_blackboard.FinalChargeCooldownTime);
     }
 
     public override void EnterState()
     {
-        sm.StartCoroutine(Charge());
-        Debug.Log("Entering Approach State");
+        _blackboard.animator.Play("Attack");
+        _chargeUpStartTime = Time.time;
+        _endChargeState  = false;
     }
 
     public override void ExitState()
     {
-        sm.StartCoroutine(Charge());
+        _blackboard.ChargesCounter++;
     }
 
     public override void SwitchHandling()
     {
-        throw new System.NotImplementedException();
-    }
-
-    IEnumerator Charge()
-    {
-        // PERFORM CHARGES
-        sm.animator.Play("Attack");
-        for (int chargeNum = 1; chargeNum <= sm.ConsecutiveCharges; chargeNum++)
+        if (_endChargeState)
         {
-            yield return new WaitUntil(() => !sm.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
-            Vector2 vel = (sm.PlayerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
-            for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
+            if(_blackboard.ChargesCounter < _blackboard.NumConsecutiveCharges)
             {
-                if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);
-                yield return null;
+                float waitTime = Random.Range(_blackboard.ChargeCooldownTime.x, _blackboard.ChargeCooldownTime.y);
+                parent.machine.SetState(_blackboard.stateFactory.WaitState(waitTime, _blackboard.stateFactory.Charge()), this.parent);
+            } else
+            {
+                float waitTime = _blackboard.FinalChargeCooldownTime;
+                parent.machine.SetState(_blackboard.stateFactory.WaitState(waitTime, _blackboard.stateFactory.EndCharge()), this.parent);
             }
-
-            if (chargeNum < sm.ConsecutiveCharges) yield return new WaitForSeconds(Random.Range(sm.ChargeCooldownTime.x, sm.ChargeCooldownTime.y));
-            else yield return new WaitForSeconds(sm.FinalChargeCooldownTime);
+            
         }
     }
 }

@@ -24,6 +24,10 @@ public class DetectionState : BaseState
         // Set the NavMeshAgent Speed to New Speed and Unstop Agent
         _blackboard.Agent.speed = _blackboard.GetMoveSpeed() * _blackboard.AttackSpeedMultiplier;
         _blackboard.Agent.isStopped = false;
+
+        // Set the initial state to Idle
+        machine.SetState(_blackboard.stateFactory.Approach(), this);
+
     }
 
     public override void ExitState()
@@ -33,7 +37,7 @@ public class DetectionState : BaseState
 
     public override void DoActions()
     {
-        machine.SetState(_blackboard.stateFactory.Approach(), this);
+        Debug.Log("The current state in detection state is: " + machine.currentState.ToString());
     }
 
     IEnumerator HandleCharge()
@@ -59,7 +63,7 @@ public class DetectionState : BaseState
 
             // PERFORM CHARGES
             _blackboard.animator.Play("Attack");
-            for (int chargeNum = 1; chargeNum <= _blackboard.ConsecutiveCharges; chargeNum++)
+            for (int chargeNum = 1; chargeNum <= _blackboard.NumConsecutiveCharges; chargeNum++)
             {
                 yield return new WaitUntil(() => !_blackboard.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
                 Vector2 vel = (_blackboard.PlayerTransform.position - _blackboard.transform.position).normalized * _blackboard.ChargeForce * _blackboard.GetMoveSpeed();
@@ -69,7 +73,7 @@ public class DetectionState : BaseState
                     yield return null;
                 }
 
-                if (chargeNum < _blackboard.ConsecutiveCharges) yield return new WaitForSeconds(Random.Range(_blackboard.ChargeCooldownTime.x, _blackboard.ChargeCooldownTime.y));
+                if (chargeNum < _blackboard.NumConsecutiveCharges) yield return new WaitForSeconds(Random.Range(_blackboard.ChargeCooldownTime.x, _blackboard.ChargeCooldownTime.y));
                 else yield return new WaitForSeconds(_blackboard.FinalChargeCooldownTime);
             }
         }
@@ -81,7 +85,7 @@ public class DetectionState : BaseState
         if (_blackboard.Events.EnemyOutOfChaseEvent())
         {
             Debug.Log("Player moved out of chase range");
-            _blackboard.stateMachine.SetState(_blackboard.stateFactory.Idle(), this.parent); // disengage if too far
+            parent.machine.SetState(_blackboard.stateFactory.Idle(), this.parent); // disengage if too far
         }
     }
 }

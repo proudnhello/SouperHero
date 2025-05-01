@@ -48,7 +48,8 @@ public abstract class BaseState : IState
         machine.currentState?.ExitStateBranch();
     }
 
-    public void SetSuperState(BaseState newSuperState)
+    // Don't Call this Call SetSubState instead
+    private void SetSuperState(BaseState newSuperState)
     {
         parent = newSuperState;
     }
@@ -56,7 +57,7 @@ public abstract class BaseState : IState
     public void SetSubState(BaseState newSubState)
     {
         children.Append(newSubState);
-        SetSuperState(this);
+        newSubState.SetSuperState(this);
     }
 
 }

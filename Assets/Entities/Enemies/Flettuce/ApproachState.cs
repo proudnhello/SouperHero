@@ -28,8 +28,6 @@ public class ApproachState : BaseState
         _blackboard.Agent.isStopped = true;
     }
 
-    //float attackWaitInitTime = -1;
-
     public void Approach()
     {
         _blackboard.Agent.isStopped = false;
@@ -38,7 +36,11 @@ public class ApproachState : BaseState
 
     public override void SwitchHandling()
     {
-        //throw new System.NotImplementedException();
+        if (_blackboard.Events.PlayerInChargeRangeEvent())
+        {
+            Debug.Log("Approach State's parent is: " + parent.ToString());
+            parent.machine.SetState(_blackboard.stateFactory.ConsecutiveCharge(), this.parent);
+        }
     }
 
     //IEnumerator Approach()

@@ -15,7 +15,7 @@ public class StateMachine
         if (currentState != newState || forceReset)
         {
             currentState?.ExitStateBranch();
-            currentState?.SetSubState(newState);
+            parentState.SetSubState(newState);
             currentState = newState;
             currentState.EnterState();
         }
