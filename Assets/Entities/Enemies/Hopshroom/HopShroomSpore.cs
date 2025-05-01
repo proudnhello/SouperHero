@@ -45,7 +45,14 @@ public class HopShroomSpore : MonoBehaviour
         }
         else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {
-            collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            if (collider.gameObject.GetComponent<Destroyables>() != null)
+            {
+                collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            }
+            if(collider.gameObject.GetComponent<Entity>() != null)
+            {
+                collider.gameObject.GetComponent<Entity>().DealDamage(bulletDamage);
+            }
         }else if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();

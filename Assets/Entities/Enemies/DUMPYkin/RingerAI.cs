@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -116,7 +117,7 @@ public class RingerAI : EnemyBaseClass
                 ringer.agent.SetDestination(holder + (awayFromPlayer * 3));
             }
             // If the player is in range, enter the shooting state
-            else if (distance < ringer.shootingRadius)
+            else if (distance < ringer.shootingRadius && ringer.CanAttack())
             {
                 if(rotationDirection == 0)
                 {
@@ -172,6 +173,12 @@ public class RingerAI : EnemyBaseClass
 
         public override void Update(RingerAI ringer, float deltaT)
         {
+            if(!ringer.CanAttack())
+            {
+                ringer.currentState.Exit(ringer);
+                ringer.currentState = ringer.chasing;
+                ringer.currentState.Enter(ringer);
+            }
             // Animation end detection from https://discussions.unity.com/t/how-to-check-if-animator-animations-has-finished/838670/5
             // normalizedTime is the time of the animation normalized to 0-1, so >1 means it's done
             AnimatorStateInfo info = ringer.animator.GetCurrentAnimatorStateInfo(0);
@@ -179,6 +186,7 @@ public class RingerAI : EnemyBaseClass
 
             // Shoot the bullets when the dumpy hits the ground
             // Attack animation is 19 frames, they hit the ground on 16, so 16/19 = 0.84
+            // TODO: Change this to actually count frames
             // Then we do slightly before b/c the bullets get hidden behind the sprite, so they appear at roughly 0.84
             if (time >= 0.80 && !shot)
             {
