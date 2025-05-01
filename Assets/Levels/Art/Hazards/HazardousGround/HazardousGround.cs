@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HazardousGround : MonoBehaviour
+public class HazardousGround : Hazard
 {
     [SerializeField] List<FlavorIngredient.InflictionFlavor> appliedInflictions;
     List<SoupSpoon.SpoonInfliction> inflictionType;
@@ -12,8 +12,9 @@ public class HazardousGround : MonoBehaviour
 
     // If true, the entity will be able to attack while on the ground. False will prevent attacking
     [SerializeField] bool canAttack = true;
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         inflictionType = new List<SoupSpoon.SpoonInfliction>();
         foreach (FlavorIngredient.InflictionFlavor infliction in appliedInflictions)
         {
@@ -24,11 +25,11 @@ public class HazardousGround : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public override void AddEntity(Entity entity)
     {
-        Entity entity = collision.GetComponent<Entity>();
         if (entity != null && !entity.flying)
         {
+            base.AddEntity(entity);
             if (!canAttack)
             {
                 entity.AddCantAttack();
@@ -37,23 +38,25 @@ public class HazardousGround : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void Update()
     {
-        Entity entity = collision.GetComponent<Entity>();
-        if (entity != null && !entity.flying)
+        foreach (Entity entity in effectedEntities)
         {
-            if (!entity.HasInfliction(inflictionType[0]))
+            if (entity != null && !entity.flying)
             {
-                entity.ApplyInfliction(inflictionType, transform, true);
+                if (!entity.HasInfliction(inflictionType[0]))
+                {
+                    entity.ApplyInfliction(inflictionType, transform, true);
+                }
             }
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    public override void RemoveEntity(Entity entity)
     {
-        Entity entity = collision.GetComponent<Entity>();
-        if (entity != null && !entity.flying)
+        if (entity != null && effectedEntities.Contains(entity))
         {
+            base.RemoveEntity(entity);
             if (!canAttack)
             {
                 entity.RemoveCantAttack();

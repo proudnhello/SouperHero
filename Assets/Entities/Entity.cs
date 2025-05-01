@@ -26,6 +26,9 @@ public abstract class Entity : MonoBehaviour
     }
 
     public SpriteMask submergeMask;
+    // Bounds are used for collision detection with hazards. All EntityBounds should be children of the entity
+    private EntityBounds[] bounds;
+    [SerializeField] bool needsBounds = true;
 
     // ~~~ VARIABLES ~~~
     [SerializeField] BaseStats baseStats;
@@ -47,6 +50,12 @@ public abstract class Entity : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         inflictionHandler = new(this);
         ResetStats();
+        bounds = GetComponentsInChildren<EntityBounds>();
+        print(bounds.Length);
+        if (bounds.Length == 0 && needsBounds)
+        {
+            Debug.LogWarning("Entity " + gameObject.name +  "has no bounds, and will not be effected by hazards");
+        }
     }
 
     public bool CanAttack()
@@ -57,6 +66,21 @@ public abstract class Entity : MonoBehaviour
     public void AddCantAttack()
     {
         cantAttack++;
+    }
+
+    // Used for hazard collision detection
+    // If not all bounds are in the hazard, remove the entity from the hazard, otherwise add it
+    public void CheckBounds(Hazard hazard)
+    {
+        foreach (EntityBounds bound in bounds)
+        {
+            if (!bound.CheckHazard(hazard))
+            {
+                hazard.RemoveEntity(this);
+                return;
+            }
+        }
+        hazard.AddEntity(this);
     }
 
     public void RemoveCantAttack()
