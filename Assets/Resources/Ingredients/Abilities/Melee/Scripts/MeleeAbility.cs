@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +56,6 @@ public class MeleeAbility : AbilityAbstractClass
             }
 
             Destroyables destroyableObject = col.GetComponent<Destroyables>();
-            Debug.Log($"Destroyable Object: {destroyableObject}");
             if (destroyableObject != null)
             {
                 // Remove the destroyable object

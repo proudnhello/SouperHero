@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,10 +20,8 @@ public class ZoneCore : MonoBehaviour
         this.stats = passedStats;
         this.inflictions = inflictions;
         persistenceTime = 0;
-        print("WHAT THE FUCK");
 
         transform.position = spawnPoint;
-        Debug.Log($"Zone Size Stats in Spawn Zone {passedStats.size}");
         zoneArea.transform.localScale = new Vector3(passedStats.size, passedStats.size, passedStats.size);
         gameObject.SetActive(true);
         zoneArea.inflictions = inflictions;
@@ -32,7 +31,6 @@ public class ZoneCore : MonoBehaviour
         {
             rb.velocity = dir * stats.speed;
         }
-        print("Spawned zone with stats " + stats.duration.ToString());
     }
 
     public ZoneArea GetZoneArea()
@@ -44,7 +42,6 @@ public class ZoneCore : MonoBehaviour
     {
         if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject))
         {
-            print("WHY COLIDE");
             gameObject.SetActive(false);
         }
     }

@@ -18,6 +18,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public bool isDragging = false;
     public bool droppedOn = false;
     public bool worldDropped = false;
+    public bool validPlacement = true;
+    [SerializeField] private float ingredientRadius;
 
     Collectable collectable;
     public static float alphaOnPickup = .25f;
@@ -25,6 +27,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void Awake()
     {
         collectable = transform.parent.gameObject.GetComponent<Collectable>();
+        ingredientRadius = 0.5f;
     }
 
     public void OnBeginDrag(PointerEventData eventData)         
@@ -35,7 +38,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         CursorManager.Singleton.cookingCursor.switchCursorImageTo(collectable, image);
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
-        print("Begin Drag");
 
         parentAfterDrag = previousParent;
 
@@ -51,6 +53,35 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnDrag(PointerEventData eventData)
     {
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
+
+        // Checking ingredient placement position
+        // PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        // {
+        //     position = Input.mousePosition
+        // };
+        // List<RaycastResult> results = new List<RaycastResult>();
+        // EventSystem.current.RaycastAll(pointerData, results);
+
+        // if(results.Count == 0)
+        // {   // Nothing in raycast which means no collisions
+        //     CursorManager.Singleton.cookingCursor.resetImageColor();
+        //     validPlacement = true;
+        // }
+
+        // Checking for the basket colliders and ingredients using physics because UI raycasts suck I guess
+        Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(worldPoint, ingredientRadius);
+        foreach (var collider in colliders)
+        {
+            if (collider.CompareTag("Ingredient") || collider.CompareTag("BasketWall"))
+            {
+                CursorManager.Singleton.cookingCursor.changeToInvalidColor();
+                validPlacement = false;
+                return;
+            }
+        }
+        CursorManager.Singleton.cookingCursor.resetImageColor();
+        validPlacement = true;
     }
 
     public bool resetParent()
@@ -80,7 +111,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     if (previousCookingSlot != null)
                     {
                         CookingManager.Singleton.CookingSlotSetTransparent(previousCookingSlot);
-                        Debug.Log("PREVIOUS COOKING SLOT: " + previousCookingSlot.name);
                     }
                 }
             }
@@ -111,7 +141,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             if (dropTarget != null)
             {
                 dropTarget.OnDrop(eventData);
-                Debug.Log("dropped!");
                 break;
             }
         }
@@ -123,8 +152,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (dropTarget == null && !isDragging && !droppedOn)
         {
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
             worldDropped = true;
 
             previousParent = collectable.gameObject.transform;
@@ -137,7 +164,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 image.raycastTarget = true;
             }
         } else if (CookingManager.Singleton.IsCooking() && isDragging)
-        {
+        {   // When in the cooking UI
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             if (droppedOn)  // dropped on an already occupied slot
             {
@@ -146,7 +173,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 CursorManager.Singleton.cursorObject.SetActive(true);
             }
 
-            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            if(validPlacement)
+            {   // Places into new position only if area is clear
+                transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            }
             worldDropped = true;
 
             previousParent = collectable.gameObject.transform;
@@ -159,10 +189,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 image.raycastTarget = true;
             }
         } else if (!CookingManager.Singleton.IsCooking() && dropTarget == null && isDragging)
-        {
+        {   // Dropped when not in cooking UI
             image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-            transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            if(validPlacement)
+            {   // Places into new position only if area is clear
+                transform.position = new Vector3(position.x, position.y, transform.root.position.z);
+            }
             worldDropped = true;
             isDragging = false;
 
@@ -222,7 +255,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         ingredient = transform.parent.GetComponent<Collectable>().ingredient;
         Encyclopedia.Singleton.PullUpEntry(collectable.ingredient);
-        print("enter");
         
         // I wanna give a huge shoutout to the person whoever wrote this 300 line function, only for it all to be thrown away.
         // Giving credits to Cursor for helping edit this 300 line function when I wanted to put colors in
@@ -239,9 +271,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //RectTransform rt = GetComponent<RectTransform>();
         //Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
         //itemStatsScreen.transform.position = new Vector2(this.transform.position.x, this.transform.position.y) + new Vector2(actualSize.x / 2, -actualSize.y / 2);
-        ////Debug.Log(itemStatsScreen.transform.position);
-        ////Debug.Log(rt.rect.size);
-        ////Debug.Log(this.transform.position);
 
         //// bring to the front
         //itemStatsScreen.transform.SetParent(transform.root);

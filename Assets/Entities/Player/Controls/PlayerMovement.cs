@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -97,7 +98,14 @@ public class PlayerMovement : MonoBehaviour
         // If the player is charging, don't allow movement, but still allow the player to rotate
         if (!charging)
         {
-            rb.velocity = inputDir * PlayerEntityManager.Singleton.GetMoveSpeed();
+            if (PlayerEntityManager.Singleton.GetMoveSpeed() >= 1)
+            {
+                rb.velocity = inputDir * PlayerEntityManager.Singleton.GetMoveSpeed();
+            }
+            else
+            {
+                rb.velocity = inputDir * 1;
+            }
             currrentMoveSpeed = rb.velocity.magnitude;
         }
     }

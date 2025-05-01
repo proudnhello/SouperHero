@@ -87,6 +87,12 @@ public class FlettuceAI : EnemyBaseClass
 
     NavMeshPath path;
 
+    bool freezeEnemy = false;
+
+    public override void Fall(Transform _respawnPoint)
+    {
+        return; // flettuce fly lmao they're immune to pits
+    }
     void Start(){
         initEnemy();
         agent.updateRotation = false;

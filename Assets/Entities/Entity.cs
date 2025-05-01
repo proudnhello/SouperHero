@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -24,12 +25,20 @@ public abstract class Entity : MonoBehaviour
         public float moveSpeed;
     }
 
+    public SpriteMask submergeMask;
+
     // ~~~ VARIABLES ~~~
     [SerializeField] BaseStats baseStats;
     [SerializeField] CurrentStats currentStats;
     internal EntityInflictionEffectHandler inflictionHandler;
     internal EntityRenderer entityRenderer;
     internal Rigidbody2D _rigidbody;
+    public bool falling = false;
+    public bool flying = false;
+    // Counts reasons why the entity cannot attack
+    // If > 0, the entity cannot attack
+    // So, once a reason is removed, it should be decremented, but if there are multiple reasons, the entity will continue to be unable to attack
+    private int cantAttack = 0;
 
     [SerializeField] GameObject hitmarker;
 
@@ -40,15 +49,40 @@ public abstract class Entity : MonoBehaviour
         ResetStats();
     }
 
+    public bool CanAttack()
+    {
+        return cantAttack <= 0;
+    }   
+
+    public void AddCantAttack()
+    {
+        cantAttack++;
+    }
+
+    public void RemoveCantAttack()
+    {
+        cantAttack--;
+        if (cantAttack < 0)
+        {
+            cantAttack = 0;
+        }
+    }
+
     public void ResetStats()
     {
         currentStats.health = baseStats.maxHealth;
         currentStats.moveSpeed = baseStats.baseMoveSpeed;
     }
 
-    public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
+    // Quiet makes it so no sound or hitmarker is played. Used currently for ground hazards
+    public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
     {
-        inflictionHandler.ApplyInflictions(spoonInflictions, source);
+        inflictionHandler.ApplyInflictions(spoonInflictions, source, quiet);
+    }
+
+    public bool HasInfliction(Infliction infliction)
+    {
+        return inflictionHandler.HasInfliction(infliction);
     }
 
     // Displays hitmarkers
@@ -95,11 +129,14 @@ public abstract class Entity : MonoBehaviour
 
     public float GetMoveSpeed()
     {
+        if (currentStats.moveSpeed < 1)
+        {
+            return 1f;
+        }
         return currentStats.moveSpeed;
     }
     public virtual void SetMoveSpeed(float newSpeed)
     {
-        print("Changing speed to " + newSpeed);
         currentStats.moveSpeed = newSpeed;
     }
 

@@ -10,7 +10,6 @@ public class EnemyHealthBar : MonoBehaviour
     private Slider slider;
     private CanvasGroup canvasGroup;
     [SerializeField] private EnemyBaseClass enemy;
-    [SerializeField] private TMP_Text healthText;
     [SerializeField] private TMP_Text statusText;
 
     private EnemyBaseClass enemyClass;
@@ -23,10 +22,6 @@ public class EnemyHealthBar : MonoBehaviour
     }
     void Update()
     {
-
-        // calculate health ratio
-        healthText.text = enemyClass.GetHealth().ToString();
-
         // set value to health ratio
         //float oldValue = slider.value;
         float healthRatio = (float)enemyClass.GetHealth() / enemyClass.GetBaseStats().maxHealth;
@@ -52,7 +47,7 @@ public class EnemyHealthBar : MonoBehaviour
         }
 
         // deactivate if health is 0
-        if (enemy.GetHealth() == 0) {
+        if (enemy.GetHealth() == 0 || enemy.falling == true) {
             gameObject.SetActive(false);
             statusText.enabled = false;
         }

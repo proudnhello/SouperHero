@@ -184,9 +184,9 @@ public class HopShroomAI : EnemyBaseClass
                     {
                         sm.ChangeState(ChargerStates.IDLE); // disengage if too far
                     }
-                } while ((dist < sm.DistanceRangeToPlayerForShoot.x && 
+                } while (((dist < sm.DistanceRangeToPlayerForShoot.x && 
                             Vector2.Distance(lastPos, sm.agent.transform.position) > sm.AttackMoveCheckMinimumDistance)
-                            || dist > sm.DistanceRangeToPlayerForShoot.y);
+                            || dist > sm.DistanceRangeToPlayerForShoot.y) || !sm.CanAttack()) ;
                 sm.agent.isStopped = true;
 
                 // EXPLODE

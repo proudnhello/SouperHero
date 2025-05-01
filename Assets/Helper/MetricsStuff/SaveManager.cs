@@ -107,20 +107,24 @@ public class SaveManager : MonoBehaviour
     }
 
     public void SaveEntities(){
-        EntitiesClass et = new EntitiesClass();
-        et.enemies = roomGenerator.exportEnemyStrings();
-        et.foragables = roomGenerator.exportForagableStrings();
-        et.seed = roomGenerator.newSeed;
-        string json = JsonUtility.ToJson(et, true);  // Pretty print for readability
+        try{
+            EntitiesClass et = new EntitiesClass();
+            et.enemies = roomGenerator.exportEnemyStrings();
+            et.foragables = roomGenerator.exportForagableStrings();
+            et.seed = roomGenerator.newSeed;
+            string json = JsonUtility.ToJson(et, true);  // Pretty print for readability
 
-        using (StreamWriter writer = new StreamWriter(entitiesPath))
-        {
-            writer.Write(json);
+            using (StreamWriter writer = new StreamWriter(entitiesPath))
+            {
+                writer.Write(json);
+            }
+        }
+        catch(Exception e){
+            return;
         }
     }
 
     public void LoadEntities(){
-        Debug.Log(entitiesPath);
         if (File.Exists(entitiesPath))
         {
             string json = string.Empty;
@@ -131,7 +135,6 @@ public class SaveManager : MonoBehaviour
             }
 
             EntitiesClass data = JsonUtility.FromJson<EntitiesClass>(json);
-            Debug.Log(data.enemies.Count);
 
             roomGenerator.importEnemyStrings(data.enemies);
             roomGenerator.importForagableStrings(data.foragables);
@@ -165,8 +168,6 @@ public class SaveManager : MonoBehaviour
             DeathMetrics data = JsonUtility.FromJson<DeathMetrics>(json);
 
             deathMetrics = data;
-
-            Debug.Log("Game loaded");
         }
         else
         {
@@ -186,7 +187,6 @@ public class SaveManager : MonoBehaviour
             writer.Write(json);
         }
 
-        Debug.Log($"Saving New Stats Json at path: {statsPath}");
-
+        //Debug.Log($"Saving New Stats Json at path: {statsPath}");
     }
 }

@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -116,8 +117,8 @@ public class PlayerInventory : MonoBehaviour
 
     void UseSpoon(InputAction.CallbackContext ctx)
     {
-        // Don't Use Spoon if In Cooking Screen
-        if (CookingManager.Singleton.IsCooking())
+        // Don't Use Spoon if In Cooking Screen or if the player can't attack
+        if (CookingManager.Singleton.IsCooking() || !PlayerEntityManager.Singleton.CanAttack())
         {
             return;
         }

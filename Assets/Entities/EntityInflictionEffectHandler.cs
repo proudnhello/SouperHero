@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,7 +58,19 @@ public class EntityInflictionEffectHandler
         }
     }
 
-    public void ApplyInflictions(List<Infliction> spoonInflictions, Transform source)
+    public bool HasInfliction(Infliction infliction)
+    {
+        if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void ApplyInflictions(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
     {
         foreach (var infliction in spoonInflictions)
         {
@@ -65,7 +78,6 @@ public class EntityInflictionEffectHandler
             string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(infliction.InflictionFlavor.inflictionType);
             if(hitmarkerColor == null) hitmarkerColor = Color.white;
             if(hitmarkerText == null) hitmarkerText = "DEFAULT HITMARKER TEXT";
-            //Debug.Log("applying infliction " + infliction.InflictionFlavor.inflictionType);
             if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType)) 
                 activeStatuses[infliction.InflictionFlavor.inflictionType].WorsenStatusEffect(infliction);
             else
@@ -105,11 +117,13 @@ public class EntityInflictionEffectHandler
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
-                    Debug.Log("Freezing " + entity.gameObject.name);
                     instance.StartStatusEffect(Inflictions.Freeze(instance));
                 }
             }
-            entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
+            if (!quiet)
+            {
+                entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
+            }
         }
     }
 
@@ -117,9 +131,13 @@ public class EntityInflictionEffectHandler
     {
         if (!activeStatuses.ContainsKey(InflictionType.SPIKY_Damage))
         {
+            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[InflictionType.SPIKY_Damage];
+            string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(InflictionType.SPIKY_Damage);
             StatusEffectInstance instance = new(entity, dmg, InflictionType.SPIKY_Damage);
             activeStatuses.Add(InflictionType.SPIKY_Damage, instance);
             instance.StartStatusEffect(Inflictions.Damage(instance));
+            hitmarkerText = "-" + dmg + " " + hitmarkerText;
+            entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
         }
 
     }
