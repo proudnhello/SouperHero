@@ -3,40 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 // Programed with the help of Github Copilot
 
-public class PitHazard : MonoBehaviour
+public class PitHazard : Hazard
 {
     [SerializeField] float coyoteTime = 0.2f; // Time entities can stay in the air before falling
     [SerializeField] Transform playerRespawnPoint;
-    Dictionary<Entity, bool> inCollider = new Dictionary<Entity, bool>();
-
-    // Based on https://discussions.unity.com/t/how-to-check-if-one-box-collider-2d-completely-overlaps-another-box-collider-2d/828436
-    private void OnTriggerStay2D(Collider2D collision)
+    
+    public override void AddEntity(Entity entity)
     {
-        Collider2D pitCollider = GetComponent<Collider2D>();
-        Collider2D entityCollider = collision;
-        Bounds pitBounds = pitCollider.bounds;
-        Bounds entityBounds = entityCollider.bounds;
-        Entity entity = collision.GetComponent<Entity>();
-        bool fullyInside =
-            entityBounds.min.x >= pitBounds.min.x &&
-            entityBounds.max.x <= pitBounds.max.x &&
-            entityBounds.min.y >= pitBounds.min.y &&
-            entityBounds.max.y <= pitBounds.max.y;
-        bool val;
-        if (fullyInside && entity != null && (!inCollider.TryGetValue(entity, out val) || !val))
+        if (effectedEntities.Contains(entity))
         {
-            inCollider[entity] = true;
-            StartCoroutine(Fall(entity));
+            return;
         }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        Entity entity = other.GetComponent<Entity>();
-        if (entity != null)
-        {
-            inCollider[entity] = false;
-        }
+        StartCoroutine(Fall(entity));
+        base.AddEntity(entity);
     }
 
     private IEnumerator Fall(Entity entity)
@@ -46,10 +25,10 @@ public class PitHazard : MonoBehaviour
         {
             yield return new WaitForSeconds(coyoteTime);
         }
-        if (inCollider[entity])
+        if (entity.CheckBounds(this))
         {
-            inCollider[entity] = false;
             entity.Fall(playerRespawnPoint);
+            base.RemoveEntity(entity);
         }
     }
 }
