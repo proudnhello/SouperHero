@@ -34,7 +34,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        PlayerEntityManager.Singleton.input.Player.Dash.started += Dash;
+        // PlayerEntityManager.Singleton.input.Player.Dash.started += Dash;
+        PlayerKeybinds.Singleton.dash.action.started += Dash;
         movementInput = PlayerEntityManager.Singleton.input.Player.Movement;
     }
 
@@ -60,7 +61,8 @@ public class PlayerMovement : MonoBehaviour
             col.enabled = false; // Completely disable collisions
         }
 
-        PlayerEntityManager.Singleton.input.Player.Dash.started -= Dash;
+        // PlayerEntityManager.Singleton.input.Player.Dash.started -= Dash;
+        PlayerKeybinds.Singleton.dash.action.started -= Dash;
     }
 
     // Update is called once per frame

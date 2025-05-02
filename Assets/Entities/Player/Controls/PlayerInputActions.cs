@@ -98,6 +98,42 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Bowl1"",
+                    ""type"": ""Button"",
+                    ""id"": ""5c3522e1-e951-4cc1-85c1-94f063c63eea"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Bowl2"",
+                    ""type"": ""Button"",
+                    ""id"": ""80c85484-b16c-48ce-a2e6-4c7f5b932812"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Bowl3"",
+                    ""type"": ""Button"",
+                    ""id"": ""19d8dbd9-75bf-48d5-939b-def43d5647d9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Bowl4"",
+                    ""type"": ""Button"",
+                    ""id"": ""012ab087-9e50-4ec3-ae5b-62ff1930251a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -246,62 +282,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c5f2febe-f1dc-4c3b-b465-529b32827df8"",
-                    ""path"": ""<Keyboard>/1"",
-                    ""interactions"": ""Press"",
-                    ""processors"": ""Scale"",
-                    ""groups"": """",
-                    ""action"": ""CycleSpoon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e0984197-00f5-436c-92a9-33ca8a73389c"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": ""Press"",
-                    ""processors"": ""Scale(factor=2)"",
-                    ""groups"": """",
-                    ""action"": ""CycleSpoon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1a8c01b9-9ffc-40a4-9fec-01c4776a5c09"",
-                    ""path"": ""<Keyboard>/3"",
-                    ""interactions"": ""Press"",
-                    ""processors"": ""Scale(factor=3)"",
-                    ""groups"": """",
-                    ""action"": ""CycleSpoon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0e26adcc-f858-4a00-9f9d-099feb7cf2e4"",
-                    ""path"": ""<Keyboard>/4"",
-                    ""interactions"": ""Press"",
-                    ""processors"": ""Scale(factor=4)"",
-                    ""groups"": """",
-                    ""action"": ""CycleSpoon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9912d869-ca90-45cf-9e21-97a178ccba80"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Encyclopedia"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""05fdd200-ccd6-44e9-977b-c3661f87ff21"",
                     ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -351,6 +332,50 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DebugMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fb47eeb1-198f-435a-8252-968a4b0fc11e"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bowl1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d0f4ae89-32fd-4240-b15a-3f3df75b5b51"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bowl2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b80716c-8c77-4368-be31-db4110c3eedf"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bowl3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""891f729b-8531-4662-b729-38b0c097b866"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bowl4"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -885,6 +910,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_ZoomOut = m_Player.FindAction("ZoomOut", throwIfNotFound: true);
         m_Player_DebugMenu = m_Player.FindAction("DebugMenu", throwIfNotFound: true);
+        m_Player_Bowl1 = m_Player.FindAction("Bowl1", throwIfNotFound: true);
+        m_Player_Bowl2 = m_Player.FindAction("Bowl2", throwIfNotFound: true);
+        m_Player_Bowl3 = m_Player.FindAction("Bowl3", throwIfNotFound: true);
+        m_Player_Bowl4 = m_Player.FindAction("Bowl4", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -972,6 +1001,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_ZoomOut;
     private readonly InputAction m_Player_DebugMenu;
+    private readonly InputAction m_Player_Bowl1;
+    private readonly InputAction m_Player_Bowl2;
+    private readonly InputAction m_Player_Bowl3;
+    private readonly InputAction m_Player_Bowl4;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -984,6 +1017,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @ZoomOut => m_Wrapper.m_Player_ZoomOut;
         public InputAction @DebugMenu => m_Wrapper.m_Player_DebugMenu;
+        public InputAction @Bowl1 => m_Wrapper.m_Player_Bowl1;
+        public InputAction @Bowl2 => m_Wrapper.m_Player_Bowl2;
+        public InputAction @Bowl3 => m_Wrapper.m_Player_Bowl3;
+        public InputAction @Bowl4 => m_Wrapper.m_Player_Bowl4;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1017,6 +1054,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DebugMenu.started += instance.OnDebugMenu;
             @DebugMenu.performed += instance.OnDebugMenu;
             @DebugMenu.canceled += instance.OnDebugMenu;
+            @Bowl1.started += instance.OnBowl1;
+            @Bowl1.performed += instance.OnBowl1;
+            @Bowl1.canceled += instance.OnBowl1;
+            @Bowl2.started += instance.OnBowl2;
+            @Bowl2.performed += instance.OnBowl2;
+            @Bowl2.canceled += instance.OnBowl2;
+            @Bowl3.started += instance.OnBowl3;
+            @Bowl3.performed += instance.OnBowl3;
+            @Bowl3.canceled += instance.OnBowl3;
+            @Bowl4.started += instance.OnBowl4;
+            @Bowl4.performed += instance.OnBowl4;
+            @Bowl4.canceled += instance.OnBowl4;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1045,6 +1094,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DebugMenu.started -= instance.OnDebugMenu;
             @DebugMenu.performed -= instance.OnDebugMenu;
             @DebugMenu.canceled -= instance.OnDebugMenu;
+            @Bowl1.started -= instance.OnBowl1;
+            @Bowl1.performed -= instance.OnBowl1;
+            @Bowl1.canceled -= instance.OnBowl1;
+            @Bowl2.started -= instance.OnBowl2;
+            @Bowl2.performed -= instance.OnBowl2;
+            @Bowl2.canceled -= instance.OnBowl2;
+            @Bowl3.started -= instance.OnBowl3;
+            @Bowl3.performed -= instance.OnBowl3;
+            @Bowl3.canceled -= instance.OnBowl3;
+            @Bowl4.started -= instance.OnBowl4;
+            @Bowl4.performed -= instance.OnBowl4;
+            @Bowl4.canceled -= instance.OnBowl4;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1190,6 +1251,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnZoomOut(InputAction.CallbackContext context);
         void OnDebugMenu(InputAction.CallbackContext context);
+        void OnBowl1(InputAction.CallbackContext context);
+        void OnBowl2(InputAction.CallbackContext context);
+        void OnBowl3(InputAction.CallbackContext context);
+        void OnBowl4(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
