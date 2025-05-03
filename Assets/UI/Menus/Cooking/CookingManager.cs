@@ -215,10 +215,6 @@ public class CookingManager : MonoBehaviour
         //    PlayerEntityManager.Singleton.SetCooked(true);
         //}
 
-        // turn off interactable after cooking once
-        CurrentCampfire.SetInteractable(false);
-        CurrentCampfire.SetHighlighted(false);
-
         // Trigger Transition to Break Animation
         Animator campfireAnimator = CurrentCampfire.GetComponent<Animator>();
 
@@ -240,7 +236,8 @@ public class CookingManager : MonoBehaviour
             Debug.Log("Campfire Animator not found!");
         }
 
-        campfireAnimator.SetTrigger("Cooked The Soup");
+        // Currently commented out while the cooking animation is the emptying animation
+        // campfireAnimator.SetTrigger("Cooked The Soup");
 
         // Cook the soup with what is currently in the pot
         List<Ingredient> cookedIngredients = new();
