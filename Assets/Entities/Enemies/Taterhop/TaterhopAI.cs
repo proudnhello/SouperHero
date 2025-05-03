@@ -216,10 +216,10 @@ public class TaterhopAI : EnemyBaseClass
                     }
 
                     time += sm.AttackDistanceCheckInterval;
-                } while (time < sm.MinimumTimeBetweenCharges || dist > sm.DistanceToPlayerForCharge);
+                } while (time < sm.MinimumTimeBetweenCharges || dist > sm.DistanceToPlayerForCharge || !sm.CanAttack());
                 sm.agent.isStopped = true;
 
-                // PERFORM CHARGES
+                // PERFORM CHARGES if can attack
                 sm.animator.Play("Attack");
                 Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
                 sm._sprite.flipX = vel.x > 0;

@@ -22,7 +22,7 @@ public abstract class EnemyBaseClass : Entity
     public static event Action<EnemyBaseClass> EnemyDamageEvent;
 
     internal SpriteRenderer _sprite;
-    protected Transform _playerTransform;
+    public Transform _playerTransform;
     protected Color _initialColor;
     protected Collider2D _collider;
     protected NavMeshAgent agent;

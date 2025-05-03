@@ -148,6 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bc96f0fe4dacb44497d8adbfa1810d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  submergeMask: {fileID: 0}
+  needsBounds: 1
   baseStats:
     maxHealth: 50
     baseMoveSpeed: 0
@@ -156,6 +158,7 @@ MonoBehaviour:
     health: 50
     moveSpeed: 0
   falling: 0
+  flying: 0
   hitmarker: {fileID: 594101713564386973, guid: 88876a640853de543b8ab5cacc641fba, type: 3}
   onFallDamageTimer: 0.01
   FallDamage: 50
@@ -354,6 +357,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd7b087cae3d7644c851cfc9b589138a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  submergeMask: {fileID: 0}
+  needsBounds: 0
   baseStats:
     maxHealth: 20
     baseMoveSpeed: 0
@@ -362,5 +367,6 @@ MonoBehaviour:
     health: 20
     moveSpeed: 0
   falling: 0
+  flying: 0
   hitmarker: {fileID: 594101713564386973, guid: 88876a640853de543b8ab5cacc641fba, type: 3}
   fallenTree: {fileID: 1656403314522709138}
