@@ -180,7 +180,6 @@ public class HabaperroAI : EnemyBaseClass
                         NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), targetPoint,
                             NavMesh.AllAreas, path);
                         distance = CalculatePathLength();
-                        //Debug.Log("target point = " + targetPoint + " " + dist + "m away, " + distance + "steps");
                     } while (distance < 0 || distance >= sm.MaxPatrolPathLength);
                     
                     
@@ -245,33 +244,32 @@ public class HabaperroAI : EnemyBaseClass
                     sm.ChangeState(ChargerStates.IDLE); // disengage if too far
                 }
 
-            } while (dist > sm.DistanceToPlayerForExplosion);
+            } while (dist > sm.DistanceToPlayerForExplosion || !sm.CanAttack());
             sm.agent.isStopped = true;
 
             // EXPLODE
-            sm.animator.Play("Ignite");
-
-            float interval = sm.IgnitionFlashStartInterval;
-            do
+            if (sm.CanAttack())
             {
+                sm.animator.Play("Ignite");
+
+                float interval = sm.IgnitionFlashStartInterval;
+                do
+                {
+                    sm._sprite.color = Color.white;
+                    yield return new WaitForSeconds(interval);
+                    sm._sprite.color = sm.IgnitionFlashColor;
+                    yield return new WaitForSeconds(interval);
+
+                    interval *= sm.IgnitionFlashIntervalMultiplier;
+                } while (interval > sm.IgnitionFlashIntervalToTriggerExplosion);
                 sm._sprite.color = Color.white;
-                yield return new WaitForSeconds(interval);
-                sm._sprite.color = sm.IgnitionFlashColor;
-                yield return new WaitForSeconds(interval);
-                    
-                interval *= sm.IgnitionFlashIntervalMultiplier;
-            } while (interval > sm.IgnitionFlashIntervalToTriggerExplosion);
-            Debug.Log("Got here1");
-            sm._sprite.color = Color.white;
-            sm._collider.enabled = false;
-            sm.animator.Play("Boom");
-            Debug.Log("Got here2");
-            Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
-            Debug.Log("Got here3");
-            yield return new WaitForSeconds(sm.PostExplosionWaitTime);
-            Debug.Log("Got here4");
-            IHandleMovementExplosion = null;
-            sm.Die();
+                sm._collider.enabled = false;
+                sm.animator.Play("Boom");
+                Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
+                yield return new WaitForSeconds(sm.PostExplosionWaitTime);
+                IHandleMovementExplosion = null;
+                sm.Die();
+            }
         }
 
         public void OnExit()

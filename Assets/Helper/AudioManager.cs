@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using FMOD.Studio;
 using FMODUnity;
 using System.Collections;

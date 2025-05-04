@@ -22,7 +22,7 @@ public abstract class EnemyBaseClass : Entity
     public static event Action<EnemyBaseClass> EnemyDamageEvent;
 
     internal SpriteRenderer _sprite;
-    protected Transform _playerTransform;
+    public Transform _playerTransform;
     protected Color _initialColor;
     protected Collider2D _collider;
     protected NavMeshAgent agent;
@@ -51,18 +51,25 @@ public abstract class EnemyBaseClass : Entity
     protected virtual void UpdateAI() { }
     protected virtual void Die()
     {
+        Die(true);
+    }
+    protected virtual void Die(bool drop)
+    {
         _sprite.color = _sprite.color / 1.5f;
         _collider.enabled = false;
         _rigidbody.velocity = Vector2.zero;
         agent.updatePosition = false;
-        Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
+        if (drop)
+        {
+            Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
+        }
         entityRenderer.EnemyDeath();
         if(spawn != null){
             spawn.enemy = null;
         }
     }
 
-    public override void ApplyInfliction(List<SoupSpoon.SpoonInfliction> spoonInflictions, Transform source)
+    public override void ApplyInfliction(List<SoupSpoon.SpoonInfliction> spoonInflictions, Transform source, bool quiet = false)
     {
         // If the enemy is not currently moving towards something, make them move towards the player
         // I'm so excited for this to break when we implement enemies taking damage from things other than the player
@@ -82,9 +89,12 @@ public abstract class EnemyBaseClass : Entity
         }
 
         // Play enemy damage sfx
-        EnemyDamageEvent?.Invoke(this);
+        if (!quiet)
+        {
+            EnemyDamageEvent?.Invoke(this);
+        }
 
-        base.ApplyInfliction(spoonInflictions, source);
+        base.ApplyInfliction(spoonInflictions, source, quiet);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -123,5 +133,38 @@ public abstract class EnemyBaseClass : Entity
     public void AttackPlayer()
     {
         alwaysAggro = true;
+    }
+
+    // Instant death for falling enemies
+    // Respawn is for players only :)
+    public override void Fall(Transform _respawnPoint)
+    {
+        GetComponent<Collider2D>().enabled = false;
+        SetMoveSpeed(0);
+        SetHealth(0);
+        falling = true;
+        agent.updatePosition = false;
+        // THIS IS BAD AND I SHOULD NOT DO IT
+        // But stupid knockback keeps messing everything up and the enemy's about to die anyway so it's probably fine
+        // I can't wait for us to add an enemy that doesn't die when it falls and this breaks everything
+        StopAllCoroutines(); 
+        GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        StartCoroutine(Fall(_respawnPoint, 0.05f));
+    }
+
+    public IEnumerator Fall(Transform respawnPoint, float fallSpeed)
+    {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        Vector3 initialScale = sprite.size;
+        Vector2 changeAmount = new Vector2(initialScale.x / 10, initialScale.y / 10);
+
+        while (sprite.size.x > 0)
+        {
+            yield return new WaitForSeconds(0.05f);
+            sprite.size -= changeAmount;
+
+        }
+
+        Die(false);
     }
 }

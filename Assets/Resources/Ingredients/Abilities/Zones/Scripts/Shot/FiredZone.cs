@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
@@ -18,7 +19,6 @@ public class FiredZone : AbilityAbstractClass
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
-        Debug.Log($"Is spawner null?: {spawner}");
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();
         stats.size *= SIZE_MULTIPLIER;
@@ -33,7 +33,6 @@ public class FiredZone : AbilityAbstractClass
 
         Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (radius * currentDirection);
 
-        Debug.Log($"Zone Size Stats in Fired Zone {stats.size}");
         proj.Spawn(center,
             PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
             stats, inflictions, false, null);

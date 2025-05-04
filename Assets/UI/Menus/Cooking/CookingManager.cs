@@ -134,8 +134,6 @@ public class CookingManager : MonoBehaviour
     // Function to add an Ability Ingredient
     public void AddIngredient(Collectable ingredient)
     {
-
-        //Debug.Log($"Added Ingredient: {ingredient}");
         cookingIngredients.Add(ingredient);
         UpdateStatsText();
     }
@@ -143,7 +141,6 @@ public class CookingManager : MonoBehaviour
     // Function to remove an Ability Ingredient
     public void RemoveIngredient(Collectable ingredient)
     {
-        //Debug.Log($"Removed Ingredient: {ingredient}");
         cookingIngredients.Remove(ingredient);
         UpdateStatsText();
     }
@@ -154,7 +151,6 @@ public class CookingManager : MonoBehaviour
         // Don't cook if there are no ability ingredients
         foreach (Collectable ingredient in cookingIngredients)
         {
-            //Debug.Log("Has Ability Ingredient: " + ingredient.ingredient.IngredientName);
             if (ingredient.ingredient.GetType() == typeof(AbilityIngredient))
             {
                 return true;
@@ -219,10 +215,6 @@ public class CookingManager : MonoBehaviour
         //    PlayerEntityManager.Singleton.SetCooked(true);
         //}
 
-        // turn off interactable after cooking once
-        CurrentCampfire.SetInteractable(false);
-        CurrentCampfire.SetHighlighted(false);
-
         // Trigger Transition to Break Animation
         Animator campfireAnimator = CurrentCampfire.GetComponent<Animator>();
 
@@ -244,7 +236,8 @@ public class CookingManager : MonoBehaviour
             Debug.Log("Campfire Animator not found!");
         }
 
-        campfireAnimator.SetTrigger("Cooked The Soup");
+        // Currently commented out while the cooking animation is the emptying animation
+        // campfireAnimator.SetTrigger("Cooked The Soup");
 
         // Cook the soup with what is currently in the pot
         List<Ingredient> cookedIngredients = new();

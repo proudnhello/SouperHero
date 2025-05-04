@@ -38,12 +38,13 @@ public class SpoonsEquipped : MonoBehaviour
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
         {
             imageComponents[prevSpoon].rectTransform.sizeDelta = normalSize; //Reset to normal size
+            SetAlpha(prevSpoon, 0.3f);
         }
 
         //Highlight current spoon
         prevSpoon = spoon;
+        SetAlpha(spoon, 1);
 
-        //Debug.Log($"INDEXING INTO THE SPOON INDEX ${spoon}");
         imageComponents[spoon].rectTransform.sizeDelta = selectedSize; //Increase size
         SetUsesText(spoon);
     }
@@ -104,5 +105,19 @@ public class SpoonsEquipped : MonoBehaviour
         for (var i = 0; i < 4; i++) {
             imageComponents[i].sprite = spoonSprites[i];
         }
+    }
+
+    void SetAlpha(int spoon, float alphaAmount) //Set alpha value of spoons (more or less transparent)
+    {
+        Color imageColor = imageComponents[spoon].color;
+        Color textColor = usesTextComponents[spoon].color;
+
+        //Set alpha of soup image
+        imageColor.a = alphaAmount;
+        imageComponents[spoon].color = imageColor;
+
+        //Set alpha of uses text
+        textColor.a = alphaAmount;
+        usesTextComponents[spoon].color = textColor;
     }
 }

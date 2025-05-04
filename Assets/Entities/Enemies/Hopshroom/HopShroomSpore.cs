@@ -1,3 +1,4 @@
+// portions of this file were generated using GitHub Copilot
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,6 @@ public class HopShroomSpore : MonoBehaviour
         Destroy(gameObject, bulletLifeTime);
         rb.velocity = direction * bulletSpeed;
         transform.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-        //Debug.Log(direction);
         StartCoroutine(HandleAnimation());
     }
 
@@ -45,9 +45,27 @@ public class HopShroomSpore : MonoBehaviour
         }
         else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {
-            collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            if (collider.gameObject.GetComponent<Destroyables>() != null)
+            {
+                collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            }
+            if(collider.gameObject.GetComponent<Entity>() != null)
+            {
+                collider.gameObject.GetComponent<Entity>().DealDamage(bulletDamage);
+            }
+        }else if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
+        {
+            Entity entity = collider.gameObject.GetComponent<Entity>();
+            if (entity != null)
+            {
+                entity.DealDamage(bulletDamage);
+            }
         }
-        Destroy(this.gameObject);
+
+        if (collider.gameObject.tag != "PitHazard")
+        {
+            Destroy(this.gameObject);
+        }   
     }
 
     IEnumerator HandleAnimation()
