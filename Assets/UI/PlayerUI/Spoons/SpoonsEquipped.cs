@@ -16,7 +16,7 @@ public class SpoonsEquipped : MonoBehaviour
     private int prevSpoon = -1;
 
     private Vector2 normalSize = new Vector2(82, 50);
-    private Vector2 selectedSize = new Vector2(123, 75);
+   // private Vector2 selectedSize = new Vector2(123, 75);
 
     private void Start()
     {
@@ -37,7 +37,7 @@ public class SpoonsEquipped : MonoBehaviour
     {
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
         {
-            imageComponents[prevSpoon].rectTransform.sizeDelta = normalSize; //Reset to normal size
+            imageComponents[prevSpoon].rectTransform.localScale = new Vector3(.66f, .66f, .66f);
             SetAlpha(prevSpoon, 0.3f);
         }
 
@@ -45,7 +45,7 @@ public class SpoonsEquipped : MonoBehaviour
         prevSpoon = spoon;
         SetAlpha(spoon, 1);
 
-        imageComponents[spoon].rectTransform.sizeDelta = selectedSize; //Increase size
+        imageComponents[spoon].rectTransform.localScale = new Vector3(1f, 1f, 1f);
         SetUsesText(spoon);
     }
 
