@@ -23,6 +23,7 @@ public class SoupSpoon
         public int uses = 0;
 
         public Sprite icon;
+        public Sprite iconUI;
 
         List<SpoonInfliction> inflictions;
         List<InflictionFlavor> inherentInflictions;
@@ -33,6 +34,7 @@ public class SoupSpoon
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
             icon = ingredient.Icon;
+            iconUI = ingredient.IconUI;
             uses = ingredient.uses;
             inherentInflictions = ingredient.inherentInflictionFlavors;
         }
