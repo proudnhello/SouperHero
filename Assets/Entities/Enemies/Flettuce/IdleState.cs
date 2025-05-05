@@ -19,7 +19,6 @@ public class IdleState : BaseState
     }
     public override void EnterState()
     {
-        Debug.Log("Enter Idle State");
         _blackboard.animator.Play("Idle");
         _blackboard.Agent.speed = _blackboard.GetMoveSpeed() * _blackboard.IdleSpeedMultiplier;
     }
@@ -34,8 +33,6 @@ public class IdleState : BaseState
         centerPoint = _blackboard.transform.position;
 
         HandlePatrol();
-
-        Debug.Log($"The current timer is {currentTimer}");
     }
 
     Vector2 lastPos;
@@ -114,7 +111,6 @@ public class IdleState : BaseState
         {
             parent.machine.SetState(_blackboard.stateFactory.Detection(), this.parent);
 
-            Debug.Log("Player in detection range");
         } else if (_blackboard.Events.PlayerOutOfFrozenRangeEvent())
         {
             parent.machine.SetState(_blackboard.stateFactory.Frozen(), this.parent);

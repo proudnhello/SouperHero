@@ -154,23 +154,6 @@ public class SoupSpoon
             {
                 abilityTracker[ingredient].AddIngredient(ingredient);
             }
-
-            // Removed b/c inherent inflictions should be kept specific to the ability, not the spoon
-            /*
-            foreach (var infliction in ingredient.inherentInflictionFlavors)
-            {
-                if (!inflictionTracker.ContainsKey(infliction.inflictionType)) // only add each infliction type once
-                {
-                    inflictionTracker.Add(infliction.inflictionType, new(infliction));
-                    inflictionTracker[infliction.inflictionType].AddIngredient(infliction);
-                }
-                // Track number of each infliction
-                if (FlavorInflictionCounter.ContainsKey(infliction.inflictionType)) FlavorInflictionCounter[infliction.inflictionType]++;
-                else FlavorInflictionCounter.Add(infliction.inflictionType, 1);
-            }
-            */
-
-            //uses += ingredient.uses; // <- ONCE EQUIPPED SPOON UI IS WORKING DELETE
             totalCooldown += ingredient.baseStats.cooldown;
         }
         foreach (var ingredient in abilityIngredients) cooldown += Mathf.Pow(ingredient.baseStats.cooldown, 2) / totalCooldown;
@@ -235,11 +218,6 @@ public class SoupSpoon
             }
         }
 
-        Debug.Log("Infliction tracker length: " + inflictionTracker.Count);
-        foreach (var infliction in inflictionTracker.Values)
-        {
-            Debug.Log($"Spoon Infliction: {infliction.InflictionFlavor.inflictionType} = {infliction.amount}");
-        }
         foreach (var spoonAbility in spoonAbilities)
         {
             spoonAbility.CalculateInflictions(inflictionTracker);
@@ -295,7 +273,6 @@ public class SoupSpoon
             if (ability.uses > 0 || ability.uses == -1)
             {
                 ability.ability.UseAbility(ability.statsWithBuffs, ability.GetSpoonInflictions());
-                ability.PrintAbility();
 
             }
             
