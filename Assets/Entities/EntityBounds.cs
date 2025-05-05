@@ -5,7 +5,7 @@ using UnityEngine;
 public class EntityBounds : MonoBehaviour
 {
     Dictionary<Hazard, bool> containedHazards = new Dictionary<Hazard, bool>();
-    Entity parent;
+    Entity parent = null;
 
     private void Start()
     {
@@ -19,7 +19,7 @@ public class EntityBounds : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Hazard hazard = collision.GetComponent<Hazard>();
-        if (hazard != null)
+        if (hazard != null && parent != null && containedHazards != null)
         {
             if (!containedHazards.ContainsKey(hazard))
             {
@@ -37,7 +37,7 @@ public class EntityBounds : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         Hazard hazard = collision.GetComponent<Hazard>();
-        if (hazard != null)
+        if (hazard != null && parent != null && containedHazards != null)
         {
             if (containedHazards.ContainsKey(hazard))
             {
