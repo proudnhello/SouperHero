@@ -16,7 +16,8 @@ public class pickUpandThrow : Interactable
     }
     void Start()
     {
-        
+        Debug.Log(CanInteract());
+        SetHighlighted(true);
     }
 
     // Update is called once per frame
@@ -32,18 +33,19 @@ public class pickUpandThrow : Interactable
         } else {
             dropItem();
         }
+        pickUp = !pickUp;
 
     }
 
     private void pickUpItem(){
-
+        Debug.Log("pick up item");
     }
 
     private void dropItem(){
-
+        Debug.Log("Drop item");
     }
 
     private void throwItem(){
-
+        Debug.Log("throw item");
     }
 }
