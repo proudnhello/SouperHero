@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 
 public class ApproachState : BaseState
@@ -19,7 +18,6 @@ public class ApproachState : BaseState
 
     public override void EnterState()
     {
-        Debug.Log("Entering Approach State");
         _blackboard.animator.Play("Ready");
     }
 
@@ -38,7 +36,6 @@ public class ApproachState : BaseState
     {
         if (_blackboard.Events.PlayerInChargeRangeEvent())
         {
-            Debug.Log("Approach State's parent is: " + parent.ToString());
             parent.machine.SetState(_blackboard.stateFactory.ConsecutiveCharge(), this.parent);
         }
     }

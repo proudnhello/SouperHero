@@ -62,7 +62,8 @@ public class CameraMover : MonoBehaviour
     {
         if (CookingManager.Singleton.IsCooking())
         {
-            transform.position = CookingManager.Singleton.CurrentCampfire.transform.position + CookingManager.Singleton.CurrentCampfire.CameraOffset;
+            Vector3 newPos = CookingManager.Singleton.CurrentCampfire.transform.position + CookingManager.Singleton.CurrentCampfire.CameraOffset;
+            transform.position = new Vector3(newPos.x, newPos.y, -20);
         } else
         {
 

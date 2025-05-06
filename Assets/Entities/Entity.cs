@@ -51,7 +51,6 @@ public abstract class Entity : MonoBehaviour
         inflictionHandler = new(this);
         ResetStats();
         bounds = GetComponentsInChildren<EntityBounds>();
-        print(bounds.Length);
         if (bounds.Length == 0 && needsBounds)
         {
             Debug.LogWarning("Entity " + gameObject.name +  "has no bounds, and will not be effected by hazards");

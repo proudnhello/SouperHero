@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using static FlavorIngredient.InflictionFlavor;
 
@@ -15,9 +14,6 @@ public class DetectionState : BaseState
     }
     public override void EnterState()
     {
-
-        Debug.Log("Entering Attack State in Attack State");
-
         // Set The Attack Animation
         _blackboard.animator.Play("Attack");
 
@@ -83,7 +79,6 @@ public class DetectionState : BaseState
         // Check for events
         if (_blackboard.Events.EnemyOutOfChaseEvent())
         {
-            Debug.Log("Player moved out of chase range");
             parent.machine.SetState(_blackboard.stateFactory.Idle(), this.parent); // disengage if too far
         }
     }

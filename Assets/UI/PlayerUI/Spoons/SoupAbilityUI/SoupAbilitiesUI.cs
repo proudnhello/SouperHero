@@ -11,7 +11,7 @@ public class SoupAbilitiesUI : MonoBehaviour
 {
 
     internal List<Image> soupAbilityIcons = new();
-    internal List<TextMeshProUGUI> usesTexts = new();
+    //internal List<TextMeshProUGUI> usesTexts = new();
 
     // Start is called before the first frame update
     void Start()
@@ -20,25 +20,26 @@ public class SoupAbilitiesUI : MonoBehaviour
         foreach (Transform child in transform)
         {
             soupAbilityIcons.Add(child.GetComponent<Image>());
-            usesTexts.Add(child.GetChild(0).GetComponent<TextMeshProUGUI>());
+            //usesTexts.Add(child.GetChild(0).GetComponent<TextMeshProUGUI>());
         }
 
         // Subscribe to event
-        PlayerInventory.ChangedSpoon += UpdateUsesText;
+        //PlayerInventory.ChangedSpoon += UpdateUsesText;
         PlayerInventory.ChangedSpoon += UpdateIcons;
 
         // Update On Start
-        UpdateUsesText(PlayerInventory.Singleton.GetCurrentSpoon());
+        //UpdateUsesText(PlayerInventory.Singleton.GetCurrentSpoon());
         UpdateIcons(PlayerInventory.Singleton.GetCurrentSpoon());
     }
 
     private void OnDisable()
     {
         // Subscribe from event
-        PlayerInventory.ChangedSpoon -= UpdateUsesText;
+        //PlayerInventory.ChangedSpoon -= UpdateUsesText;
         PlayerInventory.ChangedSpoon -= UpdateIcons;
     }
 
+    /*
     void UpdateUsesText(int spoonIdx)
     {
         SoupSpoon currentSpoon = PlayerInventory.Singleton.GetSpoons()[spoonIdx];
@@ -65,12 +66,13 @@ public class SoupAbilitiesUI : MonoBehaviour
             usesTexts[i].text = "";
         }
     }
+    */
 
     void UpdateIcons(int spoonIdx)
     {
         SoupSpoon currentSpoon = PlayerInventory.Singleton.GetSpoons()[spoonIdx];
 
-        // set the uses text for each ability
+        // Set the icon for each current ability
         int abilityIdx = 0;
         foreach (SpoonAbility spoonAbility in currentSpoon.spoonAbilities)
         {
@@ -81,11 +83,12 @@ public class SoupAbilitiesUI : MonoBehaviour
             else
             {
                 soupAbilityIcons[abilityIdx].gameObject.SetActive(true);
-                if (spoonAbility.uses == -1)
+                //Note: This if/else is temporary until all icons are finalized.
+                    //Once finished, only use iconUI.
+                if (spoonAbility.iconUI) 
                 {
-                    soupAbilityIcons[abilityIdx].sprite = spoonAbility.icon;
-                }
-                else
+                    soupAbilityIcons[abilityIdx].sprite = spoonAbility.iconUI;
+                } else
                 {
                     soupAbilityIcons[abilityIdx].sprite = spoonAbility.icon;
                 }
@@ -109,6 +112,4 @@ public class SoupAbilitiesUI : MonoBehaviour
             soupAbilityIcons[i].color = tempColor;
         }
     }
-
-
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Hazard : MonoBehaviour
 {
-    protected List<Entity> effectedEntities;
+    protected List<Entity> effectedEntities = null;
 
     protected virtual void Start()
     {
@@ -17,7 +17,7 @@ public abstract class Hazard : MonoBehaviour
     }
     public virtual void RemoveEntity(Entity entity)
     {
-        if (entity != null && effectedEntities.Contains(entity))
+        if (entity != null && effectedEntities != null && effectedEntities.Contains(entity))
         {
             effectedEntities.Remove(entity);
         }
