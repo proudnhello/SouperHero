@@ -14,10 +14,10 @@ public class PlayerKeybinds : MonoBehaviour
     public InputActionReference zoomOut;
 
     public InputActionReference cycleSpoon;
-    public InputActionReference bowl_1;
-    public InputActionReference bowl_2;
-    public InputActionReference bowl_3;
-    public InputActionReference bowl_4;
+    public InputActionReference soup_1;
+    public InputActionReference soup_2;
+    public InputActionReference soup_3;
+    public InputActionReference soup_4;
 
     private void Awake()
     {

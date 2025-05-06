@@ -100,7 +100,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Bowl1"",
+                    ""name"": ""Soup1"",
                     ""type"": ""Button"",
                     ""id"": ""5c3522e1-e951-4cc1-85c1-94f063c63eea"",
                     ""expectedControlType"": """",
@@ -109,7 +109,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Bowl2"",
+                    ""name"": ""Soup2"",
                     ""type"": ""Button"",
                     ""id"": ""80c85484-b16c-48ce-a2e6-4c7f5b932812"",
                     ""expectedControlType"": """",
@@ -118,7 +118,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Bowl3"",
+                    ""name"": ""Soup3"",
                     ""type"": ""Button"",
                     ""id"": ""19d8dbd9-75bf-48d5-939b-def43d5647d9"",
                     ""expectedControlType"": """",
@@ -127,7 +127,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Bowl4"",
+                    ""name"": ""Soup4"",
                     ""type"": ""Button"",
                     ""id"": ""012ab087-9e50-4ec3-ae5b-62ff1930251a"",
                     ""expectedControlType"": """",
@@ -342,7 +342,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Bowl1"",
+                    ""action"": ""Soup1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -353,7 +353,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Bowl2"",
+                    ""action"": ""Soup2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -364,7 +364,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Bowl3"",
+                    ""action"": ""Soup3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -375,7 +375,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Bowl4"",
+                    ""action"": ""Soup4"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -910,10 +910,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_ZoomOut = m_Player.FindAction("ZoomOut", throwIfNotFound: true);
         m_Player_DebugMenu = m_Player.FindAction("DebugMenu", throwIfNotFound: true);
-        m_Player_Bowl1 = m_Player.FindAction("Bowl1", throwIfNotFound: true);
-        m_Player_Bowl2 = m_Player.FindAction("Bowl2", throwIfNotFound: true);
-        m_Player_Bowl3 = m_Player.FindAction("Bowl3", throwIfNotFound: true);
-        m_Player_Bowl4 = m_Player.FindAction("Bowl4", throwIfNotFound: true);
+        m_Player_Soup1 = m_Player.FindAction("Soup1", throwIfNotFound: true);
+        m_Player_Soup2 = m_Player.FindAction("Soup2", throwIfNotFound: true);
+        m_Player_Soup3 = m_Player.FindAction("Soup3", throwIfNotFound: true);
+        m_Player_Soup4 = m_Player.FindAction("Soup4", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1001,10 +1001,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_ZoomOut;
     private readonly InputAction m_Player_DebugMenu;
-    private readonly InputAction m_Player_Bowl1;
-    private readonly InputAction m_Player_Bowl2;
-    private readonly InputAction m_Player_Bowl3;
-    private readonly InputAction m_Player_Bowl4;
+    private readonly InputAction m_Player_Soup1;
+    private readonly InputAction m_Player_Soup2;
+    private readonly InputAction m_Player_Soup3;
+    private readonly InputAction m_Player_Soup4;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1017,10 +1017,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @ZoomOut => m_Wrapper.m_Player_ZoomOut;
         public InputAction @DebugMenu => m_Wrapper.m_Player_DebugMenu;
-        public InputAction @Bowl1 => m_Wrapper.m_Player_Bowl1;
-        public InputAction @Bowl2 => m_Wrapper.m_Player_Bowl2;
-        public InputAction @Bowl3 => m_Wrapper.m_Player_Bowl3;
-        public InputAction @Bowl4 => m_Wrapper.m_Player_Bowl4;
+        public InputAction @Soup1 => m_Wrapper.m_Player_Soup1;
+        public InputAction @Soup2 => m_Wrapper.m_Player_Soup2;
+        public InputAction @Soup3 => m_Wrapper.m_Player_Soup3;
+        public InputAction @Soup4 => m_Wrapper.m_Player_Soup4;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1054,18 +1054,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DebugMenu.started += instance.OnDebugMenu;
             @DebugMenu.performed += instance.OnDebugMenu;
             @DebugMenu.canceled += instance.OnDebugMenu;
-            @Bowl1.started += instance.OnBowl1;
-            @Bowl1.performed += instance.OnBowl1;
-            @Bowl1.canceled += instance.OnBowl1;
-            @Bowl2.started += instance.OnBowl2;
-            @Bowl2.performed += instance.OnBowl2;
-            @Bowl2.canceled += instance.OnBowl2;
-            @Bowl3.started += instance.OnBowl3;
-            @Bowl3.performed += instance.OnBowl3;
-            @Bowl3.canceled += instance.OnBowl3;
-            @Bowl4.started += instance.OnBowl4;
-            @Bowl4.performed += instance.OnBowl4;
-            @Bowl4.canceled += instance.OnBowl4;
+            @Soup1.started += instance.OnSoup1;
+            @Soup1.performed += instance.OnSoup1;
+            @Soup1.canceled += instance.OnSoup1;
+            @Soup2.started += instance.OnSoup2;
+            @Soup2.performed += instance.OnSoup2;
+            @Soup2.canceled += instance.OnSoup2;
+            @Soup3.started += instance.OnSoup3;
+            @Soup3.performed += instance.OnSoup3;
+            @Soup3.canceled += instance.OnSoup3;
+            @Soup4.started += instance.OnSoup4;
+            @Soup4.performed += instance.OnSoup4;
+            @Soup4.canceled += instance.OnSoup4;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1094,18 +1094,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DebugMenu.started -= instance.OnDebugMenu;
             @DebugMenu.performed -= instance.OnDebugMenu;
             @DebugMenu.canceled -= instance.OnDebugMenu;
-            @Bowl1.started -= instance.OnBowl1;
-            @Bowl1.performed -= instance.OnBowl1;
-            @Bowl1.canceled -= instance.OnBowl1;
-            @Bowl2.started -= instance.OnBowl2;
-            @Bowl2.performed -= instance.OnBowl2;
-            @Bowl2.canceled -= instance.OnBowl2;
-            @Bowl3.started -= instance.OnBowl3;
-            @Bowl3.performed -= instance.OnBowl3;
-            @Bowl3.canceled -= instance.OnBowl3;
-            @Bowl4.started -= instance.OnBowl4;
-            @Bowl4.performed -= instance.OnBowl4;
-            @Bowl4.canceled -= instance.OnBowl4;
+            @Soup1.started -= instance.OnSoup1;
+            @Soup1.performed -= instance.OnSoup1;
+            @Soup1.canceled -= instance.OnSoup1;
+            @Soup2.started -= instance.OnSoup2;
+            @Soup2.performed -= instance.OnSoup2;
+            @Soup2.canceled -= instance.OnSoup2;
+            @Soup3.started -= instance.OnSoup3;
+            @Soup3.performed -= instance.OnSoup3;
+            @Soup3.canceled -= instance.OnSoup3;
+            @Soup4.started -= instance.OnSoup4;
+            @Soup4.performed -= instance.OnSoup4;
+            @Soup4.canceled -= instance.OnSoup4;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1251,10 +1251,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnZoomOut(InputAction.CallbackContext context);
         void OnDebugMenu(InputAction.CallbackContext context);
-        void OnBowl1(InputAction.CallbackContext context);
-        void OnBowl2(InputAction.CallbackContext context);
-        void OnBowl3(InputAction.CallbackContext context);
-        void OnBowl4(InputAction.CallbackContext context);
+        void OnSoup1(InputAction.CallbackContext context);
+        void OnSoup2(InputAction.CallbackContext context);
+        void OnSoup3(InputAction.CallbackContext context);
+        void OnSoup4(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

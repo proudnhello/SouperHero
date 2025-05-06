@@ -51,14 +51,26 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
-        PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
+        // PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
+        PlayerKeybinds.Singleton.attack.action.started += UseSpoon;
+        // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
+        PlayerKeybinds.Singleton.cycleSpoon.action.started += CycleSpoons;
+        PlayerKeybinds.Singleton.soup_1.action.started += Soup1;
+        PlayerKeybinds.Singleton.soup_2.action.started += Soup2;
+        PlayerKeybinds.Singleton.soup_3.action.started += Soup3;
+        PlayerKeybinds.Singleton.soup_4.action.started += Soup4;
     }
 
     private void OnDisable()
     {
-        PlayerEntityManager.Singleton.input.Player.UseSpoon.started -= UseSpoon;
-        PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
+        // PlayerEntityManager.Singleton.input.Player.UseSpoon.started -= UseSpoon;
+        PlayerKeybinds.Singleton.attack.action.started -= UseSpoon;
+        // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
+        PlayerKeybinds.Singleton.cycleSpoon.action.started -= CycleSpoons;
+        PlayerKeybinds.Singleton.soup_1.action.started -= Soup1;
+        PlayerKeybinds.Singleton.soup_2.action.started -= Soup2;
+        PlayerKeybinds.Singleton.soup_3.action.started -= Soup3;
+        PlayerKeybinds.Singleton.soup_4.action.started -= Soup4;
     }
 
     public void CollectIngredientCollectable(Collectable collectable)
@@ -93,6 +105,7 @@ public class PlayerInventory : MonoBehaviour
         return true;
     }
 
+    // CYCLING SPOON
     void CycleSpoons(InputAction.CallbackContext ctx)
     {
         if (spoons.Count <= 1) return;
@@ -115,6 +128,40 @@ public class PlayerInventory : MonoBehaviour
         ChangedSpoon?.Invoke(currentSpoon);
     }
 
+    void Soup1(InputAction.CallbackContext ctx)
+    {
+        currentSpoon = 0;
+        ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    void Soup2(InputAction.CallbackContext ctx)
+    {
+        if(spoons.Count > 1)
+        {
+            currentSpoon = 1;
+        }
+        ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    void Soup3(InputAction.CallbackContext ctx)
+    {
+        if(spoons.Count > 2)
+        {
+            currentSpoon = 2;
+        }
+        ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    void Soup4(InputAction.CallbackContext ctx)
+    {
+        if(spoons.Count > 3)
+        {
+            currentSpoon = 3;
+        }
+        ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    // THE ATTACK FUNCTION
     void UseSpoon(InputAction.CallbackContext ctx)
     {
         // Don't Use Spoon if In Cooking Screen or if the player can't attack
