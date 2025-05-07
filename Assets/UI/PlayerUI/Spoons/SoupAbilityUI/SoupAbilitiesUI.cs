@@ -76,7 +76,7 @@ public class SoupAbilitiesUI : MonoBehaviour
         int abilityIdx = 0;
         foreach (SpoonAbility spoonAbility in currentSpoon.spoonAbilities)
         {
-            if (spoonAbility.uses == 0)
+            if (currentSpoon.uses == 0)
             {
                 soupAbilityIcons[abilityIdx].gameObject.SetActive(false);
             }
