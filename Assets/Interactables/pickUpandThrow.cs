@@ -9,6 +9,7 @@ public class pickUpandThrow : Interactable
     // Start is called before the first frame update
     private bool pickUp = false;
     InputAction attack;
+    public SpriteRenderer thesprite;
 
     void Awake()
     {
@@ -16,36 +17,45 @@ public class pickUpandThrow : Interactable
     }
     void Start()
     {
-        Debug.Log(CanInteract());
-        SetHighlighted(true);
+        // Debug.Log(CanInteract());
+        // SetHighlighted(true);
+        thesprite = GetComponent<SpriteRenderer>();
+        Debug.Log(thesprite.sprite);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        
+
     }
 
-    public override void Interact(){
+    public override void Interact()
+    {
         Debug.Log("fire");
-        if(!pickUp){
+        if (!pickUp)
+        {
             pickUpItem();
-        } else {
+        }
+        else
+        {
             dropItem();
         }
         pickUp = !pickUp;
 
     }
 
-    private void pickUpItem(){
+    private void pickUpItem()
+    {
         Debug.Log("pick up item");
     }
 
-    private void dropItem(){
+    private void dropItem()
+    {
         Debug.Log("Drop item");
     }
 
-    private void throwItem(){
+    private void throwItem()
+    {
         Debug.Log("throw item");
     }
 }

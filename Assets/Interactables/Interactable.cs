@@ -20,7 +20,7 @@ public abstract class Interactable : MonoBehaviour
     public abstract void Interact();
 
     public bool CanInteract()
-    {  
+    {
         // return whether or not the interactable can be interacted with
         return canInteract;
     }
@@ -34,6 +34,13 @@ public abstract class Interactable : MonoBehaviour
     public virtual void SetHighlighted(bool isHighlighted)
     {
         // set the interactable prompt to be active or not
-        interactableSpriteRenderer.material.SetFloat(_OutlineThickness, isHighlighted ? 1 : 0);
+        if (interactableSpriteRenderer != null)
+        {
+            interactableSpriteRenderer.material.SetFloat(_OutlineThickness, isHighlighted ? 1 : 0);
+        }
+        else
+        {
+            Debug.LogWarning("Sprite renderer = null in GO");
+        }
     }
 }
