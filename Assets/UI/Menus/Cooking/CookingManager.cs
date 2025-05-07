@@ -27,10 +27,17 @@ public class CookingManager : MonoBehaviour
 
     public static event Action CookSoup;
 
+    [Header("SoupInventory")]
+    [SerializeField] private GameObject SoupSelect;
+    [SerializeField] private GameObject SoupInventory;
+    private Vector3 _originalSoupSelectPosition;
+    private Vector3 distance_to_lerp;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
+        _originalSoupSelectPosition = SoupSelect.transform.position;
     }
 
     //// Initialize Ingredient List
@@ -58,6 +65,22 @@ public class CookingManager : MonoBehaviour
             c.faceImage.sprite = null;
             c.usesText.text = "";
         }
+
+        /*
+        //TODO: FIX THIS!!
+        //If camera moves while lerp-ing, the UI gets messed up
+
+        //Move SoupSelect prefab up using Lerp
+        distance_to_lerp = new Vector3(0, 4, 0);
+        int frames_to_lerp = (int)(distance_to_lerp.magnitude / Time.fixedDeltaTime) + 1; // +1 used to round the float up
+        StartCoroutine(LerpSoupInventory(SoupSelect, frames_to_lerp));
+
+        //Move SoupInventory prefab up using Lerp
+        //TODO: Move the prefab up in the game scene and edit the dist variable?
+        distance_to_lerp = new Vector3(0, 4, 0);
+        frames_to_lerp = (int)(distance_to_lerp.magnitude / Time.fixedDeltaTime) + 1; // +1 used to round the float up
+        StartCoroutine(LerpSoupInventory(SoupInventory, frames_to_lerp));
+        */
     }
 
 
@@ -289,5 +312,18 @@ public class CookingManager : MonoBehaviour
         Color tempColor = image.color;
         tempColor.a = 1;
         slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
+    }
+
+    private IEnumerator LerpSoupInventory(GameObject current_appliance, int frames_to_lerp)
+    {
+        Vector3 start_position = current_appliance.transform.position;
+        Vector3 end_position = start_position + distance_to_lerp;
+
+        // Here we 'queue' up some changes in position, and they execute after a small delay
+        for (int i = 0; i < frames_to_lerp; i++)
+        {
+            yield return new WaitForSecondsRealtime(Time.fixedDeltaTime);
+            current_appliance.transform.position = Vector3.Lerp(start_position, end_position, Time.fixedDeltaTime * i);
+        }
     }
 }
