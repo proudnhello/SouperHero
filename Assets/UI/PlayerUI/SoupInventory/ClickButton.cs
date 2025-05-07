@@ -13,9 +13,9 @@ using UnityEngine.UI;
 public class ClickButton : Selectable, IPointerClickHandler, ISubmitHandler
 {
     [Header("Click Settings")]
-    [SerializeField, Min(0.25f)] private float singleClickDelay = 0.25f;
-    [SerializeField, Min(1f)] private float hoverDelay = 1f;
-    [SerializeField] private bool hoverEnabled = true;
+    private float singleClickDelay = 0.25f;
+    private float hoverDelay = 0.5f;
+    private bool hoverEnabled = true;
 
     [Header("ClickEvents")]
     public UnityEvent OnClick;
@@ -136,7 +136,6 @@ public class ClickButton : Selectable, IPointerClickHandler, ISubmitHandler
     }
 
     #endregion
-
 
 
     #region Hovering
