@@ -55,15 +55,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""CycleSpoon"",
-                    ""type"": ""Value"",
-                    ""id"": ""96fdbac1-4e02-4d43-abaa-36acbc147db2"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""Encyclopedia"",
                     ""type"": ""Button"",
                     ""id"": ""6edc8ebd-ee37-4683-98e1-2d7fb1651755"",
@@ -94,6 +85,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""DebugMenu"",
                     ""type"": ""Button"",
                     ""id"": ""3a04bbbb-6e9a-43c5-95c2-260344a5ff3b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CycleSpoon"",
+                    ""type"": ""Button"",
+                    ""id"": ""9ed69426-65aa-4269-b552-0b01709be628"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -271,17 +271,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""61cfe482-eb60-498c-b8ed-f15d4a75f677"",
-                    ""path"": ""<Mouse>/scroll/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""CycleSpoon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9912d869-ca90-45cf-9e21-97a178ccba80"",
                     ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
@@ -378,6 +367,39 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Soup4"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""f6929749-c46f-4f79-93eb-0cfe7c2a8b30"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CycleSpoon"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""850cecaf-1376-4e78-83b0-aa16a30937ba"",
+                    ""path"": ""<Mouse>/scroll/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CycleSpoon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""2a5653bc-389b-482f-9221-977adb1055a5"",
+                    ""path"": ""<Mouse>/scroll/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CycleSpoon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -905,11 +927,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_UseSpoon = m_Player.FindAction("UseSpoon", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
-        m_Player_CycleSpoon = m_Player.FindAction("CycleSpoon", throwIfNotFound: true);
         m_Player_Encyclopedia = m_Player.FindAction("Encyclopedia", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_ZoomOut = m_Player.FindAction("ZoomOut", throwIfNotFound: true);
         m_Player_DebugMenu = m_Player.FindAction("DebugMenu", throwIfNotFound: true);
+        m_Player_CycleSpoon = m_Player.FindAction("CycleSpoon", throwIfNotFound: true);
         m_Player_Soup1 = m_Player.FindAction("Soup1", throwIfNotFound: true);
         m_Player_Soup2 = m_Player.FindAction("Soup2", throwIfNotFound: true);
         m_Player_Soup3 = m_Player.FindAction("Soup3", throwIfNotFound: true);
@@ -996,11 +1018,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_UseSpoon;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Movement;
-    private readonly InputAction m_Player_CycleSpoon;
     private readonly InputAction m_Player_Encyclopedia;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_ZoomOut;
     private readonly InputAction m_Player_DebugMenu;
+    private readonly InputAction m_Player_CycleSpoon;
     private readonly InputAction m_Player_Soup1;
     private readonly InputAction m_Player_Soup2;
     private readonly InputAction m_Player_Soup3;
@@ -1012,11 +1034,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @UseSpoon => m_Wrapper.m_Player_UseSpoon;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
-        public InputAction @CycleSpoon => m_Wrapper.m_Player_CycleSpoon;
         public InputAction @Encyclopedia => m_Wrapper.m_Player_Encyclopedia;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @ZoomOut => m_Wrapper.m_Player_ZoomOut;
         public InputAction @DebugMenu => m_Wrapper.m_Player_DebugMenu;
+        public InputAction @CycleSpoon => m_Wrapper.m_Player_CycleSpoon;
         public InputAction @Soup1 => m_Wrapper.m_Player_Soup1;
         public InputAction @Soup2 => m_Wrapper.m_Player_Soup2;
         public InputAction @Soup3 => m_Wrapper.m_Player_Soup3;
@@ -1039,9 +1061,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
-            @CycleSpoon.started += instance.OnCycleSpoon;
-            @CycleSpoon.performed += instance.OnCycleSpoon;
-            @CycleSpoon.canceled += instance.OnCycleSpoon;
             @Encyclopedia.started += instance.OnEncyclopedia;
             @Encyclopedia.performed += instance.OnEncyclopedia;
             @Encyclopedia.canceled += instance.OnEncyclopedia;
@@ -1054,6 +1073,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DebugMenu.started += instance.OnDebugMenu;
             @DebugMenu.performed += instance.OnDebugMenu;
             @DebugMenu.canceled += instance.OnDebugMenu;
+            @CycleSpoon.started += instance.OnCycleSpoon;
+            @CycleSpoon.performed += instance.OnCycleSpoon;
+            @CycleSpoon.canceled += instance.OnCycleSpoon;
             @Soup1.started += instance.OnSoup1;
             @Soup1.performed += instance.OnSoup1;
             @Soup1.canceled += instance.OnSoup1;
@@ -1079,9 +1101,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
-            @CycleSpoon.started -= instance.OnCycleSpoon;
-            @CycleSpoon.performed -= instance.OnCycleSpoon;
-            @CycleSpoon.canceled -= instance.OnCycleSpoon;
             @Encyclopedia.started -= instance.OnEncyclopedia;
             @Encyclopedia.performed -= instance.OnEncyclopedia;
             @Encyclopedia.canceled -= instance.OnEncyclopedia;
@@ -1094,6 +1113,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DebugMenu.started -= instance.OnDebugMenu;
             @DebugMenu.performed -= instance.OnDebugMenu;
             @DebugMenu.canceled -= instance.OnDebugMenu;
+            @CycleSpoon.started -= instance.OnCycleSpoon;
+            @CycleSpoon.performed -= instance.OnCycleSpoon;
+            @CycleSpoon.canceled -= instance.OnCycleSpoon;
             @Soup1.started -= instance.OnSoup1;
             @Soup1.performed -= instance.OnSoup1;
             @Soup1.canceled -= instance.OnSoup1;
@@ -1246,11 +1268,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnUseSpoon(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
-        void OnCycleSpoon(InputAction.CallbackContext context);
         void OnEncyclopedia(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnZoomOut(InputAction.CallbackContext context);
         void OnDebugMenu(InputAction.CallbackContext context);
+        void OnCycleSpoon(InputAction.CallbackContext context);
         void OnSoup1(InputAction.CallbackContext context);
         void OnSoup2(InputAction.CallbackContext context);
         void OnSoup3(InputAction.CallbackContext context);

@@ -54,7 +54,7 @@ public class PlayerInventory : MonoBehaviour
         // PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
         PlayerKeybinds.Singleton.attack.action.started += UseSpoon;
         // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
-        PlayerKeybinds.Singleton.cycleSpoon.action.started += CycleSpoons;
+        // PlayerKeybinds.Singleton.cycleSpoon.action.started += CycleSpoons;
         PlayerKeybinds.Singleton.soup_1.action.started += Soup1;
         PlayerKeybinds.Singleton.soup_2.action.started += Soup2;
         PlayerKeybinds.Singleton.soup_3.action.started += Soup3;
@@ -66,7 +66,7 @@ public class PlayerInventory : MonoBehaviour
         // PlayerEntityManager.Singleton.input.Player.UseSpoon.started -= UseSpoon;
         PlayerKeybinds.Singleton.attack.action.started -= UseSpoon;
         // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
-        PlayerKeybinds.Singleton.cycleSpoon.action.started -= CycleSpoons;
+        // PlayerKeybinds.Singleton.cycleSpoon.action.started -= CycleSpoons;
         PlayerKeybinds.Singleton.soup_1.action.started -= Soup1;
         PlayerKeybinds.Singleton.soup_2.action.started -= Soup2;
         PlayerKeybinds.Singleton.soup_3.action.started -= Soup3;

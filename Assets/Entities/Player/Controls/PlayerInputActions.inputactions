@@ -33,15 +33,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CycleSpoon",
-                    "type": "Value",
-                    "id": "96fdbac1-4e02-4d43-abaa-36acbc147db2",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "Encyclopedia",
                     "type": "Button",
                     "id": "6edc8ebd-ee37-4683-98e1-2d7fb1651755",
@@ -72,6 +63,15 @@
                     "name": "DebugMenu",
                     "type": "Button",
                     "id": "3a04bbbb-6e9a-43c5-95c2-260344a5ff3b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CycleSpoon",
+                    "type": "Button",
+                    "id": "9ed69426-65aa-4269-b552-0b01709be628",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -249,17 +249,6 @@
                 },
                 {
                     "name": "",
-                    "id": "61cfe482-eb60-498c-b8ed-f15d4a75f677",
-                    "path": "<Mouse>/scroll/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CycleSpoon",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "9912d869-ca90-45cf-9e21-97a178ccba80",
                     "path": "<Keyboard>/c",
                     "interactions": "",
@@ -356,6 +345,39 @@
                     "action": "Soup4",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "f6929749-c46f-4f79-93eb-0cfe7c2a8b30",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleSpoon",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "850cecaf-1376-4e78-83b0-aa16a30937ba",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleSpoon",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "2a5653bc-389b-482f-9221-977adb1055a5",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleSpoon",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
