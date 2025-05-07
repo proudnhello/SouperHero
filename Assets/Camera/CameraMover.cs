@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
+using UnityEngine.InputSystem;
 //using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class CameraMover : MonoBehaviour
@@ -25,9 +26,15 @@ public class CameraMover : MonoBehaviour
         transform.position = new Vector3(_player.position.x, _player.position.y, transform.position.z);
         _cam.transform.position = transform.position;
         //StartCoroutine(TargetFollow());
-        PlayerEntityManager.Singleton.input.Player.ZoomOut.started += (ctx) => toggleZoomOut = !toggleZoomOut;
+        // PlayerEntityManager.Singleton.input.Player.ZoomOut.started += (ctx) => toggleZoomOut = !toggleZoomOut;
+        PlayerKeybinds.Singleton.zoomOut.action.started += ZoomOut;
         _cam.orthographicSize = 0.5f * UNITS_PER_PIXEL * Screen.height;
         StartCoroutine(HandleZoom());
+    }
+
+    private void OnDisable()
+    {
+        PlayerKeybinds.Singleton.zoomOut.action.started -= ZoomOut;
     }
 
     bool toggleZoomOut = false;
@@ -76,4 +83,10 @@ public class CameraMover : MonoBehaviour
                                     Mathf.Clamp(targetDist.y, -maxDistance.y, maxDistance.y) + _player.position.y, transform.position.z);
         }      
     }
+
+    public void ZoomOut(InputAction.CallbackContext ctx)
+    {
+        toggleZoomOut = !toggleZoomOut;
+    }
 }
+
