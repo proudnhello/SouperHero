@@ -9,18 +9,24 @@ public class pickUpandThrow : Interactable
     // Start is called before the first frame update
     private bool pickUp = false;
     InputAction attack;
-    public SpriteRenderer thesprite;
+    //public SpriteRenderer thesprite;
+    //int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
+    public GameObject playerHands;
+
 
     void Awake()
     {
         attack = PlayerEntityManager.Singleton.input.Player.UseSpoon;
+        playerHands = GameObject.Find("/Player/AttackPointSwivel");
     }
     void Start()
     {
         // Debug.Log(CanInteract());
         // SetHighlighted(true);
-        thesprite = GetComponent<SpriteRenderer>();
-        Debug.Log(thesprite.sprite);
+        //thesprite = GetComponent<SpriteRenderer>();
+        //Debug.Log(thesprite.sprite);
+        //thesprite.material.SetFloat(_OutlineThickness, 1);
+
     }
 
     // Update is called once per frame
@@ -47,10 +53,15 @@ public class pickUpandThrow : Interactable
     private void pickUpItem()
     {
         Debug.Log("pick up item");
+        Vector3 oldPos = transform.position;
+        transform.SetParent(playerHands.transform);
+        Vector3 newPos = new Vector3(0, 0, oldPos.z);
+        transform.localPosition = newPos;
     }
 
     private void dropItem()
     {
+
         Debug.Log("Drop item");
     }
 
