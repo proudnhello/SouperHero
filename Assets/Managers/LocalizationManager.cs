@@ -9,7 +9,8 @@ public class LocalizationManager : MonoBehaviour
 {
     public LocalizationManager Singleton { get; private set; }
 
-    public static TableReference tableReference = "Languages";
+    public static TableReference tableReference = "Languages";      // the localization table we'll use by default for non-dialogue text
+    public static TableReference DialogueTableReference = "Dialogue";   // the localization table we'll use for dialogue text
 
     private void Awake()
     {
@@ -31,9 +32,20 @@ public class LocalizationManager : MonoBehaviour
         return tableReference;
     }
 
+    public static TableReference GetDialogueTable()
+    {
+        return DialogueTableReference;
+    }
+
     public static string GetLocalizedString(string key)
     {
         LocalizedString localString = new LocalizedString(LocalizationManager.GetTable(), key);
+        return localString.GetLocalizedString();
+    }
+
+    public static string GetLocalizedDialogue(string key)
+    {
+        LocalizedString localString = new LocalizedString(LocalizationManager.GetDialogueTable(), key);
         return localString.GetLocalizedString();
     }
 
