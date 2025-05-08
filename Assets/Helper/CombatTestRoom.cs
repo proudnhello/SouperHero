@@ -131,8 +131,6 @@ public class CombatTestRoom : MonoBehaviour
                 enemySpawnPos.y -= 2.0f;
                 Instantiate(enemyList[enemyDropdown.value], enemySpawnPos, Quaternion.identity, theParent.transform);
             }
-
-            //Debug.Log(newThing);
         }
         else if (spawnIndex == 1)
         { //Destroyable Spawn

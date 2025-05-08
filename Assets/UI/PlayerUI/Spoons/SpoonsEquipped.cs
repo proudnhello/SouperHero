@@ -16,7 +16,7 @@ public class SpoonsEquipped : MonoBehaviour
     private int prevSpoon = -1;
 
     private Vector2 normalSize = new Vector2(82, 50);
-    private Vector2 selectedSize = new Vector2(123, 75);
+   // private Vector2 selectedSize = new Vector2(123, 75);
 
     private void Start()
     {
@@ -37,7 +37,7 @@ public class SpoonsEquipped : MonoBehaviour
     {
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
         {
-            imageComponents[prevSpoon].rectTransform.sizeDelta = normalSize; //Reset to normal size
+            imageComponents[prevSpoon].rectTransform.localScale = new Vector3(.66f, .66f, .66f);
             SetAlpha(prevSpoon, 0.3f);
         }
 
@@ -45,7 +45,7 @@ public class SpoonsEquipped : MonoBehaviour
         prevSpoon = spoon;
         SetAlpha(spoon, 1);
 
-        imageComponents[spoon].rectTransform.sizeDelta = selectedSize; //Increase size
+        imageComponents[spoon].rectTransform.localScale = new Vector3(1f, 1f, 1f);
         SetUsesText(spoon);
     }
 
@@ -74,26 +74,11 @@ public class SpoonsEquipped : MonoBehaviour
 
     void SetUsesText(int spoon)
     {
+        SoupSpoon soupSpoon = PlayerInventory.Singleton.GetSpoons()[spoon]; //Get current spoon
 
-        int maxUses = 0;
-        foreach (SpoonAbility ability in PlayerInventory.Singleton.GetSpoons()[spoon].spoonAbilities)
+        if (soupSpoon.uses != -1)
         {
-            // check if we have an infinite use ingredient
-            if (ability.uses == -1)
-            {
-                maxUses = -1;
-                break;
-            }
-
-            if (ability.uses > maxUses)
-            {
-                maxUses = ability.uses;
-            }
-        }
-
-        if (maxUses != -1)
-        {
-            usesTextComponents[spoon].text = maxUses.ToString();
+            usesTextComponents[spoon].text = soupSpoon.uses.ToString();
         } else
         {
             usesTextComponents[spoon].text = "∞";

@@ -54,7 +54,7 @@ public class HazardousGround : Hazard
 
     public override void RemoveEntity(Entity entity)
     {
-        if (entity != null && effectedEntities.Contains(entity))
+        if (entity != null && effectedEntities != null && effectedEntities.Contains(entity))
         {
             base.RemoveEntity(entity);
             if (!canAttack)

@@ -164,12 +164,9 @@ public class FlettuceAI : EnemyBaseClass
             return false;
         }
 
-        //Debug.Log($"Wait Seconds is {_waitSeconds} and time elapsed is {Math.Abs(_startTime - Time.time)}");
-
         /// check if wait time has elapsed
         if (_waitSeconds < Math.Abs(_startTime - Time.time))
         {
-            Debug.Log("Timer reset, returning true");
             _startTime = -1;
             return true;
         }
@@ -197,7 +194,6 @@ public class FlettuceAI : EnemyBaseClass
             }
             else if (distance > _blackboard.DistanceFromPlayerToDisengage)
             {
-                Debug.Log($"{distance} is greater than DistanceFromPlayerToDisengage: {_blackboard.DistanceFromPlayerToDisengage}");
                 return true;
             }
 
@@ -214,7 +210,6 @@ public class FlettuceAI : EnemyBaseClass
             }
             else if (distance < _blackboard.PlayerDetectionPathLength)
             {
-                Debug.Log($"{distance} is less than PlayerDetectionPathLength: {_blackboard.PlayerDetectionPathLength}");
                 return true;
             }
 
@@ -231,7 +226,6 @@ public class FlettuceAI : EnemyBaseClass
             }
             else if (distance < _blackboard.DistanceToPlayerForCharge)
             {
-                Debug.Log($"{distance} ({distance.GetType()}) is less than DistanceToPlayerForCharge: {_blackboard.DistanceToPlayerForCharge} ({_blackboard.DistanceToPlayerForCharge.GetType()})");
                 return true;
             }
 
