@@ -13,11 +13,16 @@ public class pickUpandThrow : Interactable
     //int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
     public GameObject playerHands;
 
+    public static GameObject dropSpot;
+
+    public static Transform prevParent;
+
 
     void Awake()
     {
         attack = PlayerEntityManager.Singleton.input.Player.UseSpoon;
-        playerHands = GameObject.Find("/Player/AttackPointSwivel");
+        playerHands = GameObject.Find("/Player/Hands");
+        dropSpot = GameObject.Find("/Player/AttackPointSwivel/AttackPoint");
     }
     void Start()
     {
@@ -26,7 +31,7 @@ public class pickUpandThrow : Interactable
         //thesprite = GetComponent<SpriteRenderer>();
         //Debug.Log(thesprite.sprite);
         //thesprite.material.SetFloat(_OutlineThickness, 1);
-
+        
     }
 
     // Update is called once per frame
@@ -37,35 +42,59 @@ public class pickUpandThrow : Interactable
 
     public override void Interact()
     {
-        Debug.Log("fire");
-        if (!pickUp)
-        {
-            pickUpItem();
-        }
-        else
-        {
-            dropItem();
-        }
-        pickUp = !pickUp;
+        pickUpItem();
+       
 
     }
 
     private void pickUpItem()
     {
-        Debug.Log("pick up item");
-        Vector3 oldPos = transform.position;
-        transform.SetParent(playerHands.transform);
-        Vector3 newPos = new Vector3(0, 0, oldPos.z);
-        transform.localPosition = newPos;
+        if (!(PlayerInventory.Singleton.playerHolding))
+        {
+
+            Debug.Log("pick up item");
+            //get previous parent reference
+            prevParent = transform.parent;
+            //change parent to Hands in player gameobject
+            transform.SetParent(playerHands.transform);
+            //Get new position
+            Vector3 newPos = new Vector3(0, 0, transform.position.z);
+
+            //change local position of game object (i.e. barrel moves to above players head)
+            transform.localPosition = newPos;
+
+            //tells playerInventory the player is holding something
+            PlayerInventory.Singleton.objectHolding = this.gameObject;
+            PlayerInventory.Singleton.playerHolding = true;
+        }
     }
 
-    private void dropItem()
+    public static void dropItem(GameObject objectToDrop)
     {
+        if (PlayerInventory.Singleton.playerHolding)
+        {
 
-        Debug.Log("Drop item");
+
+            Debug.Log("Drop item");
+            Transform needToDrop = objectToDrop.transform;
+
+            needToDrop.SetParent(dropSpot.transform);
+            needToDrop.localPosition = new Vector3(0, .5f, needToDrop.position.z);
+            needToDrop.SetParent(prevParent);
+
+            PlayerInventory.Singleton.playerHolding = false;
+
+            Debug.Log("Success in dropping");
+        }
+
+       
+
+
+
+        
     }
 
-    private void throwItem()
+    private void throwItem()    
     {
         Debug.Log("throw item");
     }

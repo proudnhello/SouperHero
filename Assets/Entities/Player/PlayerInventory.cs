@@ -16,6 +16,9 @@ public class PlayerInventory : MonoBehaviour
     public static event Action<int> RemoveSpoon;
     public int maxSpoons = 4;
 
+    public bool playerHolding = false;
+    public GameObject objectHolding = null;
+
     public List<Ingredient> defaultSpoonIngredients;
 
     //[SerializeField]
@@ -28,6 +31,7 @@ public class PlayerInventory : MonoBehaviour
     List<SoupSpoon> spoons;
 
     int currentSpoon = 0;
+   
 
     void Awake()
     {
@@ -118,7 +122,7 @@ public class PlayerInventory : MonoBehaviour
     void UseSpoon(InputAction.CallbackContext ctx)
     {
         // Don't Use Spoon if In Cooking Screen or if the player can't attack
-        if (CookingManager.Singleton.IsCooking() || !PlayerEntityManager.Singleton.CanAttack())
+        if (CookingManager.Singleton.IsCooking() || !PlayerEntityManager.Singleton.CanAttack() || playerHolding)
         {
             return;
         }

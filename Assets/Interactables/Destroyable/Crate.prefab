@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 6154628606512588311}
   - component: {fileID: 8349138743299825308}
   - component: {fileID: 7256827397506068133}
+  - component: {fileID: 5827697160182941612}
+  - component: {fileID: 2368010648102664324}
   m_Layer: 9
   m_Name: Crate
   m_TagString: Untagged
@@ -54,7 +56,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b9ef61fd433d800439ae066e90e3081e, type: 2}
+  - {fileID: -876546973899608171, guid: dcee24b999ba53342a769e4d2c98ee76, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -158,3 +160,62 @@ MonoBehaviour:
   - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}
   - {fileID: 165481585712337600, guid: c1442435e41d43f4e90b9b6e511c8907, type: 3}
   - {fileID: 165481585712337600, guid: 60d8cef6f94a91f4bb989422f0400fe6, type: 3}
+  oddsForSomething: 0.5
+--- !u!114 &5827697160182941612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18193000329964728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8180218e5cb43a247a67f9115edc0d3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerHands: {fileID: 0}
+--- !u!61 &2368010648102664324
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18193000329964728}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0025291443, y: 0.28}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.28}
+    oldSize: {x: 0.75, y: 1.0625}
+    newSize: {x: 0.27, y: 0.43}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.79013824, y: 1.0468216}
+  m_EdgeRadius: 0
