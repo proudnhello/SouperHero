@@ -74,26 +74,11 @@ public class SpoonsEquipped : MonoBehaviour
 
     void SetUsesText(int spoon)
     {
+        SoupSpoon soupSpoon = PlayerInventory.Singleton.GetSpoons()[spoon]; //Get current spoon
 
-        int maxUses = 0;
-        foreach (SpoonAbility ability in PlayerInventory.Singleton.GetSpoons()[spoon].spoonAbilities)
+        if (soupSpoon.uses != -1)
         {
-            // check if we have an infinite use ingredient
-            if (ability.uses == -1)
-            {
-                maxUses = -1;
-                break;
-            }
-
-            if (ability.uses > maxUses)
-            {
-                maxUses = ability.uses;
-            }
-        }
-
-        if (maxUses != -1)
-        {
-            usesTextComponents[spoon].text = maxUses.ToString();
+            usesTextComponents[spoon].text = soupSpoon.uses.ToString();
         } else
         {
             usesTextComponents[spoon].text = "∞";

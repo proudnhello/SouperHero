@@ -187,12 +187,10 @@ public class PlayerInventory : MonoBehaviour
 
         // check if any of the abilities have uses left
         bool noUsesLeft = true;
-        foreach (SpoonAbility ability in spoon.spoonAbilities)
+
+        if (spoon.GetUses() > 0 || spoon.GetUses() == -1)
         {
-            if (ability.GetUses() > 0 || ability.GetUses() == -1)
-            {
-                noUsesLeft = false;
-            }
+            noUsesLeft = false;
         }
 
 

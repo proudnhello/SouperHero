@@ -20,7 +20,7 @@ public class SoupSpoon
         public AbilityStats statsWithBuffs;
 
         public float lastUseTime;
-        public int uses = 0;
+        // public int uses = 0;
 
         public Sprite icon;
         public Sprite iconUI;
@@ -35,7 +35,7 @@ public class SoupSpoon
             statsWithBuffs = new(ingredient.baseStats, buffs);
             icon = ingredient.Icon;
             iconUI = ingredient.IconUI;
-            uses = ingredient.uses;
+            // uses = ingredient.uses;
             inherentInflictions = ingredient.inherentInflictionFlavors;
         }
 
@@ -58,7 +58,7 @@ public class SoupSpoon
         // This is called if we are adding an ability ingredient we already added
         public void AddIngredient(AbilityIngredient ingredient)
         {
-            uses += ingredient.uses;
+            // uses += ingredient.uses;
         }
 
         public bool OnCooldown()
@@ -66,10 +66,12 @@ public class SoupSpoon
             return (Time.time - lastUseTime) < statsWithBuffs.cooldown;
         }
 
+        /*
         public int GetUses()
         {
             return uses;
         }
+        */
 
         public void PrintAbility()
         {
@@ -113,8 +115,13 @@ public class SoupSpoon
     // ~~~ VARIABLES ~~~
     public List<SpoonAbility> spoonAbilities;
     public List<SpoonInfliction> spoonInflictions;
-    //public int uses; // -1 = infinite
+    public int uses; // -1 = infinite
     public float cooldown;
+
+    public int GetUses()
+    {
+        return uses;
+    }
 
     // Makes a Soup Spoon
     public SoupSpoon(List<Ingredient> ingredients)
@@ -141,7 +148,7 @@ public class SoupSpoon
         flavorIngredients.ForEach(f => inflictionFlavors = inflictionFlavors.Concat(f.inflictionFlavors).ToList());
 
         // Initialize uses and cooldown
-        //uses = 0;
+        uses = 0;
         cooldown = 0;
 
         float totalCooldown = 0;
@@ -151,17 +158,15 @@ public class SoupSpoon
         {
             if (!abilityTracker.ContainsKey(ingredient))
             {
-                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));              
+                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));         
             } else
             {
                 abilityTracker[ingredient].AddIngredient(ingredient);
             }
+            uses += ingredient.uses;
             totalCooldown += ingredient.baseStats.cooldown;
         }
         foreach (var ingredient in abilityIngredients) cooldown += Mathf.Pow(ingredient.baseStats.cooldown, 2) / totalCooldown;
-
-        // Set uses to infinite if specified
-        //if (infinite) uses = -1;
         
         // Calculate average cooldown based on number of ability ingredients
         cooldown /= abilityIngredients.Count;
@@ -268,25 +273,18 @@ public class SoupSpoon
         if ((Time.time - lastTimeUsed) < cooldown) return false;
         lastTimeUsed = Time.time;
 
-        // Apply each ability using the spoon if there are uses left
-        foreach (SpoonAbility ability in spoonAbilities)
+        if (uses != 0)
         {
-            // use ability if there are uses left
-            if (ability.uses > 0 || ability.uses == -1)
+            // Apply each ability using the spoon if there are uses left
+            foreach (SpoonAbility ability in spoonAbilities)
             {
+                // use ability if there are uses left
                 ability.ability.UseAbility(ability.statsWithBuffs, ability.GetSpoonInflictions());
-
-            }
-            
-            // decrement if uses > 0
-            if (ability.uses > 0)
-            {
-                ability.uses--;
             }
         }
 
         // Decrement uses if applicable
-        //if (uses > 0) uses--;
+        if (uses > 0) uses--;
 
         return true;
     }
