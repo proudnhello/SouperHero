@@ -66,21 +66,11 @@ public class CookingManager : MonoBehaviour
             c.usesText.text = "";
         }
 
-        /*
-        //TODO: FIX THIS!!
-        //If camera moves while lerp-ing, the UI gets messed up
+        //Move the inventory and soup select prefabs up when entering cooking
+        //Note: The vectors are different since they are on different canvases
+        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 240))); 
+        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 6.5f)));
 
-        //Move SoupSelect prefab up using Lerp
-        distance_to_lerp = new Vector3(0, 4, 0);
-        int frames_to_lerp = (int)(distance_to_lerp.magnitude / Time.fixedDeltaTime) + 1; // +1 used to round the float up
-        StartCoroutine(LerpSoupInventory(SoupSelect, frames_to_lerp));
-
-        //Move SoupInventory prefab up using Lerp
-        //TODO: Move the prefab up in the game scene and edit the dist variable?
-        distance_to_lerp = new Vector3(0, 4, 0);
-        frames_to_lerp = (int)(distance_to_lerp.magnitude / Time.fixedDeltaTime) + 1; // +1 used to round the float up
-        StartCoroutine(LerpSoupInventory(SoupInventory, frames_to_lerp));
-        */
     }
 
 
@@ -324,6 +314,21 @@ public class CookingManager : MonoBehaviour
         {
             yield return new WaitForSecondsRealtime(Time.fixedDeltaTime);
             current_appliance.transform.position = Vector3.Lerp(start_position, end_position, Time.fixedDeltaTime * i);
+        }
+    }
+
+    //Move inventory UI elements using SmoothDamp
+    private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target)
+    {
+        float smoothTime = 0.8f; //Time spent moving
+        Vector2 velocity = Vector2.zero;
+        RectTransform rectTransform = obj.GetComponent<RectTransform>(); //Get the rectTransform, since it's a UI element
+        Vector2 targetPosition = rectTransform.anchoredPosition + target; //New target position
+
+        while (rectTransform.anchoredPosition != targetPosition)
+        {
+            rectTransform.anchoredPosition = Vector2.SmoothDamp(rectTransform.anchoredPosition, targetPosition, ref velocity, smoothTime);
+            yield return null;
         }
     }
 }
