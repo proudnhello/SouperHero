@@ -68,8 +68,8 @@ public class CookingManager : MonoBehaviour
 
         //Move the inventory and soup select prefabs up when entering cooking
         //Note: The vectors are different since they are on different canvases
-        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 240))); 
-        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 6.5f)));
+        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 250), 0.7f, () => { })); 
+        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 6.5f), 0.8f, () => { }));
 
     }
 
@@ -78,6 +78,12 @@ public class CookingManager : MonoBehaviour
     {
         if (CurrentCampfire != null)
         {
+            //Move the inventory and soup select prefabs down when exiting cooking
+            //Use callback to finish animation before disabling the canvas
+            StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -6.5f), 0.7f, () => {
+                //CookingCanvas.SetActive(false);
+                //PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
+
             CurrentCampfire.StopPrepping();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
@@ -107,6 +113,9 @@ public class CookingManager : MonoBehaviour
 
             // Save game after cooking
             SaveManager.Singleton.SaveGameScene();
+            }));
+            
+            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -250), 1f, () => { }));
         }
     }
     
@@ -318,17 +327,18 @@ public class CookingManager : MonoBehaviour
     }
 
     //Move inventory UI elements using SmoothDamp
-    private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target)
+    private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target, float smoothTime, Action animationComplete)
     {
-        float smoothTime = 0.8f; //Time spent moving
         Vector2 velocity = Vector2.zero;
         RectTransform rectTransform = obj.GetComponent<RectTransform>(); //Get the rectTransform, since it's a UI element
         Vector2 targetPosition = rectTransform.anchoredPosition + target; //New target position
 
-        while (rectTransform.anchoredPosition != targetPosition)
+        while ((rectTransform.anchoredPosition - targetPosition).magnitude >= 0.01f)
         {
             rectTransform.anchoredPosition = Vector2.SmoothDamp(rectTransform.anchoredPosition, targetPosition, ref velocity, smoothTime);
             yield return null;
         }
+
+        animationComplete();
     }
 }
