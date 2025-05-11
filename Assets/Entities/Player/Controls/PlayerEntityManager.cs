@@ -48,10 +48,7 @@ public class PlayerEntityManager : Entity
             // check if the player is still alive if so, go to game over screen
             if (IsDead())
             {
-                MetricsManager.Singleton.EndTimer();
-                MetricsManager.Singleton.RecordNumDeaths();
-                MetricsManager.Singleton.SaveToMetricsToSO();
-                GameManager.instance.DeathScreen();
+                GameManager.Singleton.EndRun(false);
                 return;
             }
         }

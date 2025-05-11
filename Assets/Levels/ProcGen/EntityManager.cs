@@ -27,7 +27,7 @@ public class EntityManager : MonoBehaviour
         public int weight = 1;
         public int value = 1;
         // DO NOT CHANGE INDEX IN EDITOR
-        public int index = -1;
+        internal int index = -1;
     }
     [Header("Foragables")] 
     public List<SpawnableForagable> possibleForagables;
@@ -36,16 +36,10 @@ public class EntityManager : MonoBehaviour
     private int totalForagableWeight;
     private Dictionary<int, SpawnableEnemy> enemyDict;
     private Dictionary<int, SpawnableForagable> foragableDict;
-    //void Start()
-    //{
-    //    buildEnemyDictionary();
-    //    buildForagableDictionary();
-    //    createEnemies();
-    //    createForagables();
-    //}
-    public bool hasSpawned = false;
-    public bool hasExportedEnemies = false;
-    public bool hasExportedForagables = false;
+
+    internal bool hasSpawned = false;
+    internal bool hasExportedEnemies = false;
+    internal bool hasExportedForagables = false;
     public bool SpawnEntities()
     {
         if (hasSpawned) return false;
