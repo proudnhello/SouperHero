@@ -53,6 +53,8 @@ public class PlayerInventory : MonoBehaviour
     {
         // PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
         PlayerKeybinds.Singleton.attack.action.started += UseSpoon;
+        PlayerKeybinds.Singleton.cycleSpoonLeft.action.started += CycleSpoonLeft;
+        PlayerKeybinds.Singleton.cycleSpoonRight.action.started += CycleSpoonRight;
         // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
         // PlayerKeybinds.Singleton.cycleSpoon.action.started += CycleSpoons;
         PlayerKeybinds.Singleton.soup_1.action.started += Soup1;
@@ -65,6 +67,8 @@ public class PlayerInventory : MonoBehaviour
     {
         // PlayerEntityManager.Singleton.input.Player.UseSpoon.started -= UseSpoon;
         PlayerKeybinds.Singleton.attack.action.started -= UseSpoon;
+        PlayerKeybinds.Singleton.cycleSpoonLeft.action.started -= CycleSpoonLeft;
+        PlayerKeybinds.Singleton.cycleSpoonRight.action.started -= CycleSpoonRight;
         // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
         // PlayerKeybinds.Singleton.cycleSpoon.action.started -= CycleSpoons;
         PlayerKeybinds.Singleton.soup_1.action.started -= Soup1;
@@ -106,26 +110,36 @@ public class PlayerInventory : MonoBehaviour
     }
 
     // CYCLING SPOON
-    void CycleSpoons(InputAction.CallbackContext ctx)
+    void CycleSpoon(int direction)
     {
         if (spoons.Count <= 1) return;
 
-        if (ctx.ReadValue<float>() < 0)
+        if (direction == -1 && currentSpoon > 0)
         {
             currentSpoon--;
-            currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+            // currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         }
-        else if(ctx.ReadValue<float>() > 4) //4 is the number of hotkeys
+        else if(direction == 1 && currentSpoon < 3) 
         {
             currentSpoon++;
-            currentSpoon = currentSpoon >= spoons.Count ? currentSpoon = 0 : currentSpoon;
+            // currentSpoon = currentSpoon >= spoons.Count ? currentSpoon = 0 : currentSpoon;
         } 
-        else
-        {
-            //TODO: Add check for count
-            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon = currentSpoon : (int)ctx.ReadValue<float>() - 1;
-        }
+        // else
+        // {
+        //     //TODO: Add check for count
+        //     currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon = currentSpoon : (int)ctx.ReadValue<float>() - 1;
+        // }
         ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    void CycleSpoonLeft(InputAction.CallbackContext ctx)
+    {
+        CycleSpoon(-1);
+    }
+
+    void CycleSpoonRight(InputAction.CallbackContext ctx)
+    {
+        CycleSpoon(1);
     }
 
     void Soup1(InputAction.CallbackContext ctx)
