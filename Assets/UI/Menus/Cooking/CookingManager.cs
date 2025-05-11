@@ -30,14 +30,11 @@ public class CookingManager : MonoBehaviour
     [Header("SoupInventory")]
     [SerializeField] private GameObject SoupSelect;
     [SerializeField] private GameObject SoupInventory;
-    private Vector3 _originalSoupSelectPosition;
-    private Vector3 distance_to_lerp;
 
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
-        _originalSoupSelectPosition = SoupSelect.transform.position;
     }
 
     //// Initialize Ingredient List
@@ -68,9 +65,8 @@ public class CookingManager : MonoBehaviour
 
         //Move the inventory and soup select prefabs up when entering cooking
         //Note: The vectors are different since they are on different canvases
-        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 250), 0.7f, () => { })); 
-        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 6.5f), 0.8f, () => { }));
-
+        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 240f), 500f)); 
+        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 6.5f), 10f));
     }
 
 
@@ -78,11 +74,7 @@ public class CookingManager : MonoBehaviour
     {
         if (CurrentCampfire != null)
         {
-            //Move the inventory and soup select prefabs down when exiting cooking
-            //Use callback to finish animation before disabling the canvas
-            StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -6.5f), 0.7f, () => {
-                //CookingCanvas.SetActive(false);
-                //PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
+            SoupInventory.GetComponent<RectTransform>().anchoredPosition = new Vector2(-7.3f, -10.0f); //Reset to original position
 
             CurrentCampfire.StopPrepping();
             CurrentCampfire = null;
@@ -113,9 +105,9 @@ public class CookingManager : MonoBehaviour
 
             // Save game after cooking
             SaveManager.Singleton.SaveGameScene();
-            }));
-            
-            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -250), 1f, () => { }));
+
+            //Move the soup select prefab down when exiting cooking
+            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -240f), 500f));
         }
     }
     
@@ -313,32 +305,16 @@ public class CookingManager : MonoBehaviour
         slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
     }
 
-    private IEnumerator LerpSoupInventory(GameObject current_appliance, int frames_to_lerp)
-    {
-        Vector3 start_position = current_appliance.transform.position;
-        Vector3 end_position = start_position + distance_to_lerp;
-
-        // Here we 'queue' up some changes in position, and they execute after a small delay
-        for (int i = 0; i < frames_to_lerp; i++)
-        {
-            yield return new WaitForSecondsRealtime(Time.fixedDeltaTime);
-            current_appliance.transform.position = Vector3.Lerp(start_position, end_position, Time.fixedDeltaTime * i);
-        }
-    }
-
     //Move inventory UI elements using SmoothDamp
-    private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target, float smoothTime, Action animationComplete)
+    private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target, float speed)
     {
-        Vector2 velocity = Vector2.zero;
         RectTransform rectTransform = obj.GetComponent<RectTransform>(); //Get the rectTransform, since it's a UI element
         Vector2 targetPosition = rectTransform.anchoredPosition + target; //New target position
+        var step = speed * Time.deltaTime;
 
-        while ((rectTransform.anchoredPosition - targetPosition).magnitude >= 0.01f)
-        {
-            rectTransform.anchoredPosition = Vector2.SmoothDamp(rectTransform.anchoredPosition, targetPosition, ref velocity, smoothTime);
+        while(Vector2.Distance(rectTransform.anchoredPosition, targetPosition) > 0.001f) {
+            rectTransform.anchoredPosition = Vector2.MoveTowards(rectTransform.anchoredPosition, targetPosition, step);
             yield return null;
         }
-
-        animationComplete();
     }
 }
