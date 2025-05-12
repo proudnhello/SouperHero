@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using static SoupSpoon;
 using UnityEngine.Rendering.Universal;
+using FMOD;
 
 
 // Gets Items In the Cooking Slots and Call FillPot
@@ -43,6 +44,7 @@ public class CookingManager : MonoBehaviour
     // Initialize Ingredient List
     [SerializeField]
     public List<Collectable> cookingIngredients = new();
+    private SoupBase soupBase = null;
 
     [SerializeField] internal Campfire CurrentCampfire;
 
@@ -129,6 +131,16 @@ public class CookingManager : MonoBehaviour
     //    PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
     //}
 
+    public void SetBase(SoupBase b)
+    {
+        soupBase = b;
+    }
+
+    public SoupBase GetBase()
+    {
+        return soupBase;
+    }
+
     // Function to add an Ability Ingredient
     public void AddIngredient(Collectable ingredient)
     {
@@ -214,12 +226,12 @@ public class CookingManager : MonoBehaviour
 
         if (CurrentCampfire.gameObject == null)
         {
-            Debug.Log("Campfire Animator not found!");
+            print("Campfire Animator not found!");
         }
 
         if (campfireAnimator == null)
         {
-            Debug.Log("Campfire Animator not found!");
+            print("Campfire Animator not found!");
         }
 
         // Currently commented out while the cooking animation is the emptying animation
@@ -232,7 +244,16 @@ public class CookingManager : MonoBehaviour
             ingredient.ingredient.Icon = ingredient.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite;
             cookedIngredients.Add(ingredient.ingredient);
         }
-        PlayerInventory.Singleton.CookSoup(cookedIngredients);
+
+        if(soupBase == null)
+        {
+            UnityEngine.Debug.LogWarning("SoupBase is null! Press play to continue, the code works, but someone needs to hook up soup bases to the UI");
+            PlayerInventory.Singleton.OLD_AND_BAD_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
+        }
+        else
+        {
+            PlayerInventory.Singleton.CookSoup(cookedIngredients, soupBase);
+        }
 
         // Remove From Player Inventory
         foreach (Collectable ingredient in cookingIngredients)
