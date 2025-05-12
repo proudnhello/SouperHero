@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 using static SoupSpoon;
 using UnityEngine.Rendering.Universal;
 using FMOD;
+using DG.Tweening;
+using static UnityEngine.InputManagerEntry;
 
 
 // Gets Items In the Cooking Slots and Call FillPot
@@ -67,8 +69,8 @@ public class CookingManager : MonoBehaviour
 
         //Move the inventory and soup select prefabs up when entering cooking
         //Note: The vectors are different since they are on different canvases
-        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 240f), 500f)); 
-        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 6.5f), 10f));
+        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 245f), 500f)); 
+        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 245f), 500f));
     }
 
 
@@ -76,7 +78,7 @@ public class CookingManager : MonoBehaviour
     {
         if (CurrentCampfire != null)
         {
-            SoupInventory.GetComponent<RectTransform>().anchoredPosition = new Vector2(-7.3f, -10.0f); //Reset to original position
+            //SoupInventory.GetComponent<RectTransform>().anchoredPosition = new Vector2(-1677f, -2203f); //Reset to original position
 
             CurrentCampfire.StopPrepping();
             CurrentCampfire = null;
@@ -109,7 +111,8 @@ public class CookingManager : MonoBehaviour
             SaveManager.Singleton.SaveGameScene();
 
             //Move the soup select prefab down when exiting cooking
-            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -240f), 500f));
+            StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -245f), 500f));
+            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -245f), 500f));
         }
     }
     
