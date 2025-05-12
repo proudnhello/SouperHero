@@ -110,7 +110,7 @@ public class PlayerInventory : MonoBehaviour
         else
         {
             //TODO: Add check for count
-            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon = currentSpoon : (int)ctx.ReadValue<float>() - 1;
+            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon : (int)ctx.ReadValue<float>() - 1;
         }
         ChangedSpoon?.Invoke(currentSpoon);
     }
