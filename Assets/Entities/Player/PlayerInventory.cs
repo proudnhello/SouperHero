@@ -122,8 +122,15 @@ public class PlayerInventory : MonoBehaviour
     void UseSpoon(InputAction.CallbackContext ctx)
     {
         // Don't Use Spoon if In Cooking Screen or if the player can't attack
-        if (CookingManager.Singleton.IsCooking() || !PlayerEntityManager.Singleton.CanAttack() || playerHolding)
+        if (CookingManager.Singleton.IsCooking() || !PlayerEntityManager.Singleton.CanAttack())
         {
+            return;
+        }
+        else if (playerHolding)
+        {
+            //Debug.Log("I should throw the object now");
+
+            ThrowItem(objectHolding);
             return;
         }
 
@@ -164,5 +171,11 @@ public class PlayerInventory : MonoBehaviour
 
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    private void ThrowItem(GameObject objectToThrow)
+    {
+
+        Debug.Log("need to code");
     }
 }

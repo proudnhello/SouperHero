@@ -108,8 +108,5 @@ public class PlayerEnvInteraction : MonoBehaviour
         }
     }
 
-    private void dropItem(GameObject objectToDrop)
-    {
-
-    }
+    
 }
