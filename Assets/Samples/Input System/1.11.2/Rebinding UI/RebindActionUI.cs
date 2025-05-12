@@ -261,7 +261,6 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             {
                 m_RebindOperation?.Dispose();
                 m_RebindOperation = null;
-                action.Enable();
                 m_Action.action.Enable();
                 SaveKeyBind();
             }
