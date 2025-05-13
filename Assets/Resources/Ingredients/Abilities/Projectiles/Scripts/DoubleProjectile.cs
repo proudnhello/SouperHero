@@ -21,7 +21,7 @@ public class DoubleProjectile : AbilityAbstractClass
 
     //Get a projectile based on the direction a player is facing,
     //face the projectile in the direction of the target angle and spawn it
-    protected override void Release(AbilityStats stats, List<Infliction> inflictions)
+    public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
 
         stats.size *= SIZE_MULTIPLIER;

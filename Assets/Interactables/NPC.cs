@@ -8,7 +8,7 @@ public class NPC : Interactable
     [SerializeField] private DialogueTrigger dialogueTrigger;
     [SerializeField] private bool repeatable = true; // if the NPC can be interacted with multiple times
 
-    protected override void Awake()
+    private void Awake()
     {
         base.Awake();
     }

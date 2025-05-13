@@ -17,7 +17,7 @@ public class FiredZone : AbilityAbstractClass
     //[SerializeField] float CRIT_MULTIPLIER = 0.5f;
     [SerializeField] float SPEED_MULTIPLIER = 0.5f;
 
-    protected override void Release(AbilityStats stats, List<Infliction> inflictions)
+    public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();

@@ -120,7 +120,6 @@ public class SaveManager : MonoBehaviour
             }
         }
         catch(Exception e){
-            Debug.LogError($"Error Saving Entities: {e.Message}");  
             return;
         }
     }

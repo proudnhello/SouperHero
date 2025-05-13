@@ -124,7 +124,7 @@ public class SoupSpoon
     }
 
     // Makes a Soup Spoon
-    public SoupSpoon(List<Ingredient> ingredients, SoupBase stock)
+    public SoupSpoon(List<Ingredient> ingredients)
     {
         // Track abilities and inflictions using dictionaries
         Dictionary<AbilityIngredient, SpoonAbility> abilityTracker = new();
@@ -141,16 +141,17 @@ public class SoupSpoon
         // Collect and order buff flavors from flavor ingredients
         List<BuffFlavor> buffFlavors = new();
         flavorIngredients.ForEach(f => buffFlavors = buffFlavors.Concat(f.buffFlavors).ToList());
-        buffFlavors.AddRange(stock.inherentBuffFlavors); // add inherent buffs from soup base
+        //buffFlavors = buffFlavors.OrderBy(x => x.operation).ToList();
 
         // Collect infliction flavors from flavor ingredients //both flavor and ability ingredients
         List<InflictionFlavor> inflictionFlavors = new();
         flavorIngredients.ForEach(f => inflictionFlavors = inflictionFlavors.Concat(f.inflictionFlavors).ToList());
-        inflictionFlavors.AddRange(stock.inherentInflictionFlavors); // add inherent inflictions from soup base
 
         // Initialize uses and cooldown
         uses = 0;
-        cooldown = stock.cooldown;
+        cooldown = 0;
+
+        float totalCooldown = 0;
 
         // Populate ability tracker and calculate total uses and cooldown
         foreach (var ingredient in abilityIngredients)
@@ -163,8 +164,13 @@ public class SoupSpoon
                 abilityTracker[ingredient].AddIngredient(ingredient);
             }
             uses += ingredient.uses;
+            totalCooldown += ingredient.baseStats.cooldown;
         }
+        foreach (var ingredient in abilityIngredients) cooldown += Mathf.Pow(ingredient.baseStats.cooldown, 2) / totalCooldown;
         
+        // Calculate average cooldown based on number of ability ingredients
+        cooldown /= abilityIngredients.Count;
+
         // Populate infliction tracker with infliction flavors
         foreach (var infliction in inflictionFlavors)
         {
