@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class pickUpandThrow : Interactable
 {
     // Start is called before the first frame update
-    private bool pickUp = false;
+    
     //public SpriteRenderer thesprite;
     //int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
     public GameObject playerHands;
@@ -19,7 +19,10 @@ public class pickUpandThrow : Interactable
 
     void Awake()
     {
+        //Player hands above the head
         playerHands = GameObject.Find("/Player/Hands");
+
+        //dropSpot is 
         dropSpot = GameObject.Find("/Player/AttackPointSwivel/AttackPoint");
     }
     void Start()
@@ -91,7 +94,7 @@ public class pickUpandThrow : Interactable
     public static void throwItem(GameObject throwMe)    
     {
         //Debug.Log("throw item");
-
+        /*
         Transform needToThrow = throwMe.transform;
 
         needToThrow.SetParent(dropSpot.transform);
@@ -100,13 +103,29 @@ public class pickUpandThrow : Interactable
 
         PlayerInventory.Singleton.playerHolding = false;
 
+        */
+
+        if (PlayerInventory.Singleton.playerHolding)
+        {
+            PlayerInventory.Singleton.playerHolding = false;
+            StartCoroutine(ThrowItem(throwMe));
+        }
 
     }
 
-    IEnumerator ThrowItem(GameObject item)
+    public IEnumerator ThrowItem(GameObject item)
     {
+        
+        Vector3 startPoint = item.transform.position;
+        Vector3 endPoint = new Vector3(dropSpot.transform.position.x, dropSpot.transform.position.y * 2, item.transform.position.z);
+        item.transform.parent = prevParent;
 
-        Vector3 startPos = item.transform.position;
-        Vector3 endPos = 
+        for (int i = 0; i < 25; i++)
+        {
+            item.transform.position = Vector3.Lerp(startPoint, endPoint, i * 0.4f);
+            yield return null;
+        }
+        
+        
     }
 }
