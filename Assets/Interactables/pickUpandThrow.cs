@@ -8,7 +8,6 @@ public class pickUpandThrow : Interactable
 {
     // Start is called before the first frame update
     private bool pickUp = false;
-    InputAction attack;
     //public SpriteRenderer thesprite;
     //int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
     public GameObject playerHands;
@@ -20,7 +19,6 @@ public class pickUpandThrow : Interactable
 
     void Awake()
     {
-        attack = PlayerEntityManager.Singleton.input.Player.UseSpoon;
         playerHands = GameObject.Find("/Player/Hands");
         dropSpot = GameObject.Find("/Player/AttackPointSwivel/AttackPoint");
     }
@@ -75,7 +73,7 @@ public class pickUpandThrow : Interactable
         {
 
 
-            Debug.Log("Drop item");
+            //Debug.Log("Drop item");
             Transform needToDrop = objectToDrop.transform;
 
             needToDrop.SetParent(dropSpot.transform);
@@ -84,18 +82,31 @@ public class pickUpandThrow : Interactable
 
             PlayerInventory.Singleton.playerHolding = false;
 
-            Debug.Log("Success in dropping");
+            //Debug.Log("Success in dropping");
         }
-
-       
-
-
 
         
     }
 
-    private void throwItem()    
+    public static void throwItem(GameObject throwMe)    
     {
-        Debug.Log("throw item");
+        //Debug.Log("throw item");
+
+        Transform needToThrow = throwMe.transform;
+
+        needToThrow.SetParent(dropSpot.transform);
+        needToThrow.localPosition = new Vector3(0, 2, needToThrow.position.z);
+        needToThrow.SetParent(prevParent);
+
+        PlayerInventory.Singleton.playerHolding = false;
+
+
+    }
+
+    IEnumerator ThrowItem(GameObject item)
+    {
+
+        Vector3 startPos = item.transform.position;
+        Vector3 endPos = 
     }
 }

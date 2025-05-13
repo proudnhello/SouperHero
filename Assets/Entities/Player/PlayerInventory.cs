@@ -126,11 +126,12 @@ public class PlayerInventory : MonoBehaviour
         {
             return;
         }
+        //handle thrwoing object
         else if (playerHolding)
         {
             //Debug.Log("I should throw the object now");
 
-            ThrowItem(objectHolding);
+            pickUpandThrow.throwItem(objectHolding);
             return;
         }
 
@@ -171,11 +172,5 @@ public class PlayerInventory : MonoBehaviour
 
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
-    }
-
-    private void ThrowItem(GameObject objectToThrow)
-    {
-
-        Debug.Log("need to code");
     }
 }
