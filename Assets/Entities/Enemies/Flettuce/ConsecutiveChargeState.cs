@@ -79,8 +79,6 @@ public class ConsecutiveChargeState : BaseState
         ////if (chargeNum < _blackboard.ConsecutiveCharges) yield return new WaitForSeconds(Random.Range(_blackboard.ChargeCooldownTime.x, _blackboard.ChargeCooldownTime.y));
         ////else yield return new WaitForSeconds(_blackboard.FinalChargeCooldownTime);
         ///
-
-        Debug.Log("The current state in consecutive charge states is: " + machine.currentState.ToString());
     }
 
     public override void EnterState()

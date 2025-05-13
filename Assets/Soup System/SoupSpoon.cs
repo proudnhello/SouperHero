@@ -20,9 +20,10 @@ public class SoupSpoon
         public AbilityStats statsWithBuffs;
 
         public float lastUseTime;
-        public int uses = 0;
+        // public int uses = 0;
 
         public Sprite icon;
+        public Sprite iconUI;
 
         List<SpoonInfliction> inflictions;
         List<InflictionFlavor> inherentInflictions;
@@ -33,7 +34,8 @@ public class SoupSpoon
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
             icon = ingredient.Icon;
-            uses = ingredient.uses;
+            iconUI = ingredient.IconUI;
+            // uses = ingredient.uses;
             inherentInflictions = ingredient.inherentInflictionFlavors;
         }
 
@@ -56,7 +58,7 @@ public class SoupSpoon
         // This is called if we are adding an ability ingredient we already added
         public void AddIngredient(AbilityIngredient ingredient)
         {
-            uses += ingredient.uses;
+            // uses += ingredient.uses;
         }
 
         public bool OnCooldown()
@@ -64,10 +66,12 @@ public class SoupSpoon
             return (Time.time - lastUseTime) < statsWithBuffs.cooldown;
         }
 
+        /*
         public int GetUses()
         {
             return uses;
         }
+        */
 
         public void PrintAbility()
         {
@@ -111,11 +115,16 @@ public class SoupSpoon
     // ~~~ VARIABLES ~~~
     public List<SpoonAbility> spoonAbilities;
     public List<SpoonInfliction> spoonInflictions;
-    //public int uses; // -1 = infinite
+    public int uses; // -1 = infinite
     public float cooldown;
 
+    public int GetUses()
+    {
+        return uses;
+    }
+
     // Makes a Soup Spoon
-    public SoupSpoon(List<Ingredient> ingredients)
+    public SoupSpoon(List<Ingredient> ingredients, SoupBase stock)
     {
         // Track abilities and inflictions using dictionaries
         Dictionary<AbilityIngredient, SpoonAbility> abilityTracker = new();
@@ -132,55 +141,30 @@ public class SoupSpoon
         // Collect and order buff flavors from flavor ingredients
         List<BuffFlavor> buffFlavors = new();
         flavorIngredients.ForEach(f => buffFlavors = buffFlavors.Concat(f.buffFlavors).ToList());
-        //buffFlavors = buffFlavors.OrderBy(x => x.operation).ToList();
+        buffFlavors.AddRange(stock.inherentBuffFlavors); // add inherent buffs from soup base
 
         // Collect infliction flavors from flavor ingredients //both flavor and ability ingredients
         List<InflictionFlavor> inflictionFlavors = new();
         flavorIngredients.ForEach(f => inflictionFlavors = inflictionFlavors.Concat(f.inflictionFlavors).ToList());
+        inflictionFlavors.AddRange(stock.inherentInflictionFlavors); // add inherent inflictions from soup base
 
         // Initialize uses and cooldown
-        //uses = 0;
-        cooldown = 0;
-
-        float totalCooldown = 0;
+        uses = 0;
+        cooldown = stock.cooldown;
 
         // Populate ability tracker and calculate total uses and cooldown
         foreach (var ingredient in abilityIngredients)
         {
             if (!abilityTracker.ContainsKey(ingredient))
             {
-                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));              
+                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));         
             } else
             {
                 abilityTracker[ingredient].AddIngredient(ingredient);
             }
-
-            // Removed b/c inherent inflictions should be kept specific to the ability, not the spoon
-            /*
-            foreach (var infliction in ingredient.inherentInflictionFlavors)
-            {
-                if (!inflictionTracker.ContainsKey(infliction.inflictionType)) // only add each infliction type once
-                {
-                    inflictionTracker.Add(infliction.inflictionType, new(infliction));
-                    inflictionTracker[infliction.inflictionType].AddIngredient(infliction);
-                }
-                // Track number of each infliction
-                if (FlavorInflictionCounter.ContainsKey(infliction.inflictionType)) FlavorInflictionCounter[infliction.inflictionType]++;
-                else FlavorInflictionCounter.Add(infliction.inflictionType, 1);
-            }
-            */
-
-            //uses += ingredient.uses; // <- ONCE EQUIPPED SPOON UI IS WORKING DELETE
-            totalCooldown += ingredient.baseStats.cooldown;
+            uses += ingredient.uses;
         }
-        foreach (var ingredient in abilityIngredients) cooldown += Mathf.Pow(ingredient.baseStats.cooldown, 2) / totalCooldown;
-
-        // Set uses to infinite if specified
-        //if (infinite) uses = -1;
         
-        // Calculate average cooldown based on number of ability ingredients
-        cooldown /= abilityIngredients.Count;
-
         // Populate infliction tracker with infliction flavors
         foreach (var infliction in inflictionFlavors)
         {
@@ -235,11 +219,6 @@ public class SoupSpoon
             }
         }
 
-        Debug.Log("Infliction tracker length: " + inflictionTracker.Count);
-        foreach (var infliction in inflictionTracker.Values)
-        {
-            Debug.Log($"Spoon Infliction: {infliction.InflictionFlavor.inflictionType} = {infliction.amount}");
-        }
         foreach (var spoonAbility in spoonAbilities)
         {
             spoonAbility.CalculateInflictions(inflictionTracker);
@@ -288,26 +267,18 @@ public class SoupSpoon
         if ((Time.time - lastTimeUsed) < cooldown) return false;
         lastTimeUsed = Time.time;
 
-        // Apply each ability using the spoon if there are uses left
-        foreach (SpoonAbility ability in spoonAbilities)
+        if (uses != 0)
         {
-            // use ability if there are uses left
-            if (ability.uses > 0 || ability.uses == -1)
+            // Apply each ability using the spoon if there are uses left
+            foreach (SpoonAbility ability in spoonAbilities)
             {
+                // use ability if there are uses left
                 ability.ability.UseAbility(ability.statsWithBuffs, ability.GetSpoonInflictions());
-                ability.PrintAbility();
-
-            }
-            
-            // decrement if uses > 0
-            if (ability.uses > 0)
-            {
-                ability.uses--;
             }
         }
 
         // Decrement uses if applicable
-        //if (uses > 0) uses--;
+        if (uses > 0) uses--;
 
         return true;
     }
