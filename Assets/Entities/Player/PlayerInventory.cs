@@ -138,7 +138,7 @@ public class PlayerInventory : MonoBehaviour
         {
             //Debug.Log("I should throw the object now");
 
-            pickUpandThrow.ThrowItem(objectHolding);
+            pickUpandThrow.throwItem(objectHolding);
             return;
         }
 

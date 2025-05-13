@@ -113,7 +113,7 @@ public class pickUpandThrow : Interactable
 
     }
 
-    public IEnumerator ThrowItem(GameObject item)
+    IEnumerator ThrowItem(GameObject item)
     {
         
         Vector3 startPoint = item.transform.position;
