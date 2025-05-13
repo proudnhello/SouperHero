@@ -23,7 +23,7 @@ public class BossRoom : MonoBehaviour
     [Serializable]
     public class Wave
     {
-        //public List<SpawnableEnemy> enemies;
+        public List<GameObject> enemyChoices;
         public int difficulty;
         public WaveType type;
         // Only for Gradual
@@ -77,7 +77,7 @@ public class BossRoom : MonoBehaviour
             if (currentWave < waves.Length)
             {
                 enemiesInWave.Clear();
-                //SpawnWave(waves[currentWave]);
+                SpawnWave(waves[currentWave]);
                 currentWave++;
             }
             else
@@ -85,101 +85,66 @@ public class BossRoom : MonoBehaviour
                 GameManager.Singleton.EndRun(true);
             }
         }
-
     }
 
-    //Dictionary<int, SpawnableEnemy> BuildEnemyDictionary(List<SpawnableEnemy> possibleEnemies)
-    //{
-    //    int totalEnemyWeight = 0;
+    void SpawnWave(Wave wave) {
+    
+        // For an instant wave, spawn all enemies at once
+        if (wave.type == WaveType.Instant)
+        {
+            for (int i=0; i < wave.difficulty; i++)
+            {
+                SpawnEnemy(wave, true);
+            }
+        }
+        else if (wave.type == WaveType.Gradual)
+        {
+            StartCoroutine(SpawnGradually(wave));
+        }
+    }
 
-    //    for (int i = 0; i < possibleEnemies.Count; i++)
-    //    {
-    //        totalEnemyWeight += possibleEnemies[i].weight;
-    //        if (possibleEnemies[i].weight <= 0)
-    //        {
-    //            Debug.LogWarning("Zero or negative weight, turned into weight of 1");
-    //            possibleEnemies[i].weight = 1;
-    //        }
-    //    }
+    IEnumerator SpawnGradually(Wave wave)
+    {
+        // First, spawn in all the enemies, but have them inactive
+        for (int i = 0; i < wave.difficulty; i++)
+        {
+            SpawnEnemy(wave, false);
+        }
 
-    //    int count = 0;
-    //    Dictionary<int, SpawnableEnemy> enemyDict = new Dictionary<int, SpawnableEnemy>();
-    //    for (int i = 0; i < possibleEnemies.Count; i++)
-    //    {
-    //        possibleEnemies[i].index = i;
-    //        for (int j = 0; j < possibleEnemies[i].weight; j++)
-    //        {
-    //            enemyDict.Add(count, possibleEnemies[i]);
-    //            count++;
-    //        }
-    //    }
-    //    return enemyDict;
-    //}
+        List<(GameObject, GameObject)> enemiesNotSpawned = new List<(GameObject, GameObject)>(enemiesInWave);
+        // Then, activate them in chunks of wave.spawnsAtATime every wave.timeBetweenSpawns seconds
+        while (enemiesNotSpawned.Count > 0)
+        {
+            for (int i = 0; i < wave.spawnsAtATime && enemiesNotSpawned.Count > 0; i++)
+            {
+                StartCoroutine(SpawnAnimation(enemiesNotSpawned[0]));
+                enemiesNotSpawned.RemoveAt(0);
+            }
+            yield return new WaitForSeconds(wave.timeBetweenSpawns);
+        }
+    }
 
-    //void SpawnWave(Wave wave)
-    //{
-    //    Dictionary<int, SpawnableEnemy> enemyDict = BuildEnemyDictionary(wave.enemies);
+    // When spawning an enemy, select a random enemy from the list of possible enemies and spawn it at a random spawn location.
+    // Use enemy dict, as it is a weighted dictionary of possible enemies
+    // The boolean active determines if the enemy should be active or not
+    // Decrement the wave difficulty and add the enemy to the list of enemies currently alive
+    // Forget the saving stuff, b/c they'll never get to a save point in the boss room
+    void SpawnEnemy(Wave wave, bool active)
+    {
+        GameObject enemy = wave.enemyChoices[UnityEngine.Random.Range(0, wave.enemyChoices.Count)];
+        GameObject spawnPoint = spawnLocations[UnityEngine.Random.Range(0, spawnLocations.Count)];
 
-    //    // For an instant wave, spawn all enemies at once
-    //    if(wave.type == WaveType.Instant)
-    //    {
-    //        while (wave.difficulty > 0)
-    //        {
-    //            SpawnEnemy(wave, enemyDict, true);
-    //        }
-    //    }
-    //    else if(wave.type == WaveType.Gradual)
-    //    {
-    //        StartCoroutine(SpawnGradually(wave));
-    //    }
-    //}
+        GameObject newEnemy = Instantiate(enemy, spawnPoint.transform);
+        newEnemy.transform.position = spawnPoint.transform.position;
+        newEnemy.SetActive(false);
 
-    //IEnumerator SpawnGradually(Wave wave)
-    //{
-    //    // First, spawn in all the enemies, but have them inactive
-    //    while (wave.difficulty > 0)
-    //    {
-    //        for (int i = 0; i < wave.spawnsAtATime; i++)
-    //        {
-    //            SpawnEnemy(wave, BuildEnemyDictionary(wave.enemies), false);
-    //        }
-    //    }
+        enemiesInWave.Add((newEnemy, spawnPoint));
 
-    //    List<(GameObject, GameObject)> enemiesNotSpawned = new List<(GameObject, GameObject)>(enemiesInWave);
-    //    // Then, activate them in chunks of wave.spawnsAtATime every wave.timeBetweenSpawns seconds
-    //    while (enemiesNotSpawned.Count > 0)
-    //    {
-    //        for (int i = 0; i < wave.spawnsAtATime && enemiesNotSpawned.Count > 0; i++)
-    //        {
-    //            StartCoroutine(SpawnAnimation(enemiesNotSpawned[0]));
-    //            enemiesNotSpawned.RemoveAt(0);
-    //        }
-    //        yield return new WaitForSeconds(wave.timeBetweenSpawns);
-    //    }
-    //}
-
-    //// When spawning an enemy, select a random enemy from the list of possible enemies and spawn it at a random spawn location.
-    //// Use enemy dict, as it is a weighted dictionary of possible enemies
-    //// The boolean active determines if the enemy should be active or not
-    //// Decrement the wave difficulty and add the enemy to the list of enemies currently alive
-    //// Forget the saving stuff, b/c they'll never get to a save point in the boss room
-    //void SpawnEnemy(Wave wave, Dictionary<int, SpawnableEnemy> enemyDict, bool active)
-    //{
-    //    SpawnableEnemy enemy = enemyDict[UnityEngine.Random.Range(0, enemyDict.Count)];
-    //    GameObject spawnPoint = spawnLocations[UnityEngine.Random.Range(0, spawnLocations.Count)];
-
-    //    GameObject newEnemy = Instantiate(enemy.enemy, spawnPoint.transform);
-    //    newEnemy.transform.position = spawnPoint.transform.position;
-    //    newEnemy.SetActive(false);
-
-    //    wave.difficulty -= enemy.difficulty;
-    //    enemiesInWave.Add((newEnemy, spawnPoint));
-
-    //    if (active)
-    //    {
-    //        StartCoroutine(SpawnAnimation((newEnemy, spawnPoint)));
-    //    }
-    //}
+        if (active)
+        {
+            StartCoroutine(SpawnAnimation((newEnemy, spawnPoint)));
+        }
+    }
 
     IEnumerator SpawnAnimation((GameObject, GameObject) holder)
     {

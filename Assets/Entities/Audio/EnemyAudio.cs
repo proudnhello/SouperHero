@@ -17,7 +17,6 @@ public class EnemyAudio
 
     public void PlayDamage(EnemyBaseClass enemy)
     {
-        Debug.Log("is this being alled");
         EventInstance PlayDamage()
         {
             for (int i = 0; i < enemyDamage.Count; i++)

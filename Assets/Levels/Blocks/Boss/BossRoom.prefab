@@ -18670,7 +18670,7 @@ MonoBehaviour:
   - {x: -8.99997, y: 1, z: 0}
   m_ShapePathHash: -1950118340
   m_Mesh: {fileID: 0}
-  m_InstanceId: 85070
+  m_InstanceId: 47686
   m_LocalBounds:
     m_Center: {x: -8.500015, y: 2, z: 0}
     m_Extent: {x: 0.49998522, y: 1, z: 0}
@@ -19580,7 +19580,7 @@ MonoBehaviour:
   - {x: -8.99997, y: -3, z: 0}
   m_ShapePathHash: 2138366118
   m_Mesh: {fileID: 0}
-  m_InstanceId: 84986
+  m_InstanceId: 47604
   m_LocalBounds:
     m_Center: {x: -8.500015, y: -2.5, z: 0}
     m_Extent: {x: 0.49998522, y: 0.5, z: 0}
@@ -19705,7 +19705,7 @@ MonoBehaviour:
   - {x: 23.000029, y: -3, z: 0}
   m_ShapePathHash: 1588617157
   m_Mesh: {fileID: 0}
-  m_InstanceId: 85244
+  m_InstanceId: 47860
   m_LocalBounds:
     m_Center: {x: 23.499985, y: 0, z: 0}
     m_Extent: {x: 0.4999857, y: 3, z: 0}
@@ -19994,7 +19994,7 @@ MonoBehaviour:
   - {x: -2.999971, y: 22, z: 0}
   m_ShapePathHash: -2063128114
   m_Mesh: {fileID: 0}
-  m_InstanceId: 85110
+  m_InstanceId: 47726
   m_LocalBounds:
     m_Center: {x: 0, y: 23, z: 0}
     m_Extent: {x: 3, y: 1, z: 0}
@@ -20249,7 +20249,7 @@ MonoBehaviour:
   - {x: -8.99997, y: -3, z: 0}
   m_ShapePathHash: -584153064
   m_Mesh: {fileID: 0}
-  m_InstanceId: 84980
+  m_InstanceId: 47598
   m_LocalBounds:
     m_Center: {x: -8.500015, y: 0, z: 0}
     m_Extent: {x: 0.49998522, y: 3, z: 0}
@@ -20624,7 +20624,7 @@ MonoBehaviour:
   - {x: -2.999971, y: -26, z: 0}
   m_ShapePathHash: 1537863631
   m_Mesh: {fileID: 0}
-  m_InstanceId: 85060
+  m_InstanceId: 47676
   m_LocalBounds:
     m_Center: {x: 0, y: -24.5, z: 0}
     m_Extent: {x: 3, y: 1.5, z: 0}
@@ -27077,7 +27077,7 @@ Tilemap:
   - m_RefCount: 556
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   - m_RefCount: 48
-    m_Data: {r: 0.81966746, g: 0.51539713, b: 0.57892746, a: 1}
+    m_Data: {r: 0.7359318, g: 0.33741733, b: 0.39053127, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -28338,7 +28338,7 @@ MonoBehaviour:
   - {x: 34.00003, y: 3, z: 0}
   m_ShapePathHash: 40333832
   m_Mesh: {fileID: 0}
-  m_InstanceId: 85102
+  m_InstanceId: 47718
   m_LocalBounds:
     m_Center: {x: 24.499987, y: 13.5, z: 0}
     m_Extent: {x: 10.499987, y: 10.5, z: 0}
@@ -28402,7 +28402,7 @@ MonoBehaviour:
   - {x: 14.000029, y: -24, z: 0}
   m_ShapePathHash: -1180404573
   m_Mesh: {fileID: 0}
-  m_InstanceId: 85286
+  m_InstanceId: 47902
   m_LocalBounds:
     m_Center: {x: 24.499987, y: -13.5, z: 0}
     m_Extent: {x: 10.499987, y: 10.5, z: 0}
@@ -29470,18 +29470,26 @@ MonoBehaviour:
   - {fileID: 4238353076080362673}
   - {fileID: 5381428582978088260}
   waves:
-  - difficulty: 1
+  - enemyChoices:
+    - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+    difficulty: 1
     type: 0
     timeBetweenSpawns: 0
     spawnsAtATime: 0
-  - difficulty: 20
+  - enemyChoices:
+    - {fileID: 6001375706453813211, guid: 791882f35f02c444dbe3a6e70a1f3f4d, type: 3}
+    - {fileID: 558365570551301719, guid: 0d94b0bf3cdde4f47a4ca1d6d37cafcc, type: 3}
+    difficulty: 20
     type: 1
     timeBetweenSpawns: 2
     spawnsAtATime: 1
-  - difficulty: 20
-    type: 0
-    timeBetweenSpawns: 0
-    spawnsAtATime: 0
+  - enemyChoices:
+    - {fileID: 168831875005999359, guid: 5fc9b208a56e1464aa651d2bf05e80e6, type: 3}
+    - {fileID: 726252843407693719, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
+    difficulty: 20
+    type: 1
+    timeBetweenSpawns: 10
+    spawnsAtATime: 4
   spawnLocations:
   - {fileID: 4934683003571562487}
   - {fileID: 5366398351996897652}
@@ -31606,7 +31614,7 @@ MonoBehaviour:
   - {x: -12.99997, y: 3, z: 0}
   m_ShapePathHash: -220720831
   m_Mesh: {fileID: 0}
-  m_InstanceId: 85064
+  m_InstanceId: 47680
   m_LocalBounds:
     m_Center: {x: -2.5, y: 13.5, z: 0}
     m_Extent: {x: 10.5, y: 10.5, z: 0}
@@ -50291,7 +50299,7 @@ MonoBehaviour:
   - {x: -12.99997, y: -24, z: 0}
   m_ShapePathHash: 1426834821
   m_Mesh: {fileID: 0}
-  m_InstanceId: 84994
+  m_InstanceId: 47612
   m_LocalBounds:
     m_Center: {x: -2.5000153, y: -13.5, z: 0}
     m_Extent: {x: 10.499985, y: 10.5, z: 0}

@@ -70,4 +70,17 @@ public class PauseManager : MonoBehaviour
         pauseScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Enable();
     }
+
+    public void MainMenu()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene(0);
+    }
+
+    public void RestartGame()
+    {
+        SaveManager.Singleton.ResetGameState();
+        Time.timeScale = 1;
+        SceneManager.LoadScene(1);
+    }
 }

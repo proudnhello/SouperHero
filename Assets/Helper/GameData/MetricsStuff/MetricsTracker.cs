@@ -13,41 +13,43 @@ public class MetricsTracker : MonoBehaviour
     {
         if (Singleton != null && Singleton != this) Destroy(this);
         else Singleton = this;
-        currentMetrics = new();
+    }
+
+    private void Start()
+    {
+        metricsData = SaveManager.Singleton.LoadMetricsData();
     }
 
     private float startTime;
     private float elapsedTime;
 
-    internal MetricsData lastMetrics;
-    internal MetricsData currentMetrics;
+    internal MetricsData metricsData;
 
     public void StartRun()
     {
         startTime = Time.time;
-        currentMetrics.ResetStats();
+        metricsData.NewRun();
     }
 
     public void EndRun(bool successfulRun)
     {
-        lastMetrics = SaveManager.Singleton.LoadMetricsData();
         elapsedTime = Time.time - startTime;
-        currentMetrics.FinishRun(lastMetrics, successfulRun, elapsedTime);
-        SaveManager.Singleton.SaveMetricsData(currentMetrics);
+        metricsData.FinishRun(successfulRun, elapsedTime);
+        SaveManager.Singleton.SaveMetricsData(metricsData);
     }
 
     public void RecordEnemyKilled()
     {
-        currentMetrics.numEnemiesKilled++;
+        metricsData.curr_NumEnemiesKilled++;
     }
 
     public void RecordIngredientCollected()
     {
-        currentMetrics.numIngredientsCollected++;
+        metricsData.curr_NumIngredientsCollected++;
     }
 
     public void RecordSoupsCooked()
     {
-        currentMetrics.numSoupsCooked++;
+        metricsData.curr_NumSoupsCooked++;
     }
 }

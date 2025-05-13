@@ -65,7 +65,7 @@ public class MapRoom : MonoBehaviour
         int region = UnityEngine.Random.Range(0, contentRegions.Length);
         // loop through each region, choose an option, subtract difficulty points required, until all regions are chosen
         // EASY REGION = 0, so even with 0 points left, a region will always be chosen
-        for (int i = 0; i < contentRegions.Length; i++, region = (region + 1)%contentRegions.Length)
+        for (int i = 0; i < contentRegions.Length; i++, region = (region + 1) % contentRegions.Length)
         {
             ContentRegion currentRegion = contentRegions[region];
             foreach (var option in currentRegion.contentOptions)
@@ -75,7 +75,10 @@ public class MapRoom : MonoBehaviour
                     currentRegion.hasBeenChosen = true;
                     difficultyPointBalance -= option.difficultyPointsRequired;
                     option.contentHolder.SetActive(true);
-                } 
+                    Array.ForEach(option.contentHolder.GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
+                        if (x.gameObject.activeInHierarchy) x.RefreshRenderTilemap();
+                    });
+                }
                 else
                 {
                     option.contentHolder.SetActive(false); // disable all other options just in case

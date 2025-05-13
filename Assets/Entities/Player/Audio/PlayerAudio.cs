@@ -1,5 +1,6 @@
 // portions of this file were generated using GitHub Copilot
 using FMOD.Studio;
+using FMODUnity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -87,7 +88,7 @@ public class PlayerAudio
         instance.start();
     }
 
-    public void BreakBreakable()
+    public void BreakBreakable(Vector3 location)
     {
         EventInstance GetBreakBreakable()
         {
@@ -105,6 +106,7 @@ public class PlayerAudio
         }
 
         EventInstance instance = GetBreakBreakable();
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(location));
         instance.start();
     }
 

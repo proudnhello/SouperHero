@@ -17,65 +17,65 @@ public class DeathMetricsDisplay : MonoBehaviour
 
     public void Start()
     {
-        DisplayStats(MetricsTracker.Singleton.currentMetrics, MetricsTracker.Singleton.lastMetrics);
+        DisplayStats(MetricsTracker.Singleton.metricsData);
     }
 
-    public void DisplayStats(MetricsData runData, MetricsData savedData)
+    public void DisplayStats(MetricsData metricsData)
     {
-        if (runData == null || savedData == null) return;
+        if (metricsData == null) return;
 
         metricsText.text = "";
 
-        if (runData.new_MaxNumEnemiesKilled)
+        if (metricsData.new_MaxNumEnemiesKilled)
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Monsters Slain") +
-                $"<color=#F4B07D>{runData.numEnemiesKilled}</color>" +
+                $"<color=#F4B07D>{metricsData.best_NumEnemiesKilled}</color>" +
                 $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
                 "\n";
         }
         else
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Monsters Slain") +
-                $"<color=#F4B07D>{runData.numEnemiesKilled}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") + $"{savedData.numEnemiesKilled})</color>" +
+                $"<color=#F4B07D>{metricsData.curr_NumEnemiesKilled}</color>" +
+                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") + $"{metricsData.best_NumEnemiesKilled})</color>" +
                 "\n";
         }
 
-        if (runData.new_MaxNumIngredientsCollected)
+        if (metricsData.new_MaxNumIngredientsCollected)
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Ingredients Collected") +
-                $"<color=#F4B07D>{runData.numIngredientsCollected}</color>" +
+                $"<color=#F4B07D>{metricsData.curr_NumIngredientsCollected}</color>" +
                 $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
                 "\n";
         }
         else
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Ingredients Collected") +
-                $"<color=#F4B07D>{runData.numIngredientsCollected}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") + $"{savedData.numIngredientsCollected})</color>" +
+                $"<color=#F4B07D>{metricsData.curr_NumIngredientsCollected}</color>" +
+                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") + $"{metricsData.best_NumIngredientsCollected})</color>" +
                 "\n";
         }
 
-        if (runData.new_MaxNumSoupsCooked)
+        if (metricsData.new_MaxNumSoupsCooked)
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Soups Cooked") +
-                $"<color=#F4B07D>{runData.numSoupsCooked}</color>" +
+                $"<color=#F4B07D>{metricsData.curr_NumSoupsCooked}</color>" +
                 $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
                 "\n";
         }
         else
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Soups Cooked") +
-                $"<color=#F4B07D>{runData.numSoupsCooked}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") +  $"{savedData.numSoupsCooked})</color>" +
+                $"<color=#F4B07D>{metricsData.curr_NumSoupsCooked}</color>" +
+                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") +  $"{metricsData.best_NumSoupsCooked})</color>" +
                 "\n";
         }
 
 
         // Format time from seconds to minutes (and hours if needed)
-        timeFormatter = TimeSpan.FromSeconds(runData.lastRunTime);
+        timeFormatter = TimeSpan.FromSeconds(metricsData.curr_RunTime);
         string timeElapsedStr;
-        if (runData.lastRunTime < 3600)
+        if (metricsData.curr_RunTime < 3600)
         {
             timeElapsedStr = timeFormatter.ToString("mm':'ss'.'ff");
         }
@@ -89,24 +89,24 @@ public class DeathMetricsDisplay : MonoBehaviour
             "\n";
 
         // check if they have won before
-        if (runData.totalWins > 0)
+        if (metricsData.totalWins > 0)
         {
             // Format time from seconds to minutes (and hours if needed)
-            timeFormatter = TimeSpan.FromSeconds(runData.lastRunTime);
-            string minWinTimeElapsedStr;
-            if (runData.lastRunTime < 3600)
+            TimeSpan bestTimeFormatter = TimeSpan.FromSeconds(metricsData.best_WinTime);
+            string bestRunTime;
+            if (metricsData.best_WinTime < 3600)
             {
-                minWinTimeElapsedStr = timeFormatter.ToString("mm':'ss'.'ff");
+                bestRunTime = bestTimeFormatter.ToString("mm':'ss'.'ff");
             }
             else
             {
-                minWinTimeElapsedStr = timeFormatter.ToString("hh':'mm':'ss'.'ff");
+                bestRunTime = bestTimeFormatter.ToString("hh':'mm':'ss'.'ff");
             }
 
             // check if they won this time
-            if (runData.lastRunSuccessful)
+            if (metricsData.wasRunSuccessful)
             {
-                if (runData.new_MinWinTimeElapsed)
+                if (metricsData.new_FastestRun)
                 {
                     metricsText.text += "Win Time Elapsed: " +
                         $"<color=#F4B07D>{timeElapsedStr}</color>" +
@@ -117,20 +117,19 @@ public class DeathMetricsDisplay : MonoBehaviour
                 {
                     metricsText.text += "Win Time Elapsed: " +
                         $"<color=#F4B07D>{timeElapsedStr}</color>" +
-                         $"<color=#A9A9A9> (Best: {minWinTimeElapsedStr})</color>" +
+                         $"<color=#A9A9A9> (Best: {bestRunTime})</color>" +
                         "\n";
                 }
             }
             else
             {
-                metricsText.text += "Win Time Elapsed: " +
-                        $"<color=#F4B07D>N/A</color>" +
-                         $"<color=#A9A9A9> (Best: {minWinTimeElapsedStr})</color>" +
+                metricsText.text += "Best Win Time: " +
+                        $"<color=#F4B07D>{bestRunTime}</color>" +
                         "\n";
             }
         }
 
-        metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{runData.totalDeaths}</color>" + "\n";
-        metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{runData.totalWins}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{metricsData.totalDeaths}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{metricsData.totalWins}</color>" + "\n";
     }
 }

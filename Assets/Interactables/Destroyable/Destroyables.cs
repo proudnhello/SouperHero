@@ -5,11 +5,18 @@ using UnityEngine;
 
 public class Destroyables : MonoBehaviour
 {
-    public static event Action Destroyed;
+    public static event Action<Vector3> Destroyed;
     public bool randDrop = false;
     [SerializeField] private Collectable singleCollectable;
-    [SerializeField] private List<Collectable> multipleCollectables;
+    public List<Collectable> multipleCollectables;
     [SerializeField] private float oddsForSomething = .5f;
+
+    int forageableIndex = -1;
+    public void TrackSpawn(int index, List<Collectable> newList)
+    {
+        forageableIndex = index;
+        if (randDrop) multipleCollectables = newList;
+    }
 
     public void RemoveDestroyable()
     {
@@ -21,7 +28,7 @@ public class Destroyables : MonoBehaviour
             {
                 GameObject gameObj = Instantiate(singleCollectable.gameObject, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
                 gameObj.GetComponent<Collectable>().Spawn(this.transform.position);
-                Destroyed?.Invoke();
+                Destroyed?.Invoke(transform.position);
             }
         } else
         {
@@ -33,16 +40,10 @@ public class Destroyables : MonoBehaviour
                     GameObject gameObj = Instantiate(multipleCollectables[randomIndex].gameObject, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
                     gameObj.GetComponent<Collectable>().Spawn(this.transform.position);
                 }
-                Destroyed?.Invoke();
+                Destroyed?.Invoke(transform.position);
             }
         }
 
         if (forageableIndex >= 0) RunStateManager.Singleton.TrackBrokenDestroyable(forageableIndex);
-    }
-
-    int forageableIndex = -1;
-    public void SetIndex(int index)
-    {
-        forageableIndex = index;
     }
 }

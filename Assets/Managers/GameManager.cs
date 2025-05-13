@@ -47,7 +47,6 @@ public class GameManager : MonoBehaviour
     internal bool IsCurrentRunFromSave;
     public void NewGame()
     {
-        Debug.Log("huh");
         IsCurrentRunFromSave = false;
         // Delete previous save
         SaveManager.Singleton.ResetGameState();

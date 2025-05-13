@@ -71,7 +71,7 @@ MonoBehaviour:
   - {x: 7.0000296, y: 3, z: 0}
   m_ShapePathHash: 1785844538
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246550
+  m_InstanceId: 212462
   m_LocalBounds:
     m_Center: {x: 5.499985, y: 5.5, z: 0}
     m_Extent: {x: 2.4999852, y: 2.5, z: 0}
@@ -711,7 +711,7 @@ MonoBehaviour:
   - {x: -2.999971, y: 6, z: 0}
   m_ShapePathHash: 73211045
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246884
+  m_InstanceId: 212794
   m_LocalBounds:
     m_Center: {x: -0.000014543533, y: 7, z: 0}
     m_Extent: {x: 2.9999855, y: 1, z: 0}
@@ -4033,7 +4033,7 @@ Tilemap:
   - m_RefCount: 91
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   - m_RefCount: 6
-    m_Data: {r: 0.88656205, g: 0.5704192, b: 0.5955333, a: 1}
+    m_Data: {r: 0.9613999, g: 0.6654368, b: 0.75279015, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6510,7 +6510,7 @@ MonoBehaviour:
   - {x: -2.999971, y: -7, z: 0}
   m_ShapePathHash: 1249326914
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246580
+  m_InstanceId: 212492
   m_LocalBounds:
     m_Center: {x: -5.0000076, y: -4.5, z: 0}
     m_Extent: {x: 2.9999926, y: 2.5, z: 0}
@@ -7109,7 +7109,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleEnemies:
-  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+  - enemyChoice: {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+    weight: 1
 --- !u!1 &2234174340853260824
 GameObject:
   m_ObjectHideFlags: 0
@@ -7229,7 +7230,7 @@ MonoBehaviour:
   - {x: 0.0312263, y: 0.9999526, z: 0}
   m_ShapePathHash: 397409571
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246902
+  m_InstanceId: 212812
   m_LocalBounds:
     m_Center: {x: 0.01562785, y: 0.96882707, z: 0}
     m_Extent: {x: 0.01559845, y: 0.031172931, z: 0}
@@ -8401,7 +8402,7 @@ MonoBehaviour:
   - {x: -0.9687392, y: -1, z: 0}
   m_ShapePathHash: 1931675774
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246740
+  m_InstanceId: 212650
   m_LocalBounds:
     m_Center: {x: -3, y: 2.5, z: 0}
     m_Extent: {x: 5, y: 3.5, z: 0}
@@ -8463,7 +8464,7 @@ MonoBehaviour:
   - {x: -8.99997, y: -3, z: 0}
   m_ShapePathHash: -49891736
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246830
+  m_InstanceId: 212740
   m_LocalBounds:
     m_Center: {x: -8.500015, y: 0, z: 0}
     m_Extent: {x: 0.49998522, y: 3, z: 0}
@@ -9555,7 +9556,7 @@ MonoBehaviour:
   - {x: 5.0312266, y: 6.999953, z: 0}
   m_ShapePathHash: -2060773943
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246730
+  m_InstanceId: 212640
   m_LocalBounds:
     m_Center: {x: 5.015628, y: 6.9688272, z: 0}
     m_Extent: {x: 0.015598536, y: 0.031172752, z: 0}
@@ -11680,7 +11681,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleDestroyables:
-  - {fileID: 6066935060175311365, guid: 1df70fd3785fba94fbd29198f63d8781, type: 3}
+  - destroyableChoice: {fileID: 18193000329964728, guid: c071c5cf307ac458293b677cafc4ec4c, type: 3}
+    weight: 1
   possibleRandomDrops:
   - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}
 --- !u!1 &3762794082339624096
@@ -11814,7 +11816,7 @@ MonoBehaviour:
   - {x: 3.0000293, y: -8, z: 0}
   m_ShapePathHash: -93789513
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246590
+  m_InstanceId: 212502
   m_LocalBounds:
     m_Center: {x: 5.5, y: -5.5, z: 0}
     m_Extent: {x: 2.5, y: 2.5, z: 0}
@@ -11876,7 +11878,7 @@ MonoBehaviour:
   - {x: -2.999971, y: -8, z: 0}
   m_ShapePathHash: 71217438
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246592
+  m_InstanceId: 212504
   m_LocalBounds:
     m_Center: {x: -0.000014543533, y: -7.5, z: 0}
     m_Extent: {x: 2.9999855, y: 0.5, z: 0}
@@ -11958,7 +11960,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleEnemies:
-  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+  - enemyChoice: {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+    weight: 1
 --- !u!1 &4322273685715753707
 GameObject:
   m_ObjectHideFlags: 0
@@ -12844,7 +12847,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleDestroyables:
-  - {fileID: 6066935060175311365, guid: 1df70fd3785fba94fbd29198f63d8781, type: 3}
+  - destroyableChoice: {fileID: 18193000329964728, guid: c071c5cf307ac458293b677cafc4ec4c, type: 3}
+    weight: 1
   possibleRandomDrops:
   - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}
 --- !u!1 &5053449437153566014
@@ -12904,7 +12908,7 @@ MonoBehaviour:
   - {x: 6.0312266, y: 5.999953, z: 0}
   m_ShapePathHash: -1112431656
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246790
+  m_InstanceId: 212700
   m_LocalBounds:
     m_Center: {x: 6.015628, y: 5.9688272, z: 0}
     m_Extent: {x: 0.015598536, y: 0.03117299, z: 0}
@@ -13572,7 +13576,7 @@ MonoBehaviour:
   - {x: 7.0000296, y: -3, z: 0}
   m_ShapePathHash: -851019514
   m_Mesh: {fileID: 0}
-  m_InstanceId: 246696
+  m_InstanceId: 212606
   m_LocalBounds:
     m_Center: {x: 7.499985, y: 0, z: 0}
     m_Extent: {x: 0.49998522, y: 3, z: 0}
@@ -13721,7 +13725,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleEnemies:
-  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+  - enemyChoice: {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+    weight: 1
 --- !u!1 &6249256188405042164
 GameObject:
   m_ObjectHideFlags: 0
@@ -13767,7 +13772,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleEnemies:
-  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+  - enemyChoice: {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+    weight: 1
 --- !u!1 &7096900580757273148
 GameObject:
   m_ObjectHideFlags: 0
@@ -13813,7 +13819,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleEnemies:
-  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+  - enemyChoice: {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
+    weight: 1
 --- !u!1 &7149408264332512086
 GameObject:
   m_ObjectHideFlags: 0
@@ -14099,6 +14106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleDestroyables:
-  - {fileID: 6066935060175311365, guid: 1df70fd3785fba94fbd29198f63d8781, type: 3}
+  - destroyableChoice: {fileID: 18193000329964728, guid: c071c5cf307ac458293b677cafc4ec4c, type: 3}
+    weight: 1
   possibleRandomDrops:
   - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}
