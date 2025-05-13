@@ -68,7 +68,6 @@ public class CookingManager : MonoBehaviour
         }
 
         //Move the inventory and soup select prefabs up when entering cooking
-        //Note: The vectors are different since they are on different canvases
         StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 245f), 500f)); 
         StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 245f), 500f));
     }
@@ -78,8 +77,6 @@ public class CookingManager : MonoBehaviour
     {
         if (CurrentCampfire != null)
         {
-            //SoupInventory.GetComponent<RectTransform>().anchoredPosition = new Vector2(-1677f, -2203f); //Reset to original position
-
             CurrentCampfire.StopPrepping();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
@@ -329,7 +326,8 @@ public class CookingManager : MonoBehaviour
         slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
     }
 
-    //Move inventory UI elements using SmoothDamp
+    //Move inventory UI elements using MoveTowards (Lo: Hopefully temporary!)
+    //Lo: Hopefully temporary. Might move this into another UI script
     private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target, float speed)
     {
         RectTransform rectTransform = obj.GetComponent<RectTransform>(); //Get the rectTransform, since it's a UI element
