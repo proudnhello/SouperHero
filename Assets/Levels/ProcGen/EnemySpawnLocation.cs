@@ -36,7 +36,7 @@ public class EnemySpawnLocation : MonoBehaviour
     public void SpawnEnemy()
     {
         PossibleEnemy enemyToSpawn = GetEnemy();
-        if (enemyToSpawn == null) return;
+        if (enemyToSpawn.enemyChoice == null) return;
         index = RunStateManager.Singleton.GetNewEnemyIndex();
         if (RunStateManager.Singleton.IsEnemyAlive(index))
         {

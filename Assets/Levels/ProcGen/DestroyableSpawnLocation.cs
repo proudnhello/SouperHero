@@ -37,7 +37,7 @@ public class DestroyableSpawnLocation : MonoBehaviour
     public void SpawnDestroyable()
     {
         PossibleDestroyable destroyableToSpawn = GetDestroyable();
-        if (destroyableToSpawn == null) return;
+        if (destroyableToSpawn.destroyableChoice == null) return;
         index = RunStateManager.Singleton.GetNewDestroyableIndex();
         if (RunStateManager.Singleton.HasDestroyableBeenBroken(index))
         {
