@@ -20,7 +20,7 @@ public class MeleeAbility : AbilityAbstractClass
     [SerializeField] Sprite[] MeleeVFXFrames;
     [SerializeField] AbilityVFXSpawner Spawner;
 
-    public override void UseAbility(AbilityStats passedStats, List<Infliction> inflictions)
+    protected override void Press(AbilityStats passedStats, List<Infliction> inflictions)
     {
         Vector2 playerDir = PlayerEntityManager.Singleton.playerMovement.currentDirection;
         float playerAngle = Mathf.Atan2(playerDir.y, playerDir.x);
