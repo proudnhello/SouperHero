@@ -12,6 +12,7 @@ public class PlayerKeybinds : MonoBehaviour
     public InputActionReference dash;
     public InputActionReference interact;
 
+    public InputActionReference cycleSpoon;
     public InputActionReference cycleSpoonLeft;
     public InputActionReference cycleSpoonRight;
     public InputActionReference soup_1;

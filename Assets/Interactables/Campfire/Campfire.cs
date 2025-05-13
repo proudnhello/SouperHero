@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public class Campfire : Interactable
@@ -13,6 +14,7 @@ public class Campfire : Interactable
     // Start is called before the first frame update
     private void Start()
     {
+        isPrepping = false;
         SetInteractable(true);
         SetHighlighted(false);
     }

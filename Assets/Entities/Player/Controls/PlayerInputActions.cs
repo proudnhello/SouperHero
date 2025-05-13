@@ -92,7 +92,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""CycleSpoon"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""9ed69426-65aa-4269-b552-0b01709be628"",
                     ""expectedControlType"": """",
                     ""processors"": """",

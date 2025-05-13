@@ -18,8 +18,8 @@ public class PlayerInventory : MonoBehaviour
 
     public List<Ingredient> defaultSpoonIngredients;
 
-    //[SerializeField]
-    //internal List<Ingredient> ingredientsHeld;
+    [SerializeField]
+    internal List<Ingredient> ingredientsHeld;
 
     [SerializeField]
     internal List<Collectable> collectablesHeld;
@@ -37,6 +37,8 @@ public class PlayerInventory : MonoBehaviour
             new SoupSpoon(defaultSpoonIngredients)
         };
         collectablesHeld = new();
+        // scroll = new InputActions();
+        // scroll.Player.Enable();
     }
 
     public List<SoupSpoon> GetSpoons()
@@ -112,6 +114,7 @@ public class PlayerInventory : MonoBehaviour
     // CYCLING SPOON
     void CycleSpoon(int direction)
     {
+        // int direction = cycleSpoon.action.Scroll.ReadValue<Vector2>().normalized.y;
         if (spoons.Count <= 1) return;
 
         if (direction == -1 && currentSpoon > 0)

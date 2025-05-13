@@ -95,7 +95,6 @@ public class PlayerEnvInteraction : MonoBehaviour
             // store last interaction frame so we aren't interacting multiple times in the same frame
             lastInteractionFrame = Time.frameCount;
             currentInteractable.Interact();
-            Debug.Log("INTERACT");
             if (currentInteractable && !currentInteractable.CanInteract())
             {
                 withinRange.Remove(currentInteractable);
