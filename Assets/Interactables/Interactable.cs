@@ -11,7 +11,7 @@ public abstract class Interactable : MonoBehaviour
     protected SpriteRenderer interactableSpriteRenderer;
 
     protected int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
-    protected void Awake()
+    protected virtual void Awake()
     {
         interactableSpriteRenderer = GetComponent<SpriteRenderer>();
         SetHighlighted(false);

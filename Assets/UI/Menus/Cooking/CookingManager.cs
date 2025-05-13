@@ -7,6 +7,9 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using static SoupSpoon;
 using UnityEngine.Rendering.Universal;
+using FMOD;
+using DG.Tweening;
+using static UnityEngine.InputManagerEntry;
 
 
 // Gets Items In the Cooking Slots and Call FillPot
@@ -27,6 +30,10 @@ public class CookingManager : MonoBehaviour
 
     public static event Action CookSoup;
 
+    [Header("SoupInventory")]
+    [SerializeField] private GameObject SoupSelect;
+    [SerializeField] private GameObject SoupInventory;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -39,6 +46,7 @@ public class CookingManager : MonoBehaviour
     // Initialize Ingredient List
     [SerializeField]
     public List<Collectable> cookingIngredients = new();
+    private SoupBase soupBase = null;
 
     [SerializeField] internal Campfire CurrentCampfire;
 
@@ -58,6 +66,10 @@ public class CookingManager : MonoBehaviour
             c.faceImage.sprite = null;
             c.usesText.text = "";
         }
+
+        //Move the inventory and soup select prefabs up when entering cooking
+        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 245f), 500f)); 
+        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 245f), 500f));
     }
 
 
@@ -94,6 +106,10 @@ public class CookingManager : MonoBehaviour
 
             // Save game after cooking
             SaveManager.Singleton.SaveGameScene();
+
+            //Move the soup select prefab down when exiting cooking
+            StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -245f), 500f));
+            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -245f), 500f));
         }
     }
     
@@ -114,6 +130,16 @@ public class CookingManager : MonoBehaviour
 
     //    PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
     //}
+
+    public void SetBase(SoupBase b)
+    {
+        soupBase = b;
+    }
+
+    public SoupBase GetBase()
+    {
+        return soupBase;
+    }
 
     // Function to add an Ability Ingredient
     public void AddIngredient(Collectable ingredient)
@@ -200,12 +226,12 @@ public class CookingManager : MonoBehaviour
 
         if (CurrentCampfire.gameObject == null)
         {
-            Debug.Log("Campfire Animator not found!");
+            print("Campfire Animator not found!");
         }
 
         if (campfireAnimator == null)
         {
-            Debug.Log("Campfire Animator not found!");
+            print("Campfire Animator not found!");
         }
 
         // Currently commented out while the cooking animation is the emptying animation
@@ -218,7 +244,16 @@ public class CookingManager : MonoBehaviour
             ingredient.ingredient.Icon = ingredient.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sprite;
             cookedIngredients.Add(ingredient.ingredient);
         }
-        PlayerInventory.Singleton.CookSoup(cookedIngredients);
+
+        if(soupBase == null)
+        {
+            UnityEngine.Debug.LogWarning("SoupBase is null! Press play to continue, the code works, but someone needs to hook up soup bases to the UI");
+            PlayerInventory.Singleton.OLD_AND_BAD_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
+        }
+        else
+        {
+            PlayerInventory.Singleton.CookSoup(cookedIngredients, soupBase);
+        }
 
         // Remove From Player Inventory
         foreach (Collectable ingredient in cookingIngredients)
@@ -289,5 +324,19 @@ public class CookingManager : MonoBehaviour
         Color tempColor = image.color;
         tempColor.a = 1;
         slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
+    }
+
+    //Move inventory UI elements using MoveTowards (Lo: Hopefully temporary!)
+    //Lo: Hopefully temporary. Might move this into another UI script
+    private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target, float speed)
+    {
+        RectTransform rectTransform = obj.GetComponent<RectTransform>(); //Get the rectTransform, since it's a UI element
+        Vector2 targetPosition = rectTransform.anchoredPosition + target; //New target position
+        var step = speed * Time.deltaTime;
+
+        while(Vector2.Distance(rectTransform.anchoredPosition, targetPosition) > 0.001f) {
+            rectTransform.anchoredPosition = Vector2.MoveTowards(rectTransform.anchoredPosition, targetPosition, step);
+            yield return null;
+        }
     }
 }
