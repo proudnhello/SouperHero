@@ -16,7 +16,6 @@ public class CookingSlot : MonoBehaviour, IDropHandler, IPointerDownHandler, IPo
     internal Collectable ingredientReference;
 
     // Slightly modifying OnDrop From the base class
-    // This had the new keyword on it, but it doesn't seem to be necessary as its not overriding anything
     public void OnDrop(PointerEventData eventData)
     {
         if (CursorManager.Singleton.cookingCursor.currentCollectableReference == null)

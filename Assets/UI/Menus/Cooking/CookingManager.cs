@@ -105,7 +105,7 @@ public class CookingManager : MonoBehaviour
             PlayerEntityManager.Singleton.input.Player.Interact.started -= ExitCooking;
 
             // Save game after cooking
-            SaveManager.Singleton.SaveGameScene();
+            RunStateManager.Singleton.SaveRunState();
 
             //Move the soup select prefab down when exiting cooking
             StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -245f), 500f));

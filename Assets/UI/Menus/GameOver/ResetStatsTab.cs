@@ -6,8 +6,8 @@ public class ResetStatsTab : MonoBehaviour
 {
     public void ResetStatsFile()
     {
-        SaveManager.Singleton.ResetGameStats();
-        DeathMetricsManager.Singleton.ProcessStats();
-        DeathMetricsManager.Singleton.DisplayStats();
+        //SaveManager.Singleton.ResetGameStats();
+        //DeathMetricsDisplay.Singleton.ProcessStats();
+        //DeathMetricsDisplay.Singleton.DisplayStats();
     }
 }
