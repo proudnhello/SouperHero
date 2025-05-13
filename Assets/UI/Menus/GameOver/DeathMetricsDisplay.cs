@@ -22,6 +22,8 @@ public class DeathMetricsDisplay : MonoBehaviour
 
     public void DisplayStats(MetricsData runData, MetricsData savedData)
     {
+        if (runData == null || savedData == null) return;
+
         metricsText.text = "";
 
         if (runData.new_MaxNumEnemiesKilled)

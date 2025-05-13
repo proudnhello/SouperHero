@@ -4159,8 +4159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies: []
 --- !u!1 &2962606855308124234
 GameObject:
   m_ObjectHideFlags: 0
@@ -10016,8 +10015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies: []
 --- !u!1 &5269314396322616005
 GameObject:
   m_ObjectHideFlags: 0
@@ -11120,7 +11118,6 @@ GameObject:
   - component: {fileID: 8455956797067117637}
   - component: {fileID: 417468120194431891}
   - component: {fileID: 4370680127599745684}
-  - component: {fileID: 8527858211961728421}
   m_Layer: 10
   m_Name: Int3x3
   m_TagString: Untagged
@@ -11174,6 +11171,7 @@ MonoBehaviour:
   - {fileID: 4422928136744612017}
   - {fileID: 8204298240285321038}
   - {fileID: 3885250012552670201}
+  contentRegions: []
 --- !u!156049354 &4370680127599745684
 Grid:
   m_ObjectHideFlags: 0
@@ -11186,93 +11184,6 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
---- !u!114 &8527858211961728421
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5531008064354232718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a43326c26db3d4307aaacc13ad8e8248, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  possibleEnemies:
-  - enemy: {fileID: 726252843407693719, guid: 7c8092c94b315e14eb31a734c777e065, type: 3}
-    weight: 1
-    difficulty: 1
-    index: -1
-  - enemy: {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
-    weight: 4
-    difficulty: 1
-    index: -1
-  enemySpawns:
-  - {fileID: 3931667530964428834}
-  - {fileID: 5250257110668121869}
-  - {fileID: 5540565090093321283}
-  - {fileID: 5086960678639872810}
-  - {fileID: 2944911375350212643}
-  possibleForagables:
-  - foragable: {fileID: 6066935060175311365, guid: 54da67b160c04964a85415cb86e271d4, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: c71164ec2fc8306429e693a476d6f983, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: d0244da28c1c9a14aac0a173a6baf400, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 1df70fd3785fba94fbd29198f63d8781, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 5854243488706272828, guid: ab310ae768a4dbe4ca515c593c52a0d6, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 9929cf3a34483d24d8fa5a0aae251a6d, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 715bc5cc86f1c034dbc3e3fb96965f62, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: ede64f5c7ace0e045a5764b2228bb89f, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: aaf56775e6da9804787ea3a0305ba4ad, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 061cc793205ee6c49a1e7a1fff476077, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 9b53626270b22bb4591c6863a820bfec, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 7a564be5014f14341aa38d11f3a93c2f, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 56d9dfb3a37692347aaae50d99138a4f, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  foragableSpawns:
-  - {fileID: 3546866387611758776}
-  - {fileID: 6314258939944393820}
-  - {fileID: 943225487527267277}
-  hasSpawned: 0
-  hasExportedEnemies: 0
-  hasExportedForagables: 0
 --- !u!1 &5595136399142572393
 GameObject:
   m_ObjectHideFlags: 0
@@ -15662,8 +15573,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies: []
 --- !u!1 &6651366792648330337
 GameObject:
   m_ObjectHideFlags: 0
@@ -20185,8 +20095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies: []
 --- !u!1 &8774681910492676257
 GameObject:
   m_ObjectHideFlags: 0
@@ -20326,8 +20235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies: []
 --- !u!1001 &8412801697578462544
 PrefabInstance:
   m_ObjectHideFlags: 0

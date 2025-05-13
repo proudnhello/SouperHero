@@ -7,7 +7,7 @@ using UnityEngine.Localization.Tables;
 
 public class LocalizationManager : MonoBehaviour
 {
-    public LocalizationManager Singleton { get; private set; }
+    public static LocalizationManager Singleton { get; private set; }
 
     public static TableReference tableReference = "Languages";      // the localization table we'll use by default for non-dialogue text
     public static TableReference DialogueTableReference = "Dialogue";   // the localization table we'll use for dialogue text
@@ -21,11 +21,8 @@ public class LocalizationManager : MonoBehaviour
         else
         {
             Singleton = this;
-            DontDestroyOnLoad(this);
         }
     }
-
-    private bool active = false;
 
     public static TableReference GetTable()
     {
@@ -56,9 +53,7 @@ public class LocalizationManager : MonoBehaviour
     
     IEnumerator SetLanguage(int langID)
     {
-        active = true;
         yield return LocalizationSettings.InitializationOperation;
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[langID];
-        active = false;
     }
 }

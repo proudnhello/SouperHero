@@ -71,7 +71,7 @@ MonoBehaviour:
   - {x: 7.0000296, y: 3, z: 0}
   m_ShapePathHash: 1785844538
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67190
+  m_InstanceId: 246550
   m_LocalBounds:
     m_Center: {x: 5.499985, y: 5.5, z: 0}
     m_Extent: {x: 2.4999852, y: 2.5, z: 0}
@@ -711,7 +711,7 @@ MonoBehaviour:
   - {x: -2.999971, y: 6, z: 0}
   m_ShapePathHash: 73211045
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67524
+  m_InstanceId: 246884
   m_LocalBounds:
     m_Center: {x: -0.000014543533, y: 7, z: 0}
     m_Extent: {x: 2.9999855, y: 1, z: 0}
@@ -4033,7 +4033,7 @@ Tilemap:
   - m_RefCount: 91
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   - m_RefCount: 6
-    m_Data: {r: 0.93724555, g: 0.4348983, b: 0.5138217, a: 1}
+    m_Data: {r: 0.88656205, g: 0.5704192, b: 0.5955333, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4084,7 +4084,6 @@ GameObject:
   - component: {fileID: 1585228897826584362}
   - component: {fileID: 8957658419968961179}
   - component: {fileID: 7419667189292765804}
-  - component: {fileID: 4359733361554416511}
   m_Layer: 10
   m_Name: Stone
   m_TagString: Untagged
@@ -6440,22 +6439,6 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
---- !u!114 &4359733361554416511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 967707078490633457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 0
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!1 &1318616850138787079
 GameObject:
   m_ObjectHideFlags: 0
@@ -6527,7 +6510,7 @@ MonoBehaviour:
   - {x: -2.999971, y: -7, z: 0}
   m_ShapePathHash: 1249326914
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67220
+  m_InstanceId: 246580
   m_LocalBounds:
     m_Center: {x: -5.0000076, y: -4.5, z: 0}
     m_Extent: {x: 2.9999926, y: 2.5, z: 0}
@@ -7125,8 +7108,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies:
+  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
 --- !u!1 &2234174340853260824
 GameObject:
   m_ObjectHideFlags: 0
@@ -7246,7 +7229,7 @@ MonoBehaviour:
   - {x: 0.0312263, y: 0.9999526, z: 0}
   m_ShapePathHash: 397409571
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67542
+  m_InstanceId: 246902
   m_LocalBounds:
     m_Center: {x: 0.01562785, y: 0.96882707, z: 0}
     m_Extent: {x: 0.01559845, y: 0.031172931, z: 0}
@@ -8418,7 +8401,7 @@ MonoBehaviour:
   - {x: -0.9687392, y: -1, z: 0}
   m_ShapePathHash: 1931675774
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67380
+  m_InstanceId: 246740
   m_LocalBounds:
     m_Center: {x: -3, y: 2.5, z: 0}
     m_Extent: {x: 5, y: 3.5, z: 0}
@@ -8480,7 +8463,7 @@ MonoBehaviour:
   - {x: -8.99997, y: -3, z: 0}
   m_ShapePathHash: -49891736
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67470
+  m_InstanceId: 246830
   m_LocalBounds:
     m_Center: {x: -8.500015, y: 0, z: 0}
     m_Extent: {x: 0.49998522, y: 3, z: 0}
@@ -9572,7 +9555,7 @@ MonoBehaviour:
   - {x: 5.0312266, y: 6.999953, z: 0}
   m_ShapePathHash: -2060773943
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67370
+  m_InstanceId: 246730
   m_LocalBounds:
     m_Center: {x: 5.015628, y: 6.9688272, z: 0}
     m_Extent: {x: 0.015598536, y: 0.031172752, z: 0}
@@ -11696,8 +11679,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0879051e2cb3846f1b0a2c1195ec9892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foragable: {fileID: 0}
-  index: -1
+  possibleDestroyables:
+  - {fileID: 6066935060175311365, guid: 1df70fd3785fba94fbd29198f63d8781, type: 3}
+  possibleRandomDrops:
+  - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}
 --- !u!1 &3762794082339624096
 GameObject:
   m_ObjectHideFlags: 0
@@ -11829,7 +11814,7 @@ MonoBehaviour:
   - {x: 3.0000293, y: -8, z: 0}
   m_ShapePathHash: -93789513
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67230
+  m_InstanceId: 246590
   m_LocalBounds:
     m_Center: {x: 5.5, y: -5.5, z: 0}
     m_Extent: {x: 2.5, y: 2.5, z: 0}
@@ -11891,7 +11876,7 @@ MonoBehaviour:
   - {x: -2.999971, y: -8, z: 0}
   m_ShapePathHash: 71217438
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67232
+  m_InstanceId: 246592
   m_LocalBounds:
     m_Center: {x: -0.000014543533, y: -7.5, z: 0}
     m_Extent: {x: 2.9999855, y: 0.5, z: 0}
@@ -11972,8 +11957,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies:
+  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
 --- !u!1 &4322273685715753707
 GameObject:
   m_ObjectHideFlags: 0
@@ -12858,8 +12843,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0879051e2cb3846f1b0a2c1195ec9892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foragable: {fileID: 0}
-  index: -1
+  possibleDestroyables:
+  - {fileID: 6066935060175311365, guid: 1df70fd3785fba94fbd29198f63d8781, type: 3}
+  possibleRandomDrops:
+  - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}
 --- !u!1 &5053449437153566014
 GameObject:
   m_ObjectHideFlags: 0
@@ -12917,7 +12904,7 @@ MonoBehaviour:
   - {x: 6.0312266, y: 5.999953, z: 0}
   m_ShapePathHash: -1112431656
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67430
+  m_InstanceId: 246790
   m_LocalBounds:
     m_Center: {x: 6.015628, y: 5.9688272, z: 0}
     m_Extent: {x: 0.015598536, y: 0.03117299, z: 0}
@@ -13585,7 +13572,7 @@ MonoBehaviour:
   - {x: 7.0000296, y: -3, z: 0}
   m_ShapePathHash: -851019514
   m_Mesh: {fileID: 0}
-  m_InstanceId: 67336
+  m_InstanceId: 246696
   m_LocalBounds:
     m_Center: {x: 7.499985, y: 0, z: 0}
     m_Extent: {x: 0.49998522, y: 3, z: 0}
@@ -13601,7 +13588,6 @@ GameObject:
   - component: {fileID: 7709215253725050347}
   - component: {fileID: 3032510617050503536}
   - component: {fileID: 5502538560727424515}
-  - component: {fileID: 594626197933681395}
   m_Layer: 10
   m_Name: Int1x1_0
   m_TagString: Untagged
@@ -13649,17 +13635,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blockType: 1
   connected: 0
-  west: 1
-  east: 1
-  south: 1
   north: 1
+  south: 1
+  east: 1
+  west: 1
   northDoor: {fileID: 3632078490535121473}
-  southDoor: {fileID: 295785953172186565}
-  eastDoor: {fileID: 2601895187808059018}
-  westDoor: {fileID: 611864529193238188}
   northDoorOpen: {fileID: 2830538864535283195}
+  southDoor: {fileID: 295785953172186565}
   southDoorOpen: {fileID: 1684273956414107151}
+  eastDoor: {fileID: 2601895187808059018}
   eastDoorOpen: {fileID: 5297361551431022361}
+  westDoor: {fileID: 611864529193238188}
   westDoorOpen: {fileID: 4979792671102760672}
 --- !u!114 &3032510617050503536
 MonoBehaviour:
@@ -13677,6 +13663,7 @@ MonoBehaviour:
   _blockHeight: 1
   blocks:
   - {fileID: 7709215253725050347}
+  contentRegions: []
 --- !u!156049354 &5502538560727424515
 Grid:
   m_ObjectHideFlags: 0
@@ -13689,61 +13676,6 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
---- !u!114 &594626197933681395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5531008064354232718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a43326c26db3d4307aaacc13ad8e8248, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  possibleEnemies:
-  - enemy: {fileID: 6001375706453813211, guid: 791882f35f02c444dbe3a6e70a1f3f4d, type: 3}
-    weight: 1
-    difficulty: 5
-    index: -1
-  - enemy: {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
-    weight: 4
-    difficulty: 2
-    index: -1
-  enemySpawns:
-  - {fileID: 5939160046997797958}
-  - {fileID: 9141323387628014166}
-  - {fileID: 3879684154942028210}
-  - {fileID: 404024787902500299}
-  - {fileID: 7292875894733033011}
-  possibleForagables:
-  - foragable: {fileID: 18193000329964728, guid: c071c5cf307ac458293b677cafc4ec4c, type: 3}
-    weight: 2
-    value: 1
-    index: -1
-  - foragable: {fileID: 18193000329964728, guid: da243f86a06153941996b42873586a99, type: 3}
-    weight: 2
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 70ac959a9a1b25148889e56c7fd2a4c6, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 9b53626270b22bb4591c6863a820bfec, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  - foragable: {fileID: 6066935060175311365, guid: 9929cf3a34483d24d8fa5a0aae251a6d, type: 3}
-    weight: 1
-    value: 1
-    index: -1
-  foragableSpawns:
-  - {fileID: 4559299939418985455}
-  - {fileID: 2072545216580603596}
-  - {fileID: 5582632439830834574}
-  hasSpawned: 0
-  hasExportedEnemies: 0
-  hasExportedForagables: 0
 --- !u!1 &5671148669172458123
 GameObject:
   m_ObjectHideFlags: 0
@@ -13788,8 +13720,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies:
+  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
 --- !u!1 &6249256188405042164
 GameObject:
   m_ObjectHideFlags: 0
@@ -13834,8 +13766,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies:
+  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
 --- !u!1 &7096900580757273148
 GameObject:
   m_ObjectHideFlags: 0
@@ -13880,8 +13812,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917ea8cf971924f8da86404f84a8b1d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  index: -1
+  possibleEnemies:
+  - {fileID: 7249368151804887405, guid: d2d2601e1f2cdee4f87924b34909b83b, type: 3}
 --- !u!1 &7149408264332512086
 GameObject:
   m_ObjectHideFlags: 0
@@ -14166,5 +14098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0879051e2cb3846f1b0a2c1195ec9892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foragable: {fileID: 0}
-  index: -1
+  possibleDestroyables:
+  - {fileID: 6066935060175311365, guid: 1df70fd3785fba94fbd29198f63d8781, type: 3}
+  possibleRandomDrops:
+  - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}

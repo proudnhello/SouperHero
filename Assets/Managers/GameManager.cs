@@ -22,10 +22,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Singleton { get; private set; }
 
 
-    [SerializeField] GameObject exitPanel;
-
-    [FMODUnity.BankRef]
-    public List<string> FMOD_Banks = new List<string>();
 
     public GameObject blackFade;
     public RectTransform loadingProgress;
@@ -48,8 +44,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    internal bool IsCurrentRunFromSave;
     public void NewGame()
     {
+        Debug.Log("huh");
+        IsCurrentRunFromSave = false;
         // Delete previous save
         SaveManager.Singleton.ResetGameState();
         
@@ -84,7 +83,7 @@ public class GameManager : MonoBehaviour
 
             // Iterate all the Studio Banks and start them loading in the background
             // including the audio sample data
-            foreach (var bank in FMOD_Banks)
+            foreach (var bank in AudioManager.Singleton.FMOD_Banks)
             {
                 FMODUnity.RuntimeManager.LoadBank(bank, true);
             }
@@ -117,6 +116,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        IsCurrentRunFromSave = true;
+
         isLoading = true;
         Sequence loadSequence = DOTween.Sequence();
         loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
@@ -138,7 +139,7 @@ public class GameManager : MonoBehaviour
 
             // Iterate all the Studio Banks and start them loading in the background
             // including the audio sample data
-            foreach (var bank in FMOD_Banks)
+            foreach (var bank in AudioManager.Singleton.FMOD_Banks)
             {
                 FMODUnity.RuntimeManager.LoadBank(bank, true);
             }
@@ -163,8 +164,7 @@ public class GameManager : MonoBehaviour
 
             // Keep yielding the co-routine until scene loading and activation is done.
             yield return new WaitUntil(() => async.isDone);
-
-            StartRun();
+            isLoading = false;
         }
     }
 
@@ -180,22 +180,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
 
         if (successfulRun) SceneManager.LoadScene(3);
-        else SceneManager.LoadScene(3);
-    }
-
-    // Goes back to Main Menu
-    public void MainMenu()
-    {
-        Time.timeScale = 1;
-        SceneManager.LoadScene(0);
-    }
-
-    // Restarts the Game
-    public void RestartGame()
-    {
-        SaveManager.Singleton.ResetGameState();
-        Time.timeScale = 1;
-        SceneManager.LoadScene(1);
+        else SceneManager.LoadScene(2);
     }
 
     public void LanguageSelect(){
@@ -204,19 +189,5 @@ public class GameManager : MonoBehaviour
     public void EnterControlsScreen()
     {
         SceneManager.LoadScene(5);
-    }
-    public void ShowExitConfirmation()
-    {
-        exitPanel.SetActive(true);
-    }
-
-    public void ConfirmedExit()
-    {
-        Application.Quit();  // Quits the game in a build
-    }
-
-    public void ReturnFromExit()
-    {
-        exitPanel.SetActive(false);
     }
 }

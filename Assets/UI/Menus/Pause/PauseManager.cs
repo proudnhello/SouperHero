@@ -24,8 +24,7 @@ public class PauseManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(pauseKey) && pauseScreen != null
-            && !CookingManager.Singleton.IsCooking() //Don't pause when cooking
-            && SceneManager.GetActiveScene().buildIndex != 0) //Don't pause if in main menu
+            && !CookingManager.Singleton.IsCooking()) //Don't pause when cooking
         {
             isPaused = !isPaused;
             if (isPaused)

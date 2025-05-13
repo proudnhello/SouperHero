@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
-using System.Data.Common;
-using System.Numerics;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
+using Newtonsoft.Json;
 
 
 
@@ -15,135 +12,107 @@ public class SaveManager : MonoBehaviour
 
     public static SaveManager Singleton { get; private set; }
 
+    private string statsPath;
+    private string runStatePath;
+
+    [SerializeField] bool debugAlwaysGenerateNewLevel;
+
     public void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(this);
         else Singleton = this;
 
+        GetPaths();
+
+#if UNITY_EDITOR
+        if (debugAlwaysGenerateNewLevel) ResetGameState();
+#endif
+    }
+
+    void GetPaths()
+    {
         // Reliable Path Across Devices
+        runStatePath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "RunState.json");
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
+    }
 
-        // Debug Path Save in Assets Folder
-        //statsPath = Path.Combine(Application.dataPath + Path.AltDirectorySeparatorChar + "SaveData.json");
-
-        // Reliable Path Across Devices
-        statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
-        entitiesPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Entities.json");
-        playerPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Player.json");
-
-        // Load game scene if game scene
-        if (SceneManager.GetActiveScene().buildIndex == 1)
+    [ContextMenu("Reset All Save Data")]
+    public void ResetData()
+    {
+        GetPaths();
+        try
         {
-            LoadGameState();
+            File.Delete(runStatePath);
+            File.Delete(statsPath);
+        } catch (Exception e)
+        {
+            Debug.LogError("Error deleting save data " + e);
+        }
+        
+    }
+    [ContextMenu("Clear Run Loaded")]
+    public void ResetGameState()
+    {
+        GetPaths();
+        try
+        {
+            File.Delete(runStatePath);
+        } catch (Exception e)
+        {
+            Debug.LogError("Error clearing loaded run " + e);
         }
         
     }
 
-    private string statsPath;
-    private string entitiesPath;
-    private string playerPath;
-
-    public void SaveGameState(){
-        SavePlayerData();
-        SaveEntities();
-    }
-
-    public void LoadGameState(){
-        LoadPlayerData();
-        LoadEntities();
-    }
-
-    public void ResetGameState()
-    {
-        File.Delete(entitiesPath);
-        File.Delete(playerPath);
-    }
-
-    public void ResetData()
-    {
-
-    }
-
-    [Serializable]
-    public class PlayerDataClass
-    {
-        public UnityEngine.Vector2 playerPos;
-    }
-
-    public void SavePlayerData()
-    {
-        PlayerDataClass pdc = new PlayerDataClass();
-        pdc.playerPos = PlayerEntityManager.Singleton.transform.position;
-
-        string json = JsonUtility.ToJson(pdc, true);  // Pretty print for readability
-
-        using (StreamWriter writer = new StreamWriter(playerPath))
-        {
-            writer.Write(json);
-        }
-    }
-
-    public void LoadPlayerData()
-    {
-        if (File.Exists(playerPath))
-        {
-            string json = string.Empty;
-            
-            using(StreamReader reader = new StreamReader(playerPath))
-            {
-                json = reader.ReadToEnd();
-            }
-
-            PlayerDataClass data = JsonUtility.FromJson<PlayerDataClass>(json);
-
-            PlayerEntityManager.Singleton.transform.position = data.playerPos;
-        }
-    }
-
-    [Serializable]
-    public class EntitiesClass
-    {
-        public List<String> enemies;
-        public List<String> foragables;
-        public int seed;
-    }
-
-    public void SaveEntities()
+    public void SaveRunState(RunStateManager.RunStateData runData)
     {
         try
         {
-            EntitiesClass et = new EntitiesClass();
-            et.enemies = roomGenerator.exportEnemyStrings();
-            et.foragables = roomGenerator.exportForagableStrings();
-            et.seed = roomGenerator.newSeed;
-            string json = JsonUtility.ToJson(et, true);  // Pretty print for readability
+            Directory.CreateDirectory(Path.GetDirectoryName(runStatePath));
 
-            using (StreamWriter writer = new StreamWriter(entitiesPath))
+            string runDataJSON = JsonConvert.SerializeObject(runData, Formatting.None, new JsonSerializerSettings
             {
-                writer.Write(json);
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+
+            using (FileStream stream = new FileStream(runStatePath, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(runDataJSON);
+                }
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            return;
+            Debug.LogError("Run data save error: " + e);
         }
     }
 
-    public void LoadEntities(){
-        if (File.Exists(entitiesPath))
+
+    public RunStateManager.RunStateData LoadRunState()
+    {
+        if (File.Exists(runStatePath))
         {
-            string json = string.Empty;
-            
-            using(StreamReader reader = new StreamReader(entitiesPath))
+            try
             {
-                json = reader.ReadToEnd();
+                string runDataLoaded = "";
+                using (FileStream stream = new FileStream(runStatePath, FileMode.Open))
+                {
+                    using StreamReader reader = new StreamReader(stream);
+                    runDataLoaded = reader.ReadToEnd();
+                }
+                return JsonConvert.DeserializeObject<RunStateManager.RunStateData>(runDataLoaded);
             }
-
-            EntitiesClass data = JsonUtility.FromJson<EntitiesClass>(json);
-
-            roomGenerator.importEnemyStrings(data.enemies);
-            roomGenerator.importForagableStrings(data.foragables);
-            roomGenerator.mapSeed = data.seed;
+            catch (Exception e)
+            {
+                Debug.LogError("Error occured while loading run data: " + e);
+                return null;
+            }
+        }
+        else
+        {
+            return null;
         }
     }
 

@@ -13,7 +13,6 @@ public class PlayerCenteredZone : AbilityAbstractClass
     [SerializeField] float SIZE_MULTIPLIER = 0.5f;
     //[SerializeField] float CRIT_MULTIPLIER = 0.5f;
     [SerializeField] float SPEED_MULTIPLIER = 0.5f;
-    bool active = false;
 
     public override void UseAbility(AbilityStats stats, List<Infliction> inflictions)
     {
@@ -24,6 +23,5 @@ public class PlayerCenteredZone : AbilityAbstractClass
         proj.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
             PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
             stats, inflictions, true, this);
-        active = true;
     }
 }

@@ -22,7 +22,6 @@ public class TurretAI : EnemyBaseClass
     [SerializeField] private float hideTime = 2;
     [SerializeField] private float timeBetweenShots = 0.3f;
     [SerializeField] private int numberOfShots = 3;
-    [SerializeField] private float hideAlphaMultiplier = 0.1f;
     private float detectionDelay = 0.3f;
     public Transform firingPoint;
     public HopShroomSpore bullet;
@@ -37,8 +36,6 @@ public class TurretAI : EnemyBaseClass
     Collider2D c;
     SpriteRenderer sprite;
     Color initialColor;
-
-    private bool emerged = false;
 
     public abstract class TurretState
     {

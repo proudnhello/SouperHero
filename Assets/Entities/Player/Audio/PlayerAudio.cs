@@ -16,37 +16,32 @@ public class PlayerAudio
         // Create event pools
         swingSpoon = new List<EventInstance>
         {
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[0]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[0]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[0])
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[0]),
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[0]),
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[0])
         };
         PlayerInventory.UsedSpoon += SwingSpoon;
 
         dash = new List<EventInstance>
         {
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[2]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[2]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[2])
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[2]),
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[2]),
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[2])
         };
         PlayerMovement.dash += Dash;
 
-        breakBreakable = new List<EventInstance>
-        {
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[3]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[3]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[3])
-        };
+        breakBreakable = new List<EventInstance>(); // 3D SFX, can't create beforehand
         Destroyables.Destroyed += BreakBreakable;
 
         pickup = new List<EventInstance>
         {
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[4]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[4]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[4])
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[4]),
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[4]),
+            AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[4])
         };
         CollectableObject.Collected += Pickup;
 
-        cookSoup = AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[1]);
+        cookSoup = AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[1]);
         CookingManager.CookSoup += CookSoup;
     }
 
@@ -62,7 +57,7 @@ public class PlayerAudio
                 }
             }
 
-            EventInstance instance = AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[0]);
+            EventInstance instance = AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[0]);
             swingSpoon.Add(instance);
             return instance;
         }
@@ -83,7 +78,7 @@ public class PlayerAudio
                 }
             }
 
-            EventInstance instance = AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[2]);
+            EventInstance instance = AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[2]);
             dash.Add(instance);
             return instance;
         }
@@ -104,7 +99,7 @@ public class PlayerAudio
                 }
             }
 
-            EventInstance instance = AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[3]);
+            EventInstance instance = AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[3]);
             breakBreakable.Add(instance);
             return instance;
         }
@@ -125,7 +120,7 @@ public class PlayerAudio
                 }
             }
 
-            EventInstance instance = AudioManager.Main.CreateInstance(AudioManager.Main.PLAYER_SFX[4]);
+            EventInstance instance = AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[4]);
             pickup.Add(instance);
             return instance;
         }

@@ -197,6 +197,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 144484543}
   m_CullTransparentMesh: 1
+--- !u!1001 &187305527
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1026.3892
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 575.5689
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.009978
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1020498840744317838, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1562167665148321109, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+      propertyPath: m_Name
+      value: GlobalScripts
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b6f827130d18184468f3403adabe2eee, type: 3}
 --- !u!1 &343485383
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,9 +299,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae14ebabf89b3c944b4ad2ea31ab35fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseScreen: {fileID: 0}
-  exitPanel: {fileID: 448254384}
-  pauseKey: 27
+  blackFade: {fileID: 0}
+  loadingProgress: {fileID: 0}
+  find: {fileID: 0}
+  the: {fileID: 0}
+  exit: {fileID: 0}
 --- !u!114 &343485386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,8 +377,8 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 343485386}
-        m_TargetAssemblyTypeName: LocalizationSelector, Assembly-CSharp
+      - m_Target: {fileID: 545890916}
+        m_TargetAssemblyTypeName: LanguageNavigation, Assembly-CSharp
         m_MethodName: ChangeLanguage
         m_Mode: 3
         m_Arguments:
@@ -627,6 +686,7 @@ GameObject:
   - component: {fileID: 545890914}
   - component: {fileID: 545890913}
   - component: {fileID: 545890912}
+  - component: {fileID: 545890916}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -720,6 +780,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &545890916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545890911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d820ccd9a0cc4874f931df325c78cad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &549847590
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,8 +1084,8 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 343485386}
-        m_TargetAssemblyTypeName: LocalizationSelector, Assembly-CSharp
+      - m_Target: {fileID: 545890916}
+        m_TargetAssemblyTypeName: LanguageNavigation, Assembly-CSharp
         m_MethodName: ChangeLanguage
         m_Mode: 3
         m_Arguments:
@@ -2119,8 +2191,8 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 343485385}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+      - m_Target: {fileID: 545890916}
+        m_TargetAssemblyTypeName: LanguageNavigation, Assembly-CSharp
         m_MethodName: MainMenu
         m_Mode: 1
         m_Arguments:
@@ -3218,8 +3290,8 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 343485386}
-        m_TargetAssemblyTypeName: LocalizationSelector, Assembly-CSharp
+      - m_Target: {fileID: 545890916}
+        m_TargetAssemblyTypeName: LanguageNavigation, Assembly-CSharp
         m_MethodName: ChangeLanguage
         m_Mode: 3
         m_Arguments:
@@ -4233,3 +4305,4 @@ SceneRoots:
   - {fileID: 545890915}
   - {fileID: 1335118729}
   - {fileID: 343485384}
+  - {fileID: 187305527}

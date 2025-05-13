@@ -36,6 +36,13 @@ public class Destroyables : MonoBehaviour
                 Destroyed?.Invoke();
             }
         }
-        
+
+        if (forageableIndex >= 0) RunStateManager.Singleton.TrackBrokenDestroyable(forageableIndex);
+    }
+
+    int forageableIndex = -1;
+    public void SetIndex(int index)
+    {
+        forageableIndex = index;
     }
 }

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2029779968401792043}
   - component: {fileID: 1369515707859839629}
   - component: {fileID: 3974013682598785430}
+  - component: {fileID: 9150220430885545898}
   m_Layer: 0
   m_Name: GlobalScripts
   m_TagString: Untagged
@@ -48,12 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae14ebabf89b3c944b4ad2ea31ab35fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseScreen: {fileID: 0}
-  exitPanel: {fileID: 0}
-  FMOD_Banks:
-  - Master
-  - Master.strings
-  pauseKey: 27
   blackFade: {fileID: 0}
   loadingProgress: {fileID: 0}
   find: {fileID: 0}
@@ -83,7 +78,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18061169a9ef824aa95690e56d66436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomGenerator: {fileID: 0}
 --- !u!114 &1369515707859839629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,6 +90,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4c40a2ad37fff14c8e789ab1cb341e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FMOD_Banks:
+  - Master
+  - Master.strings
   <PLAYER_SFX>k__BackingField:
   - Guid:
       Data1: 1543276501
@@ -147,10 +144,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 331a7f74eb1ec9b4b8608ecdb913841c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  metricsSO: {fileID: 11400000, guid: 5e94c0ec3cfde3740b32996a0f2edb74, type: 2}
-  numEnemiesKilled: 0
-  numIngredientsCollected: 0
-  numSoupsCooked: 0
-  timeElapsed: 0
-  numDeaths: 0
-  numWins: 0
+--- !u!114 &9150220430885545898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562167665148321109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43326c26db3d4307aaacc13ad8e8248, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
