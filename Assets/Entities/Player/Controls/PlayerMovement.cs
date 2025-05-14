@@ -9,7 +9,6 @@ public class PlayerMovement : MonoBehaviour
 {
     Vector2 inputDir;
     Rigidbody2D rb;
-    private bool _useMouse;
     private Vector2 _previousMousePosition;
     InputAction movementInput;
     public bool charging = false;
@@ -72,14 +71,6 @@ public class PlayerMovement : MonoBehaviour
         }
         // This code is duplicated in CameraFollower.cs. We should consolidate the two into a singleton.
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        if (((Vector2)Input.mousePosition - _previousMousePosition).sqrMagnitude > 0.01f)
-        {
-            _useMouse = true;
-        } else
-        {
-            _useMouse = false;
-        }
 
         currentDirection = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y).normalized;
 

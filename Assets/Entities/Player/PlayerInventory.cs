@@ -17,6 +17,7 @@ public class PlayerInventory : MonoBehaviour
     public int maxSpoons = 4;
 
     public List<Ingredient> defaultSpoonIngredients;
+    public SoupBase defaultSoupBase;
 
     //[SerializeField]
     //internal List<Ingredient> ingredientsHeld;
@@ -34,7 +35,7 @@ public class PlayerInventory : MonoBehaviour
         if (Singleton == null) Singleton = this;
         spoons = new()
         {
-            new SoupSpoon(defaultSpoonIngredients)
+            new SoupSpoon(defaultSpoonIngredients, defaultSoupBase)
         };
         collectablesHeld = new();
     }
@@ -64,7 +65,7 @@ public class PlayerInventory : MonoBehaviour
     public void CollectIngredientCollectable(Collectable collectable)
     {
         collectablesHeld.Add(collectable);
-        MetricsManager.Singleton.RecordIngredientCollected();
+        MetricsTracker.Singleton.RecordIngredientCollected();
         BasketUI.Singleton.AddIngredient(collectable, true);
     }
 
@@ -79,16 +80,22 @@ public class PlayerInventory : MonoBehaviour
         BasketUI.Singleton.RemoveIngredient(collectable, needsDestroy);
     }
 
-    public bool CookSoup(List<Ingredient> ingredients)
+    // This is used to cook soup w/o a base. It's here while the soup UI is being worked on and the base hook is missing
+    public bool OLD_AND_BAD_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
+    {
+        return CookSoup(ingredients, defaultSoupBase);
+    }
+
+    public bool CookSoup(List<Ingredient> ingredients, SoupBase b)
     {
         if (spoons.Count == maxSpoons) return false;
 
-        spoons.Add(new SoupSpoon(ingredients));
+        spoons.Add(new SoupSpoon(ingredients, b));
         currentSpoon = spoons.Count - 1;
         AddSpoon?.Invoke(currentSpoon);
         ChangedSpoon?.Invoke(currentSpoon);
 
-        MetricsManager.Singleton.RecordSoupsCooked();
+        MetricsTracker.Singleton.RecordSoupsCooked();
 
         return true;
     }
@@ -110,7 +117,7 @@ public class PlayerInventory : MonoBehaviour
         else
         {
             //TODO: Add check for count
-            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon = currentSpoon : (int)ctx.ReadValue<float>() - 1;
+            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon : (int)ctx.ReadValue<float>() - 1;
         }
         ChangedSpoon?.Invoke(currentSpoon);
     }

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SpawnableEnemy = EntityManager.SpawnableEnemy;
 
 public class BossRoom : MonoBehaviour
 {
@@ -24,7 +23,7 @@ public class BossRoom : MonoBehaviour
     [Serializable]
     public class Wave
     {
-        public List<SpawnableEnemy> enemies;
+        public List<GameObject> enemyChoices;
         public int difficulty;
         public WaveType type;
         // Only for Gradual
@@ -83,56 +82,22 @@ public class BossRoom : MonoBehaviour
             }
             else
             {
-                MetricsManager.Singleton.RecordNumWins();
-                MetricsManager.Singleton.EndTimer();
-                MetricsManager.Singleton.SaveToMetricsToSO();
-                GameManager.instance.WinScreen();
+                GameManager.Singleton.EndRun(true);
             }
         }
-
     }
 
-    Dictionary<int, SpawnableEnemy> BuildEnemyDictionary(List<SpawnableEnemy> possibleEnemies)
-    {
-        int totalEnemyWeight = 0;
-
-        for (int i = 0; i < possibleEnemies.Count; i++)
-        {
-            totalEnemyWeight += possibleEnemies[i].weight;
-            if (possibleEnemies[i].weight <= 0)
-            {
-                Debug.LogWarning("Zero or negative weight, turned into weight of 1");
-                possibleEnemies[i].weight = 1;
-            }
-        }
-
-        int count = 0;
-        Dictionary<int, SpawnableEnemy> enemyDict = new Dictionary<int, SpawnableEnemy>();
-        for (int i = 0; i < possibleEnemies.Count; i++)
-        {
-            possibleEnemies[i].index = i;
-            for (int j = 0; j < possibleEnemies[i].weight; j++)
-            {
-                enemyDict.Add(count, possibleEnemies[i]);
-                count++;
-            }
-        }
-        return enemyDict;
-    }
-
-    void SpawnWave(Wave wave)
-    {
-        Dictionary<int, SpawnableEnemy> enemyDict = BuildEnemyDictionary(wave.enemies);
-
+    void SpawnWave(Wave wave) {
+    
         // For an instant wave, spawn all enemies at once
-        if(wave.type == WaveType.Instant)
+        if (wave.type == WaveType.Instant)
         {
-            while (wave.difficulty > 0)
+            for (int i=0; i < wave.difficulty; i++)
             {
-                SpawnEnemy(wave, enemyDict, true);
+                SpawnEnemy(wave, true);
             }
         }
-        else if(wave.type == WaveType.Gradual)
+        else if (wave.type == WaveType.Gradual)
         {
             StartCoroutine(SpawnGradually(wave));
         }
@@ -141,12 +106,9 @@ public class BossRoom : MonoBehaviour
     IEnumerator SpawnGradually(Wave wave)
     {
         // First, spawn in all the enemies, but have them inactive
-        while (wave.difficulty > 0)
+        for (int i = 0; i < wave.difficulty; i++)
         {
-            for (int i = 0; i < wave.spawnsAtATime; i++)
-            {
-                SpawnEnemy(wave, BuildEnemyDictionary(wave.enemies), false);
-            }
+            SpawnEnemy(wave, false);
         }
 
         List<(GameObject, GameObject)> enemiesNotSpawned = new List<(GameObject, GameObject)>(enemiesInWave);
@@ -167,16 +129,15 @@ public class BossRoom : MonoBehaviour
     // The boolean active determines if the enemy should be active or not
     // Decrement the wave difficulty and add the enemy to the list of enemies currently alive
     // Forget the saving stuff, b/c they'll never get to a save point in the boss room
-    void SpawnEnemy(Wave wave, Dictionary<int, SpawnableEnemy> enemyDict, bool active)
+    void SpawnEnemy(Wave wave, bool active)
     {
-        SpawnableEnemy enemy = enemyDict[UnityEngine.Random.Range(0, enemyDict.Count)];
+        GameObject enemy = wave.enemyChoices[UnityEngine.Random.Range(0, wave.enemyChoices.Count)];
         GameObject spawnPoint = spawnLocations[UnityEngine.Random.Range(0, spawnLocations.Count)];
 
-        GameObject newEnemy = Instantiate(enemy.enemy, spawnPoint.transform);
+        GameObject newEnemy = Instantiate(enemy, spawnPoint.transform);
         newEnemy.transform.position = spawnPoint.transform.position;
         newEnemy.SetActive(false);
 
-        wave.difficulty -= enemy.difficulty;
         enemiesInWave.Add((newEnemy, spawnPoint));
 
         if (active)

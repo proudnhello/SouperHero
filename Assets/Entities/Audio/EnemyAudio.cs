@@ -11,12 +11,7 @@ public class EnemyAudio
     public EnemyAudio()
     {
         // Create event pools
-        enemyDamage = new List<EventInstance>
-        {
-            AudioManager.Main.CreateInstance(AudioManager.Main.ENEMY_SFX[0]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.ENEMY_SFX[0]),
-            AudioManager.Main.CreateInstance(AudioManager.Main.ENEMY_SFX[0])
-        };
+        enemyDamage = new List<EventInstance>();
         EnemyBaseClass.EnemyDamageEvent += PlayDamage;
     }
 
@@ -32,7 +27,7 @@ public class EnemyAudio
                 }
             }
 
-            EventInstance instance = AudioManager.Main.CreateInstance(AudioManager.Main.ENEMY_SFX[0]);
+            EventInstance instance = AudioManager.Singleton.CreateInstance(AudioManager.Singleton.ENEMY_SFX[0]);
             enemyDamage.Add(instance);
             return instance;
         }

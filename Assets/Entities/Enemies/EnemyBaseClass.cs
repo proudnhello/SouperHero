@@ -26,7 +26,6 @@ public abstract class EnemyBaseClass : Entity
     protected Color _initialColor;
     protected Collider2D _collider;
     protected NavMeshAgent agent;
-    private EnemySpawnLocation spawn;
     protected EnemyAudio enemyAudio;
     public StudioEventEmitter enemyEmitter;
 
@@ -34,6 +33,7 @@ public abstract class EnemyBaseClass : Entity
     protected bool alwaysAggro = false;
 
     private bool hasDied = false;
+    int enemyIndex;
 
     // TODO: make this override InitEntity and call base.InitEntity. Who did it this way?
     protected void initEnemy()
@@ -64,9 +64,7 @@ public abstract class EnemyBaseClass : Entity
             Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
         }
         entityRenderer.EnemyDeath();
-        if(spawn != null){
-            spawn.enemy = null;
-        }
+        RunStateManager.Singleton.TrackEnemyDeath(enemyIndex);
     }
 
     public override void ApplyInfliction(List<SoupSpoon.SpoonInfliction> spoonInflictions, Transform source, bool quiet = false)
@@ -120,13 +118,14 @@ public abstract class EnemyBaseClass : Entity
         if (IsDead() && !hasDied)
         {
             hasDied = true;
-            MetricsManager.Singleton.RecordEnemyKilled();
+            MetricsTracker.Singleton.RecordEnemyKilled();
             Die();
         }
     }
 
-    public void setSpawn(EnemySpawnLocation s){
-        spawn = s;
+    public void SetIndex(int index)
+    {
+        enemyIndex = index;
     }
 
     // Helper function to sent the enemy after the player when they should be aware of them (ie boss fight)
