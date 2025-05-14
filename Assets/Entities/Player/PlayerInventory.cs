@@ -195,7 +195,7 @@ public class PlayerInventory : MonoBehaviour
         int distance = 4;
         Transform dropSpot = PlayerEntityManager.Singleton.playerAttackPoint;
         Vector3 startPoint = item.transform.position;
-        Vector3 endPoint = new Vector3(dropSpot.localPosition.x, dropSpot.localPosition.y + distance, item.transform.localPosition.z);
+        Vector3 endPoint = new Vector3(dropSpot.localPosition.x + distance, dropSpot.localPosition.y + distance, item.transform.localPosition.z);
         endPoint = transform.TransformPoint(endPoint);
         item.transform.parent = null;
 
