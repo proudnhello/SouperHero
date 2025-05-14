@@ -194,7 +194,6 @@ public class PlayerInventory : MonoBehaviour
     {
         float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z;
         int yValue = 2; //the y value dog
-        float xVal;
         if(theta > 90f && theta <= 180f)
         {
             theta = 180f - theta;
@@ -204,7 +203,7 @@ public class PlayerInventory : MonoBehaviour
         else if( theta > 180f && theta <= 270f)
         {
             theta = theta - 180f;
-            //yValue *= -1;
+            yValue *= -1;
         }
         else if(theta > 270 && theta <= 360)
         {
