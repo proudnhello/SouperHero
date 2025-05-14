@@ -193,15 +193,18 @@ public class PlayerInventory : MonoBehaviour
     IEnumerator<Null> Throw(GameObject item)
     {
         int distance = 4;
-        GameObject dropSpot = GameObject.Find("/Player/AttackPointSwivel/AttackPoint");
+        Transform dropSpot = PlayerEntityManager.Singleton.playerAttackPoint;
         Vector3 startPoint = item.transform.position;
-        Vector3 endPoint = new Vector3(dropSpot.transform.localPosition.x, dropSpot.transform.localPosition.y * distance, item.transform.position.z);
-        endPoint = endPoint.TransformPoint(localPosition);
-        item.transform.parent = dropSpot.transform;
+        Vector3 endPoint = new Vector3(dropSpot.localPosition.x, dropSpot.localPosition.y + distance, item.transform.localPosition.z);
+        endPoint = transform.TransformPoint(endPoint);
+        item.transform.parent = null;
+
+        Debug.Log("Start point: " + startPoint);
+        Debug.Log("End Point: " + endPoint);
 
         for (int i = 0; i < 100; i++)
         {
-            item.transform.localPosition = Vector3.Lerp(startPoint, endPoint, i * 0.1f) + transform.up * Math.Sin(i/100) * distance;
+            item.transform.position = Vector3.Lerp(startPoint, endPoint, i * 0.1f);
             yield return null;
         }
 
