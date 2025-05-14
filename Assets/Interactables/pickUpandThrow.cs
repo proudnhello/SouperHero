@@ -91,41 +91,5 @@ public class pickUpandThrow : Interactable
         
     }
 
-    public static void throwItem(GameObject throwMe)    
-    {
-        //Debug.Log("throw item");
-        /*
-        Transform needToThrow = throwMe.transform;
-
-        needToThrow.SetParent(dropSpot.transform);
-        needToThrow.localPosition = new Vector3(0, 2, needToThrow.position.z);
-        needToThrow.SetParent(prevParent);
-
-        PlayerInventory.Singleton.playerHolding = false;
-
-        */
-
-        if (PlayerInventory.Singleton.playerHolding)
-        {
-            PlayerInventory.Singleton.playerHolding = false;
-            StartCoroutine(ThrowItem(throwMe));
-        }
-
-    }
-
-    IEnumerator ThrowItem(GameObject item)
-    {
-        
-        Vector3 startPoint = item.transform.position;
-        Vector3 endPoint = new Vector3(dropSpot.transform.position.x, dropSpot.transform.position.y * 2, item.transform.position.z);
-        item.transform.parent = prevParent;
-
-        for (int i = 0; i < 25; i++)
-        {
-            item.transform.position = Vector3.Lerp(startPoint, endPoint, i * 0.4f);
-            yield return null;
-        }
-        
-        
-    }
+    
 }

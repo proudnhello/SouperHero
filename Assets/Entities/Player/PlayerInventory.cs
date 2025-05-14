@@ -138,7 +138,7 @@ public class PlayerInventory : MonoBehaviour
         {
             //Debug.Log("I should throw the object now");
 
-            pickUpandThrow.throwItem(objectHolding);
+            ThrowItem(objectHolding);
             return;
         }
 
@@ -177,5 +177,35 @@ public class PlayerInventory : MonoBehaviour
 
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+
+
+    private void ThrowItem(GameObject item)
+    {
+        if (playerHolding)
+        {
+            playerHolding = false;
+            StartCoroutine(Throw(item));
+        }
+    }
+
+    IEnumerator<Null> Throw(GameObject item)
+    {
+        int distance = 4;
+        GameObject dropSpot = GameObject.Find("/Player/AttackPointSwivel/AttackPoint");
+        Vector3 startPoint = item.transform.position;
+        Vector3 endPoint = new Vector3(dropSpot.transform.localPosition.x, dropSpot.transform.localPosition.y * distance, item.transform.position.z);
+        endPoint = endPoint.TransformPoint(localPosition);
+        item.transform.parent = dropSpot.transform;
+
+        for (int i = 0; i < 100; i++)
+        {
+            item.transform.localPosition = Vector3.Lerp(startPoint, endPoint, i * 0.1f) + transform.up * Math.Sin(i/100) * distance;
+            yield return null;
+        }
+
+        item.transform.parent = null;
+        
     }
 }
