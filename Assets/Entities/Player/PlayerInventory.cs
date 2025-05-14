@@ -193,31 +193,62 @@ public class PlayerInventory : MonoBehaviour
     IEnumerator<Null> Throw(GameObject item)
     {
         float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z;
-        int yValue = 2; //the y value dog
-        if(theta > 90f && theta <= 180f)
+        int throwDistance = 4;
+        Vector2 endPoint;
+
+        Vector2 playerPos = PlayerEntityManager.Singleton.GetPlayerPosition();
+        if (theta > 45f && theta <= 90)
         {
-            theta = 180f - theta;
-            yValue *= -1;
+            theta = 90 - theta;
+            endPoint = new Vector2(-throwDistance + playerPos.x, playerPos.y + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
+        }
+        else if (theta > 90 && theta <= 135)
+        {
+            theta = theta - 90;
+            endPoint = new Vector2(-throwDistance + playerPos.x, playerPos.y - throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
+        }
+        else if (theta > 135 && theta <= 180)
+        {
+            theta = 180 - theta;
+            endPoint = new Vector2(playerPos.x + -throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad), playerPos.y + -throwDistance);
+        }
+        else if (theta > 180 && theta <= 225)
+        {
+            theta = theta - 180;
+            endPoint = new Vector2(playerPos.x + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad), playerPos.y + -throwDistance);
 
         }
-        else if( theta > 180f && theta <= 270f)
+        else if (theta > 225 && theta <= 270)
         {
-            theta = theta - 180f;
-            yValue *= -1;
+            theta = 270 - theta;
+            endPoint = new Vector2(throwDistance + playerPos.x, playerPos.y + -throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
+
         }
-        else if(theta > 270 && theta <= 360)
+        else if(theta > 270 && theta <= 315)
         {
-            theta = 360f - theta;
+            theta = theta - 270;
+            endPoint = new Vector2(throwDistance + playerPos.x, playerPos.y + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
+
         }
-        
+        else if(theta > 315 && theta <= 360)
+        {
+            theta = 360 - theta;
+            endPoint = new Vector2(playerPos.x + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad), playerPos.y + throwDistance);
 
-        Vector2 startPoint = item.transform.position;
+        }
+        else
+        {
+            endPoint = new Vector2(playerPos.x + -throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad), playerPos.y + throwDistance);
 
-        float xEndValue = PlayerEntityManager.Singleton.GetPlayerPosition().x + yValue * Mathf.Tan(theta * Mathf.Deg2Rad);
-      
-        Debug.Log("xvalue" + xEndValue);
-        Vector2 endPoint = new Vector2(xEndValue, PlayerEntityManager.Singleton.GetPlayerPosition().y + yValue);
-     
+        }
+
+
+
+
+
+
+
+        Vector2 startPoint = item.transform.position;     
         item.transform.parent = null;
 
         Debug.Log("Start point: " + startPoint);
