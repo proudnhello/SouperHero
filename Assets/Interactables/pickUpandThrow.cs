@@ -53,7 +53,7 @@ public class pickUpandThrow : Interactable
         if (!(PlayerInventory.Singleton.playerHolding))
         {
 
-            Debug.Log("pick up item");
+            //Debug.Log("pick up item");
             //get previous parent reference
             prevParent = transform.parent;
             //change parent to Hands in player gameobject
