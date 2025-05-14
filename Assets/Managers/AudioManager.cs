@@ -7,7 +7,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Main { get; private set; }
+    public static AudioManager Singleton { get; private set; }
+
+
+    [FMODUnity.BankRef]
+    public List<string> FMOD_Banks = new List<string>();
 
     [field: Header("FMOD EVENTS")]
     [field: SerializeField] public List<EventReference> PLAYER_SFX { get; private set; }
@@ -18,8 +22,8 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Main != null && Main != this) { Destroy(this); return; }
-        else Main = this;
+        if (Singleton != null && Singleton != this) { Destroy(this); return; }
+        else Singleton = this;
         enemyAudio = new();
     }
 

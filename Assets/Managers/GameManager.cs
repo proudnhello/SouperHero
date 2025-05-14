@@ -19,18 +19,9 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Singleton { get; private set; }
 
-    [Header("Configuration")]
-    public static bool isPaused = false;
-    public GameObject pauseScreen;
-    [SerializeField] GameObject exitPanel;
 
-    [FMODUnity.BankRef]
-    public List<string> FMOD_Banks = new List<string>();
-
-    [Header("Keybinds")]
-    public KeyCode pauseKey = KeyCode.Escape;
 
     public GameObject blackFade;
     public RectTransform loadingProgress;
@@ -40,58 +31,25 @@ public class GameManager : MonoBehaviour
     public GameObject the;
     public GameObject exit;
 
-    void Update()
-    {
-        if (Input.GetKeyDown(pauseKey) && pauseScreen != null 
-            && !CookingManager.Singleton.IsCooking() //Don't pause when cooking
-            && SceneManager.GetActiveScene().buildIndex != 0) //Don't pause if in main menu
-        {
-            isPaused = !isPaused;
-            if (isPaused)
-            {
-                PauseGame();
-            }
-            else
-            {
-                ResumeGame();
-            }
-        }
-    }
     private void Awake()
     {
-        if (instance == null)
+        if (Singleton != null && Singleton != this)
         {
-            instance = this;
-        }
-        if (pauseScreen != null)
+            Destroy(gameObject);
+        } 
+        else
         {
-            pauseScreen.SetActive(false);
+            Singleton = this;
+            DontDestroyOnLoad(gameObject);
         }
-        isPaused = false;
     }
 
-    public void PauseGame() {
-        isPaused = true;
-        Time.timeScale = 0;
-        CursorManager.Singleton.cursorObject.SetActive(false);
-        pauseScreen.SetActive(true);
-        PlayerEntityManager.Singleton.input.Disable();
-    }
-
-    public void ResumeGame() {
-        isPaused = false;
-        Time.timeScale = 1;
-        CursorManager.Singleton.cursorObject.SetActive(true);
-        pauseScreen.SetActive(false);
-        PlayerEntityManager.Singleton.input.Enable();
-    }
-
+    internal bool IsCurrentRunFromSave;
     public void NewGame()
     {
+        IsCurrentRunFromSave = false;
         // Delete previous save
-        //File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json"));
-        File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Entities.json"));
-        File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Player.json"));
+        SaveManager.Singleton.ResetGameState();
         
         #if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
@@ -124,7 +82,7 @@ public class GameManager : MonoBehaviour
 
             // Iterate all the Studio Banks and start them loading in the background
             // including the audio sample data
-            foreach (var bank in FMOD_Banks)
+            foreach (var bank in AudioManager.Singleton.FMOD_Banks)
             {
                 FMODUnity.RuntimeManager.LoadBank(bank, true);
             }
@@ -157,6 +115,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        IsCurrentRunFromSave = true;
+
         isLoading = true;
         Sequence loadSequence = DOTween.Sequence();
         loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
@@ -178,7 +138,7 @@ public class GameManager : MonoBehaviour
 
             // Iterate all the Studio Banks and start them loading in the background
             // including the audio sample data
-            foreach (var bank in FMOD_Banks)
+            foreach (var bank in AudioManager.Singleton.FMOD_Banks)
             {
                 FMODUnity.RuntimeManager.LoadBank(bank, true);
             }
@@ -203,38 +163,23 @@ public class GameManager : MonoBehaviour
 
             // Keep yielding the co-routine until scene loading and activation is done.
             yield return new WaitUntil(() => async.isDone);
+            isLoading = false;
         }
     }
 
-    // Goes to Death Scene
-    public void DeathScreen()
+    public void StartRun()
     {
-        SceneManager.LoadScene(2);
+        MetricsTracker.Singleton.StartRun();
+    }
+
+    // Goes to Win or Death Scene
+    public void EndRun(bool successfulRun)
+    {
+        MetricsTracker.Singleton.EndRun(successfulRun);
         Cursor.visible = true;
-    }
 
-    // Goes to Win Scene
-    public void WinScreen()
-    {
-        SceneManager.LoadScene(3);
-        Cursor.visible = true;
-    }
-
-    // Goes back to Main Menu
-    public void MainMenu()
-    {
-        Time.timeScale = 1;
-        SceneManager.LoadScene(0);
-    }
-
-    // Restarts the Game
-    public void RestartGame()
-    {
-        File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Entities.json"));
-        File.Delete(Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Player.json"));
-
-        Time.timeScale = 1;
-        SceneManager.LoadScene(1);
+        if (successfulRun) SceneManager.LoadScene(3);
+        else SceneManager.LoadScene(2);
     }
 
     public void LanguageSelect(){
@@ -243,33 +188,5 @@ public class GameManager : MonoBehaviour
     public void EnterControlsScreen()
     {
         SceneManager.LoadScene(5);
-    }
-    public void ShowExitConfirmation()
-    {
-        exitPanel.SetActive(true);
-    }
-
-    public void ConfirmedExit()
-    {
-        /*
-        if (Application.isEditor)
-        {
-            // Code for Unity Editor
-            Debug.Log("Exiting Game in Editor");
-            EditorApplication.isPlaying = false;  // Stops Play Mode in the editor
-        }
-        else
-        {
-            // Code for a built application
-            Debug.Log("Exiting Game in Build");
-            Application.Quit();  // Quits the game in a build
-        }
-        */
-        Application.Quit();  // Quits the game in a build
-    }
-
-    public void ReturnFromExit()
-    {
-        exitPanel.SetActive(false);
     }
 }

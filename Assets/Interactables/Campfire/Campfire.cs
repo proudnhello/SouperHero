@@ -24,8 +24,8 @@ public class Campfire : Interactable
         if (CanInteract() && !isPrepping)
         {       
             Prep();
-        } 
-        SaveManager.Singleton.SaveGameScene();
+        }
+        RunStateManager.Singleton.SaveRunState();
     }
 
     private void Prep()

@@ -8,21 +8,25 @@ public class Block : MonoBehaviour
     private RoomType _blockType;
     public bool connected = false;
 
-    public bool west;
-    public bool east;
-    public bool south;
     public bool north;
+    public bool south;
+    public bool east;
+    public bool west;
 
     // ONLY INTERMEDIATES SHOULD HAVE DOORS. EVERYTHING ELSE (CONNECTORS, START/END) SHOULD BE DOOR-LESS
     public GameObject northDoor;
-    public GameObject southDoor;
-    public GameObject eastDoor;
-    public GameObject westDoor;
-
     public GameObject northDoorOpen;
+
+    public GameObject southDoor;
     public GameObject southDoorOpen;
+
+    public GameObject eastDoor;
     public GameObject eastDoorOpen;
+
+    public GameObject westDoor;
     public GameObject westDoorOpen;
+
+
 
     public RoomType BlockType()
     {

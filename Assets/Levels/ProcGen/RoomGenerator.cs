@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NavMeshPlus.Components;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 // Coordinate struct to make row and column passing easier
 public struct Coordinate
@@ -129,7 +131,7 @@ public class RoomGenerator : MonoBehaviour
     [Header("START BLOCK")]
     public GameObject _startBlock;
     [Header("INTERMEDIATE BLOCKS")]
-    public List<Block> _intermediateBlocks;
+    public List<MapRoom> _intermediateRoomOptions;
     [Header("END BLOCK")]
     public GameObject _endBlockLeft;
     public GameObject _endBlockRight;
@@ -156,20 +158,18 @@ public class RoomGenerator : MonoBehaviour
     [Header("+ CONNECTORS")]
     public GameObject connector4;
     [Header("NavMesh")]
-    public NavMeshSurface NavMesh;
+    public NavMeshSurface _NavMeshSurface;
     [Header("Generation Parameters")]
     public int mapSeed = -1;
-    public int newSeed = -1;
     public int numIntermediates = 10;
     public float difficultyMultiplier = 3f;
 
     public GameObject spawnObject;
 
-    private List<String> enemiesList;
-    private List<String> foragablesList;
-
     void Start()
     {
+        RunStateManager.Singleton.InitializeGameState(mapSeed);
+
         // Need to create a new map full of nulls, placeholders for the Blocks and to determine if there is/isnt a block at a position
         _map = new List<List<Block>>();
         _intermediateRooms = new List<MapRoom>();
@@ -185,11 +185,11 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
-        enemiesList ??= new List<String>();
-        foragablesList ??= new List<String>();
         // After map is created, generate the rooms
-        bool worked = GenerateRoom();
-        if (worked) NavMesh.BuildNavMeshAsync();
+        StartCoroutine(GenerateRoom());
+
+        RunStateManager.Singleton.SaveRunState();
+        GameManager.Singleton.StartRun();        
     }
 
     // Obtains the offset needed to position the room along grid lines given a row and column
@@ -248,8 +248,8 @@ public class RoomGenerator : MonoBehaviour
             int counter = 0;
             while (!placed && counter < breakLimit)
             {
-                int blockType = UnityEngine.Random.Range(0, _intermediateBlocks.Count);
-                b = Instantiate(_intermediateBlocks[blockType], spawnObject.transform).GetComponent<MapRoom>();
+                int blockType = UnityEngine.Random.Range(0, _intermediateRoomOptions.Count);
+                b = Instantiate(_intermediateRoomOptions[blockType], spawnObject.transform).GetComponent<MapRoom>();
 
                 Coordinate newCord = new(UnityEngine.Random.Range(MapMinWidth, _mapBaseWidth+MapMinWidth+1),
                 UnityEngine.Random.Range(MapMinHeight, _mapBaseHeight+MapMinHeight+1));
@@ -899,24 +899,14 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Main generation function
-    bool GenerateRoom() {
-        int seed = UnityEngine.Random.Range(0, int.MaxValue);
-        if(mapSeed < 0) { // random seed if the seed value is -1
-            UnityEngine.Random.InitState(seed);
-            newSeed = seed;
-        } else // else we are being given a seed value for debug testing
-        {
-            UnityEngine.Random.InitState(mapSeed);
-            newSeed = mapSeed;
-        }
-        Debug.Log("SEED: " + newSeed);
-
+    IEnumerator GenerateRoom() {
         // Get mid width and height to place the start block
         int midWidth = (MapWidth - 1) / 2;
         int midHeight = (MapHeight - 1) / 2;
         Coordinate startCoordinate = new(midWidth, midHeight);
 
         MapRoom startRoom = Instantiate(_startBlock, spawnObject.transform).GetComponent<MapRoom>();
+        RunStateManager.Singleton.InitialPlacePlayer(startRoom.gameObject.GetComponentInChildren<PlayerSpawnLocation>());
         CanPlaceIntermediate(new(startCoordinate.row - 1, startCoordinate.col), startRoom);
         _intermediateRooms.Add(startRoom);
 
@@ -935,7 +925,7 @@ public class RoomGenerator : MonoBehaviour
             if (!PathFromString(startCoordinate, path))
             {
                 Debug.LogError("failed to make path from start");
-                return false;
+                yield break;
             }
         }
 
@@ -956,7 +946,7 @@ public class RoomGenerator : MonoBehaviour
         if(startIsland.Count == 0)
         {
             Debug.LogError("Breakout hit for start island");
-            return false;
+            yield break;
         }
 
         // Now get all of the groups that are not connected to the start "island"
@@ -972,7 +962,7 @@ public class RoomGenerator : MonoBehaviour
                     if(newGroup == null)
                     {
                         Debug.LogError("Breakout hit for disconnected island");
-                        return false;
+                        yield break;
                     }
                     disconnectedGroups.Add(newGroup);
                 }
@@ -1036,7 +1026,7 @@ public class RoomGenerator : MonoBehaviour
                     Debug.Log(currentIntermediate);
                 }
                 Debug.LogError("Could not find a path from one island to another");
-                return false;
+                yield break;
             }
             foreach (Coordinate coord in group)
             {
@@ -1057,119 +1047,28 @@ public class RoomGenerator : MonoBehaviour
         // Place the end block
         PlaceEnd(startIsland, new(midWidth, midHeight));
 
+        yield return null;
+        _NavMeshSurface.BuildNavMeshAsync();
+        yield return null;
+
+        // PLEASE CHANGE !!!!!!!!! this to a list of intermediate rooms instead of iterating through everything
         for (int i = 0; i < MapWidth; i++)
         {
             for (int j = 0; j < MapHeight; j++)
             {
                 if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
                 {
-                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    m.difficulty = (int)Mathf.Sqrt(new Coordinate(i, j).SquaredDistanceTo(startCoordinate) * difficultyMultiplier);
+                    MapRoom m = _map[i][j].gameObject.GetComponentInParent<MapRoom>();
+                    int difficulty = (int)Mathf.Sqrt(new Coordinate(i, j).SquaredDistanceTo(startCoordinate) * difficultyMultiplier);
+                    if (m != null) m.InitializeContents(difficulty);
                 }
             }
-        }
-
-        if(foragablesList.Count == 0 || enemiesList.Count == 0){
-            generateNewContent();
-        }
-        else{
-            loadContent();
         }
 
         // Debug purposes, color the grid with debug lines
 #if DEBUG
         ColorGrid();
 #endif
-        return true;
-    }
-
-    public void generateNewContent(){
-        for (int i = 0; i < MapWidth; i++)
-        {
-            for (int j = 0; j < MapHeight; j++)
-            {
-                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
-                {
-                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    m.SpawnEntities();
-                }
-            }
-        }
-    }
-
-    public void loadContent(){
-        int count = 0;
-        for (int i = 0; i < MapWidth; i++)
-        {
-            for (int j = 0; j < MapHeight; j++)
-            {
-                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
-                {
-                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    if(count >= enemiesList.Count) return;
-                    if(m.LoadEntities(enemiesList[count], foragablesList[count])) count++;
-                }
-            }
-        }
-    }
-
-    public List<String> exportEnemyStrings(){
-        List<String> list = new List<String>();
-        for (int i = 0; i < MapWidth; i++)
-        {
-            for (int j = 0; j < MapHeight; j++)
-            {
-                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
-                {
-                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    String res = m.ExportEnemies();
-                    if(res != ":(") list.Add(res);
-                }
-            }
-        }
-        flushExportBooleans();
-        return list;
-    }
-
-    public void importEnemyStrings(List<String> list){
-        enemiesList = list;
-    }
-
-    public List<String> exportForagableStrings(){
-        List<String> list = new List<String>();
-        for (int i = 0; i < MapWidth; i++)
-        {
-            for (int j = 0; j < MapHeight; j++)
-            {
-                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
-                {
-                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    String res = m.ExportForagables();
-                    if(res != ":(") list.Add(res);
-                }
-            }
-        }
-        flushExportBooleans();
-        return list;
-    }
-
-    public void importForagableStrings(List<String> list){
-        foragablesList = list;
-    }
-
-    public void flushExportBooleans(){
-        for (int i = 0; i < MapWidth; i++)
-        {
-            for (int j = 0; j < MapHeight; j++)
-            {
-                if (_map[i][j] != null && _map[i][j].CompareType(RoomType.INTERMEDIATE))
-                {
-                    EntityManager m = _map[i][j].gameObject.GetComponent<EntityManager>();
-                    m.hasExportedEnemies = false;
-                    m.hasExportedForagables = false;
-                }
-            }
-        }
     }
 
 #if DEBUG
