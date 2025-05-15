@@ -16,6 +16,7 @@ public class CursorManager : MonoBehaviour
 
     public void ShowCursor()
     {
+        if(cursorObject == null) return;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None; // Unlock if it was locked
         cursorObject.SetActive(false);
@@ -33,6 +34,7 @@ public class CursorManager : MonoBehaviour
 
     public void HideCursor()
     {
+        if(cursorObject == null) return;
         Cursor.visible = false;
         cursorObject.SetActive(true);
     }
