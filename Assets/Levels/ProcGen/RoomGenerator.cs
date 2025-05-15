@@ -769,7 +769,7 @@ public class RoomGenerator : MonoBehaviour
         // right next to each other, so this function shouldn't have been called in the first place.
         if(path.Length == 0)
         {
-            Debug.LogError("CANNOT FIND PATH FROM SOURCE TO DESTINATION!!");
+            Debug.LogWarning("CANNOT FIND PATH FROM SOURCE TO DESTINATION!!");
             return "";
         }
 
