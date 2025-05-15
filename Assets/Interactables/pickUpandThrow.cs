@@ -17,8 +17,9 @@ public class pickUpandThrow : Interactable
     public static Transform prevParent;
 
 
-    void Awake()
+    new void Awake()
     {
+        
         //Player hands above the head
         playerHands = GameObject.Find("/Player/Hands");
 
@@ -67,6 +68,8 @@ public class pickUpandThrow : Interactable
             //tells playerInventory the player is holding something
             PlayerInventory.Singleton.objectHolding = this.gameObject;
             PlayerInventory.Singleton.playerHolding = true;
+
+            transform.GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 
@@ -84,6 +87,7 @@ public class pickUpandThrow : Interactable
             needToDrop.SetParent(prevParent);
 
             PlayerInventory.Singleton.playerHolding = false;
+            objectToDrop.GetComponent<BoxCollider2D>().enabled = true;
 
             //Debug.Log("Success in dropping");
         }
@@ -91,21 +95,31 @@ public class pickUpandThrow : Interactable
 
     }
 
-/*
-    void OnCollisionEnter2D(Collision2D col)
+    void OnDestroy()
     {
-        if (col.gameObject.tag == "Environment")
+        if (this.gameObject == PlayerInventory.Singleton.objectHolding)
         {
-            this.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            PlayerInventory.Singleton.objectHolding = null;
+            PlayerInventory.Singleton.playerHolding = false;
         }
-
-        if (col.gameObject.GetComponent<Entity>())
-        {
-            Debug.Log("I hit an enemy:");
-        }
+        
     }
-    */
+
+    /*
+                void OnCollisionEnter2D(Collision2D col)
+                {
+                    if (col.gameObject.tag == "Environment")
+                    {
+                        this.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+                    }
+
+                    if (col.gameObject.GetComponent<Entity>())
+                    {
+                        Debug.Log("I hit an enemy:");
+                    }
+                }
+                */
 
 
-    
+
 }
