@@ -31,12 +31,6 @@ public class CookingManager : MonoBehaviour
 
     public static event Action CookSoup;
 
-    [Header("SoupInventory")]
-    [SerializeField] private GameObject SoupSelect;
-    [SerializeField] private GameObject SoupInventory;
-    [SerializeField] private Sprite cookingBubbleSprite;
-    [SerializeField] private Material spriteLit;
-
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -71,9 +65,8 @@ public class CookingManager : MonoBehaviour
         }
 
         //Move the inventory and soup select prefabs up when entering cooking
-        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 245f), 500f)); 
-        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 245f), 500f));
-        DisplayInventorySlots();
+        SoupUIManager.Singleton.MoveInventory(new Vector2(0, 245f), 500f);
+        SoupUIManager.Singleton.DisplayInventorySlots();
     }
 
 
@@ -112,9 +105,8 @@ public class CookingManager : MonoBehaviour
             RunStateManager.Singleton.SaveRunState();
 
             //Move the soup select prefab down when exiting cooking
-            StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -245f), 500f));
-            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -245f), 500f));
-            DisplayInventorySlots();
+            SoupUIManager.Singleton.MoveInventory(new Vector2(0, -245f), 500f);
+            SoupUIManager.Singleton.DisplayInventorySlots();
         }
     }
     
@@ -329,65 +321,5 @@ public class CookingManager : MonoBehaviour
         Color tempColor = image.color;
         tempColor.a = 1;
         slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
-    }
-
-    //Move inventory UI elements using MoveTowards
-    //Lo: Hopefully temporary. Might move this into another UI script
-    private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target, float speed)
-    {
-        RectTransform rectTransform = obj.GetComponent<RectTransform>(); //Get the rectTransform, since it's a UI element
-        Vector2 targetPosition = rectTransform.anchoredPosition + target; //New target position
-        var step = speed * Time.deltaTime;
-
-        while(Vector2.Distance(rectTransform.anchoredPosition, targetPosition) > 0.001f) {
-            rectTransform.anchoredPosition = Vector2.MoveTowards(rectTransform.anchoredPosition, targetPosition, step);
-            yield return null;
-        }
-    }
-
-    //Lo: Hopefully temporary. Might move this into another UI script
-    private void DisplayInventorySlots()
-    {
-        if (!isCooking) //If not cooking, hide selected soup inventory slots
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                SoupInventory.transform.GetChild(i).gameObject.SetActive(false);
-                /*
-                var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
-                soupImg.sprite = null;
-                soupImg.material = spriteLit;
-                SetToAlpha(soupImg, 0);
-                */
-            }
-        }
-        else //If cooking, display the selected soup inventory slots
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                SoupInventory.transform.GetChild(i).gameObject.SetActive(true);
-                var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
-                //If the soup is not active, set the slot to be visible
-                if (!SoupSelect.transform.GetChild(i).gameObject.activeInHierarchy)
-                {
-                    soupImg.sprite = cookingBubbleSprite;
-                    soupImg.material = null;
-                    SetToAlpha(soupImg, 1);
-                } else
-                {
-                    soupImg.sprite = null;
-                    soupImg.material = spriteLit;
-                    SetToAlpha(soupImg, 0);
-                }
-            }
-        }
-    }
-
-    //Helper function to set alpha
-    private void SetToAlpha(Image image, int alphaAmount)
-    {
-        Color tempColor = image.color;
-        tempColor.a = alphaAmount;
-        image.color = tempColor;
     }
 }
