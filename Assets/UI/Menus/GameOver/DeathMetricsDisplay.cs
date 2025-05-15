@@ -91,6 +91,8 @@ public class DeathMetricsDisplay : MonoBehaviour
         // check if they have won before
         if (metricsData.totalWins > 0)
         {
+            Debug.Log($"THE TOTAL WINS: {metricsData.totalWins}");
+
             // Format time from seconds to minutes (and hours if needed)
             TimeSpan bestTimeFormatter = TimeSpan.FromSeconds(metricsData.best_WinTime);
             string bestRunTime;
@@ -131,5 +133,10 @@ public class DeathMetricsDisplay : MonoBehaviour
 
         metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{metricsData.totalDeaths}</color>" + "\n";
         metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{metricsData.totalWins}</color>" + "\n";
+    }
+
+    public void DisplayStatsNoParams()
+    {
+        DisplayStats(MetricsTracker.Singleton.metricsData);
     }
 }

@@ -52,4 +52,9 @@ public class MetricsTracker : MonoBehaviour
     {
         metricsData.curr_NumSoupsCooked++;
     }
+
+    public void NewPlayer()
+    {
+
+    }
 }

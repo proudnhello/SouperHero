@@ -62,6 +62,9 @@ public class MetricsData
         else totalDeaths++;
 
         wasRunSuccessful = successfulRun;
+
+        // update analytics
+        MetricAnalyticsTracker.Singleton.RecordCurrentStatsHistory();
     }
 
 

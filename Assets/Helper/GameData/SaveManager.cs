@@ -14,6 +14,7 @@ public class SaveManager : MonoBehaviour
 
     private string statsPath;
     private string runStatePath;
+    private string analyticsPath;
 
     [SerializeField] bool debugAlwaysGenerateNewLevel;
 
@@ -34,6 +35,8 @@ public class SaveManager : MonoBehaviour
         // Reliable Path Across Devices
         runStatePath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "RunState.json");
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
+        analyticsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Analytics.json");
+        Debug.Log(analyticsPath);
     }
 
     [ContextMenu("Reset All Save Data")]
@@ -144,5 +147,40 @@ public class SaveManager : MonoBehaviour
             Debug.LogWarning("No save file found!");
             return new();
         }
+    }
+
+    public void SaveMetricsAnalytics(MetricAnalyticsTracker.MetricsAnalytics data)
+    {
+        string json = JsonUtility.ToJson(data, true);  // Pretty print for readability
+
+        using (StreamWriter writer = new StreamWriter(analyticsPath))
+        {
+            writer.Write(json);
+        }
+    }
+
+    public MetricAnalyticsTracker.MetricsAnalytics LoadMetricsAnalytics()
+    {
+        if (File.Exists(analyticsPath))
+        {
+            string json = string.Empty;
+
+            using (StreamReader reader = new StreamReader(analyticsPath))
+            {
+                json = reader.ReadToEnd();
+            }
+
+            return JsonUtility.FromJson<MetricAnalyticsTracker.MetricsAnalytics>(json);
+        }
+        else
+        {
+            Debug.LogWarning("No save file found!");
+            return new();
+        }
+    }
+
+    public void DeleteAnalyticsFile()
+    {
+        File.Delete(analyticsPath);
     }
 }
