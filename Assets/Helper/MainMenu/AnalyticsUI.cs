@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Analytics;
-using Unity.Services.Core;
 using UnityEngine;
 
-public class AnalyticsManager : MonoBehaviour
+public class AnalyticsUI : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
-        UnityServices.InitializeAsync();
+        
     }
 
     // Update is called once per frame
@@ -19,17 +18,17 @@ public class AnalyticsManager : MonoBehaviour
     }
 
     public GameObject analyticsPanel;
-    public void OptIn()
+    public void YesToAnalytics()
     {
         analyticsPanel.SetActive(false);
-        AnalyticsService.Instance.StartDataCollection();
+        AnalyticsManager.Singleton.OptIn();
         StartTheMenu();
     }
 
-    public void OptOut()
+    public void NoToAnalytics()
     {
         analyticsPanel.SetActive(false);
-        AnalyticsService.Instance.StopDataCollection();
+        AnalyticsManager.Singleton.OptOut();
         StartTheMenu();
     }
 
