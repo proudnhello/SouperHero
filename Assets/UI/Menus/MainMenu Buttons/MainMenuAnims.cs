@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using static UnityEngine.InputManagerEntry;
 
 public class MainMenuAnims : MonoBehaviour
 {
@@ -21,6 +23,17 @@ public class MainMenuAnims : MonoBehaviour
     public GameObject primaryButtonSet;
 
     public Animator playerAnimator;
+
+    [SerializeField] GameObject exitPanel;
+
+    [Header("Start Sequence")]
+
+    public RectTransform loadingProgress;
+    private bool isLoading = false;
+
+    public GameObject find;
+    public GameObject the;
+    public GameObject exit;
 
     private Sequence s;
     private Sequence moveInSecondarySequence;
@@ -124,8 +137,69 @@ public class MainMenuAnims : MonoBehaviour
         }
     }
 
+    public void NewGame()
+    {
+        if (isLoading)
+        {
+            return;
+        }
+
+        isLoading = true;
+        Sequence loadSequence = DOTween.Sequence();
+        loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
+        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
+        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
+        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
+        loadSequence.AppendInterval(2f);
+        loadSequence.OnComplete(() =>
+        {
+            GameManager.Singleton.NewGame();
+            isLoading = false;
+        });
+    }
+
+    public void ContinueFromLoad()
+    {
+        if (isLoading)
+        {
+            return;
+        }
+
+        isLoading = true;
+        Sequence loadSequence = DOTween.Sequence();
+        loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
+        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
+        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
+        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
+        loadSequence.AppendInterval(2f);
+        loadSequence.OnComplete(() =>
+        {
+            GameManager.Singleton.LoadSave();
+            isLoading = false;
+        });
+    }
+
     public void BackButton()
     {
         StartCoroutine("backCoroutine");
+    }
+    public void EnterOptionsScreen()
+    {
+        SceneManager.LoadScene(4);
+    }
+
+    public void ShowExitConfirmation()
+    {
+        exitPanel.SetActive(true);
+    }
+
+    public void ConfirmedExit()
+    {
+        Application.Quit();  // Quits the game in a build
+    }
+
+    public void ReturnFromExit()
+    {
+        exitPanel.SetActive(false);
     }
 }
