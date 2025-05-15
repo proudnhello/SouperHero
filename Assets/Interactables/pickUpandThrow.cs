@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class pickUpandThrow : Interactable
 {
     // Start is called before the first frame update
-    
+
     //public SpriteRenderer thesprite;
     //int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
     public GameObject playerHands;
@@ -32,7 +32,7 @@ public class pickUpandThrow : Interactable
         //thesprite = GetComponent<SpriteRenderer>();
         //Debug.Log(thesprite.sprite);
         //thesprite.material.SetFloat(_OutlineThickness, 1);
-        
+
     }
 
     // Update is called once per frame
@@ -44,7 +44,7 @@ public class pickUpandThrow : Interactable
     public override void Interact()
     {
         pickUpItem();
-       
+
 
     }
 
@@ -88,8 +88,24 @@ public class pickUpandThrow : Interactable
             //Debug.Log("Success in dropping");
         }
 
-        
+
     }
+
+/*
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Environment")
+        {
+            this.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+        }
+
+        if (col.gameObject.GetComponent<Entity>())
+        {
+            Debug.Log("I hit an enemy:");
+        }
+    }
+    */
+
 
     
 }

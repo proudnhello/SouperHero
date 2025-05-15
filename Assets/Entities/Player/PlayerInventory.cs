@@ -192,70 +192,48 @@ public class PlayerInventory : MonoBehaviour
 
     IEnumerator<Null> Throw(GameObject item)
     {
-        float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z;
+        //
+        
+        float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z + 90f;
         int throwDistance = 4;
         Vector2 endPoint;
 
         Vector2 playerPos = PlayerEntityManager.Singleton.GetPlayerPosition();
-        if (theta > 45f && theta <= 90)
-        {
-            theta = 90 - theta;
-            endPoint = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad) * -throwDistance + playerPos.x, playerPos.y + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
-        }
-        else if (theta > 90 && theta <= 135)
-        {
-            theta = theta - 90;
-            endPoint = new Vector2(-throwDistance + playerPos.x, playerPos.y - throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
-        }
-        else if (theta > 135 && theta <= 180)
-        {
-            theta = 180 - theta;
-            endPoint = new Vector2(playerPos.x + -throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad), playerPos.y + -throwDistance);
-        }
-        else if (theta > 180 && theta <= 225)
-        {
-            theta = theta - 180;
-            endPoint = new Vector2(playerPos.x + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad), playerPos.y + -throwDistance);
 
-        }
-        else if (theta > 225 && theta <= 270)
-        {
-            theta = 270 - theta;
-            endPoint = new Vector2(throwDistance + playerPos.x, playerPos.y + -throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
-
-        }
-        else if(theta > 270 && theta <= 315)
-        {
-            theta = theta - 270;
-            endPoint = new Vector2(throwDistance + playerPos.x, playerPos.y + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
-
-        }
-        else if(theta > 315 && theta <= 360)
-        {
-            theta = 360 - theta;
-            endPoint = new Vector2(playerPos.x + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad), playerPos.y + throwDistance);
-
-        }
-        else
-        {
-            endPoint = new Vector2(playerPos.x + -throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad), playerPos.y + throwDistance);
-
-        }
-
-
-        Vector2 startPoint = item.transform.position;     
+        endPoint = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad) * throwDistance + playerPos.x, Mathf.Sin(theta * Mathf.Deg2Rad) * throwDistance + playerPos.y);
+        
+        Vector2 startPoint = item.transform.position; 
         item.transform.parent = null;
 
-        Debug.Log("Start point: " + startPoint);
-        Debug.Log("End Point: " + endPoint);
+        Vector2 direction = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad));
+        float distance = Vector2.Distance(startPoint, endPoint);
+        LayerMask environmentLayer = LayerMask.GetMask("Environment");
 
-        for (int i = 0; i < 100; i++)
+        // Debug.Log("Start point: " + startPoint);
+        // Debug.Log("End Point: " + endPoint);
+
+        if (Physics2D.Raycast(item.transform.position, direction, distance, environmentLayer))
         {
-            item.transform.position = Vector3.Lerp(startPoint, endPoint, i * 0.1f);
+            RaycastHit2D hitInfo = Physics2D.Raycast(item.transform.position, direction, distance, environmentLayer);
+            //Debug.Log("I am this far from wall " + hitInfo.centroid);
+            endPoint = hitInfo.centroid;
+        }
+
+        float speed = 0.04f;
+
+        Debug.Log("distance between" + distance);
+        
+        for (int i = 0; i < 25; i++)
+        {
+            item.transform.position = Vector3.Lerp(startPoint, endPoint, i * 0.04f);
+
             yield return null;
         }
 
-        
+        if (item.GetComponent<Destroyables>())
+        {
+            item.GetComponent<Destroyables>().RemoveDestroyable();
+        }
     }
 
     
