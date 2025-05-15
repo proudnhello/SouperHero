@@ -243,11 +243,6 @@ public class PlayerInventory : MonoBehaviour
         }
 
 
-
-
-
-
-
         Vector2 startPoint = item.transform.position;     
         item.transform.parent = null;
 
@@ -260,7 +255,6 @@ public class PlayerInventory : MonoBehaviour
             yield return null;
         }
 
-        //item.transform.parent = null;
         
     }
 
