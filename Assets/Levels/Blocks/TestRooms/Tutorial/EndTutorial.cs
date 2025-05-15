@@ -5,11 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class EndTutorial : MonoBehaviour
 {
+    [SerializeField] private GameObject helperScripts;
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            SceneManager.LoadScene(1);
+            // enable room generation
+            helperScripts.GetComponent<RoomGenerator>().enabled = true; // Disable room generation for the tutorial
+
+            GameManager.Singleton.NewGame();
         }
     }
 }
