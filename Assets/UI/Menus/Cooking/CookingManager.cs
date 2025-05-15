@@ -9,7 +9,6 @@ using static SoupSpoon;
 using UnityEngine.Rendering.Universal;
 using FMOD;
 using DG.Tweening;
-using static UnityEngine.InputManagerEntry;
 
 
 // Gets Items In the Cooking Slots and Call FillPot

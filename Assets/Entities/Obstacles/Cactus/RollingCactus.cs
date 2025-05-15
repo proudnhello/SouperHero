@@ -56,7 +56,7 @@ public class RollingCactus : Entity
         }
     }
 
-    bool hasContacted, canBreak;
+    bool hasContacted = false, canBreak = false;
     private IEnumerator Roll(Transform source)
     {
         _Collider.isTrigger = true;
@@ -65,11 +65,12 @@ public class RollingCactus : Entity
 
         // Calculate the angle between the tree parent and the damage source
         Vector3 direction = (transform.position - source.position).normalized;
+        int sign = direction.x < 0 ? 1 : -1;
 
         while (!hasContacted)
         {
             transform.localPosition += direction * RollMoveSpeed; 
-            transform.RotateAround(transform.position, Vector3.forward, RollRotateSpeed * Mathf.Rad2Deg);
+            transform.RotateAround(transform.position, Vector3.forward, sign * RollRotateSpeed * Mathf.Rad2Deg);
             yield return null;
         }
 
@@ -84,7 +85,7 @@ public class RollingCactus : Entity
         if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject) && collider.tag != "PitHazard")
         {
             hasContacted = true;
-            gameObject.SetActive(false);
+            StartCoroutine(Burst());
         }
         else if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject) || (collider.gameObject.CompareTag("Player")))
         {
@@ -119,6 +120,6 @@ public class RollingCactus : Entity
             _SpriteRenderer.sprite = BurstAnimFrames[frame];
             yield return new WaitForSeconds(1/BurstFPS);
         }
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 }
