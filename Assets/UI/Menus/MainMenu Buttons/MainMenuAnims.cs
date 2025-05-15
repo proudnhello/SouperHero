@@ -202,4 +202,9 @@ public class MainMenuAnims : MonoBehaviour
     {
         exitPanel.SetActive(false);
     }
+
+    public void StartTutorial()
+    {
+        SceneManager.LoadScene(5);
+    }
 }

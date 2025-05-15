@@ -13,7 +13,8 @@ public class EndTutorial : MonoBehaviour
             // enable room generation
             helperScripts.GetComponent<RoomGenerator>().enabled = true; // Disable room generation for the tutorial
 
-            GameManager.Singleton.NewGame();
+            // GameManager.Singleton.NewGame();
+            SceneManager.LoadScene(0);
         }
     }
 }
