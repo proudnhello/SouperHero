@@ -182,11 +182,8 @@ public class GameManager : MonoBehaviour
         else SceneManager.LoadScene(2);
     }
 
-    public void LanguageSelect(){
-        SceneManager.LoadScene(4);
-    }
-    public void EnterControlsScreen()
+    public void EnterOptionsScreen()
     {
-        SceneManager.LoadScene(5);
+        SceneManager.LoadScene(4);
     }
 }

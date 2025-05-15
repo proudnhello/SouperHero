@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SettingsTab : MonoBehaviour
+public class SettingsTabs : MonoBehaviour
 {
     public List<GameObject> UI_List = new List<GameObject>();
 
