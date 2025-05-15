@@ -134,4 +134,9 @@ public class DeathMetricsDisplay : MonoBehaviour
         metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{metricsData.totalDeaths}</color>" + "\n";
         metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{metricsData.totalWins}</color>" + "\n";
     }
+
+    public void DisplayStatsNoParams()
+    {
+        DisplayStats(MetricsTracker.Singleton.metricsData);
+    }
 }
