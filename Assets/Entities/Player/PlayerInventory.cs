@@ -16,6 +16,9 @@ public class PlayerInventory : MonoBehaviour
     public static event Action<int> RemoveSpoon;
     public int maxSpoons = 4;
 
+    public bool playerHolding = false;
+    public GameObject objectHolding = null;
+
     public List<Ingredient> defaultSpoonIngredients;
     public SoupBase defaultSoupBase;
 
@@ -29,6 +32,7 @@ public class PlayerInventory : MonoBehaviour
     List<SoupSpoon> spoons;
 
     int currentSpoon = 0;
+   
 
     void Awake()
     {
@@ -129,6 +133,14 @@ public class PlayerInventory : MonoBehaviour
         {
             return;
         }
+        //handle thrwoing object
+        else if (playerHolding)
+        {
+            //Debug.Log("I should throw the object now");
+
+            ThrowItem(objectHolding);
+            return;
+        }
 
         // Index into current spoon
         SoupSpoon spoon = spoons[currentSpoon];
@@ -166,4 +178,65 @@ public class PlayerInventory : MonoBehaviour
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
     }
+
+
+
+    private void ThrowItem(GameObject item)
+    {
+        if (playerHolding)
+        {
+            playerHolding = false;
+            StartCoroutine(Throw(item));
+        }
+    }
+
+    IEnumerator<Null> Throw(GameObject item)
+    {
+        //
+        
+        float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z + 90f;
+        int throwDistance = 4;
+        Vector2 endPoint;
+
+        Vector2 playerPos = PlayerEntityManager.Singleton.GetPlayerPosition();
+
+        endPoint = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad) * throwDistance + playerPos.x, Mathf.Sin(theta * Mathf.Deg2Rad) * throwDistance + playerPos.y);
+        
+        Vector2 startPoint = item.transform.position; 
+        item.transform.parent = null;
+
+        Vector2 direction = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad));
+        float distance = Vector2.Distance(startPoint, endPoint);
+        LayerMask environmentLayer = LayerMask.GetMask("Environment");
+
+        // Debug.Log("Start point: " + startPoint);
+        // Debug.Log("End Point: " + endPoint);
+
+        if (Physics2D.Raycast(item.transform.position, direction, distance, environmentLayer))
+        {
+            RaycastHit2D hitInfo = Physics2D.Raycast(item.transform.position, direction, distance, environmentLayer);
+            //Debug.Log("I am this far from wall " + hitInfo.centroid);
+            endPoint = hitInfo.centroid;
+        }
+
+        float speed = 0.04f;
+
+        Debug.Log("distance between" + distance);
+        
+        for (int i = 0; i < 25; i++)
+        {
+            item.transform.position = Vector3.Lerp(startPoint, endPoint, i * 0.04f);
+
+            yield return null;
+        }
+
+        if (item.GetComponent<Destroyables>())
+        {
+            item.GetComponent<Destroyables>().RemoveDestroyable();
+        }
+    }
+
+    
+
+    
 }

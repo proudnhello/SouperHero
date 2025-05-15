@@ -83,6 +83,17 @@ public class PlayerEnvInteraction : MonoBehaviour
     private int lastInteractionFrame = -1;
     private void Interact(InputAction.CallbackContext ctx)
     {
+        //handle dropping the item;
+        if (PlayerInventory.Singleton.playerHolding)
+        {
+            //Debug.Log("I should place down object (Inside playerEnvInteraction");
+            //DROPPING pickup Object on ground in front of you
+
+            //Debug.Log(PlayerInventory.Singleton.objectHolding);
+
+            pickUpandThrow.dropItem(PlayerInventory.Singleton.objectHolding);
+        }
+
         if (currentInteractable != null && 
         Time.frameCount != lastInteractionFrame)
         {
@@ -97,4 +108,6 @@ public class PlayerEnvInteraction : MonoBehaviour
             }
         }
     }
+
+    
 }
