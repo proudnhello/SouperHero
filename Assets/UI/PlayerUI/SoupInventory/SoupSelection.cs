@@ -24,11 +24,11 @@ public class SoupSelection : MonoBehaviour
 
     public void OnHoverEnter()
     {
-        Debug.Log("Hovered in!");
+        //Debug.Log("Hovered in!");
     }
 
     public void OnHoverExit()
     {
-        Debug.Log("Hovered out!");
+        //Debug.Log("Hovered out!");
     }
 }

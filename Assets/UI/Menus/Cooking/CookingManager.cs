@@ -10,6 +10,7 @@ using UnityEngine.Rendering.Universal;
 using FMOD;
 using DG.Tweening;
 using static UnityEngine.InputManagerEntry;
+using static UnityEditor.Progress;
 
 
 // Gets Items In the Cooking Slots and Call FillPot
@@ -33,6 +34,8 @@ public class CookingManager : MonoBehaviour
     [Header("SoupInventory")]
     [SerializeField] private GameObject SoupSelect;
     [SerializeField] private GameObject SoupInventory;
+    [SerializeField] private Sprite cookingBubbleSprite;
+    [SerializeField] private Material spriteLit;
 
     private void Awake()
     {
@@ -70,6 +73,7 @@ public class CookingManager : MonoBehaviour
         //Move the inventory and soup select prefabs up when entering cooking
         StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 245f), 500f)); 
         StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 245f), 500f));
+        DisplayInventorySlots();
     }
 
 
@@ -110,6 +114,7 @@ public class CookingManager : MonoBehaviour
             //Move the soup select prefab down when exiting cooking
             StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -245f), 500f));
             StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -245f), 500f));
+            DisplayInventorySlots();
         }
     }
     
@@ -326,7 +331,7 @@ public class CookingManager : MonoBehaviour
         slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
     }
 
-    //Move inventory UI elements using MoveTowards (Lo: Hopefully temporary!)
+    //Move inventory UI elements using MoveTowards
     //Lo: Hopefully temporary. Might move this into another UI script
     private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target, float speed)
     {
@@ -338,5 +343,42 @@ public class CookingManager : MonoBehaviour
             rectTransform.anchoredPosition = Vector2.MoveTowards(rectTransform.anchoredPosition, targetPosition, step);
             yield return null;
         }
+    }
+
+    //Lo: Hopefully temporary. Might move this into another UI script
+    private void DisplayInventorySlots()
+    {
+        if (!isCooking) //If not cooking, hide selected soup inventory slots
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
+                soupImg.sprite = null;
+                soupImg.material = spriteLit;
+                SetToAlpha(soupImg, 0);
+            }
+        }
+        else //If cooking, display the selected soup inventory slots
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                //If the soup is not active, set the slot to be visible
+                if (!SoupSelect.transform.GetChild(i).gameObject.activeInHierarchy)
+                {
+                    var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
+                    soupImg.sprite = cookingBubbleSprite;
+                    soupImg.material = null;
+                    SetToAlpha(soupImg, 1);
+                }
+            }
+        }
+    }
+
+    //Helper function to set alpha
+    private void SetToAlpha(Image image, int alphaAmount)
+    {
+        Color tempColor = image.color;
+        tempColor.a = alphaAmount;
+        image.color = tempColor;
     }
 }
