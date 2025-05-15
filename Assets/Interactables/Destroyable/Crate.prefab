@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8349138743299825308}
   - component: {fileID: 7256827397506068133}
   - component: {fileID: 5827697160182941612}
-  - component: {fileID: 2368010648102664324}
+  - component: {fileID: 9016558330488394309}
   m_Layer: 9
   m_Name: Crate
   m_TagString: Untagged
@@ -174,8 +174,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHands: {fileID: 0}
---- !u!61 &2368010648102664324
-BoxCollider2D:
+--- !u!58 &9016558330488394309
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -203,19 +203,9 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0025291443, y: 0.28}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.28}
-    oldSize: {x: 0.75, y: 1.0625}
-    newSize: {x: 0.27, y: 0.43}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: 0, y: 0.23374999}
   serializedVersion: 2
-  m_Size: {x: 0.79013824, y: 1.0468216}
-  m_EdgeRadius: 0
+  m_Radius: 0.55

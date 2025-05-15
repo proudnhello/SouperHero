@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using System;
 using TMPro;
 using static SoupSpoon;
+using System.Linq.Expressions;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -85,7 +86,7 @@ public class PlayerInventory : MonoBehaviour
     }
 
     // This is used to cook soup w/o a base. It's here while the soup UI is being worked on and the base hook is missing
-    public bool OLD_AND_BAD_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
+    public bool OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
     {
         return CookSoup(ingredients, defaultSoupBase);
     }
@@ -193,50 +194,70 @@ public class PlayerInventory : MonoBehaviour
     IEnumerator<Null> Throw(GameObject item)
     {
         //
-        
+        item.GetComponent<BoxCollider2D>().enabled = true;
         float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z + 90f;
-        int throwDistance = 4;
+        int throwDistance = 6;
         Vector2 endPoint;
-
+        Vector2 direction = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad));
         Vector2 playerPos = PlayerEntityManager.Singleton.GetPlayerPosition();
 
-        endPoint = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad) * throwDistance + playerPos.x, Mathf.Sin(theta * Mathf.Deg2Rad) * throwDistance + playerPos.y);
+        endPoint = new Vector2(direction.x * throwDistance + playerPos.x, direction.y * throwDistance + playerPos.y);
         
         Vector2 startPoint = item.transform.position; 
         item.transform.parent = null;
 
-        Vector2 direction = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad));
-        float distance = Vector2.Distance(startPoint, endPoint);
-        LayerMask environmentLayer = LayerMask.GetMask("Environment");
+        LayerMask layerMask = LayerMask.GetMask("Environment", "Enemies", "Destroyable");
+        float distance = 0.2f;
+        float colliderDistance = 1.0f;
 
         // Debug.Log("Start point: " + startPoint);
         // Debug.Log("End Point: " + endPoint);
 
-        if (Physics2D.Raycast(item.transform.position, direction, distance, environmentLayer))
-        {
-            RaycastHit2D hitInfo = Physics2D.Raycast(item.transform.position, direction, distance, environmentLayer);
-            //Debug.Log("I am this far from wall " + hitInfo.centroid);
-            endPoint = hitInfo.centroid;
-        }
+        // if (Physics2D.Raycast(item.transform.position, direction, distance, layerMask))
+        // {
+        //     RaycastHit2D hitInfo = Physics2D.Raycast(item.transform.position, direction, distance, layerMask);
+        //     //Debug.Log("I am this far from wall " + hitInfo.centroid);
+        //     endPoint = hitInfo.centroid;
+        // }
 
-        float speed = 0.04f;
 
-        Debug.Log("distance between" + distance);
-        
         for (int i = 0; i < 25; i++)
         {
             item.transform.position = Vector3.Lerp(startPoint, endPoint, i * 0.04f);
+            Vector2 raycastPos = new Vector2(direction.x * colliderDistance + item.transform.position.x, direction.y * colliderDistance + item.transform.position.y);
 
+
+            if (Physics2D.Raycast(raycastPos, direction, distance, layerMask))
+            {
+                RaycastHit2D hitInfo = Physics2D.Raycast(raycastPos, direction, distance, layerMask);
+                //Debug.Log("I am this far from wall " + hitInfo.centroid);
+                //endPoint = hitInfo.centroid;
+                //Debug.Log("I hit an eneemy or a wall");
+                if (hitInfo.collider.gameObject.GetComponent<Entity>())
+                {
+                    hitInfo.collider.gameObject.GetComponent<Entity>().DealDamage(15);
+                }
+                else if (hitInfo.collider.gameObject.GetComponent<Destroyables>())
+                {
+                    hitInfo.collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+                }
+                plsDestroy(item);
+                yield break;
+
+            }
             yield return null;
         }
 
+        plsDestroy(item);
+    }
+
+
+    private void plsDestroy(GameObject item)
+    {
         if (item.GetComponent<Destroyables>())
         {
             item.GetComponent<Destroyables>().RemoveDestroyable();
         }
     }
 
-    
-
-    
 }

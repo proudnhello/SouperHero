@@ -248,7 +248,7 @@ public class CookingManager : MonoBehaviour
         if(soupBase == null)
         {
             UnityEngine.Debug.LogWarning("SoupBase is null! Press play to continue, the code works, but someone needs to hook up soup bases to the UI");
-            PlayerInventory.Singleton.OLD_AND_BAD_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
+            PlayerInventory.Singleton.OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
         }
         else
         {

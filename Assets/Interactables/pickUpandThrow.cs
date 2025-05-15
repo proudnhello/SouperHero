@@ -16,19 +16,15 @@ public class pickUpandThrow : Interactable
 
     public static Transform prevParent;
 
-
-    void Awake()
+    void Start()
     {
+        // Debug.Log(CanInteract());
+        SetHighlighted(false);
         //Player hands above the head
         playerHands = GameObject.Find("/Player/Hands");
 
         //dropSpot is 
         dropSpot = GameObject.Find("/Player/AttackPointSwivel/AttackPoint");
-    }
-    void Start()
-    {
-        // Debug.Log(CanInteract());
-        // SetHighlighted(true);
         //thesprite = GetComponent<SpriteRenderer>();
         //Debug.Log(thesprite.sprite);
         //thesprite.material.SetFloat(_OutlineThickness, 1);
@@ -44,15 +40,14 @@ public class pickUpandThrow : Interactable
     public override void Interact()
     {
         pickUpItem();
-
-
     }
 
     private void pickUpItem()
     {
         if (!(PlayerInventory.Singleton.playerHolding))
         {
-
+            SetInteractable(false);  //Cannot interact multiple times
+            SetHighlighted(false);
             //Debug.Log("pick up item");
             //get previous parent reference
             prevParent = transform.parent;
@@ -67,6 +62,8 @@ public class pickUpandThrow : Interactable
             //tells playerInventory the player is holding something
             PlayerInventory.Singleton.objectHolding = this.gameObject;
             PlayerInventory.Singleton.playerHolding = true;
+
+            transform.GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 
@@ -75,7 +72,7 @@ public class pickUpandThrow : Interactable
         if (PlayerInventory.Singleton.playerHolding)
         {
 
-
+            objectToDrop.GetComponent<Interactable>().SetInteractable(true); 
             //Debug.Log("Drop item");
             Transform needToDrop = objectToDrop.transform;
 
@@ -84,6 +81,7 @@ public class pickUpandThrow : Interactable
             needToDrop.SetParent(prevParent);
 
             PlayerInventory.Singleton.playerHolding = false;
+            objectToDrop.GetComponent<BoxCollider2D>().enabled = true;
 
             //Debug.Log("Success in dropping");
         }
@@ -91,21 +89,31 @@ public class pickUpandThrow : Interactable
 
     }
 
-/*
-    void OnCollisionEnter2D(Collision2D col)
+    void OnDestroy()
     {
-        if (col.gameObject.tag == "Environment")
+        if (this.gameObject == PlayerInventory.Singleton.objectHolding)
         {
-            this.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            PlayerInventory.Singleton.objectHolding = null;
+            PlayerInventory.Singleton.playerHolding = false;
         }
-
-        if (col.gameObject.GetComponent<Entity>())
-        {
-            Debug.Log("I hit an enemy:");
-        }
+        
     }
-    */
+
+    /*
+                void OnCollisionEnter2D(Collision2D col)
+                {
+                    if (col.gameObject.tag == "Environment")
+                    {
+                        this.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+                    }
+
+                    if (col.gameObject.GetComponent<Entity>())
+                    {
+                        Debug.Log("I hit an enemy:");
+                    }
+                }
+                */
 
 
-    
+
 }
