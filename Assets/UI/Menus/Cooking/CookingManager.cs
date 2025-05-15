@@ -352,23 +352,32 @@ public class CookingManager : MonoBehaviour
         {
             for (int i = 0; i < 4; i++)
             {
+                SoupInventory.transform.GetChild(i).gameObject.SetActive(false);
+                /*
                 var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
                 soupImg.sprite = null;
                 soupImg.material = spriteLit;
                 SetToAlpha(soupImg, 0);
+                */
             }
         }
         else //If cooking, display the selected soup inventory slots
         {
             for (int i = 0; i < 4; i++)
             {
+                SoupInventory.transform.GetChild(i).gameObject.SetActive(true);
+                var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
                 //If the soup is not active, set the slot to be visible
                 if (!SoupSelect.transform.GetChild(i).gameObject.activeInHierarchy)
                 {
-                    var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
                     soupImg.sprite = cookingBubbleSprite;
                     soupImg.material = null;
                     SetToAlpha(soupImg, 1);
+                } else
+                {
+                    soupImg.sprite = null;
+                    soupImg.material = spriteLit;
+                    SetToAlpha(soupImg, 0);
                 }
             }
         }
