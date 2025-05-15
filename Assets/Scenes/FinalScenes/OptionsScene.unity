@@ -330,6 +330,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 100600052}
+  - component: {fileID: 100600053}
   m_Layer: 5
   m_Name: SettingsUI
   m_TagString: Untagged
@@ -358,6 +359,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &100600053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100600051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d820ccd9a0cc4874f931df325c78cad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &108935624
 GameObject:
   m_ObjectHideFlags: 0
@@ -2219,14 +2232,50 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: EndScreenNavigation, Assembly-CSharp
-        m_MethodName: ShowExitConfirmation
-        m_Mode: 1
+      - m_Target: {fileID: 870833652}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 689456220}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1460647551}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1208157665}
+        m_TargetAssemblyTypeName: SettingsTab, Assembly-CSharp
+        m_MethodName: ShowUI
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2736,10 +2785,46 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: EndScreenNavigation, Assembly-CSharp
-        m_MethodName: RestartGame
-        m_Mode: 1
+      - m_Target: {fileID: 870833652}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 689456220}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1460647551}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1208157665}
+        m_TargetAssemblyTypeName: SettingsTab, Assembly-CSharp
+        m_MethodName: ShowUI
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3367,7 +3452,19 @@ MonoBehaviour:
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 100600053}
+        m_TargetAssemblyTypeName: LanguageNavigation, Assembly-CSharp
+        m_MethodName: ChangeLanguage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &1004129232
 MonoBehaviour:
@@ -4247,6 +4344,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1208157661}
+  - component: {fileID: 1208157665}
   - component: {fileID: 1208157664}
   - component: {fileID: 1208157663}
   - component: {fileID: 1208157662}
@@ -4344,6 +4442,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1208157660}
   m_CullTransparentMesh: 1
+--- !u!114 &1208157665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208157660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed3037ff4899547c99f9e97ffe7c8430, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UI_List:
+  - {fileID: 100600051}
+  - {fileID: 1270410162}
+  - {fileID: 1550991540}
 --- !u!1 &1216942733
 GameObject:
   m_ObjectHideFlags: 0
@@ -4946,9 +5060,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ResetStatsTab, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 1208157665}
+        m_TargetAssemblyTypeName: SettingsTab, Assembly-CSharp
+        m_MethodName: GoToMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6524,10 +6638,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: EndScreenNavigation, Assembly-CSharp
-        m_MethodName: MainMenu
-        m_Mode: 1
+      - m_Target: {fileID: 870833652}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6535,6 +6649,42 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 689456220}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1460647551}
+        m_TargetAssemblyTypeName: TempTab, Assembly-CSharp
+        m_MethodName: KeepSelected
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1208157665}
+        m_TargetAssemblyTypeName: SettingsTab, Assembly-CSharp
+        m_MethodName: ShowUI
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1460647551
 MonoBehaviour:
