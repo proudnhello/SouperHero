@@ -12,11 +12,10 @@ public class MainMenuAnims : MonoBehaviour
     public RectTransform firstButton;
     public RectTransform secondButton;
     public RectTransform thirdButton;
+    
     public RectTransform fourthButton;
-
     public RectTransform fifthButton;
     public RectTransform sixthButton;
-    public RectTransform seventhButton;
 
     public GameObject secondaryButtonSet;
     public GameObject primaryButtonSet;
@@ -40,7 +39,6 @@ public class MainMenuAnims : MonoBehaviour
         s.Append(firstButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
         s.Append(secondButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
         s.Append(thirdButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
-        s.Append(fourthButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
         s.OnComplete(() => { isDone = true; });
 
         moveInSecondarySequence = DOTween.Sequence();
@@ -48,25 +46,24 @@ public class MainMenuAnims : MonoBehaviour
         moveInSecondarySequence.Append(firstButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
         moveInSecondarySequence.Append(secondButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
         moveInSecondarySequence.Append(thirdButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
-        moveInSecondarySequence.Append(fourthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
 
+        moveInSecondarySequence.Append(fourthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.InQuad));
         moveInSecondarySequence.Append(fifthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
         moveInSecondarySequence.Append(sixthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        moveInSecondarySequence.Append(seventhButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
+
 
         moveInSecondarySequence.SetAutoKill(false);
         moveInSecondarySequence.Pause();
 
         moveOutSecondarySequence = DOTween.Sequence();
 
+        moveOutSecondarySequence.Append(fourthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
         moveOutSecondarySequence.Append(fifthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
         moveOutSecondarySequence.Append(sixthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
-        moveOutSecondarySequence.Append(seventhButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
 
         moveOutSecondarySequence.Append(firstButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
         moveOutSecondarySequence.Append(secondButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
         moveOutSecondarySequence.Append(thirdButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        moveOutSecondarySequence.Append(fourthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
 
         moveOutSecondarySequence.SetAutoKill(false);
         moveOutSecondarySequence.Pause();
@@ -87,7 +84,6 @@ public class MainMenuAnims : MonoBehaviour
                 firstButton.anchoredPosition = new Vector2(42, firstButton.anchoredPosition.y);
                 secondButton.anchoredPosition = new Vector2(42, secondButton.anchoredPosition.y);
                 thirdButton.anchoredPosition = new Vector2(42, thirdButton.anchoredPosition.y);
-                fourthButton.anchoredPosition = new Vector2(42, fourthButton.anchoredPosition.y);
                 isDone = true;
             }
         }

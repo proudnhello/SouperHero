@@ -12,6 +12,7 @@ public class TempTab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private Image image;
     private RectTransform rectTransform;
+    private bool isSelected = false;
 
     private void Awake()
     {
@@ -28,6 +29,30 @@ public class TempTab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        ShowTab();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if(!isSelected)
+        {
+            HideTab();
+        }
+    }
+
+    private void AdjustSizeToSprite(Sprite sprite)
+    {
+        if (sprite == null || rectTransform == null) return;
+
+        // Get the pixel size of the sprite
+        Vector2 spriteSize = sprite.rect.size * spriteScalar;
+
+        // Set the RectTransform to match the spriteï¿½s size
+        rectTransform.sizeDelta = spriteSize;
+    }
+
+    public void ShowTab()
+    {
         if (image != null && hoverTab != null)
         {
             image.sprite = hoverTab;
@@ -39,7 +64,7 @@ public class TempTab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void HideTab()
     {
         if (image != null && defaultTab != null)
         {
@@ -52,14 +77,12 @@ public class TempTab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    private void AdjustSizeToSprite(Sprite sprite)
+    public void KeepSelected(bool selection)
     {
-        if (sprite == null || rectTransform == null) return;
-
-        // Get the pixel size of the sprite
-        Vector2 spriteSize = sprite.rect.size * spriteScalar;
-
-        // Set the RectTransform to match the sprite’s size
-        rectTransform.sizeDelta = spriteSize;
+        isSelected = selection;
+        if(!isSelected)
+        {
+            HideTab();
+        }
     }
 }
