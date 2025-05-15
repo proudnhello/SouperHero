@@ -16,20 +16,15 @@ public class pickUpandThrow : Interactable
 
     public static Transform prevParent;
 
-
-    new void Awake()
+    void Start()
     {
-        
+        // Debug.Log(CanInteract());
+        SetHighlighted(false);
         //Player hands above the head
         playerHands = GameObject.Find("/Player/Hands");
 
         //dropSpot is 
         dropSpot = GameObject.Find("/Player/AttackPointSwivel/AttackPoint");
-    }
-    void Start()
-    {
-        // Debug.Log(CanInteract());
-        // SetHighlighted(true);
         //thesprite = GetComponent<SpriteRenderer>();
         //Debug.Log(thesprite.sprite);
         //thesprite.material.SetFloat(_OutlineThickness, 1);
@@ -45,15 +40,14 @@ public class pickUpandThrow : Interactable
     public override void Interact()
     {
         pickUpItem();
-
-
     }
 
     private void pickUpItem()
     {
         if (!(PlayerInventory.Singleton.playerHolding))
         {
-
+            SetInteractable(false);  //Cannot interact multiple times
+            SetHighlighted(false);
             //Debug.Log("pick up item");
             //get previous parent reference
             prevParent = transform.parent;
@@ -78,7 +72,7 @@ public class pickUpandThrow : Interactable
         if (PlayerInventory.Singleton.playerHolding)
         {
 
-
+            objectToDrop.GetComponent<Interactable>().SetInteractable(true); 
             //Debug.Log("Drop item");
             Transform needToDrop = objectToDrop.transform;
 

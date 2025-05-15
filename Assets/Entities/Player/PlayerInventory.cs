@@ -86,7 +86,7 @@ public class PlayerInventory : MonoBehaviour
     }
 
     // This is used to cook soup w/o a base. It's here while the soup UI is being worked on and the base hook is missing
-    public bool OLD_AND_BAD_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
+    public bool OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
     {
         return CookSoup(ingredients, defaultSoupBase);
     }
@@ -196,7 +196,7 @@ public class PlayerInventory : MonoBehaviour
         //
         item.GetComponent<BoxCollider2D>().enabled = true;
         float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z + 90f;
-        int throwDistance = 4;
+        int throwDistance = 6;
         Vector2 endPoint;
         Vector2 direction = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad));
         Vector2 playerPos = PlayerEntityManager.Singleton.GetPlayerPosition();
