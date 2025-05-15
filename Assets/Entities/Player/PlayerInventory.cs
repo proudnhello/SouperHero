@@ -200,7 +200,7 @@ public class PlayerInventory : MonoBehaviour
         if (theta > 45f && theta <= 90)
         {
             theta = 90 - theta;
-            endPoint = new Vector2(-throwDistance + playerPos.x, playerPos.y + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
+            endPoint = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad) * -throwDistance + playerPos.x, playerPos.y + throwDistance * Mathf.Tan(theta * Mathf.Deg2Rad));
         }
         else if (theta > 90 && theta <= 135)
         {
