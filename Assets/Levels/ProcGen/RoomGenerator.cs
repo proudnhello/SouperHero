@@ -565,7 +565,7 @@ public class RoomGenerator : MonoBehaviour
     {
         if (path.Length <= 1)
         {
-            Debug.LogError("Something went wrong with path from string");
+            Debug.LogWarning("Something went wrong with path from string");
             return false;
         }
         switch (path[0])
@@ -666,6 +666,19 @@ public class RoomGenerator : MonoBehaviour
         return ret;
     }
 
+    // check if block has a direction checking
+    private bool checkBlockForDir(char inp, Block b)
+    {
+        return inp switch
+        {
+            'N' => b.south,
+            'S' => b.north,
+            'E' => b.west,
+            'W' => b.east,
+            _ => false,
+        };
+    }
+
     // Another flood fill BFS that gets the path from an intermediate "start" to its closest other intermediate that is in the start island block group
     private string BFSPathToClosestIntermediate(Coordinate start, List<Coordinate> startIsland, bool fromStart)
     {
@@ -719,7 +732,8 @@ public class RoomGenerator : MonoBehaviour
                 }
                 else
                 {
-                    if (offset.BlockExists(_map, out Block bloock) && destinations.Contains(offset))
+                    // last check should be && checkForBlockDir(dir, destBlock)
+                    if (offset.BlockExists(_map, out Block destBlock) && destinations.Contains(offset) && checkBlockForDir(dir, destBlock))
                     {
                         visited.Add(offset);
                         parents[offset] = new Tuple<Coordinate, char>(b, dir);
@@ -964,7 +978,11 @@ public class RoomGenerator : MonoBehaviour
                         Debug.LogError("Breakout hit for disconnected island");
                         yield break;
                     }
-                    disconnectedGroups.Add(newGroup);
+                    // added if statement (not really necessary, but..)
+                    if(newGroup.Count != 0)
+                    {
+                        disconnectedGroups.Add(newGroup);
+                    }
                 }
             }
         }
@@ -974,8 +992,10 @@ public class RoomGenerator : MonoBehaviour
         foreach (List<Coordinate> group in disconnectedGroups)
         {
             int maxIter = 0;
+            // max iter should be < finalMax
+            int finalMax = group.Count * startIsland.Count;
             HashSet<Coordinate> visited = new();
-            while (maxIter < group.Count && maxIter >= 0)
+            while (maxIter < finalMax && maxIter >= 0)
             {
                 // find mid dist between intermediate from start group and list
                 float closestDistance = int.MaxValue;
@@ -985,7 +1005,7 @@ public class RoomGenerator : MonoBehaviour
                 {
                     foreach (Coordinate currentIntermediate in startIsland)
                     {
-                        if (currentGroupCoord.SquaredDistanceTo(currentIntermediate) < closestDistance)
+                        if (currentGroupCoord.SquaredDistanceTo(currentIntermediate) < closestDistance && !visited.Contains(currentIntermediate))
                         {
                             disconnectedCoordinate = currentGroupCoord;
                             closestStartIntermediate = currentIntermediate;
@@ -1075,6 +1095,13 @@ public class RoomGenerator : MonoBehaviour
     // DEBUG DRAWING
     private void ColorGrid()
     {
+        for (int i = -_mapPadding + 1; i < _mapBaseWidth + _mapPadding - 1; ++i)
+        {
+            for (int j = -_mapPadding + 1; j < _mapBaseHeight + _mapPadding - 1; ++j)
+            {
+                DrawRect(new Vector3((i + _mapPadding) * TILE_WIDTH, (j + _mapPadding) * TILE_WIDTH, 0), new Vector3(((i + _mapPadding) + 1) * TILE_WIDTH, ((j + _mapPadding) + 1) * TILE_HEIGHT, 0), Color.white);
+            }
+        }
         for (int i = 0; i < _mapBaseWidth; ++i)
         {
             for (int j = 0; j < _mapBaseHeight; ++j)
