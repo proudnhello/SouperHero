@@ -21,16 +21,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Singleton { get; private set; }
 
-
-
-    public GameObject blackFade;
-    public RectTransform loadingProgress;
-    private bool isLoading = false;
-
-    public GameObject find;
-    public GameObject the;
-    public GameObject exit;
-
     private void Awake()
     {
         if (Singleton != null && Singleton != this)
@@ -51,26 +41,11 @@ public class GameManager : MonoBehaviour
         // Delete previous save
         SaveManager.Singleton.ResetGameState();
         
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
-        #endif
+#endif
 
-        if (isLoading)
-        {
-            return;
-        }
-
-        isLoading = true;
-        Sequence loadSequence = DOTween.Sequence();
-        loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
-        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
-        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
-        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
-        loadSequence.AppendInterval(2f);
-        loadSequence.OnComplete(() =>
-        {
-            StartCoroutine(LoadScene());
-        });
+        StartCoroutine(LoadScene());
 
         IEnumerator LoadScene() // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
         {
@@ -108,26 +83,9 @@ public class GameManager : MonoBehaviour
 
     public void LoadSave()
     {
-        Time.timeScale = 1;
-
-        if(isLoading)
-        {
-            return;
-        }
-
         IsCurrentRunFromSave = true;
 
-        isLoading = true;
-        Sequence loadSequence = DOTween.Sequence();
-        loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
-        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
-        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
-        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
-        loadSequence.AppendInterval(2f);
-        loadSequence.OnComplete(() =>
-        {
-            StartCoroutine(LoadScene());
-        });
+        StartCoroutine(LoadScene());
 
         IEnumerator LoadScene() // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
         {
@@ -146,12 +104,10 @@ public class GameManager : MonoBehaviour
             // Keep yielding the co-routine until all the bank loading is done
             // (for platforms with asynchronous bank loading)
             yield return new WaitUntil(() => FMODUnity.RuntimeManager.HaveAllBanksLoaded);
-            loadingProgress.DOSizeDelta(new Vector2(async.progress * 100, 100), 0.1f);
 
 
             // Keep yielding the co-routine until all the sample data loading is done
             yield return new WaitUntil(() => !FMODUnity.RuntimeManager.AnySampleDataLoading());
-            loadingProgress.DOSizeDelta(new Vector2(async.progress * 100, 100), 0.1f);
 
 
             // Allow the scene to be activated. This means that any OnActivated() or Start()
@@ -159,11 +115,8 @@ public class GameManager : MonoBehaviour
             // there will be no delay in starting events
             async.allowSceneActivation = true;
 
-            loadingProgress.DOSizeDelta(new Vector2(100, 100), 0.1f);
-
             // Keep yielding the co-routine until scene loading and activation is done.
             yield return new WaitUntil(() => async.isDone);
-            isLoading = false;
         }
     }
 
@@ -182,8 +135,4 @@ public class GameManager : MonoBehaviour
         else SceneManager.LoadScene(2);
     }
 
-    public void EnterOptionsScreen()
-    {
-        SceneManager.LoadScene(4);
-    }
 }
