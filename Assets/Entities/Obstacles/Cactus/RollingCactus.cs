@@ -11,6 +11,7 @@ public class RollingCactus : Entity
     [SerializeField] float BurstFPS;
     [SerializeField] int FRAME_TO_RESET_ORIENTION = 3;
     [SerializeField] Collider2D _Collider;
+    [SerializeField] Destroyables destroyable;
 
     [SerializeField] List<InflictionFlavor> inflictionFlavors;
     List<Infliction> inflictionsOnContact = new();
@@ -120,6 +121,7 @@ public class RollingCactus : Entity
             _SpriteRenderer.sprite = BurstAnimFrames[frame];
             yield return new WaitForSeconds(1/BurstFPS);
         }
+        destroyable.ManualDestroy();
         Destroy(gameObject);
     }
 }

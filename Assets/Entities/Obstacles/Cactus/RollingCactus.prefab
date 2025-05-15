@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8409271497472660470}
   - component: {fileID: 8786307827986814872}
   - component: {fileID: 396098373097805619}
+  - component: {fileID: 2243951917899365846}
   m_Layer: 9
   m_Name: RollingCactus
   m_TagString: Untagged
@@ -158,6 +159,7 @@ MonoBehaviour:
   BurstFPS: 12
   FRAME_TO_RESET_ORIENTION: 3
   _Collider: {fileID: 8409271497472660470}
+  destroyable: {fileID: 2243951917899365846}
   inflictionFlavors:
   - inflictionType: 3
     amount: 10
@@ -191,3 +193,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &2243951917899365846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6066935060175311365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdbaf6e811409734da045017e0d66cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randDrop: 0
+  singleCollectable: {fileID: 0}
+  multipleCollectables: []
+  oddsForSomething: 0.5
+  DestroyedOnDamage: 0

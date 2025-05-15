@@ -38,6 +38,13 @@ public class MapRoom : MonoBehaviour
         public int difficultyPointsRequired;
     }
 
+    private void Start()
+    {
+        Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
+            if (x.gameObject.activeInHierarchy) x.RefreshRenderTilemap();
+        });
+    }
+
     [Header("Room Content")]
     [SerializeField] ContentRegion[] contentRegions;
 
