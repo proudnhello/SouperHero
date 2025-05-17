@@ -11,10 +11,10 @@ public class EndTutorial : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             // enable room generation
-            helperScripts.GetComponent<RoomGenerator>().enabled = true; // Disable room generation for the tutorial
+            helperScripts.GetComponent<RoomGenerator>().enabled = true; // Enable room generation for the tutorial
 
-            // GameManager.Singleton.NewGame();
-            SceneManager.LoadScene(0);
+            GameManager.Singleton.NewGame();
+            // SceneManager.LoadScene(0);
         }
     }
 }
