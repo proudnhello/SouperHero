@@ -17,6 +17,7 @@ public class PlayerEntityManager : Entity
     public PlayerAnimationHolder animations;
     public PlayerMovement playerMovement;
     public PlayerAudio playerAudio;
+    public GameObject playerHoldingPoint;
     private bool cooked = false;
 
 

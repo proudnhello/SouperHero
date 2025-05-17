@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static FlavorIngredient;
 using Infliction = SoupSpoon.SpoonInfliction;
 using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 
@@ -13,11 +12,12 @@ public class RollingCactus : Entity
     [SerializeField] Collider2D _Collider;
     [SerializeField] Destroyables destroyable;
 
-    [SerializeField] List<InflictionFlavor> inflictionFlavors;
-    List<Infliction> inflictionsOnContact = new();
+    [SerializeField] List<InflictionFlavor> inflictionOnRollFlavors;
+    [SerializeField] int KNOCKBACK_INDEX = 1;
+    [SerializeField] Vector2 MinMaxDamageToSpeed = new Vector2(5, 40);
+    List<Infliction> inflictionsOnRollContact = new();
 
-    [SerializeField] float RollMoveSpeed;
-    [SerializeField] float RollRotateSpeed;
+    [SerializeField] int PLAYER_COLLISION_DAMAGE = 5;
 
     SpriteRenderer _SpriteRenderer;
     private void Start()
@@ -26,11 +26,11 @@ public class RollingCactus : Entity
         entityRenderer = new EntityRenderer(this);
         _SpriteRenderer = GetComponent<SpriteRenderer>();
         _Collider.isTrigger = false;
-        foreach (var inflictionFlavor in inflictionFlavors)
+        foreach (var inflictionFlavor in inflictionOnRollFlavors)
         {
             Infliction cactusInfliction = new(inflictionFlavor);
             cactusInfliction.AddIngredient(inflictionFlavor);
-            inflictionsOnContact.Add(cactusInfliction);
+            inflictionsOnRollContact.Add(cactusInfliction);
         }     
     }
 
@@ -49,20 +49,39 @@ public class RollingCactus : Entity
             if (infliction.InflictionFlavor.inflictionType == InflictionFlavor.InflictionType.SPIKY_Damage)
             {
                 DealDamage((int)infliction.amount);
+                if (IsDead() && !hasContacted)
+                {
+                    if (IRoll != null) StopCoroutine(IRoll);
+                    StartCoroutine(IRoll = Roll(source, (int)infliction.amount));
+                }
             }
         }
-        if (IsDead())
+        
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // check if the collision is with an enemy and if the player is not invincible
+        if (collision.gameObject.CompareTag("Player"))
         {
-            StartCoroutine(Roll(source));
+            Entity player = collision.gameObject.GetComponent<Entity>();
+            player?.DealDamage(PLAYER_COLLISION_DAMAGE);
         }
     }
 
     bool hasContacted = false, canBreak = false;
-    private IEnumerator Roll(Transform source)
+    IEnumerator IRoll;
+    private IEnumerator Roll(Transform source, int damage)
     {
         _Collider.isTrigger = true;
         hasContacted = false;
         canBreak = true;
+
+        // use attack damage to calculate cactus speed + knockback
+        damage = (int)Mathf.Clamp(damage, MinMaxDamageToSpeed.x, MinMaxDamageToSpeed.y);
+        float RollMoveSpeed = .4f * damage + 2;
+        float RollRotateSpeed = RollMoveSpeed * 2;
+        inflictionsOnRollContact[KNOCKBACK_INDEX].add = damage/2;
 
         // Calculate the angle between the tree parent and the damage source
         Vector3 direction = (transform.position - source.position).normalized;
@@ -70,18 +89,15 @@ public class RollingCactus : Entity
 
         while (!hasContacted)
         {
-            transform.localPosition += direction * RollMoveSpeed; 
-            transform.RotateAround(transform.position, Vector3.forward, sign * RollRotateSpeed * Mathf.Rad2Deg);
+            transform.localPosition += direction * RollMoveSpeed * Time.deltaTime; 
+            transform.RotateAround(transform.position, Vector3.forward, sign * RollRotateSpeed * Mathf.Rad2Deg * Time.deltaTime);
             yield return null;
         }
-
-        // Rotate the parent object to face away from the damage source
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        Debug.Log(collider.name);
-        if (!canBreak) return;
+        if (!canBreak || hasContacted) return;
 
         if (CollisionLayers.Singleton.InEnvironmentLayer(collider.gameObject) && collider.tag != "PitHazard")
         {
@@ -98,13 +114,21 @@ public class RollingCactus : Entity
             }
 
             // Apply the infliction to the enemy
-            entity.ApplyInfliction(inflictionsOnContact, gameObject.transform);
+            entity.ApplyInfliction(inflictionsOnRollContact, gameObject.transform);
             hasContacted = true;
             StartCoroutine(Burst());
         }
         else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {
-            collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            collider.gameObject.TryGetComponent(out Entity destroyableEntity);
+            if (destroyableEntity != null) // if it's an entity like a cactus, hurt it
+            {
+                destroyableEntity?.ApplyInfliction(inflictionsOnRollContact, gameObject.transform);
+            } else
+            {
+                collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
+            }
+
             hasContacted = true;
             StartCoroutine(Burst());
         }
@@ -112,6 +136,7 @@ public class RollingCactus : Entity
 
     IEnumerator Burst()
     {
+        _Collider.enabled = false;
         for (int frame = 0; frame < BurstAnimFrames.Length; frame++)
         {
             if (frame == FRAME_TO_RESET_ORIENTION)

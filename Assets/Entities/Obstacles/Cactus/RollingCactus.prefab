@@ -107,10 +107,10 @@ CircleCollider2D:
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2007
   m_ForceReceiveLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2007
   m_ContactCaptureLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -120,9 +120,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.02047944}
+  m_Offset: {x: 0, y: 0.08}
   serializedVersion: 2
-  m_Radius: 0.51
+  m_Radius: 0.64
 --- !u!114 &8786307827986814872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,11 +138,11 @@ MonoBehaviour:
   submergeMask: {fileID: 0}
   needsBounds: 0
   baseStats:
-    maxHealth: 10
+    maxHealth: 1
     baseMoveSpeed: 0
     invincibility: 0.5
   currentStats:
-    health: 10
+    health: 1
     moveSpeed: 0
   falling: 0
   flying: 0
@@ -160,12 +160,16 @@ MonoBehaviour:
   FRAME_TO_RESET_ORIENTION: 3
   _Collider: {fileID: 8409271497472660470}
   destroyable: {fileID: 2243951917899365846}
-  inflictionFlavors:
+  inflictionOnRollFlavors:
   - inflictionType: 3
-    amount: 10
+    amount: 20
     statusEffectDuration: 0
-  RollMoveSpeed: 0.1
-  RollRotateSpeed: 0.1
+  - inflictionType: 4
+    amount: 7
+    statusEffectDuration: 0
+  KNOCKBACK_INDEX: 1
+  MinMaxDamageToSpeed: {x: 3, y: 40}
+  PLAYER_COLLISION_DAMAGE: 5
 --- !u!50 &396098373097805619
 Rigidbody2D:
   serializedVersion: 4
@@ -174,7 +178,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6066935060175311365}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
