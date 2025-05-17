@@ -32,10 +32,8 @@ public class ClickButton : Selectable, IPointerClickHandler, ISubmitHandler
     private Coroutine _resetRoutine;
 
 
-    protected override void Reset()
+    protected new void Reset()
     {
-        base.Reset();
-
         var imageComponent = GetComponent<Image>();
         if (imageComponent == null)
         {

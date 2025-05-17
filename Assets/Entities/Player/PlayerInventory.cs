@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 using System;
 using TMPro;
 using static SoupSpoon;
+using System.Linq.Expressions;
+using static UnityEditor.Progress;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -17,7 +19,7 @@ public class PlayerInventory : MonoBehaviour
     public int maxSpoons = 4;
 
     public bool playerHolding = false;
-    public GameObject objectHolding = null;
+    public Throwable objectHolding = null;
 
     public List<Ingredient> defaultSpoonIngredients;
     public SoupBase defaultSoupBase;
@@ -32,7 +34,7 @@ public class PlayerInventory : MonoBehaviour
     List<SoupSpoon> spoons;
 
     int currentSpoon = 0;
-   
+
 
     void Awake()
     {
@@ -85,7 +87,7 @@ public class PlayerInventory : MonoBehaviour
     }
 
     // This is used to cook soup w/o a base. It's here while the soup UI is being worked on and the base hook is missing
-    public bool OLD_AND_BAD_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
+    public bool OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
     {
         return CookSoup(ingredients, defaultSoupBase);
     }
@@ -136,9 +138,8 @@ public class PlayerInventory : MonoBehaviour
         //handle thrwoing object
         else if (playerHolding)
         {
-            //Debug.Log("I should throw the object now");
-
-            ThrowItem(objectHolding);
+            playerHolding = false;
+            Throw(objectHolding);
             return;
         }
 
@@ -181,62 +182,13 @@ public class PlayerInventory : MonoBehaviour
 
 
 
-    private void ThrowItem(GameObject item)
+    void Throw(Throwable item)
     {
-        if (playerHolding)
-        {
-            playerHolding = false;
-            StartCoroutine(Throw(item));
-        }
-    }
-
-    IEnumerator<Null> Throw(GameObject item)
-    {
-        //
-        
         float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z + 90f;
-        int throwDistance = 4;
-        Vector2 endPoint;
-
+        Vector2 direction = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad));
         Vector2 playerPos = PlayerEntityManager.Singleton.GetPlayerPosition();
 
-        endPoint = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad) * throwDistance + playerPos.x, Mathf.Sin(theta * Mathf.Deg2Rad) * throwDistance + playerPos.y);
-        
-        Vector2 startPoint = item.transform.position; 
-        item.transform.parent = null;
-
-        Vector2 direction = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad));
-        float distance = Vector2.Distance(startPoint, endPoint);
-        LayerMask environmentLayer = LayerMask.GetMask("Environment");
-
-        // Debug.Log("Start point: " + startPoint);
-        // Debug.Log("End Point: " + endPoint);
-
-        if (Physics2D.Raycast(item.transform.position, direction, distance, environmentLayer))
-        {
-            RaycastHit2D hitInfo = Physics2D.Raycast(item.transform.position, direction, distance, environmentLayer);
-            //Debug.Log("I am this far from wall " + hitInfo.centroid);
-            endPoint = hitInfo.centroid;
-        }
-
-        float speed = 0.04f;
-
-        Debug.Log("distance between" + distance);
-        
-        for (int i = 0; i < 25; i++)
-        {
-            item.transform.position = Vector3.Lerp(startPoint, endPoint, i * 0.04f);
-
-            yield return null;
-        }
-
-        if (item.GetComponent<Destroyables>())
-        {
-            item.GetComponent<Destroyables>().RemoveDestroyable();
-        }
+        item.ThrowItem(playerPos, direction);    
     }
 
-    
-
-    
 }

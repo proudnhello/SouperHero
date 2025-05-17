@@ -10,6 +10,7 @@ public class Destroyables : MonoBehaviour
     [SerializeField] private Collectable singleCollectable;
     public List<Collectable> multipleCollectables;
     [SerializeField] private float oddsForSomething = .5f;
+    public bool DestroyedOnDamage = true;
 
     int forageableIndex = -1;
     public void TrackSpawn(int index, List<Collectable> newList)
@@ -20,6 +21,8 @@ public class Destroyables : MonoBehaviour
 
     public void RemoveDestroyable()
     {
+        if (!DestroyedOnDamage) return;
+
         Destroy(this.gameObject);
 
         if (!randDrop)
@@ -44,6 +47,11 @@ public class Destroyables : MonoBehaviour
             }
         }
 
+        if (forageableIndex >= 0) RunStateManager.Singleton.TrackBrokenDestroyable(forageableIndex);
+    }
+
+    public void ManualDestroy()
+    {
         if (forageableIndex >= 0) RunStateManager.Singleton.TrackBrokenDestroyable(forageableIndex);
     }
 }

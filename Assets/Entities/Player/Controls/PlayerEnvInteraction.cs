@@ -91,7 +91,7 @@ public class PlayerEnvInteraction : MonoBehaviour
 
             //Debug.Log(PlayerInventory.Singleton.objectHolding);
 
-            pickUpandThrow.dropItem(PlayerInventory.Singleton.objectHolding);
+            Throwable.dropItem(PlayerInventory.Singleton.objectHolding.gameObject);
         }
 
         if (currentInteractable != null && 
