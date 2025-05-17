@@ -1108,11 +1108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae14ebabf89b3c944b4ad2ea31ab35fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blackFade: {fileID: 0}
-  loadingProgress: {fileID: 0}
-  find: {fileID: 0}
-  the: {fileID: 0}
-  exit: {fileID: 0}
 --- !u!1 &439669769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1280,6 +1275,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+--- !u!114 &446754611 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2029779968401792043, guid: b6f827130d18184468f3403adabe2eee, type: 3}
+  m_PrefabInstance: {fileID: 446754610}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18061169a9ef824aa95690e56d66436, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &542586940
 GameObject:
   m_ObjectHideFlags: 0
@@ -3334,11 +3340,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae14ebabf89b3c944b4ad2ea31ab35fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blackFade: {fileID: 0}
-  loadingProgress: {fileID: 0}
-  find: {fileID: 0}
-  the: {fileID: 0}
-  exit: {fileID: 0}
 --- !u!1 &1762530720
 GameObject:
   m_ObjectHideFlags: 0
@@ -3749,9 +3750,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1864244200}
-        m_TargetAssemblyTypeName: ResetStatsTab, Assembly-CSharp
-        m_MethodName: ResetStatsFile
+      - m_Target: {fileID: 446754611}
+        m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
+        m_MethodName: ResetData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 127012825}
+        m_TargetAssemblyTypeName: DeathMetricsDisplay, Assembly-CSharp
+        m_MethodName: DisplayStatsNoParams
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

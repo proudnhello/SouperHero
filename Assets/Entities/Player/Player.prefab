@@ -570,6 +570,7 @@ Transform:
   - {fileID: 3919402048406173163}
   - {fileID: 7389380219637308304}
   - {fileID: 3426066396598231532}
+  - {fileID: 5453800469254755844}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &99970492126700294
@@ -599,6 +600,7 @@ MonoBehaviour:
   playerAttackPoint: {fileID: 6670828410753148305}
   animations: {fileID: 11400000, guid: bf07f1b198392e9458fd9bd5aad1a318, type: 2}
   playerMovement: {fileID: 4828791170773762287}
+  playerHoldingPoint: {fileID: 4867118698823343567}
 --- !u!114 &4828791170773762287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -628,6 +630,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpoons: 4
+  playerHolding: 0
+  objectHolding: {fileID: 0}
   defaultSpoonIngredients:
   - {fileID: 11400000, guid: 53160cc7134787b42ab12515fae5fd1f, type: 2}
   defaultSoupBase: {fileID: 11400000, guid: a767bd7958f23c14292b8f38452a24bf, type: 2}
@@ -795,10 +799,41 @@ MonoBehaviour:
   - {x: 0.3866005, y: -0.7193146, z: 0}
   m_ShapePathHash: -2124240203
   m_Mesh: {fileID: 0}
-  m_InstanceId: 45260
+  m_InstanceId: 114152
   m_LocalBounds:
     m_Center: {x: -0.018909454, y: -0.6550865, z: 0}
     m_Extent: {x: 0.43659973, y: 0.06422806, z: 0}
+--- !u!1 &4867118698823343567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5453800469254755844}
+  m_Layer: 6
+  m_Name: Hands
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5453800469254755844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4867118698823343567}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.29, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9090454973021212795}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5370700651450078362
 GameObject:
   m_ObjectHideFlags: 0
@@ -857,10 +892,10 @@ CircleCollider2D:
     m_Bits: 4294967295
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
   m_CallbackLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0

@@ -4,7 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using static UnityEngine.InputManagerEntry;
 
 public class MainMenuAnims : MonoBehaviour
 {
@@ -201,5 +200,10 @@ public class MainMenuAnims : MonoBehaviour
     public void ReturnFromExit()
     {
         exitPanel.SetActive(false);
+    }
+
+    public void StartTutorial()
+    {
+        SceneManager.LoadScene(5);
     }
 }

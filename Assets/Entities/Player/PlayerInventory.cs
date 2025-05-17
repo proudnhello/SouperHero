@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 using System;
 using TMPro;
 using static SoupSpoon;
+using System.Linq.Expressions;
+using static UnityEditor.Progress;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -15,6 +17,9 @@ public class PlayerInventory : MonoBehaviour
     public static event Action<int> AddSpoon;
     public static event Action<int> RemoveSpoon;
     public int maxSpoons = 4;
+
+    public bool playerHolding = false;
+    public Throwable objectHolding = null;
 
     public List<Ingredient> defaultSpoonIngredients;
     public SoupBase defaultSoupBase;
@@ -29,6 +34,7 @@ public class PlayerInventory : MonoBehaviour
     List<SoupSpoon> spoons;
 
     int currentSpoon = 0;
+
 
     void Awake()
     {
@@ -81,7 +87,7 @@ public class PlayerInventory : MonoBehaviour
     }
 
     // This is used to cook soup w/o a base. It's here while the soup UI is being worked on and the base hook is missing
-    public bool OLD_AND_BAD_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
+    public bool OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(List<Ingredient> ingredients)
     {
         return CookSoup(ingredients, defaultSoupBase);
     }
@@ -129,6 +135,13 @@ public class PlayerInventory : MonoBehaviour
         {
             return;
         }
+        //handle thrwoing object
+        else if (playerHolding)
+        {
+            playerHolding = false;
+            Throw(objectHolding);
+            return;
+        }
 
         // Index into current spoon
         SoupSpoon spoon = spoons[currentSpoon];
@@ -166,4 +179,16 @@ public class PlayerInventory : MonoBehaviour
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
     }
+
+
+
+    void Throw(Throwable item)
+    {
+        float theta = PlayerEntityManager.Singleton.playerAttackPoint.rotation.eulerAngles.z + 90f;
+        Vector2 direction = new Vector2(Mathf.Cos(theta * Mathf.Deg2Rad), Mathf.Sin(theta * Mathf.Deg2Rad));
+        Vector2 playerPos = PlayerEntityManager.Singleton.GetPlayerPosition();
+
+        item.ThrowItem(playerPos, direction);    
+    }
+
 }

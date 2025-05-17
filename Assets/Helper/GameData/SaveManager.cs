@@ -14,6 +14,7 @@ public class SaveManager : MonoBehaviour
 
     private string statsPath;
     private string runStatePath;
+    private string analyticsPath;
 
     [SerializeField] bool debugAlwaysGenerateNewLevel;
 
@@ -34,6 +35,8 @@ public class SaveManager : MonoBehaviour
         // Reliable Path Across Devices
         runStatePath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "RunState.json");
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
+        analyticsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Analytics.json");
+        Debug.Log(analyticsPath);
     }
 
     [ContextMenu("Reset All Save Data")]
@@ -144,5 +147,61 @@ public class SaveManager : MonoBehaviour
             Debug.LogWarning("No save file found!");
             return new();
         }
+    }
+
+    public void SaveMetricsAnalytics(MetricAnalyticsTracker.MetricsAnalytics data)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(analyticsPath));
+
+            string analyticsJSON = JsonConvert.SerializeObject(data, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+
+            using (FileStream stream = new FileStream(analyticsPath, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(analyticsJSON);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Run data save error: " + e);
+        }
+    }
+
+    public MetricAnalyticsTracker.MetricsAnalytics LoadMetricsAnalytics()
+    {
+        if (File.Exists(analyticsPath))
+        {
+            try
+            {
+                string analyticsLoaded = "";
+                using (FileStream stream = new FileStream(analyticsPath, FileMode.Open))
+                {
+                    using StreamReader reader = new StreamReader(stream);
+                    analyticsLoaded = reader.ReadToEnd();
+                }
+                return JsonConvert.DeserializeObject<MetricAnalyticsTracker.MetricsAnalytics>(analyticsLoaded);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error occured while loading run data: " + e);
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public void DeleteAnalyticsFile()
+    {
+        File.Delete(analyticsPath);
     }
 }

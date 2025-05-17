@@ -6,6 +6,6 @@ using UnityEngine;
 public class Dialogue
 {
     public string nameKey;
-    // [TextArea(3, 10)]
+    [TextArea(2, 3)]
     public string[] sentenceKeys;
 }

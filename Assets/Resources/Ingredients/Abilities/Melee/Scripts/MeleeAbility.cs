@@ -51,7 +51,7 @@ public class MeleeAbility : AbilityAbstractClass
             if (entity != null)
             {
                 // Apply the infliction to the enemy
-                entity.ApplyInfliction(inflictions, PlayerEntityManager.Singleton.playerAttackPoint);
+                entity.ApplyInfliction(inflictions, PlayerEntityManager.Singleton.gameObject.transform);
                 continue;
             }
 
