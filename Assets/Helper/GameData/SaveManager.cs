@@ -151,11 +151,26 @@ public class SaveManager : MonoBehaviour
 
     public void SaveMetricsAnalytics(MetricAnalyticsTracker.MetricsAnalytics data)
     {
-        string json = JsonUtility.ToJson(data, true);  // Pretty print for readability
-
-        using (StreamWriter writer = new StreamWriter(analyticsPath))
+        try
         {
-            writer.Write(json);
+            Directory.CreateDirectory(Path.GetDirectoryName(analyticsPath));
+
+            string analyticsJSON = JsonConvert.SerializeObject(data, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+
+            using (FileStream stream = new FileStream(analyticsPath, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(analyticsJSON);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Run data save error: " + e);
         }
     }
 
@@ -163,19 +178,25 @@ public class SaveManager : MonoBehaviour
     {
         if (File.Exists(analyticsPath))
         {
-            string json = string.Empty;
-
-            using (StreamReader reader = new StreamReader(analyticsPath))
+            try
             {
-                json = reader.ReadToEnd();
+                string analyticsLoaded = "";
+                using (FileStream stream = new FileStream(analyticsPath, FileMode.Open))
+                {
+                    using StreamReader reader = new StreamReader(stream);
+                    analyticsLoaded = reader.ReadToEnd();
+                }
+                return JsonConvert.DeserializeObject<MetricAnalyticsTracker.MetricsAnalytics>(analyticsLoaded);
             }
-
-            return JsonUtility.FromJson<MetricAnalyticsTracker.MetricsAnalytics>(json);
+            catch (Exception e)
+            {
+                Debug.LogError("Error occured while loading run data: " + e);
+                return null;
+            }
         }
         else
         {
-            Debug.LogWarning("No save file found!");
-            return new();
+            return null;
         }
     }
 
