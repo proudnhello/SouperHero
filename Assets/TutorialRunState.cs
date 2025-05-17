@@ -16,7 +16,14 @@ public class TutorialRunState : MonoBehaviour
     
     void Start()
     {
-        helperScripts.GetComponent<RoomGenerator>().enabled = false; // Disable room generation for the tutorial
+        RoomGenerator roomGenerator = helperScripts.GetComponent<RoomGenerator>();
+        if (roomGenerator != null)
+        {
+            roomGenerator.enabled = false; // Disable room generation for the tutorial
+        }
+
+        //helperScripts.GetComponent<RoomGenerator>().enabled = false; // Disable room generation for the tutorial
+
         RunStateManager.Singleton.InitializeGameState(-1);  // -1 = no seed, use random
 
         RunStateManager.Singleton.SaveRunState();

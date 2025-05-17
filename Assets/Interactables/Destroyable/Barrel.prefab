@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1930325657901289146}
   - component: {fileID: 6154628606512588311}
   - component: {fileID: 7256827397506068133}
-  - component: {fileID: 2474486594757758501}
+  - component: {fileID: 2217634043715287802}
   m_Layer: 9
   m_Name: Barrel
   m_TagString: Untagged
@@ -68,7 +68,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.27094138}
+  m_Offset: {x: 0, y: 0.34459305}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.22}
@@ -79,7 +79,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.78608656, y: 1.0187905}
+  m_Size: {x: 0.70041597, y: 0.9707718}
   m_EdgeRadius: 0
 --- !u!114 &1930325657901289146
 MonoBehaviour:
@@ -90,10 +90,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 18193000329964728}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8180218e5cb43a247a67f9115edc0d3c, type: 3}
+  m_Script: {fileID: 11500000, guid: 0868f67babc3c814cbe4987bc86fa011, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHands: {fileID: 0}
+  THROW_DISTANCE: 6
+  THROW_TIME: 0.3
+  InflictionFlavorsOnThrowContact:
+  - inflictionType: 3
+    amount: 15
+    statusEffectDuration: 0
+  - inflictionType: 4
+    amount: 5
+    statusEffectDuration: 0
 --- !u!212 &6154628606512588311
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -174,15 +182,23 @@ MonoBehaviour:
   - {fileID: 165481585712337600, guid: c1442435e41d43f4e90b9b6e511c8907, type: 3}
   - {fileID: 165481585712337600, guid: 60d8cef6f94a91f4bb989422f0400fe6, type: 3}
   oddsForSomething: 0.5
---- !u!58 &2474486594757758501
-CircleCollider2D:
+  DestroyedOnDamage: 1
+--- !u!50 &2217634043715287802
+Rigidbody2D:
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 18193000329964728}
-  m_Enabled: 1
-  m_Density: 1
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -190,22 +206,7 @@ CircleCollider2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.2975}
-  serializedVersion: 2
-  m_Radius: 0.55
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

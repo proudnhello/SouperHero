@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class MetricAnalyticsTracker : MonoBehaviour
 {
-
     public static MetricAnalyticsTracker Singleton { get; private set; }
     public void Awake()
     {
@@ -45,7 +44,7 @@ public class MetricAnalyticsTracker : MonoBehaviour
         public List<int> totalDeaths;
         public List<int> totalWins;
 
-        public List<int> player;
+        public List<int> runNumber;
 
         public MetricsAnalytics()
         {
@@ -59,7 +58,7 @@ public class MetricAnalyticsTracker : MonoBehaviour
             this.best_WinTime = new();
             this.totalDeaths = new();
             this.totalWins = new();
-            this.player = new();
+            this.runNumber = new();
         }
 
         // Save this data below for the metrics display
@@ -78,6 +77,8 @@ public class MetricAnalyticsTracker : MonoBehaviour
         hist_NumIngredientsCollected.Add(metrics.curr_NumIngredientsCollected);
         hist_NumSoupsCooked.Add(metrics.curr_NumSoupsCooked);
         hist_RunTime.Add(metrics.curr_RunTime);
+
+        AddNewRow();
     }
 
 
@@ -87,8 +88,8 @@ public class MetricAnalyticsTracker : MonoBehaviour
         MetricsData metrics = MetricsTracker.Singleton.metricsData;
 
         // Add new player
-        int newPlayerIndex = metricsAnalytics.player.Count;
-        metricsAnalytics.player.Add(newPlayerIndex);
+        int newPlayerIndex = metricsAnalytics.runNumber.Count;
+        metricsAnalytics.runNumber.Add(newPlayerIndex);
 
         // Add new row of data
         metricsAnalytics.curr_NumEnemiesKilled.Add(hist_NumEnemiesKilled);
