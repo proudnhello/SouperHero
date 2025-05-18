@@ -16,7 +16,6 @@ public class PlayerInventory : MonoBehaviour
     public static event Action<int> ChangedSpoon;
     public static event Action<int> AddSpoon;
     public static event Action<int> RemoveSpoon;
-    public int maxSpoons = 4;
 
     public bool playerHolding = false;
     public Throwable objectHolding = null;
@@ -31,24 +30,35 @@ public class PlayerInventory : MonoBehaviour
     internal List<Collectable> collectablesHeld;
 
     [SerializeField]
-    List<SoupSpoon> spoons;
+    List<SoupSpoon> spoons; //REMOVE
 
-    int currentSpoon = 0;
+    [Header("Soup Inventory")]
+    [SerializeField] SoupSpoon[] soups;
+    public int maxSpoons = 10;
+    private int maxSelectedSpoons = 4;
+    public int currentSpoon = 0;
+    [SerializeField] GameObject soupInventory;
+    private int selectedSlot = -1;
 
 
     void Awake()
     {
         if (Singleton == null) Singleton = this;
-        spoons = new()
-        {
-            new SoupSpoon(defaultSpoonIngredients, defaultSoupBase)
-        };
+        spoons = new() {new SoupSpoon(defaultSpoonIngredients, defaultSoupBase) }; //REMOVE
+
+        soups = new SoupSpoon[10];
+        soups[0] = new SoupSpoon(defaultSpoonIngredients, defaultSoupBase);
         collectablesHeld = new();
     }
 
-    public List<SoupSpoon> GetSpoons()
+    public List<SoupSpoon> GetSpoons() //REMOVE
     {
         return spoons;
+    }
+
+    public SoupSpoon[] GetSoups()
+    {
+        return soups;
     }
 
     public int GetCurrentSpoon()
@@ -94,16 +104,30 @@ public class PlayerInventory : MonoBehaviour
 
     public bool CookSoup(List<Ingredient> ingredients, SoupBase b)
     {
-        if (spoons.Count == maxSpoons) return false;
+        //if (spoons.Count == maxSpoons) return false;
+        if (selectedSlot < 0) return false;
 
-        spoons.Add(new SoupSpoon(ingredients, b));
-        currentSpoon = spoons.Count - 1;
-        AddSpoon?.Invoke(currentSpoon);
-        ChangedSpoon?.Invoke(currentSpoon);
+        soups[selectedSlot] = new SoupSpoon(ingredients, b);
+        SoupUI.Singleton.AddSoupInSlot(selectedSlot);
+        currentSpoon = 0;
+        
+        if(selectedSlot < 4)
+        {
+            spoons.Add(new SoupSpoon(ingredients, b));
+            currentSpoon = selectedSlot;
+            AddSpoon?.Invoke(currentSpoon);
+            ChangedSpoon?.Invoke(currentSpoon);
+        }
 
         MetricsTracker.Singleton.RecordSoupsCooked();
 
         return true;
+    }
+
+    //Set variable for which soup slot was clicked
+    public void SetSelectedSoup(int index)
+    {
+        selectedSlot = index;
     }
 
     void CycleSpoons(InputAction.CallbackContext ctx)

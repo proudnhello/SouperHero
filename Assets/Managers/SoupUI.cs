@@ -1,17 +1,22 @@
+using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 
-public class SoupUIManager : MonoBehaviour
+public class SoupUI : MonoBehaviour
 {
-    public static SoupUIManager Singleton { get; private set; }
+    public static SoupUI Singleton { get; private set; }
 
     [Header("SoupInventory")]
     [SerializeField] private GameObject SoupSelect;
     [SerializeField] private GameObject SoupInventory;
     [SerializeField] private Sprite cookingBubbleSprite;
     [SerializeField] private Material spriteLit;
+
+    [SerializeField] private List<Sprite> tempSoupSprites;
 
     private void Awake()
     {
@@ -47,12 +52,6 @@ public class SoupUIManager : MonoBehaviour
             for (int i = 0; i < 4; i++)
             {
                 SoupInventory.transform.GetChild(i).gameObject.SetActive(false);
-                /*
-                var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
-                soupImg.sprite = null;
-                soupImg.material = spriteLit;
-                SetToAlpha(soupImg, 0);
-                */
             }
         }
         else //If cooking, display the selected soup inventory slots
@@ -61,25 +60,44 @@ public class SoupUIManager : MonoBehaviour
             {
                 SoupInventory.transform.GetChild(i).gameObject.SetActive(true);
                 var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
+
                 //If the soup is not active, set the slot to be visible
                 if (!SoupSelect.transform.GetChild(i).gameObject.activeInHierarchy)
                 {
                     soupImg.sprite = cookingBubbleSprite;
                     soupImg.material = null;
-                    SetToAlpha(soupImg, 1);
+                    SetAlpha(soupImg, 1);
                 }
                 else
                 {
                     soupImg.sprite = null;
                     soupImg.material = spriteLit;
-                    SetToAlpha(soupImg, 0);
+                    SetAlpha(soupImg, 0);
                 }
             }
         }
     }
 
+    //Helper function to add soup image to icon in slot
+    public void AddSoupInSlot(int index)
+    {
+        //TODO: Use whatever image is attached to the soup instead of temp
+        if (index < 4) return; //Don't effect selected soups
+        var image = SoupInventory.transform.GetChild(index).GetChild(0).GetComponent<Image>();
+        image.sprite = tempSoupSprites[index];
+        SetAlpha(image, 1);
+    }
+
+    //Helper function to remove soup image from icon in slot
+    public void RemoveSoupInSlot(int index) {
+        if (index < 4) return; //Don't effect selected soups
+        var image = SoupInventory.transform.GetChild(index).GetChild(0).GetComponent<Image>();
+        image.sprite = null;
+        SetAlpha(image, 0);
+    }
+
     //Helper function to set alpha
-    private void SetToAlpha(Image image, int alphaAmount)
+    private void SetAlpha(Image image, int alphaAmount)
     {
         Color tempColor = image.color;
         tempColor.a = alphaAmount;
