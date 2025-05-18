@@ -58,18 +58,7 @@ public class SpoonsEquipped : MonoBehaviour
     //Disable last spoon image when uses run out
     void RemoveSpoon(int spoon)
     {
-        int spoonsLength = PlayerInventory.Singleton.GetSpoons().Count;
-        transform.GetChild(spoonsLength).gameObject.SetActive(false); //Remove last spoon
-
-        spoonSprites.RemoveAt(spoon);
-        spoonSprites.Insert(3, imageComponents[spoon].sprite); //3 is last index
-
-        UpdateSpoonImageComponents();
-
-        for (var i = 0; i < spoonsLength; i++) //Update new uses
-        {
-            SetUsesText(i);
-        }
+        transform.GetChild(spoon).gameObject.SetActive(false);
     }
 
     void SetUsesText(int spoon)
@@ -82,13 +71,6 @@ public class SpoonsEquipped : MonoBehaviour
         } else
         {
             usesTextComponents[spoon].text = "∞";
-        }
-    }
-
-    void UpdateSpoonImageComponents()
-    {
-        for (var i = 0; i < 4; i++) {
-            imageComponents[i].sprite = spoonSprites[i];
         }
     }
 

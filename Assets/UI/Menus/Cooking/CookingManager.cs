@@ -198,10 +198,12 @@ public class CookingManager : MonoBehaviour
         }
 
         // Don't cook if max spoons
+        /*
         if (PlayerInventory.Singleton.GetSpoons().Count == PlayerInventory.Singleton.maxSpoons)
         {
             return;
         }
+        */
 
         //if (!PlayerEntityManager.Singleton.HasCooked())
         //{

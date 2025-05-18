@@ -10,11 +10,9 @@ public class SoupSelection : MonoBehaviour
 {
     public static SoupSelection Singleton { get; private set; }
 
-    //private int selectedIndex = -1;
-
     public void OnSingleClick()
     {
-        Debug.Log("Clicked one time!");
+        //Debug.Log("Clicked one time!");
 
         //TODO: Check if selectedSoup is null
 
@@ -27,12 +25,6 @@ public class SoupSelection : MonoBehaviour
         var soupIndex = this.transform.GetSiblingIndex();
         PlayerInventory.Singleton.SetSelectedSoup(soupIndex);
     }
-
-    /*
-    public int GetSelectedIndex() {
-        return selectedIndex;
-    }
-    */
 
     public void OnHoverEnter()
     {

@@ -30,11 +30,10 @@ public class PlayerInventory : MonoBehaviour
     internal List<Collectable> collectablesHeld;
 
     [SerializeField]
-    List<SoupSpoon> spoons; //REMOVE
+    SoupSpoon[] spoons;
 
     [Header("Soup Inventory")]
-    [SerializeField] SoupSpoon[] soups;
-    public int maxSpoons = 10;
+    private int maxSpoons = 10;
     private int maxSelectedSpoons = 4;
     public int currentSpoon = 0;
     [SerializeField] GameObject soupInventory;
@@ -44,21 +43,15 @@ public class PlayerInventory : MonoBehaviour
     void Awake()
     {
         if (Singleton == null) Singleton = this;
-        spoons = new() {new SoupSpoon(defaultSpoonIngredients, defaultSoupBase) }; //REMOVE
 
-        soups = new SoupSpoon[10];
-        soups[0] = new SoupSpoon(defaultSpoonIngredients, defaultSoupBase);
+        spoons = new SoupSpoon[10];
+        spoons[0] = new SoupSpoon(defaultSpoonIngredients, defaultSoupBase);
         collectablesHeld = new();
     }
 
-    public List<SoupSpoon> GetSpoons() //REMOVE
+    public SoupSpoon[] GetSpoons()
     {
         return spoons;
-    }
-
-    public SoupSpoon[] GetSoups()
-    {
-        return soups;
     }
 
     public int GetCurrentSpoon()
@@ -104,16 +97,14 @@ public class PlayerInventory : MonoBehaviour
 
     public bool CookSoup(List<Ingredient> ingredients, SoupBase b)
     {
-        //if (spoons.Count == maxSpoons) return false;
         if (selectedSlot < 0) return false;
 
-        soups[selectedSlot] = new SoupSpoon(ingredients, b);
+        spoons[selectedSlot] = new SoupSpoon(ingredients, b);
         SoupUI.Singleton.AddSoupInSlot(selectedSlot);
         currentSpoon = 0;
         
         if(selectedSlot < 4)
         {
-            spoons.Add(new SoupSpoon(ingredients, b));
             currentSpoon = selectedSlot;
             AddSpoon?.Invoke(currentSpoon);
             ChangedSpoon?.Invoke(currentSpoon);
@@ -130,26 +121,47 @@ public class PlayerInventory : MonoBehaviour
         selectedSlot = index;
     }
 
+    //TODO: Fix!!
     void CycleSpoons(InputAction.CallbackContext ctx)
     {
-        if (spoons.Count <= 1) return;
+        //if (spoons.Count <= 1) return;
 
         if (ctx.ReadValue<float>() < 0)
         {
-            currentSpoon--;
-            currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+            currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
         }
         else if(ctx.ReadValue<float>() > 4) //4 is the number of hotkeys
         {
-            currentSpoon++;
-            currentSpoon = currentSpoon >= spoons.Count ? currentSpoon = 0 : currentSpoon;
+            currentSpoon = FindNextAvalaibleIndex(currentSpoon, true);
         } 
         else
         {
             //TODO: Add check for count
-            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon : (int)ctx.ReadValue<float>() - 1;
+            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= maxSelectedSpoons ? currentSpoon : (int)ctx.ReadValue<float>() - 1;
         }
+        Debug.Log("Next spoon at index: " + currentSpoon);
         ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    //Iterate to find next avaliable spoon and return the index
+    //If increment bool is false: decriment, if true: increment
+
+    //Fix: When at index 0, cannot scroll down!
+    int FindNextAvalaibleIndex(int curr, bool increment)
+    {
+        if (increment) {
+            for (int i = curr + 1; i < maxSelectedSpoons; i++)
+            {
+                if(spoons[i] != null) { return i; }
+            }
+        } else {
+            if(curr == 0) { curr = maxSelectedSpoons - 1; }
+            for (int i = curr - 1 ; i > 0; i--)
+            {
+                if (spoons[i] != null) { return i; }
+            }
+        }
+        return 0;
     }
 
     void UseSpoon(InputAction.CallbackContext ctx)
@@ -190,18 +202,17 @@ public class PlayerInventory : MonoBehaviour
             noUsesLeft = false;
         }
 
+        // Invoke the changed spoon event to indicate it has changed
+        ChangedSpoon?.Invoke(currentSpoon);
 
         // remove spoon if no uses left
         if (noUsesLeft)
         {
-            spoons.RemoveAt(currentSpoon);
+            spoons[currentSpoon] = null;
             RemoveSpoon?.Invoke(currentSpoon);
             currentSpoon--;
-            currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+            currentSpoon = currentSpoon < 0 ? maxSelectedSpoons - 1 : currentSpoon;
         }
-
-        // Invoke the changed spoon event to indicate it has changed
-        ChangedSpoon?.Invoke(currentSpoon);
     }
 
 
