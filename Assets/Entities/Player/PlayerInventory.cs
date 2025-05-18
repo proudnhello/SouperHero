@@ -9,6 +9,8 @@ using static SoupSpoon;
 using System.Linq.Expressions;
 using static UnityEditor.Progress;
 
+//TODO: Don't allow empty/null soups to be swapped
+//TODO: Add check for selectedSlot, so that soups cannot be cooked over
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Singleton { get; private set; }
@@ -105,9 +107,9 @@ public class PlayerInventory : MonoBehaviour
 
         spoons[selectedSlot] = new SoupSpoon(ingredients, b);
         SoupUI.Singleton.AddSoupInSlot(selectedSlot);
-        currentSpoon = 0;
+        currentSpoon = 0; //Reset to spoon in first slot
         
-        if(selectedSlot < 4)
+        if(selectedSlot < maxSelectedSpoons) //If soup is made in selected spot
         {
             currentSpoon = selectedSlot;
             AddSpoon?.Invoke(currentSpoon);
@@ -128,13 +130,11 @@ public class PlayerInventory : MonoBehaviour
     //TODO: Fix!!
     void CycleSpoons(InputAction.CallbackContext ctx)
     {
-        //if (spoons.Count <= 1) return;
-
         if (ctx.ReadValue<float>() < 0)
         {
             currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
         }
-        else if(ctx.ReadValue<float>() > 4) //4 is the number of hotkeys
+        else if(ctx.ReadValue<float>() > maxSelectedSpoons) //4 is the number of hotkeys
         {
             currentSpoon = FindNextAvalaibleIndex(currentSpoon, true);
         } 
@@ -143,14 +143,12 @@ public class PlayerInventory : MonoBehaviour
             //TODO: Add check for count
             currentSpoon = (int)ctx.ReadValue<float>() - 1 >= maxSelectedSpoons ? currentSpoon : (int)ctx.ReadValue<float>() - 1;
         }
-        Debug.Log("Next spoon at index: " + currentSpoon);
         ChangedSpoon?.Invoke(currentSpoon);
     }
 
     //Iterate to find next avaliable spoon and return the index
     //If increment bool is false: decriment, if true: increment
-
-    //Fix: When at index 0, cannot scroll down!
+    //Lo: I know this is stupid, but everything is stupid.
     int FindNextAvalaibleIndex(int curr, bool increment)
     {
         if (increment) {
@@ -212,7 +210,6 @@ public class PlayerInventory : MonoBehaviour
             spoons[currentSpoon] = null;
             RemoveSpoon?.Invoke(currentSpoon);
             currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
-            //currentSpoon = currentSpoon < 0 ? maxSelectedSpoons - 1 : currentSpoon;
         }
 
         // Invoke the changed spoon event to indicate it has changed
