@@ -202,17 +202,17 @@ public class PlayerInventory : MonoBehaviour
             noUsesLeft = false;
         }
 
-        // Invoke the changed spoon event to indicate it has changed
-        ChangedSpoon?.Invoke(currentSpoon);
-
         // remove spoon if no uses left
         if (noUsesLeft)
         {
             spoons[currentSpoon] = null;
             RemoveSpoon?.Invoke(currentSpoon);
-            currentSpoon--;
-            currentSpoon = currentSpoon < 0 ? maxSelectedSpoons - 1 : currentSpoon;
+            currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
+            //currentSpoon = currentSpoon < 0 ? maxSelectedSpoons - 1 : currentSpoon;
         }
+
+        // Invoke the changed spoon event to indicate it has changed
+        ChangedSpoon?.Invoke(currentSpoon);
     }
 
 
