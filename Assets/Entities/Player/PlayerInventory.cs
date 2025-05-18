@@ -58,13 +58,15 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
+        // PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
+        PlayerKeybinds.Singleton.useSpoon.action.started += UseSpoon;
         PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
     }
 
     private void OnDisable()
     {
-        PlayerEntityManager.Singleton.input.Player.UseSpoon.started -= UseSpoon;
+        // PlayerEntityManager.Singleton.input.Player.UseSpoon.started -= UseSpoon;
+        PlayerKeybinds.Singleton.useSpoon.action.started -= UseSpoon;
         PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
     }
 

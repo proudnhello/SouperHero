@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerKeybinds : MonoBehaviour
 {
-    public static PlayerKeybinds instance;
+    public static PlayerKeybinds Singleton;
 
     public InputActionReference useSpoon;
     public InputActionReference dash;
@@ -22,9 +22,9 @@ public class PlayerKeybinds : MonoBehaviour
 
     void Awake()
     {
-        if (instance == null)
+        if (Singleton == null)
         {
-            instance = this;
+            Singleton = this;
         }
     }
 }
