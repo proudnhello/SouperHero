@@ -36,7 +36,6 @@ public class PlayerInventory : MonoBehaviour
     private int maxSpoons = 10;
     private int maxSelectedSpoons = 4;
     public int currentSpoon = 0;
-    [SerializeField] GameObject soupInventory;
     private int selectedSlot = -1;
 
 
@@ -46,6 +45,11 @@ public class PlayerInventory : MonoBehaviour
 
         spoons = new SoupSpoon[10];
         spoons[0] = new SoupSpoon(defaultSpoonIngredients, defaultSoupBase);
+        for(int i = 1; i < maxSpoons - 1; i++) //Set the rest of spoons in array to null
+        {
+            spoons[i] = null;
+        }
+
         collectablesHeld = new();
     }
 
