@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using static UnityEditor.Progress;
 
 //TODO: Don't allow empty/null soups to be swapped
-//TODO: Add check for selectedSlot, so that soups cannot be cooked over
+//FIX: Cannot cook in anything in slots 6-9 (index out of range)
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Singleton { get; private set; }
@@ -65,6 +65,20 @@ public class PlayerInventory : MonoBehaviour
         return currentSpoon;
     }
 
+    //Set variable for which soup slot was clicked
+    public void SetSelectedSoup(int index)
+    {
+        selectedSlot = index;
+    }
+
+    /*
+    //Get which soup slot was clicked
+    public int GetSelectedSoup()
+    {
+        return selectedSlot;
+    }
+    */
+
     private void Start()
     {
         PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
@@ -103,7 +117,7 @@ public class PlayerInventory : MonoBehaviour
 
     public bool CookSoup(List<Ingredient> ingredients, SoupBase b)
     {
-        if (selectedSlot < 0) return false;
+        if (selectedSlot < 0) return false; //Check to make sure valid slot is selected
 
         spoons[selectedSlot] = new SoupSpoon(ingredients, b);
         SoupUI.Singleton.AddSoupInSlot(selectedSlot);
@@ -119,12 +133,6 @@ public class PlayerInventory : MonoBehaviour
         MetricsTracker.Singleton.RecordSoupsCooked();
 
         return true;
-    }
-
-    //Set variable for which soup slot was clicked
-    public void SetSelectedSoup(int index)
-    {
-        selectedSlot = index;
     }
 
     //TODO: Fix!!

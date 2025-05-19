@@ -243,30 +243,28 @@ public class CookingManager : MonoBehaviour
             cookedIngredients.Add(ingredient.ingredient);
         }
 
-        if(soupBase == null)
+        //Lo: This check will be changed later once the function is removed
+        if (soupBase == null && PlayerInventory.Singleton.OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients))
         {
             UnityEngine.Debug.LogWarning("SoupBase is null! Press play to continue, the code works, but someone needs to hook up soup bases to the UI");
-            PlayerInventory.Singleton.OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
+            //PlayerInventory.Singleton.OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
+            //if (PlayerInventory.Singleton.CookSoup(cookedIngredients, soupBase)) { //Check to make sure soup can be cooked
+
+            // Remove From Player Inventory
+            foreach (Collectable ingredient in cookingIngredients)
+            {
+                PlayerInventory.Singleton.RemoveIngredientCollectable(ingredient, true);
+            }
+
+            cookingIngredients.Clear();
+
+            ClearCookingManagerSprites();
+
+            CookSoup?.Invoke();
+
+            // Exit Cooking
+            ExitCooking();
         }
-        else
-        {
-            PlayerInventory.Singleton.CookSoup(cookedIngredients, soupBase);
-        }
-
-        // Remove From Player Inventory
-        foreach (Collectable ingredient in cookingIngredients)
-        {
-            PlayerInventory.Singleton.RemoveIngredientCollectable(ingredient, true);
-        }
-
-        cookingIngredients.Clear();
-
-        ClearCookingManagerSprites();
-
-        CookSoup?.Invoke();
-
-        // Exit Cooking
-        ExitCooking();
     }
 
     // Sets all the sprites in the cooking slot to null and 0 alpha
