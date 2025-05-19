@@ -84,7 +84,10 @@ public class SoupUI : MonoBehaviour
         //TODO: Use whatever image is attached to the soup instead of temp
         if (index < 4) return; //Don't effect selected soups
         var image = SoupInventory.transform.GetChild(index).GetChild(0).GetComponent<Image>();
-        image.sprite = tempSoupSprites[index];
+        //image.sprite = tempSoupSprites[index];
+        //This is temporary!
+        //The -4 is to account for the first 4 active soups, since they don't have slot icons
+        image.sprite = tempSoupSprites[index-4];
         SetAlpha(image, 1);
     }
 

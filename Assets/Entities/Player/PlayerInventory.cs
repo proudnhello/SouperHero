@@ -45,7 +45,7 @@ public class PlayerInventory : MonoBehaviour
     {
         if (Singleton == null) Singleton = this;
 
-        spoons = new SoupSpoon[10];
+        spoons = new SoupSpoon[maxSpoons];
         spoons[0] = new SoupSpoon(defaultSpoonIngredients, defaultSoupBase);
         for(int i = 1; i < maxSpoons - 1; i++) //Set the rest of spoons in array to null
         {
@@ -117,6 +117,7 @@ public class PlayerInventory : MonoBehaviour
 
     public bool CookSoup(List<Ingredient> ingredients, SoupBase b)
     {
+        Debug.Log("Slot: " + selectedSlot);
         if (selectedSlot < 0) return false; //Check to make sure valid slot is selected
 
         spoons[selectedSlot] = new SoupSpoon(ingredients, b);
@@ -135,7 +136,6 @@ public class PlayerInventory : MonoBehaviour
         return true;
     }
 
-    //TODO: Fix!!
     void CycleSpoons(InputAction.CallbackContext ctx)
     {
         if (ctx.ReadValue<float>() < 0)
