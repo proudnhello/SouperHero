@@ -99,6 +99,13 @@ public class SoupUI : MonoBehaviour
         SetAlpha(image, 0);
     }
 
+    public void SwapSoups(int index1, int index2)
+    {
+        (tempSoupSprites[index1 - 4], tempSoupSprites[index2 - 4]) = (tempSoupSprites[index2 - 4], tempSoupSprites[index1 - 4]);
+        AddSoupInSlot(index1);
+        AddSoupInSlot(index2);
+    }
+
     //Helper function to set alpha
     private void SetAlpha(Image image, int alphaAmount)
     {

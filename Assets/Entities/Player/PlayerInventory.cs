@@ -71,13 +71,11 @@ public class PlayerInventory : MonoBehaviour
         selectedSlot = index;
     }
 
-    /*
     //Get which soup slot was clicked
     public int GetSelectedSoup()
     {
         return selectedSlot;
     }
-    */
 
     private void Start()
     {
@@ -136,13 +134,18 @@ public class PlayerInventory : MonoBehaviour
         return true;
     }
 
+    public void SwapSoups(int index1, int index2)
+    {
+        (spoons[index1], spoons[index2]) = (spoons[index2], spoons[index1]);
+    }
+
     void CycleSpoons(InputAction.CallbackContext ctx)
     {
         if (ctx.ReadValue<float>() < 0)
         {
             currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
         }
-        else if(ctx.ReadValue<float>() > maxSelectedSpoons) //4 is the number of hotkeys
+        else if(ctx.ReadValue<float>() > maxSelectedSpoons)
         {
             currentSpoon = FindNextAvalaibleIndex(currentSpoon, true);
         } 
@@ -223,8 +226,6 @@ public class PlayerInventory : MonoBehaviour
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
     }
-
-
 
     void Throw(Throwable item)
     {

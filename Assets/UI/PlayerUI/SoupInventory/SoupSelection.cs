@@ -8,22 +8,20 @@ using Image = UnityEngine.UI.Image;
 
 public class SoupSelection : MonoBehaviour
 {
-    public static SoupSelection Singleton { get; private set; }
-
     public void OnSingleClick()
     {
-        //Debug.Log("Clicked one time!");
-
-        //TODO: Check if selectedSoup is null
-
-        //If null: Assign selectedSoup to selected slot
-        //Allow for soup to be cooked
-
-        //Else: swap soups in selectedSoup and the clicked slot
-        //Re-assign selectedSoup to null
-
-        var soupIndex = this.transform.GetSiblingIndex();
-        PlayerInventory.Singleton.SetSelectedSoup(soupIndex);
+        var soupIndex = this.transform.GetSiblingIndex(); //Get index of clicked slot
+        //Check if another slot was clicked previously, if not then set selected soup to the clicked index
+        if (PlayerInventory.Singleton.GetSelectedSoup() == -1)
+        {
+            PlayerInventory.Singleton.SetSelectedSoup(soupIndex);
+        }
+        else //Swap soups in spoons (Player Inventory) and UI. Reset the index
+        {
+            PlayerInventory.Singleton.SwapSoups(soupIndex, PlayerInventory.Singleton.GetSelectedSoup());
+            SoupUI.Singleton.SwapSoups(soupIndex, PlayerInventory.Singleton.GetSelectedSoup());
+            PlayerInventory.Singleton.SetSelectedSoup(-1);
+        }
     }
 
     public void OnHoverEnter()
