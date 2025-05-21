@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class PauseManager : MonoBehaviour
 {
@@ -18,26 +19,37 @@ public class PauseManager : MonoBehaviour
         isPaused = false;
 
         // Hook up Pause Button from input map to OnPauseButton()
+        PlayerKeybinds.Singleton.pause.action.started += Pause;
+    }
+
+    void OnDisable()
+    {
+        PlayerKeybinds.Singleton.pause.action.started -= Pause;
     }
 
     // ############ DELETE THIS BELOW AFTER HOOKING IT UP
-    void Update()
-    {
-        if (Input.GetKeyDown(pauseKey) && pauseScreen != null
-            && !CookingManager.Singleton.IsCooking()) //Don't pause when cooking
-        {
-            isPaused = !isPaused;
-            if (isPaused)
-            {
-                PauseGame();
-            }
-            else
-            {
-                ResumeGame();
-            }
-        }
-    }
+    // void Update()
+    // {
+    //     if (Input.GetKeyDown(pauseKey) && pauseScreen != null
+    //         && !CookingManager.Singleton.IsCooking()) //Don't pause when cooking
+    //     {
+    //         isPaused = !isPaused;
+    //         if (isPaused)
+    //         {
+    //             PauseGame();
+    //         }
+    //         else
+    //         {
+    //             ResumeGame();
+    //         }
+    //     }
+    // }
     // ########################
+
+    void Pause(InputAction.CallbackContext ctx)
+    {
+        OnPauseButton();
+    }
 
     void OnPauseButton()
     {

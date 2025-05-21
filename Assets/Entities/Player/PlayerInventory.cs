@@ -58,16 +58,26 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        // PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
         PlayerKeybinds.Singleton.useSpoon.action.started += UseSpoon;
-        PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
+        PlayerKeybinds.Singleton.cycleSpoonLeft.action.started += CycleSpoonLeft;
+        PlayerKeybinds.Singleton.cycleSpoonRight.action.started += CycleSpoonRight;
+        PlayerKeybinds.Singleton.bowl1.action.started += Bowl1;
+        PlayerKeybinds.Singleton.bowl2.action.started += Bowl2;
+        PlayerKeybinds.Singleton.bowl3.action.started += Bowl3;
+        PlayerKeybinds.Singleton.bowl4.action.started += Bowl4;
+        // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
     }
 
     private void OnDisable()
     {
-        // PlayerEntityManager.Singleton.input.Player.UseSpoon.started -= UseSpoon;
         PlayerKeybinds.Singleton.useSpoon.action.started -= UseSpoon;
-        PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
+        PlayerKeybinds.Singleton.cycleSpoonLeft.action.started -= CycleSpoonLeft;
+        PlayerKeybinds.Singleton.cycleSpoonRight.action.started -= CycleSpoonRight;
+        PlayerKeybinds.Singleton.bowl1.action.started -= Bowl1;
+        PlayerKeybinds.Singleton.bowl2.action.started -= Bowl2;
+        PlayerKeybinds.Singleton.bowl3.action.started -= Bowl3;
+        PlayerKeybinds.Singleton.bowl4.action.started -= Bowl4;
+        // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
     }
 
     public void CollectIngredientCollectable(Collectable collectable)
@@ -108,26 +118,26 @@ public class PlayerInventory : MonoBehaviour
         return true;
     }
 
-    void CycleSpoons(InputAction.CallbackContext ctx)
+    void CycleSpoons(int direction)
     {
         if (spoons.Count <= 1) return;
 
-        if (ctx.ReadValue<float>() < 0)
+        currentSpoon = (currentSpoon + direction) % spoons.Count;
+        
+        if (currentSpoon == -1)
         {
-            currentSpoon--;
-            currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
-        }
-        else if(ctx.ReadValue<float>() > 4) //4 is the number of hotkeys
-        {
-            currentSpoon++;
-            currentSpoon = currentSpoon >= spoons.Count ? currentSpoon = 0 : currentSpoon;
-        } 
-        else
-        {
-            //TODO: Add check for count
-            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= spoons.Count ? currentSpoon : (int)ctx.ReadValue<float>() - 1;
+            currentSpoon = spoons.Count - 1;
         }
         ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    void ChangeBowl(int bowl)
+    {
+        if (bowl == 0 || spoons.Count > bowl)
+        {
+            currentSpoon = bowl;
+            ChangedSpoon?.Invoke(currentSpoon);
+        }
     }
 
     void UseSpoon(InputAction.CallbackContext ctx)
@@ -182,7 +192,35 @@ public class PlayerInventory : MonoBehaviour
         ChangedSpoon?.Invoke(currentSpoon);
     }
 
+    void CycleSpoonLeft(InputAction.CallbackContext ctx)
+    {
+        CycleSpoons(-1);
+    }
 
+    void CycleSpoonRight(InputAction.CallbackContext ctx)
+    {
+        CycleSpoons(1);
+    }
+
+    void Bowl1(InputAction.CallbackContext ctx)
+    {
+        ChangeBowl(0);
+    }
+
+    void Bowl2(InputAction.CallbackContext ctx)
+    {
+        ChangeBowl(1);
+    }
+
+    void Bowl3(InputAction.CallbackContext ctx)
+    {
+        ChangeBowl(2);
+    }
+
+    void Bowl4(InputAction.CallbackContext ctx)
+    {
+        ChangeBowl(3);
+    }
 
     void Throw(Throwable item)
     {

@@ -76,6 +76,69 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CycleSpoonLeft",
+                    "type": "Button",
+                    "id": "29c54269-04c2-4da3-a5b5-af5e03eaaf38",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CycleSpoonRight",
+                    "type": "Button",
+                    "id": "2b68961a-bdbd-4890-b1cc-76b0db71d998",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Bowl1",
+                    "type": "Button",
+                    "id": "9e0950f0-6a2e-4131-adaf-4df33973ef62",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Bowl2",
+                    "type": "Button",
+                    "id": "003b22f7-243f-4249-85ff-810093fcdfde",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Bowl3",
+                    "type": "Button",
+                    "id": "2cfddc4d-4a63-4be1-bfda-952257108f57",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Bowl4",
+                    "type": "Button",
+                    "id": "0156baac-c8dd-4408-a351-f7e88188e477",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PauseGame",
+                    "type": "Button",
+                    "id": "1632e9a1-d8df-4135-897c-149a2d402be1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -279,28 +342,6 @@
                 },
                 {
                     "name": "",
-                    "id": "05fdd200-ccd6-44e9-977b-c3661f87ff21",
-                    "path": "<Keyboard>/c",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Encyclopedia",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8135de64-3e1c-4a1f-a142-9dc98701b13d",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "d3087422-f480-4541-9902-1730cc755df1",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
@@ -329,6 +370,83 @@
                     "processors": "",
                     "groups": "",
                     "action": "DebugMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d952bfe-eb5c-470b-baea-e0fd25fb1f4b",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleSpoonLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6a3369a6-a6c3-4e27-afc1-f31093bd2fa7",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleSpoonRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7c6ea9ed-5b0f-4f91-b11b-7779bda8e009",
+                    "path": "<Keyboard>/1",
+                    "interactions": "Press",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "Bowl1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8e0e537d-f27b-439f-840c-0bf61cefcc63",
+                    "path": "<Keyboard>/2",
+                    "interactions": "Press",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "Bowl2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bfc8d1b2-fd95-4903-891b-f0f279d17d71",
+                    "path": "<Keyboard>/3",
+                    "interactions": "Press",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "Bowl3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "870ab3c6-bb01-4453-8915-ea4cbc8341d8",
+                    "path": "<Keyboard>/4",
+                    "interactions": "Press",
+                    "processors": "Scale",
+                    "groups": "",
+                    "action": "Bowl4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f728a77-a25b-45a9-98d7-8fe2b6590222",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PauseGame",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
