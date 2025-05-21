@@ -152,6 +152,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""1632e9a1-d8df-4135-897c-149a2d402be1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -449,6 +458,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": ""Scale"",
                     ""groups"": """",
                     ""action"": ""Bowl4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f728a77-a25b-45a9-98d7-8fe2b6590222"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseGame"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -989,6 +1009,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Bowl2 = m_Player.FindAction("Bowl2", throwIfNotFound: true);
         m_Player_Bowl3 = m_Player.FindAction("Bowl3", throwIfNotFound: true);
         m_Player_Bowl4 = m_Player.FindAction("Bowl4", throwIfNotFound: true);
+        m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1082,6 +1103,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Bowl2;
     private readonly InputAction m_Player_Bowl3;
     private readonly InputAction m_Player_Bowl4;
+    private readonly InputAction m_Player_PauseGame;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1100,6 +1122,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Bowl2 => m_Wrapper.m_Player_Bowl2;
         public InputAction @Bowl3 => m_Wrapper.m_Player_Bowl3;
         public InputAction @Bowl4 => m_Wrapper.m_Player_Bowl4;
+        public InputAction @PauseGame => m_Wrapper.m_Player_PauseGame;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1151,6 +1174,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Bowl4.started += instance.OnBowl4;
             @Bowl4.performed += instance.OnBowl4;
             @Bowl4.canceled += instance.OnBowl4;
+            @PauseGame.started += instance.OnPauseGame;
+            @PauseGame.performed += instance.OnPauseGame;
+            @PauseGame.canceled += instance.OnPauseGame;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1197,6 +1223,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Bowl4.started -= instance.OnBowl4;
             @Bowl4.performed -= instance.OnBowl4;
             @Bowl4.canceled -= instance.OnBowl4;
+            @PauseGame.started -= instance.OnPauseGame;
+            @PauseGame.performed -= instance.OnPauseGame;
+            @PauseGame.canceled -= instance.OnPauseGame;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1348,6 +1377,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnBowl2(InputAction.CallbackContext context);
         void OnBowl3(InputAction.CallbackContext context);
         void OnBowl4(InputAction.CallbackContext context);
+        void OnPauseGame(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
