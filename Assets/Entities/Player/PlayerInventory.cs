@@ -47,11 +47,10 @@ public class PlayerInventory : MonoBehaviour
 
         spoons = new SoupSpoon[maxSpoons];
         spoons[0] = new SoupSpoon(defaultSpoonIngredients, defaultSoupBase);
-        for(int i = 1; i < maxSpoons - 1; i++) //Set the rest of spoons in array to null
+        for (int i = 1; i < maxSpoons - 1; i++) //Set the rest of spoons in array to null
         {
             spoons[i] = null;
         }
-
         collectablesHeld = new();
     }
 
@@ -115,7 +114,6 @@ public class PlayerInventory : MonoBehaviour
 
     public bool CookSoup(List<Ingredient> ingredients, SoupBase b)
     {
-        Debug.Log("Slot: " + selectedSlot);
         if (selectedSlot < 0) return false; //Check to make sure valid slot is selected
 
         spoons[selectedSlot] = new SoupSpoon(ingredients, b);
@@ -149,7 +147,7 @@ public class PlayerInventory : MonoBehaviour
         {
             currentSpoon = FindNextAvalaibleIndex(currentSpoon, true);
         } 
-        else
+        else //If keybinds (1-4) are selected instead of scroll wheel
         {
             //TODO: Add check for count
             currentSpoon = (int)ctx.ReadValue<float>() - 1 >= maxSelectedSpoons ? currentSpoon : (int)ctx.ReadValue<float>() - 1;
@@ -165,13 +163,13 @@ public class PlayerInventory : MonoBehaviour
         if (increment) {
             for (int i = curr + 1; i < maxSelectedSpoons; i++)
             {
-                if(spoons[i] != null) { return i; }
+                if(spoons[i].spoonAbilities != null) { return i; }
             }
         } else {
-            if(curr == 0) { curr = maxSelectedSpoons - 1; }
+            if(curr == 0) { curr = maxSelectedSpoons; }
             for (int i = curr - 1 ; i > 0; i--)
             {
-                if (spoons[i] != null) { return i; }
+                if (spoons[i].spoonAbilities != null) { return i; }
             }
         }
         return 0;
