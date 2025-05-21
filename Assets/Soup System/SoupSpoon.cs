@@ -30,7 +30,7 @@ public class SoupSpoon
 
         // New spoon ability for new ability ingredient in the soup
         public SpoonAbility(AbilityIngredient ingredient, List<FlavorIngredient.BuffFlavor> buffs)
-        {         
+        {
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
             icon = ingredient.Icon;
@@ -42,7 +42,8 @@ public class SoupSpoon
         public void CalculateInflictions(Dictionary<InflictionType, SpoonInfliction> genericInflictions)
         {
             Dictionary<InflictionType, SpoonInfliction> inflictionTracker = new(genericInflictions);
-            foreach (var infliction in inherentInflictions) { 
+            foreach (var infliction in inherentInflictions)
+            {
                 if (!inflictionTracker.ContainsKey(infliction.inflictionType))
                     inflictionTracker.Add(infliction.inflictionType, new(infliction));
                 inflictionTracker[infliction.inflictionType].AddIngredient(infliction);
@@ -104,7 +105,7 @@ public class SoupSpoon
 
         public void AddIngredient(InflictionFlavor effect)
         {
-             add += effect.amount;
+            add += effect.amount;
         }
         public void Multiply(int count)
         {
@@ -157,18 +158,19 @@ public class SoupSpoon
         {
             if (!abilityTracker.ContainsKey(ingredient))
             {
-                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));         
-            } else
+                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));
+            }
+            else
             {
                 abilityTracker[ingredient].AddIngredient(ingredient);
             }
             uses += ingredient.uses;
         }
-        
+
         // Populate infliction tracker with infliction flavors
         foreach (var infliction in inflictionFlavors)
         {
-            if (!inflictionTracker.ContainsKey(infliction.inflictionType)) 
+            if (!inflictionTracker.ContainsKey(infliction.inflictionType))
                 inflictionTracker.Add(infliction.inflictionType, new(infliction));
             inflictionTracker[infliction.inflictionType].AddIngredient(infliction);
 
@@ -200,7 +202,7 @@ public class SoupSpoon
             foreach (var infliction in ing.inflictionFlavors)
             {
                 inflictionTracker[infliction.inflictionType].Multiply(count);
-            }     
+            }
         }
 
         // Now based on pairings, multiply corresponding stat
@@ -211,7 +213,8 @@ public class SoupSpoon
                 var pair = (BuffFlavor.BuffType)flavorIngredient.Pairing.GetPairing();
                 if (!FlavorBuffCounter.ContainsKey(pair)) continue;
                 MultiplyFlavorPairing(flavorIngredient, FlavorBuffCounter[pair]);
-            } else
+            }
+            else
             {
                 var pair = (InflictionType)flavorIngredient.Pairing.GetPairing();
                 if (!FlavorInflictionCounter.ContainsKey(pair)) continue;
@@ -254,7 +257,8 @@ public class SoupSpoon
         if ((Time.time - lastTimeUsed) < cooldown)
         {
             return (Time.time - lastTimeUsed) / cooldown;
-        } else
+        }
+        else
         {
             return 1;
         }
@@ -279,6 +283,19 @@ public class SoupSpoon
 
         // Decrement uses if applicable
         if (uses > 0) uses--;
+
+        return true;
+    }
+
+    public bool DrinkSoup(Entity thePlayer)
+    {
+        if ((Time.time - lastTimeUsed) < cooldown || uses < 5 || thePlayer.GetHealth() == 90) return false;
+        lastTimeUsed = Time.time;
+
+        thePlayer.ModifyHealth(10);
+
+        // Decrement uses if applicable
+        uses -= 5;
 
         return true;
     }

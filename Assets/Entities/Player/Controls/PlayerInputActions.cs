@@ -161,6 +161,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DrinkSoup"",
+                    ""type"": ""Button"",
+                    ""id"": ""48c13d27-8064-4981-b768-4a4eaead7c72"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -469,6 +478,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""PauseGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5c4a7ad3-48ad-4c7f-8f52-111e9cc4a82a"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DrinkSoup"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1010,6 +1030,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Bowl3 = m_Player.FindAction("Bowl3", throwIfNotFound: true);
         m_Player_Bowl4 = m_Player.FindAction("Bowl4", throwIfNotFound: true);
         m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
+        m_Player_DrinkSoup = m_Player.FindAction("DrinkSoup", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1104,6 +1125,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Bowl3;
     private readonly InputAction m_Player_Bowl4;
     private readonly InputAction m_Player_PauseGame;
+    private readonly InputAction m_Player_DrinkSoup;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1123,6 +1145,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Bowl3 => m_Wrapper.m_Player_Bowl3;
         public InputAction @Bowl4 => m_Wrapper.m_Player_Bowl4;
         public InputAction @PauseGame => m_Wrapper.m_Player_PauseGame;
+        public InputAction @DrinkSoup => m_Wrapper.m_Player_DrinkSoup;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1177,6 +1200,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PauseGame.started += instance.OnPauseGame;
             @PauseGame.performed += instance.OnPauseGame;
             @PauseGame.canceled += instance.OnPauseGame;
+            @DrinkSoup.started += instance.OnDrinkSoup;
+            @DrinkSoup.performed += instance.OnDrinkSoup;
+            @DrinkSoup.canceled += instance.OnDrinkSoup;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1226,6 +1252,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PauseGame.started -= instance.OnPauseGame;
             @PauseGame.performed -= instance.OnPauseGame;
             @PauseGame.canceled -= instance.OnPauseGame;
+            @DrinkSoup.started -= instance.OnDrinkSoup;
+            @DrinkSoup.performed -= instance.OnDrinkSoup;
+            @DrinkSoup.canceled -= instance.OnDrinkSoup;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1378,6 +1407,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnBowl3(InputAction.CallbackContext context);
         void OnBowl4(InputAction.CallbackContext context);
         void OnPauseGame(InputAction.CallbackContext context);
+        void OnDrinkSoup(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

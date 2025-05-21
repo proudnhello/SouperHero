@@ -59,6 +59,7 @@ public class PlayerInventory : MonoBehaviour
     private void Start()
     {
         PlayerKeybinds.Singleton.useSpoon.action.started += UseSpoon;
+        PlayerKeybinds.Singleton.drinkSoup.action.started += DrinkSoup;
         PlayerKeybinds.Singleton.cycleSpoonLeft.action.started += CycleSpoonLeft;
         PlayerKeybinds.Singleton.cycleSpoonRight.action.started += CycleSpoonRight;
         PlayerKeybinds.Singleton.bowl1.action.started += Bowl1;
@@ -71,6 +72,7 @@ public class PlayerInventory : MonoBehaviour
     private void OnDisable()
     {
         PlayerKeybinds.Singleton.useSpoon.action.started -= UseSpoon;
+        PlayerKeybinds.Singleton.drinkSoup.action.started -= DrinkSoup;
         PlayerKeybinds.Singleton.cycleSpoonLeft.action.started -= CycleSpoonLeft;
         PlayerKeybinds.Singleton.cycleSpoonRight.action.started -= CycleSpoonRight;
         PlayerKeybinds.Singleton.bowl1.action.started -= Bowl1;
@@ -189,6 +191,36 @@ public class PlayerInventory : MonoBehaviour
         }
 
         // Invoke the changed spoon event to indicate it has changed
+        ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    void DrinkSoup(InputAction.CallbackContext ctx)
+    {
+        // Index into current spoon
+        SoupSpoon spoon = spoons[currentSpoon];
+
+        if (CookingManager.Singleton.IsCooking() || spoon.GetUses() < 5)
+        {
+            return;
+        }
+
+        spoon.DrinkSoup(gameObject.GetComponent<Entity>());
+
+        bool noUsesLeft = true;
+
+        if (spoon.GetUses() > 0)
+        {
+            noUsesLeft = false;
+        }
+
+        if (noUsesLeft)
+        {
+            spoons.RemoveAt(currentSpoon);
+            RemoveSpoon?.Invoke(currentSpoon);
+            currentSpoon--;
+            currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+        }
+
         ChangedSpoon?.Invoke(currentSpoon);
     }
 
