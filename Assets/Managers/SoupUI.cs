@@ -101,6 +101,7 @@ public class SoupUI : MonoBehaviour
 
     public void SwapSoups(int index1, int index2)
     {
+        //TODO: Account for selected soup being in slots 0 - 4. Don't add to slot if that is the case
         (tempSoupSprites[index1 - 4], tempSoupSprites[index2 - 4]) = (tempSoupSprites[index2 - 4], tempSoupSprites[index1 - 4]);
         AddSoupInSlot(index1);
         AddSoupInSlot(index2);

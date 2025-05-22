@@ -11,15 +11,21 @@ public class SoupSelection : MonoBehaviour
     public void OnSingleClick()
     {
         var soupIndex = this.transform.GetSiblingIndex(); //Get index of clicked slot
+        var selectedSoup = PlayerInventory.Singleton.GetSelectedSoup();
         //Check if another slot was clicked previously, if not then set selected soup to the clicked index
-        if (PlayerInventory.Singleton.GetSelectedSoup() == -1)
+        if (selectedSoup == -1)
         {
             PlayerInventory.Singleton.SetSelectedSoup(soupIndex);
         }
         else //Swap soups in spoons (Player Inventory) and UI. Reset the index
         {
-            PlayerInventory.Singleton.SwapSoups(soupIndex, PlayerInventory.Singleton.GetSelectedSoup());
-            SoupUI.Singleton.SwapSoups(soupIndex, PlayerInventory.Singleton.GetSelectedSoup());
+            //Check to make sure at least one index isn't null
+            if (PlayerInventory.Singleton.GetSpoons()[soupIndex] != null
+            || PlayerInventory.Singleton.GetSpoons()[selectedSoup] != null)
+            {
+                PlayerInventory.Singleton.SwapSoups(soupIndex, selectedSoup);
+                SoupUI.Singleton.SwapSoups(soupIndex, selectedSoup);
+            }
             PlayerInventory.Singleton.SetSelectedSoup(-1);
         }
     }
