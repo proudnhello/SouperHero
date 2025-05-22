@@ -36,10 +36,10 @@ public class MetricAnalyticsTracker : MonoBehaviour
     public class MetricsAnalytics
     {
 
-        public List<List<int>> curr_NumEnemiesKilled;
-        public List<List<int>> curr_NumIngredientsCollected;
-        public List<List<int>> curr_NumSoupsCooked;
-        public List<List<float>> curr_RunTime;
+        public List<int> curr_NumEnemiesKilled;
+        public List<int> curr_NumIngredientsCollected;
+        public List<int> curr_NumSoupsCooked;
+        public List<float> curr_RunTime;
 
         public List<int> best_NumEnemiesKilled;
         public List<int> best_NumIngredientsCollected;
@@ -77,11 +77,11 @@ public class MetricAnalyticsTracker : MonoBehaviour
     public List<float> hist_RunTime;
     public void RecordCurrentStatsHistory()
     {
-        MetricsData metrics = MetricsTracker.Singleton.metricsData;
-        hist_NumEnemiesKilled.Add(metrics.curr_NumEnemiesKilled);
-        hist_NumIngredientsCollected.Add(metrics.curr_NumIngredientsCollected);
-        hist_NumSoupsCooked.Add(metrics.curr_NumSoupsCooked);
-        hist_RunTime.Add(metrics.curr_RunTime);
+        //MetricsData metrics = MetricsTracker.Singleton.metricsData;
+        //hist_NumEnemiesKilled.Add(metrics.curr_NumEnemiesKilled);
+        //hist_NumIngredientsCollected.Add(metrics.curr_NumIngredientsCollected);
+        //hist_NumSoupsCooked.Add(metrics.curr_NumSoupsCooked);
+        //hist_RunTime.Add(metrics.curr_RunTime);
 
         AddNewRow();
     }
@@ -97,13 +97,13 @@ public class MetricAnalyticsTracker : MonoBehaviour
         metricsAnalytics.runNumber.Add(newPlayerIndex);
 
         // Add new row of data
-        metricsAnalytics.curr_NumEnemiesKilled.Add(hist_NumEnemiesKilled);
+        metricsAnalytics.curr_NumEnemiesKilled.Add(metrics.curr_NumEnemiesKilled);
         metricsAnalytics.best_NumEnemiesKilled.Add(metrics.best_NumEnemiesKilled);
-        metricsAnalytics.curr_NumIngredientsCollected.Add(hist_NumEnemiesKilled);
+        metricsAnalytics.curr_NumIngredientsCollected.Add(metrics.curr_NumIngredientsCollected);
         metricsAnalytics.best_NumIngredientsCollected.Add(metrics.best_NumIngredientsCollected);
-        metricsAnalytics.curr_NumSoupsCooked.Add(hist_NumEnemiesKilled);
+        metricsAnalytics.curr_NumSoupsCooked.Add(metrics.curr_NumSoupsCooked);
         metricsAnalytics.best_NumSoupsCooked.Add(metrics.best_NumSoupsCooked);
-        metricsAnalytics.curr_RunTime.Add(hist_RunTime);
+        metricsAnalytics.curr_RunTime.Add(metrics.curr_RunTime);
         metricsAnalytics.best_WinTime.Add(metrics.best_WinTime);
         metricsAnalytics.totalDeaths.Add(metrics.totalDeaths);
         metricsAnalytics.totalWins.Add(metrics.totalWins);
