@@ -163,13 +163,13 @@ public class PlayerInventory : MonoBehaviour
         if (increment) {
             for (int i = curr + 1; i < maxSelectedSpoons; i++)
             {
-                if(spoons[i].spoonAbilities != null) { return i; }
+                if (spoons[i] != null && spoons[i].spoonAbilities != null) { return i; }
             }
         } else {
             if(curr == 0) { curr = maxSelectedSpoons; }
             for (int i = curr - 1 ; i > 0; i--)
             {
-                if (spoons[i].spoonAbilities != null) { return i; }
+                if (spoons[i] != null && spoons[i].spoonAbilities != null) { return i; }
             }
         }
         return 0;
