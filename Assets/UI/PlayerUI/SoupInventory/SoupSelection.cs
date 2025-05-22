@@ -17,7 +17,7 @@ public class SoupSelection : MonoBehaviour
         {
             PlayerInventory.Singleton.SetSelectedSoup(soupIndex);
         }
-        else //Swap soups in spoons (Player Inventory) and UI. Reset the index
+        else //Swap soups in Player Inventory and UI. Reset the index
         {
             //Check to make sure at least one index isn't null
             if (PlayerInventory.Singleton.GetSpoons()[soupIndex] != null
