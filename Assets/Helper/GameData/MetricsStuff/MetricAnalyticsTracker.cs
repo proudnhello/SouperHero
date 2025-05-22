@@ -19,6 +19,11 @@ public class MetricAnalyticsTracker : MonoBehaviour
     {
         metricsAnalytics = SaveManager.Singleton.LoadMetricsAnalytics();
 
+        if (metricsAnalytics == null)
+        {
+            metricsAnalytics = new();
+        }
+
     }
 
     // Update is called once per frame
