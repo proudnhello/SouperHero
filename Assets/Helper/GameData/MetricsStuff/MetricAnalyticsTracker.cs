@@ -17,7 +17,7 @@ public class MetricAnalyticsTracker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        metricsAnalytics = SaveManager.Singleton.LoadMetricsAnalytics();
+        // metricsAnalytics = SaveManager.Singleton.LoadMetricsAnalytics();
 
         if (metricsAnalytics == null)
         {
@@ -108,7 +108,7 @@ public class MetricAnalyticsTracker : MonoBehaviour
         metricsAnalytics.totalDeaths.Add(metrics.totalDeaths);
         metricsAnalytics.totalWins.Add(metrics.totalWins);
 
-        SaveManager.Singleton.SaveMetricsAnalytics(metricsAnalytics);
+        // SaveManager.Singleton.SaveMetricsAnalytics(metricsAnalytics);
         Debug.Log("Analytics Saved!");
     }
 }

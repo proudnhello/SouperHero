@@ -29,15 +29,22 @@ public class CookingManager : MonoBehaviour
 
     public static event Action CookSoup;
     private bool justEnteredCooking = false;
+    private bool isInventoryOpen = false;
+    private Coroutine soupSelectCoroutine;
+    private Coroutine soupInventoryCoroutine;
 
     [Header("SoupInventory")]
     [SerializeField] private GameObject SoupSelect;
     [SerializeField] private GameObject SoupInventory;
 
+    private Vector2 TRUESoupInventoryPos;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
+
+        TRUESoupInventoryPos = SoupInventory.GetComponent<RectTransform>().anchoredPosition;
     }
 
     //// Initialize Ingredient List
@@ -61,7 +68,7 @@ public class CookingManager : MonoBehaviour
         isCooking = true;
         ClearCookingManagerSprites();
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
-        foreach(CookingSlot c in cookingSlots)
+        foreach (CookingSlot c in cookingSlots)
         {
             c.ingredientReference = null;
             c.faceImage.sprite = null;
@@ -69,10 +76,11 @@ public class CookingManager : MonoBehaviour
         }
 
         //Move the inventory and soup select prefabs up when entering cooking
-        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 245f), 500f)); 
-        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 245f), 500f));
+        if (!isInventoryOpen)
+        {
+            MoveInventoryUI();
+        }
     }
-
 
     public void ExitCooking(InputAction.CallbackContext ctx = default)
     {
@@ -81,7 +89,7 @@ public class CookingManager : MonoBehaviour
             justEnteredCooking = false;
             return;
         }
-        
+
         if (CurrentCampfire != null)
         {
             CurrentCampfire.StopPrepping();
@@ -115,11 +123,10 @@ public class CookingManager : MonoBehaviour
             RunStateManager.Singleton.SaveRunState();
 
             //Move the soup select prefab down when exiting cooking
-            StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -245f), 500f));
-            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -245f), 500f));
+            MoveInventoryUI();
         }
     }
-    
+
     // No Parameters For the Exit Button
     public void ExitCooking()
     {
@@ -203,7 +210,8 @@ public class CookingManager : MonoBehaviour
         {
             DisplayAbilityIngWarning();
             return;
-        } else
+        }
+        else
         {
             HideAbilityIngWarning();
         }
@@ -252,7 +260,7 @@ public class CookingManager : MonoBehaviour
             cookedIngredients.Add(ingredient.ingredient);
         }
 
-        if(soupBase == null)
+        if (soupBase == null)
         {
             UnityEngine.Debug.LogWarning("SoupBase is null! Press play to continue, the code works, but someone needs to hook up soup bases to the UI");
             PlayerInventory.Singleton.OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
@@ -341,9 +349,54 @@ public class CookingManager : MonoBehaviour
         Vector2 targetPosition = rectTransform.anchoredPosition + target; //New target position
         var step = speed * Time.deltaTime;
 
-        while(Vector2.Distance(rectTransform.anchoredPosition, targetPosition) > 0.001f) {
+        while (Vector2.Distance(rectTransform.anchoredPosition, targetPosition) > 0.001f)
+        {
             rectTransform.anchoredPosition = Vector2.MoveTowards(rectTransform.anchoredPosition, targetPosition, step);
             yield return null;
         }
+    }
+
+    // Player pressed inventory button (from PlayerInventory.cs)
+    public void PlayerPressedInventory()
+    {
+        if (isCooking)
+        {
+            return;
+        }
+
+        MoveInventoryUI();
+    }
+
+    private void MoveInventoryUI()
+    {
+        if (soupInventoryCoroutine != null)
+        {
+            StopCoroutine(soupInventoryCoroutine);
+            StopCoroutine(soupSelectCoroutine);
+        }
+
+        Vector2 soupInventoryPos = SoupInventory.GetComponent<RectTransform>().anchoredPosition;
+        Vector2 soupSelectPos = SoupSelect.GetComponent<RectTransform>().anchoredPosition;
+
+        if (isInventoryOpen)
+        {
+            // Close Inventory
+            soupInventoryCoroutine = StartCoroutine(MoveInventoryUI(SoupInventory,
+                new Vector2(0f, TRUESoupInventoryPos.y - soupInventoryPos.y), 500f));
+
+            soupSelectCoroutine = StartCoroutine(MoveInventoryUI(SoupSelect,
+                new Vector2(0f, -soupSelectPos.y), 500f));
+        }
+        else
+        {
+            // Open Inventory
+            soupInventoryCoroutine = StartCoroutine(MoveInventoryUI(SoupInventory,
+                new Vector2(0f, 245f + (TRUESoupInventoryPos.y - soupInventoryPos.y)), 500f));
+
+            soupSelectCoroutine = StartCoroutine(MoveInventoryUI(SoupSelect,
+                new Vector2(0f, 245f - soupSelectPos.y), 500f));
+        }
+
+        isInventoryOpen = !isInventoryOpen;
     }
 }

@@ -60,6 +60,7 @@ public class PlayerInventory : MonoBehaviour
     {
         PlayerKeybinds.Singleton.useSpoon.action.started += UseSpoon;
         PlayerKeybinds.Singleton.drinkSoup.action.started += DrinkSoup;
+        PlayerKeybinds.Singleton.inventory.action.started += Inventory;
         PlayerKeybinds.Singleton.cycleSpoonLeft.action.started += CycleSpoonLeft;
         PlayerKeybinds.Singleton.cycleSpoonRight.action.started += CycleSpoonRight;
         PlayerKeybinds.Singleton.bowl1.action.started += Bowl1;
@@ -73,6 +74,7 @@ public class PlayerInventory : MonoBehaviour
     {
         PlayerKeybinds.Singleton.useSpoon.action.started -= UseSpoon;
         PlayerKeybinds.Singleton.drinkSoup.action.started -= DrinkSoup;
+        PlayerKeybinds.Singleton.inventory.action.started -= Inventory;
         PlayerKeybinds.Singleton.cycleSpoonLeft.action.started -= CycleSpoonLeft;
         PlayerKeybinds.Singleton.cycleSpoonRight.action.started -= CycleSpoonRight;
         PlayerKeybinds.Singleton.bowl1.action.started -= Bowl1;
@@ -222,6 +224,11 @@ public class PlayerInventory : MonoBehaviour
         }
 
         ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    public void Inventory(InputAction.CallbackContext ctx)
+    {
+        CookingManager.Singleton.PlayerPressedInventory();
     }
 
     void CycleSpoonLeft(InputAction.CallbackContext ctx)
