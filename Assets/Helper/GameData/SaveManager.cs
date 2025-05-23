@@ -14,7 +14,7 @@ public class SaveManager : MonoBehaviour
 
     private string statsPath;
     private string runStatePath;
-    private string analyticsPath;
+    private string settingsPath;
 
     [SerializeField] bool debugAlwaysGenerateNewLevel;
 
@@ -35,8 +35,7 @@ public class SaveManager : MonoBehaviour
         // Reliable Path Across Devices
         runStatePath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "RunState.json");
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
-        analyticsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Analytics.json");
-        Debug.Log(analyticsPath);
+        settingsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Settings.json");
     }
 
     [ContextMenu("Reset All Save Data")]
@@ -145,6 +144,58 @@ public class SaveManager : MonoBehaviour
         else
         {
             Debug.LogWarning("No save file found!");
+            return new();
+        }
+    }
+
+    public void SaveSettings(SettingsData data)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath));
+
+            string json = JsonConvert.SerializeObject(data, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+
+            using (FileStream stream = new FileStream(settingsPath, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(json);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Settings data save error: " + e);
+        }
+    }
+
+
+    public SettingsData LoadSettingsData()
+    {
+        if (File.Exists(settingsPath))
+        {
+            try
+            {
+                string settingsDataLoaded = "";
+                using (FileStream stream = new FileStream(settingsPath, FileMode.Open))
+                {
+                    using StreamReader reader = new StreamReader(stream);
+                    settingsDataLoaded = reader.ReadToEnd();
+                }
+                return JsonConvert.DeserializeObject<SettingsData>(settingsDataLoaded);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error occured while loading run data: " + e);
+                return null;
+            }
+        }
+        else
+        {
             return new();
         }
     }
