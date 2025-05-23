@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Abilities/Charged Shot")]
@@ -8,9 +9,11 @@ using UnityEngine;
 public class ChargedShot : AbilityAbstractClass
 {
     [SerializeField] ChargeIndicator chargeIndicator;
-    [SerializeField] GameObject projectile;
     [SerializeField] float baseChargeTime = 2f;
     ChargeIndicator currentChargeIndicator = null;
+    [SerializeField] Sprite[] projectileFrames;
+    [SerializeField] float projectileAnimFPS;
+    [SerializeField] ProjectileSpawner spawner;
     float chargeTime = 0f;
     float maxChargeTime = 2f;
 
@@ -19,7 +22,7 @@ public class ChargedShot : AbilityAbstractClass
         //base.Press(stats, inflictions);
         if (currentChargeIndicator == null)
         {
-            currentChargeIndicator = Instantiate(chargeIndicator.gameObject, PlayerEntityManager.Singleton.playerAttackPoint.position, Quaternion.identity).GetComponent<ChargeIndicator>();
+            currentChargeIndicator = Instantiate(chargeIndicator.gameObject, PlayerEntityManager.Singleton.playerAttackPoint.position, PlayerEntityManager.Singleton.playerAttackPoint.rotation).GetComponent<ChargeIndicator>();
             currentChargeIndicator.transform.SetParent(PlayerEntityManager.Singleton.playerAttackPoint);
         }
         currentChargeIndicator.gameObject.SetActive(true);
@@ -36,7 +39,7 @@ public class ChargedShot : AbilityAbstractClass
     {
         //base.Hold(stats, inflictions);
         chargeTime += Time.deltaTime;
-        chargeIndicator.UpdateChargePercentage(chargeTime / maxChargeTime);
+        currentChargeIndicator.UpdateChargePercentage(chargeTime / maxChargeTime);
     }
 
     protected override void Release(AbilityStats stats, List<SoupSpoon.SpoonInfliction> inflictions)
@@ -45,7 +48,25 @@ public class ChargedShot : AbilityAbstractClass
         if (chargeTime >= maxChargeTime)
         {
             // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
-            Debug.Log("Charged Shot Released");
+            ProjectileObject projectileObject = spawner.GetProjectile();
+            AbilityStats projStats = stats;
+            if (stats.speed < 1)
+            {
+                projStats.speed = 2f;
+            }
+            if (stats.duration < 1)
+            {
+                projStats.duration = 2f;
+            }
+            if (stats.size < 1)
+            {
+                projStats.size = 2f;
+            }
+            projStats.speed *= 20f;
+
+            projectileObject.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
+                               PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
+                                              projStats, inflictions, projectileFrames, projectileAnimFPS);
         }
         currentChargeIndicator.UpdateChargePercentage(0);
         currentChargeIndicator.gameObject.SetActive(false);
