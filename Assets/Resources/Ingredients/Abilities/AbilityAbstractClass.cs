@@ -34,10 +34,11 @@ public abstract class AbilityAbstractClass : ScriptableObject
     protected virtual IEnumerator AbilityCoroutine(AbilityStats stats, List<Infliction> inflictions)
     {
         Press(stats, inflictions);
-
-        while(PlayerEntityManager.Singleton.input.Player.UseSpoon.inProgress)
+        bool oneFrame = false;
+        while(PlayerEntityManager.Singleton.input.Player.UseSpoon.inProgress == true || !oneFrame)
         {
             Hold(stats, inflictions);
+            oneFrame = true;
             yield return null;
         }
 

@@ -84,7 +84,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.39, y: 0.39}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -203,6 +203,7 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 256
+  _playerTransform: {fileID: 0}
   enemyEmitter: {fileID: 0}
   shootingRadius: 9
   playerLayer:
@@ -212,7 +213,6 @@ MonoBehaviour:
   hideTime: 2
   timeBetweenShots: 0.3
   numberOfShots: 3
-  hideAlphaMultiplier: 0.1
   firingPoint: {fileID: 2308621309380939610}
   bullet: {fileID: 6867430482067145103, guid: 6ba6e3b9ccdd54741981009e0c197fce, type: 3}
 --- !u!95 &1609973868980418863
