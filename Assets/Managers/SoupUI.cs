@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static UnityEngine.Rendering.VolumeComponent;
 using Image = UnityEngine.UI.Image;
 
 public class SoupUI : MonoBehaviour
@@ -19,6 +20,9 @@ public class SoupUI : MonoBehaviour
     [SerializeField] private Material spriteLit;
 
     [SerializeField] private List<Sprite> tempSoupSprites;
+
+    [SerializeField] TMP_Text[] usesTextComponents;
+
 
     private void Awake()
     {
@@ -101,38 +105,40 @@ public class SoupUI : MonoBehaviour
         SetAlpha(image, 0);
     }
 
-    public void SwapSoups(int index1, int index2)
+    public void SwapSoups(int[] indices)
     {
-        //TODO: Account for selected soup being in slots 0 - 4. Don't add to slot if that is the case
-        //TODO: Update active soups 
-        //Add/remove active spoons using SpoonsEquipped script
-
-        if (index1 < 4) {
-            SetUsesText(index1);
-        }
-        if (index2 < 4)
+        foreach (var index in indices)
         {
-            SetUsesText(index2);
+            SetUsesText(index);
+            SetImage(index);
         }
-        /*
-        (tempSoupSprites[index1 - 4], tempSoupSprites[index2 - 4]) = (tempSoupSprites[index2 - 4], tempSoupSprites[index1 - 4]);
-        AddSoupInSlot(index1);
-        AddSoupInSlot(index2);
-        */
     }
 
-    private void SetUsesText(int index)
+    //Lo: This is basically the same function in SpoonsEquipped
+    //It is possible to combine the two when refactoring the UI/inventory stuff
+    public void SetUsesText(int index)
     {
         SoupSpoon soupSpoon = PlayerInventory.Singleton.GetSpoons()[index];
+        if (soupSpoon == null) { 
+            usesTextComponents[index].gameObject.SetActive(false);
+            return;
+        }
 
+        usesTextComponents[index].gameObject.SetActive(true);
+         
         if (soupSpoon.uses != -1)
         {
-            SoupSelect.transform.GetChild(index).GetChild(0).GetComponent<TMP_Text>().text = soupSpoon.uses.ToString();
+            usesTextComponents[index].text = soupSpoon.uses.ToString();
         }
         else
         {
-            SoupSelect.transform.GetChild(index).GetChild(0).GetComponent<TMP_Text>().text = "∞";
+            usesTextComponents[index].text = "∞";
         }
+    }
+
+    private void SetImage(int spoonIndex)
+    {
+
     }
 
     //Helper function to set alpha

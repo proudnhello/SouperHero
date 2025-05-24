@@ -24,7 +24,9 @@ public class SoupSelection : MonoBehaviour
             || PlayerInventory.Singleton.GetSpoons()[selectedSoup] != null)
             {
                 PlayerInventory.Singleton.SwapSoups(soupIndex, selectedSoup);
-                SoupUI.Singleton.SwapSoups(soupIndex, selectedSoup);
+                //SoupUI.Singleton.SwapSoups(soupIndex, selectedSoup);
+                int[] indices = { soupIndex, selectedSoup };
+                SoupUI.Singleton.SwapSoups(indices);
             }
             PlayerInventory.Singleton.SetSelectedSoup(-1);
         }

@@ -118,6 +118,8 @@ public class PlayerInventory : MonoBehaviour
 
         spoons[selectedSlot] = new SoupSpoon(ingredients, b);
         SoupUI.Singleton.AddSoupInSlot(selectedSlot);
+        SoupUI.Singleton.SetUsesText(selectedSlot);
+        //SoupUI.Singleton.SetImage(selectedSlot);
         currentSpoon = 0; //Reset to spoon in first slot
         
         if(selectedSlot < maxSelectedSpoons) //If soup is made in selected spot
