@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -100,7 +101,6 @@ public class SoupUI : MonoBehaviour
         foreach (var index in indices)
         {
             SetUsesText(index);
-            SetImage(index);
 
             //Checking if swapping active soup and empty slot
             if (index < 4 &&
@@ -118,6 +118,7 @@ public class SoupUI : MonoBehaviour
                 RemoveSpoon?.Invoke(index);
             }
         }
+        SwapImages(indices);
     }
 
     //Set uses text for the game object at the specified index
@@ -144,9 +145,31 @@ public class SoupUI : MonoBehaviour
         }
     }
 
-    private void SetImage(int spoonIndex)
+    // Lo: This shit don't work and is really stupid
+    // >:(
+    private void SwapImages(int[] indices)
     {
+        var index1 = indices[0]; var index2 = indices[1];
 
+        GameObject tempIndex = Instantiate(this.gameObject.transform.GetChild(index1).GetChild(0).gameObject);
+        var tempIndex1 = tempIndex.GetComponent<Image>();
+
+        Debug.Log(tempIndex1.sprite.ToString());
+
+        var index1Img = this.gameObject.transform.GetChild(index1).GetChild(0).GetComponent<Image>();
+        var index2Img = this.gameObject.transform.GetChild(index2).GetChild(0).GetComponent<Image>();
+
+        index1Img.sprite = index2Img.sprite;
+        index1Img.material = index2Img.material;
+        index1Img.material.color = index2Img.material.color;
+
+        index2Img.sprite = tempIndex1.sprite;
+        index2Img.material = tempIndex1.material;
+        index2Img.material.color = tempIndex1.material.color;
+
+        Debug.Log(tempIndex1.sprite.ToString());
+
+        Destroy(tempIndex);
     }
 
     //Helper function to set alpha

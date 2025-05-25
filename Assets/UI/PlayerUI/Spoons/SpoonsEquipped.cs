@@ -51,13 +51,11 @@ public class SpoonsEquipped : MonoBehaviour
 
     void AddSpoon(int spoon)
     {
-        Debug.Log("ADD SPOON");
         transform.GetChild(spoon).GetChild(0).gameObject.SetActive(true);
     }
 
     void RemoveSpoon(int spoon)
     {
-        Debug.Log("REMOVE SPOON");
         transform.GetChild(spoon).GetChild(0).gameObject.SetActive(false);
     }
 
