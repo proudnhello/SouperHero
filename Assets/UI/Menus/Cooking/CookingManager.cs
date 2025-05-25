@@ -63,7 +63,7 @@ public class CookingManager : MonoBehaviour
         }
 
         //Move the inventory and soup select prefabs up when entering cooking
-        SoupUI.Singleton.MoveInventory(new Vector2(0, 245f), 500f);
+        SoupUI.Singleton.MoveInventory(new Vector2(0, 225f), 500f);
         SoupUI.Singleton.DisplayInventorySlots();
         PlayerInventory.Singleton.SetSelectedSoup(-1);
     }
@@ -104,7 +104,7 @@ public class CookingManager : MonoBehaviour
             RunStateManager.Singleton.SaveRunState();
 
             //Move the soup select prefab down when exiting cooking
-            SoupUI.Singleton.MoveInventory(new Vector2(0, -245f), 500f);
+            SoupUI.Singleton.MoveInventory(new Vector2(0, -225f), 500f);
             SoupUI.Singleton.DisplayInventorySlots();
         }
     }

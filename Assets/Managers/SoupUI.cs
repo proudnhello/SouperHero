@@ -14,8 +14,7 @@ public class SoupUI : MonoBehaviour
     public static SoupUI Singleton { get; private set; }
 
     [Header("SoupInventory")]
-    [SerializeField] private GameObject SoupSelect;
-    [SerializeField] private GameObject SoupInventory;
+    [SerializeField] private GameObject Rope;
     [SerializeField] private Sprite cookingBubbleSprite;
     [SerializeField] private Material spriteLit;
 
@@ -32,8 +31,8 @@ public class SoupUI : MonoBehaviour
 
     public void MoveInventory(Vector2 target, float speed)
     {
-        StartCoroutine(MoveInventoryUI(SoupSelect, target, speed));
-        StartCoroutine(MoveInventoryUI(SoupInventory, target, speed));
+        StartCoroutine(MoveInventoryUI(Rope, target, speed));
+        StartCoroutine(MoveInventoryUI(this.gameObject, target, speed));
     }
 
     //Move inventory UI elements using MoveTowards
@@ -53,54 +52,43 @@ public class SoupUI : MonoBehaviour
     //Display selected soups' inventory slots
     public void DisplayInventorySlots()
     {
-        if (!CookingManager.Singleton.IsCooking()) //If not cooking, hide selected soup inventory slots
+        for (int i = 0; i < 4; i++)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                SoupInventory.transform.GetChild(i).gameObject.SetActive(false);
-            }
-        }
-        else //If cooking, display the selected soup inventory slots
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                SoupInventory.transform.GetChild(i).gameObject.SetActive(true);
-                var soupImg = SoupInventory.transform.GetChild(i).GetComponent<Image>();
+            //SoupInventory.transform.GetChild(i).gameObject.SetActive(true);
+            var soupImg = this.transform.GetChild(i).GetComponent<Image>();
 
-                //If the soup is not active, set the slot to be visible
-                if (!SoupSelect.transform.GetChild(i).gameObject.activeInHierarchy)
-                {
-                    soupImg.sprite = cookingBubbleSprite;
-                    soupImg.material = null;
-                    SetAlpha(soupImg, 1);
-                }
-                else
-                {
-                    soupImg.sprite = null;
-                    soupImg.material = spriteLit;
-                    SetAlpha(soupImg, 0);
-                }
+            //If the soup is not active and is cooking, set the slot to be visible
+            if (!this.transform.GetChild(i).GetChild(0).gameObject.activeInHierarchy && CookingManager.Singleton.IsCooking())
+            {
+                soupImg.sprite = cookingBubbleSprite;
+                soupImg.material = null;
+                SetAlpha(soupImg, 1);
+            }
+            else
+            {
+                soupImg.sprite = null;
+                soupImg.material = spriteLit;
+                SetAlpha(soupImg, 0);
             }
         }
     }
 
     //Helper function to add soup image to icon in slot
+    //Lo: This is temporary!
+    //TODO: Once art is complete, use whatever image is attached to the soup instead of temp
     public void AddSoupInSlot(int index)
     {
-        //TODO: Use whatever image is attached to the soup instead of temp
         if (index < 4) return; //Don't effect selected soups
-        var image = SoupInventory.transform.GetChild(index).GetChild(0).GetComponent<Image>();
-        //image.sprite = tempSoupSprites[index];
-        //This is temporary!
-        //The -4 is to account for the first 4 active soups, since they don't have slot icons
+        var image = this.transform.GetChild(index).GetChild(0).GetComponent<Image>();
+        //The -4 is to account for the first 4 active soups, since they don't have slot icons. Fix later
         image.sprite = tempSoupSprites[index-4];
         SetAlpha(image, 1);
     }
 
     //Helper function to remove soup image from icon in slot
     public void RemoveSoupInSlot(int index) {
-        if (index < 4) return; //Don't effect selected soups
-        var image = SoupInventory.transform.GetChild(index).GetChild(0).GetComponent<Image>();
+        if (index < 4) return; //Don't affect selected soups
+        var image = this.transform.GetChild(index).GetChild(0).GetComponent<Image>();
         image.sprite = null;
         SetAlpha(image, 0);
     }
@@ -114,8 +102,7 @@ public class SoupUI : MonoBehaviour
         }
     }
 
-    //Lo: This is basically the same function in SpoonsEquipped
-    //It is possible to combine the two when refactoring the UI/inventory stuff
+    //Set uses text for the game object at the specified index
     public void SetUsesText(int index)
     {
         SoupSpoon soupSpoon = PlayerInventory.Singleton.GetSpoons()[index];
