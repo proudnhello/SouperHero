@@ -18,9 +18,11 @@ public class SoupUI : MonoBehaviour
     [SerializeField] private Sprite cookingBubbleSprite;
     [SerializeField] private Material spriteLit;
 
-    [SerializeField] private List<Sprite> tempSoupSprites;
+    [SerializeField] private List<Sprite> tempSoupSprites; //Temporary
 
     [SerializeField] TMP_Text[] usesTextComponents;
+    public static event Action<int> AddSpoon;
+    public static event Action<int> RemoveSpoon;
 
 
     private void Awake()
@@ -99,6 +101,22 @@ public class SoupUI : MonoBehaviour
         {
             SetUsesText(index);
             SetImage(index);
+
+            //Checking if swapping active soup and empty slot
+            if (index < 4 &&
+                PlayerInventory.Singleton.GetSpoons()[index] != null &&
+                PlayerInventory.Singleton.GetSpoons()[index].spoonAbilities.Count > 0)
+            {
+                AddSpoon?.Invoke(index);
+            } else if (index < 4)
+            {
+                var currSpoon = PlayerInventory.Singleton.GetCurrentSpoon();
+                if (PlayerInventory.Singleton.GetCurrentSpoon() == index) //Check if index is current spoon
+                {
+                    PlayerInventory.Singleton.currentSpoon = PlayerInventory.Singleton.FindNextAvalaibleIndex(currSpoon, false);
+                }
+                RemoveSpoon?.Invoke(index);
+            }
         }
     }
 
@@ -112,14 +130,17 @@ public class SoupUI : MonoBehaviour
         }
 
         usesTextComponents[index].gameObject.SetActive(true);
-         
-        if (soupSpoon.uses != -1)
+        switch(soupSpoon.uses)
         {
-            usesTextComponents[index].text = soupSpoon.uses.ToString();
-        }
-        else
-        {
-            usesTextComponents[index].text = "∞";
+            case -1:
+                usesTextComponents[index].text = "∞";
+                break;
+            case 0:
+                usesTextComponents[index].text = "";
+                break;
+            default:
+                usesTextComponents[index].text = soupSpoon.uses.ToString();
+                break;
         }
     }
 

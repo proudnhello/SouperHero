@@ -160,7 +160,7 @@ public class PlayerInventory : MonoBehaviour
     //Iterate to find next avaliable spoon and return the index
     //If increment bool is false: decriment, if true: increment
     //Lo: I know this is stupid, but everything is stupid.
-    int FindNextAvalaibleIndex(int curr, bool increment)
+    public int FindNextAvalaibleIndex(int curr, bool increment)
     {
         if (increment) {
             for (int i = curr + 1; i < maxSelectedSpoons; i++)
