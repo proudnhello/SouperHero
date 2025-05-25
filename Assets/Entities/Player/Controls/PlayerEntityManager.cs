@@ -164,7 +164,7 @@ public class PlayerEntityManager : Entity
                 else if (shielded)
                 {
                     enemy.ApplyInfliction(shieldInflictions, transform);
-                    // StartCoroutine(RemoveShield()); // Removing this line of code makes the player immortal while the shild is active. Could be fun powerup?
+                    StartCoroutine(RemoveShield()); // Removing this line of code makes the player immortal while the shild is active. Could be fun powerup?
                 }
             }
         }
