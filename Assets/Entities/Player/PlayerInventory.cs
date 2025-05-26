@@ -78,14 +78,30 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        PlayerEntityManager.Singleton.input.Player.UseSpoon.started += UseSpoon;
-        PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
+        PlayerKeybinds.Singleton.useSpoon.action.started += UseSpoon;
+        PlayerKeybinds.Singleton.drinkSoup.action.started += DrinkSoup;
+        PlayerKeybinds.Singleton.inventory.action.started += Inventory;
+        PlayerKeybinds.Singleton.cycleSpoonLeft.action.started += CycleSpoonLeft;
+        PlayerKeybinds.Singleton.cycleSpoonRight.action.started += CycleSpoonRight;
+        PlayerKeybinds.Singleton.bowl1.action.started += Bowl1;
+        PlayerKeybinds.Singleton.bowl2.action.started += Bowl2;
+        PlayerKeybinds.Singleton.bowl3.action.started += Bowl3;
+        PlayerKeybinds.Singleton.bowl4.action.started += Bowl4;
+        // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started += CycleSpoons;
     }
 
     private void OnDisable()
     {
-        PlayerEntityManager.Singleton.input.Player.UseSpoon.started -= UseSpoon;
-        PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
+        PlayerKeybinds.Singleton.useSpoon.action.started -= UseSpoon;
+        PlayerKeybinds.Singleton.drinkSoup.action.started -= DrinkSoup;
+        PlayerKeybinds.Singleton.inventory.action.started -= Inventory;
+        PlayerKeybinds.Singleton.cycleSpoonLeft.action.started -= CycleSpoonLeft;
+        PlayerKeybinds.Singleton.cycleSpoonRight.action.started -= CycleSpoonRight;
+        PlayerKeybinds.Singleton.bowl1.action.started -= Bowl1;
+        PlayerKeybinds.Singleton.bowl2.action.started -= Bowl2;
+        PlayerKeybinds.Singleton.bowl3.action.started -= Bowl3;
+        PlayerKeybinds.Singleton.bowl4.action.started -= Bowl4;
+        // PlayerEntityManager.Singleton.input.Player.CycleSpoon.started -= CycleSpoons;
     }
 
     public void CollectIngredientCollectable(Collectable collectable)
@@ -157,6 +173,19 @@ public class PlayerInventory : MonoBehaviour
         ChangedSpoon?.Invoke(currentSpoon);
     }
 
+    void CycleSpoons(int direction)
+    {
+        if (spoons.Count <= 1) return;
+
+        currentSpoon = (currentSpoon + direction) % spoons.Count;
+        
+        if (currentSpoon == -1)
+        {
+            currentSpoon = spoons.Count - 1;
+        }
+        ChangedSpoon?.Invoke(currentSpoon);
+    }
+
     //Iterate to find next avaliable spoon and return the index
     //If increment bool is false: decriment, if true: increment
     //Lo: I know this is stupid, but everything is stupid.
@@ -175,6 +204,15 @@ public class PlayerInventory : MonoBehaviour
             }
         }
         return 0;
+    }
+    
+    void ChangeBowl(int bowl)
+    {
+        if (bowl == 0 || spoons.Count > bowl)
+        {
+            currentSpoon = bowl;
+            ChangedSpoon?.Invoke(currentSpoon);
+        }
     }
 
     void UseSpoon(InputAction.CallbackContext ctx)
@@ -225,6 +263,71 @@ public class PlayerInventory : MonoBehaviour
 
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    void DrinkSoup(InputAction.CallbackContext ctx)
+    {
+        // Index into current spoon
+        SoupSpoon spoon = spoons[currentSpoon];
+
+        if (CookingManager.Singleton.IsCooking() || spoon.GetUses() < 5)
+        {
+            return;
+        }
+
+        spoon.DrinkSoup(gameObject.GetComponent<Entity>());
+
+        bool noUsesLeft = true;
+
+        if (spoon.GetUses() > 0)
+        {
+            noUsesLeft = false;
+        }
+
+        if (noUsesLeft)
+        {
+            spoons.RemoveAt(currentSpoon);
+            RemoveSpoon?.Invoke(currentSpoon);
+            currentSpoon--;
+            currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+        }
+
+        ChangedSpoon?.Invoke(currentSpoon);
+    }
+
+    public void Inventory(InputAction.CallbackContext ctx)
+    {
+        CookingManager.Singleton.PlayerPressedInventory();
+    }
+
+    void CycleSpoonLeft(InputAction.CallbackContext ctx)
+    {
+        CycleSpoons(-1);
+    }
+
+    void CycleSpoonRight(InputAction.CallbackContext ctx)
+    {
+        CycleSpoons(1);
+    }
+
+    void Bowl1(InputAction.CallbackContext ctx)
+    {
+        ChangeBowl(0);
+    }
+
+    void Bowl2(InputAction.CallbackContext ctx)
+    {
+        ChangeBowl(1);
+    }
+
+    void Bowl3(InputAction.CallbackContext ctx)
+    {
+        ChangeBowl(2);
+    }
+
+    void Bowl4(InputAction.CallbackContext ctx)
+    {
+        ChangeBowl(3);
     }
 
     void Throw(Throwable item)

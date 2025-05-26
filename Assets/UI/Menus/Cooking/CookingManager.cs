@@ -28,11 +28,22 @@ public class CookingManager : MonoBehaviour
     public List<CookingSlot> cookingSlots;
 
     public static event Action CookSoup;
+    private bool justEnteredCooking = false;
+    private bool isInventoryOpen = false;
+    private Coroutine soupSelectCoroutine;
+    private Coroutine soupInventoryCoroutine;
+
+    [Header("SoupInventory")]
+    [SerializeField] private GameObject SoupInventory;
+
+    private Vector2 TRUESoupInventoryPos;
 
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
+
+        TRUESoupInventoryPos = SoupInventory.GetComponent<RectTransform>().anchoredPosition;
     }
 
     //// Initialize Ingredient List
@@ -47,6 +58,7 @@ public class CookingManager : MonoBehaviour
 
     public void EnterCooking(Campfire source)
     {
+        justEnteredCooking = true;
         CurrentCampfire = source;
         CursorManager.Singleton.ShowCursor();
         CursorManager.Singleton.ShowCookingCursor();
@@ -55,7 +67,7 @@ public class CookingManager : MonoBehaviour
         isCooking = true;
         ClearCookingManagerSprites();
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
-        foreach(CookingSlot c in cookingSlots)
+        foreach (CookingSlot c in cookingSlots)
         {
             c.ingredientReference = null;
             c.faceImage.sprite = null;
@@ -68,16 +80,21 @@ public class CookingManager : MonoBehaviour
         PlayerInventory.Singleton.SetSelectedSoup(-1);
     }
 
-
     public void ExitCooking(InputAction.CallbackContext ctx = default)
     {
+        if (justEnteredCooking)
+        {
+            justEnteredCooking = false;
+            return;
+        }
+
         if (CurrentCampfire != null)
         {
             CurrentCampfire.StopPrepping();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
 
-            if(CursorManager.Singleton.cookingCursor.currentCollectableReference != null)
+            if (CursorManager.Singleton.cookingCursor.currentCollectableReference != null)
             {
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
@@ -90,7 +107,7 @@ public class CookingManager : MonoBehaviour
             CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
             isCooking = false;
-            foreach(Collectable c in cookingIngredients)
+            foreach (Collectable c in cookingIngredients)
             {
                 c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 c.collectableUI.GetComponent<Image>().raycastTarget = true;
@@ -108,7 +125,7 @@ public class CookingManager : MonoBehaviour
             SoupUI.Singleton.DisplayInventorySlots();
         }
     }
-    
+
     // No Parameters For the Exit Button
     public void ExitCooking()
     {
@@ -192,7 +209,8 @@ public class CookingManager : MonoBehaviour
         {
             DisplayAbilityIngWarning();
             return;
-        } else
+        }
+        else
         {
             HideAbilityIngWarning();
         }
