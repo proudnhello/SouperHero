@@ -10,8 +10,14 @@ public class PlayerEnvInteraction : MonoBehaviour
 
     private void Start()
     {
-        PlayerEntityManager.Singleton.input.Player.Interact.started += Interact;
+        // PlayerEntityManager.Singleton.input.Player.Interact.started += Interact;
+        PlayerKeybinds.Singleton.interact.action.started += Interact;
         withinRange = new();
+    }
+
+    private void OnDisable()
+    {
+        PlayerKeybinds.Singleton.interact.action.started -= Interact;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

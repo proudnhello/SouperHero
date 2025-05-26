@@ -265,7 +265,8 @@ public class HabaperroAI : EnemyBaseClass
                 sm._sprite.color = Color.white;
                 sm._collider.enabled = false;
                 sm.animator.Play("Boom");
-                Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
+                Explosion ex = Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
+                ex.Explode();
                 yield return new WaitForSeconds(sm.PostExplosionWaitTime);
                 IHandleMovementExplosion = null;
                 sm.Die();
