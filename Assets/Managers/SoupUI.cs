@@ -154,7 +154,7 @@ public class SoupUI : MonoBehaviour
         GameObject tempIndex = Instantiate(this.gameObject.transform.GetChild(index1).GetChild(0).gameObject);
         var tempIndex1 = tempIndex.GetComponent<Image>();
 
-        Debug.Log(tempIndex1.sprite.ToString());
+        //Debug.Log(tempIndex1.sprite.ToString());
 
         var index1Img = this.gameObject.transform.GetChild(index1).GetChild(0).GetComponent<Image>();
         var index2Img = this.gameObject.transform.GetChild(index2).GetChild(0).GetComponent<Image>();
@@ -167,7 +167,7 @@ public class SoupUI : MonoBehaviour
         index2Img.material = tempIndex1.material;
         index2Img.material.color = tempIndex1.material.color;
 
-        Debug.Log(tempIndex1.sprite.ToString());
+        //Debug.Log(tempIndex1.sprite.ToString());
 
         Destroy(tempIndex);
     }

@@ -8,6 +8,7 @@ using TMPro;
 using static SoupSpoon;
 using System.Linq.Expressions;
 using static UnityEditor.Progress;
+using System.Linq;
 
 //TODO: Don't allow empty/null soups to be swapped
 //FIX: Cannot cook in anything in slots 6-9 (index out of range)
@@ -155,35 +156,29 @@ public class PlayerInventory : MonoBehaviour
         (spoons[index1], spoons[index2]) = (spoons[index2], spoons[index1]);
     }
 
-    void CycleSpoons(InputAction.CallbackContext ctx)
+    // Select bowl when scrolling with the scroll wheel
+    void CycleCurrentBowl(int direction) 
     {
-        if (ctx.ReadValue<float>() < 0)
+        if (direction < 0)
         {
             currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
         }
-        else if(ctx.ReadValue<float>() > maxSelectedSpoons)
+        else if (direction > 0)
         {
             currentSpoon = FindNextAvalaibleIndex(currentSpoon, true);
-        } 
-        else //If keybinds (1-4) are selected instead of scroll wheel
-        {
-            //TODO: Add check for count
-            currentSpoon = (int)ctx.ReadValue<float>() - 1 >= maxSelectedSpoons ? currentSpoon : (int)ctx.ReadValue<float>() - 1;
         }
         ChangedSpoon?.Invoke(currentSpoon);
     }
 
-    void CycleSpoons(int direction)
+    // Select bowl when choosing a bowl with keys 1-4
+    void ChooseCurrentBowl(int bowl)
     {
-        if (spoons.Count <= 1) return;
-
-        currentSpoon = (currentSpoon + direction) % spoons.Count;
-        
-        if (currentSpoon == -1)
+        if (currentSpoon == bowl) return; //If current spoon is already selected, return
+        if (spoons[bowl] != null && spoons[bowl].spoonAbilities != null)
         {
-            currentSpoon = spoons.Count - 1;
+            currentSpoon = bowl;
+            ChangedSpoon?.Invoke(currentSpoon);
         }
-        ChangedSpoon?.Invoke(currentSpoon);
     }
 
     //Iterate to find next avaliable spoon and return the index
@@ -206,14 +201,6 @@ public class PlayerInventory : MonoBehaviour
         return 0;
     }
     
-    void ChangeBowl(int bowl)
-    {
-        if (bowl == 0 || spoons.Count > bowl)
-        {
-            currentSpoon = bowl;
-            ChangedSpoon?.Invoke(currentSpoon);
-        }
-    }
 
     void UseSpoon(InputAction.CallbackContext ctx)
     {
@@ -286,10 +273,9 @@ public class PlayerInventory : MonoBehaviour
 
         if (noUsesLeft)
         {
-            spoons.RemoveAt(currentSpoon);
+            spoons[currentSpoon] = null;
             RemoveSpoon?.Invoke(currentSpoon);
-            currentSpoon--;
-            currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
+            currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
         }
 
         ChangedSpoon?.Invoke(currentSpoon);
@@ -297,37 +283,37 @@ public class PlayerInventory : MonoBehaviour
 
     public void Inventory(InputAction.CallbackContext ctx)
     {
-        CookingManager.Singleton.PlayerPressedInventory();
+        //CookingManager.Singleton.PlayerPressedInventory();
     }
 
     void CycleSpoonLeft(InputAction.CallbackContext ctx)
     {
-        CycleSpoons(-1);
+        CycleCurrentBowl(-1);
     }
 
     void CycleSpoonRight(InputAction.CallbackContext ctx)
     {
-        CycleSpoons(1);
+        CycleCurrentBowl(1);
     }
 
     void Bowl1(InputAction.CallbackContext ctx)
     {
-        ChangeBowl(0);
+        ChooseCurrentBowl(0);
     }
 
     void Bowl2(InputAction.CallbackContext ctx)
     {
-        ChangeBowl(1);
+        ChooseCurrentBowl(1);
     }
 
     void Bowl3(InputAction.CallbackContext ctx)
     {
-        ChangeBowl(2);
+        ChooseCurrentBowl(2);
     }
 
     void Bowl4(InputAction.CallbackContext ctx)
     {
-        ChangeBowl(3);
+        ChooseCurrentBowl(3);
     }
 
     void Throw(Throwable item)

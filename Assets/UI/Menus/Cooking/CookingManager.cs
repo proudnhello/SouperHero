@@ -36,14 +36,14 @@ public class CookingManager : MonoBehaviour
     [Header("SoupInventory")]
     [SerializeField] private GameObject SoupInventory;
 
-    private Vector2 TRUESoupInventoryPos;
+    //private Vector2 TRUESoupInventoryPos;
 
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
 
-        TRUESoupInventoryPos = SoupInventory.GetComponent<RectTransform>().anchoredPosition;
+        //TRUESoupInventoryPos = SoupInventory.GetComponent<RectTransform>().anchoredPosition;
     }
 
     //// Initialize Ingredient List
