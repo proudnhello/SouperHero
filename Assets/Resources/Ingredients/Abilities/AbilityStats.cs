@@ -7,6 +7,8 @@ using BuffType = FlavorIngredient.BuffFlavor.BuffType;
 public struct AbilityStats
 {
     // STATS -- I APOLOGIZE IN ADVANCE THIS IS JUST TO FINISH UP THE SPRINT I WANT TO FIX THIS NEXT QUARTER
+    // god what a special treat to see this comment at the end of the quarter it was supposed to be fixed in 
+    // will i be fixing it? no :)
     public float BaseDuration;
     public float duration
     {

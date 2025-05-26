@@ -28,15 +28,22 @@ public class CookingManager : MonoBehaviour
     public List<CookingSlot> cookingSlots;
 
     public static event Action CookSoup;
+    private bool justEnteredCooking = false;
+    private bool isInventoryOpen = false;
+    private Coroutine soupSelectCoroutine;
+    private Coroutine soupInventoryCoroutine;
 
     [Header("SoupInventory")]
-    [SerializeField] private GameObject SoupSelect;
     [SerializeField] private GameObject SoupInventory;
+
+    //private Vector2 TRUESoupInventoryPos;
 
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
+
+        //TRUESoupInventoryPos = SoupInventory.GetComponent<RectTransform>().anchoredPosition;
     }
 
     //// Initialize Ingredient List
@@ -51,6 +58,7 @@ public class CookingManager : MonoBehaviour
 
     public void EnterCooking(Campfire source)
     {
+        justEnteredCooking = true;
         CurrentCampfire = source;
         CursorManager.Singleton.ShowCursor();
         CursorManager.Singleton.ShowCookingCursor();
@@ -59,7 +67,7 @@ public class CookingManager : MonoBehaviour
         isCooking = true;
         ClearCookingManagerSprites();
         PlayerEntityManager.Singleton.input.Player.Interact.started += ExitCooking;
-        foreach(CookingSlot c in cookingSlots)
+        foreach (CookingSlot c in cookingSlots)
         {
             c.ingredientReference = null;
             c.faceImage.sprite = null;
@@ -67,20 +75,26 @@ public class CookingManager : MonoBehaviour
         }
 
         //Move the inventory and soup select prefabs up when entering cooking
-        StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, 245f), 500f)); 
-        StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, 245f), 500f));
+        SoupUI.Singleton.MoveInventory(new Vector2(0, 225f), 500f);
+        SoupUI.Singleton.DisplayInventorySlots();
+        PlayerInventory.Singleton.SetSelectedSoup(-1);
     }
-
 
     public void ExitCooking(InputAction.CallbackContext ctx = default)
     {
+        if (justEnteredCooking)
+        {
+            justEnteredCooking = false;
+            return;
+        }
+
         if (CurrentCampfire != null)
         {
             CurrentCampfire.StopPrepping();
             CurrentCampfire = null;
             CursorManager.Singleton.HideCursor();
 
-            if(CursorManager.Singleton.cookingCursor.currentCollectableReference != null)
+            if (CursorManager.Singleton.cookingCursor.currentCollectableReference != null)
             {
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 CursorManager.Singleton.cookingCursor.currentCollectableReference.collectableUI.GetComponent<Image>().raycastTarget = true;
@@ -93,7 +107,7 @@ public class CookingManager : MonoBehaviour
             CursorManager.Singleton.HideCookingCursor();
             CookingCanvas.SetActive(false);
             isCooking = false;
-            foreach(Collectable c in cookingIngredients)
+            foreach (Collectable c in cookingIngredients)
             {
                 c.collectableUI.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 c.collectableUI.GetComponent<Image>().raycastTarget = true;
@@ -107,11 +121,11 @@ public class CookingManager : MonoBehaviour
             RunStateManager.Singleton.SaveRunState();
 
             //Move the soup select prefab down when exiting cooking
-            StartCoroutine(MoveInventoryUI(SoupInventory, new Vector2(0, -245f), 500f));
-            StartCoroutine(MoveInventoryUI(SoupSelect, new Vector2(0, -245f), 500f));
+            SoupUI.Singleton.MoveInventory(new Vector2(0, -225f), 500f);
+            SoupUI.Singleton.DisplayInventorySlots();
         }
     }
-    
+
     // No Parameters For the Exit Button
     public void ExitCooking()
     {
@@ -195,16 +209,19 @@ public class CookingManager : MonoBehaviour
         {
             DisplayAbilityIngWarning();
             return;
-        } else
+        }
+        else
         {
             HideAbilityIngWarning();
         }
 
         // Don't cook if max spoons
+        /*
         if (PlayerInventory.Singleton.GetSpoons().Count == PlayerInventory.Singleton.maxSpoons)
         {
             return;
         }
+        */
 
         //if (!PlayerEntityManager.Singleton.HasCooked())
         //{
@@ -244,30 +261,28 @@ public class CookingManager : MonoBehaviour
             cookedIngredients.Add(ingredient.ingredient);
         }
 
-        if(soupBase == null)
+        //Lo: This check will be changed later once the function is removed
+        if (soupBase == null && PlayerInventory.Singleton.OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients))
         {
             UnityEngine.Debug.LogWarning("SoupBase is null! Press play to continue, the code works, but someone needs to hook up soup bases to the UI");
-            PlayerInventory.Singleton.OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
+            //PlayerInventory.Singleton.OLD_AND_BAD__AND_DUMB_STUPID_COOK_SOUP_TO_BE_REMOVED(cookedIngredients);
+            //if (PlayerInventory.Singleton.CookSoup(cookedIngredients, soupBase)) { //Check to make sure soup can be cooked
+
+            // Remove From Player Inventory
+            foreach (Collectable ingredient in cookingIngredients)
+            {
+                PlayerInventory.Singleton.RemoveIngredientCollectable(ingredient, true);
+            }
+
+            cookingIngredients.Clear();
+
+            ClearCookingManagerSprites();
+
+            CookSoup?.Invoke();
+
+            // Exit Cooking
+            ExitCooking();
         }
-        else
-        {
-            PlayerInventory.Singleton.CookSoup(cookedIngredients, soupBase);
-        }
-
-        // Remove From Player Inventory
-        foreach (Collectable ingredient in cookingIngredients)
-        {
-            PlayerInventory.Singleton.RemoveIngredientCollectable(ingredient, true);
-        }
-
-        cookingIngredients.Clear();
-
-        ClearCookingManagerSprites();
-
-        CookSoup?.Invoke();
-
-        // Exit Cooking
-        ExitCooking();
     }
 
     // Sets all the sprites in the cooking slot to null and 0 alpha
@@ -323,19 +338,5 @@ public class CookingManager : MonoBehaviour
         Color tempColor = image.color;
         tempColor.a = 1;
         slot.transform.GetChild(0).GetComponent<Image>().color = tempColor;
-    }
-
-    //Move inventory UI elements using MoveTowards (Lo: Hopefully temporary!)
-    //Lo: Hopefully temporary. Might move this into another UI script
-    private IEnumerator MoveInventoryUI(GameObject obj, Vector2 target, float speed)
-    {
-        RectTransform rectTransform = obj.GetComponent<RectTransform>(); //Get the rectTransform, since it's a UI element
-        Vector2 targetPosition = rectTransform.anchoredPosition + target; //New target position
-        var step = speed * Time.deltaTime;
-
-        while(Vector2.Distance(rectTransform.anchoredPosition, targetPosition) > 0.001f) {
-            rectTransform.anchoredPosition = Vector2.MoveTowards(rectTransform.anchoredPosition, targetPosition, step);
-            yield return null;
-        }
     }
 }

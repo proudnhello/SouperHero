@@ -7,12 +7,17 @@ public class SettingsTabs : MonoBehaviour
 {
     public List<GameObject> UI_List = new List<GameObject>();
 
+    private void Start()
+    {
+        ShowUI(0);
+    }
+
     public void ShowUI(int index)
     {
         // Iterate through UI
-        for(int i = 0; i < UI_List.Count; i++)
+        for (int i = 0; i < UI_List.Count; i++)
         {
-            if(i == index)
+            if (i == index)
             {
                 // Show UI
                 UI_List[i].SetActive(true);

@@ -12,7 +12,7 @@ public class TempTab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private Image image;
     private RectTransform rectTransform;
-    private bool isSelected = false;
+    public bool isSelected = false;
 
     private void Awake()
     {
@@ -24,6 +24,14 @@ public class TempTab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (text != null)
         {
             text.enabled = false;
+        }
+    }
+
+    private void Start()
+    {
+        if (isSelected)
+        {
+            ShowTab();
         }
     }
 
