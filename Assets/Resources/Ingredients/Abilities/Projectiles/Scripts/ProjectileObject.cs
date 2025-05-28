@@ -31,7 +31,6 @@ public class ProjectileObject : MonoBehaviour
         canHitPlayer = false;
         bounceCounter = 0;
         if (frames != null) StartCoroutine(HandleAnimation(frames, animFPS));
-        print("Projectile spawned");
     }
 
     private void OnTriggerEnter2D(Collider2D collider)

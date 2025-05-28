@@ -6,7 +6,6 @@ using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 using Infliction = SoupSpoon.SpoonInfliction;
 using skner.DualGrid;
 using System.Collections;
-using static SoupSpoon;
 
 public class PlayerEntityManager : Entity
 {
@@ -20,9 +19,7 @@ public class PlayerEntityManager : Entity
     public PlayerAudio playerAudio;
     public GameObject playerHoldingPoint;
     private bool cooked = false;
-    private bool shielded = false;
-    private GameObject shieldObject;
-    private List<Infliction> shieldInflictions;
+
 
     private void Awake()
     {
@@ -76,66 +73,10 @@ public class PlayerEntityManager : Entity
 
     public override void DealDamage(int damage)
     {
-        // If we're charging, don't apply inflictions
-        if (!playerMovement.charging && !shielded)
+        // If we're charging, don't take damage
+        if (!playerMovement.charging)
         {
             base.DealDamage(damage);
-        }
-
-        // If we're shielded, remove it
-        if (shielded)
-        {
-            StartCoroutine(RemoveShield());
-        }
-    }
-
-    Coroutine shieldDurationCoroutine = null;
-
-    public void SetShield(AbilityStats stats, List<Infliction> inflictions, GameObject shieldObject)
-    {
-        // If we have a shield, restart the timer
-        if (shielded && shieldDurationCoroutine != null)
-        {
-            StopCoroutine(shieldDurationCoroutine);
-        }
-
-        shielded = true;
-        shieldInflictions = inflictions;
-        this.shieldObject = shieldObject;
-        shieldObject.SetActive(true);
-
-        shieldDurationCoroutine = StartCoroutine(ShieldDuration(stats.duration));
-    }
-
-    public IEnumerator RemoveShield()
-    {
-        yield return new WaitForSeconds(0.1f); // Small delay to allow for inflictions to be applied before removing the shield
-        if (shieldObject != null)
-        {
-            shieldObject.SetActive(false);
-        }
-        shielded = false;
-        StopCoroutine(shieldDurationCoroutine);
-    }
-
-    public IEnumerator ShieldDuration(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        StartCoroutine(RemoveShield());
-    }
-
-    public override void ApplyInfliction(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
-    {
-        // If we're charging, don't apply inflictions
-        if (!playerMovement.charging && !shielded)
-        {
-            base.ApplyInfliction(spoonInflictions, source, quiet);
-        }
-
-        // If we're shielded, remove it
-        if (shielded)
-        {
-            StartCoroutine(RemoveShield());
         }
     }
 
@@ -150,26 +91,16 @@ public class PlayerEntityManager : Entity
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print(shielded);
-        // If we're charging or shielded and we hit an enemy, apply the inflictions
-        if (CollisionLayers.Singleton.InEnemyLayer(collision.gameObject) && (playerMovement.charging || shielded))
+        // If we're charging and we hit an enemy, apply the inflictions
+        if (CollisionLayers.Singleton.InEnemyLayer(collision.gameObject) && playerMovement.charging)
         {
             Entity enemy = collision.gameObject.GetComponent<Entity>();
             if (enemy != null)
             {
-                if (playerMovement.charging)
-                {
-                    enemy.ApplyInfliction(chargeInflictions, transform);
-                }
-                else if (shielded)
-                {
-                    enemy.ApplyInfliction(shieldInflictions, transform);
-                    StartCoroutine(RemoveShield()); // Removing this line of code makes the player immortal while the shild is active. Could be fun powerup?
-                }
+                enemy.ApplyInfliction(chargeInflictions, transform);
             }
         }
 
-        // If we're charging and we hit a destroyable, remove it. We don't if we're shielded cuz that feels weird
         if(CollisionLayers.Singleton.InDestroyableLayer(collision.gameObject) && playerMovement.charging)
         {
             Destroyables destroyable = collision.gameObject.GetComponent<Destroyables>();
