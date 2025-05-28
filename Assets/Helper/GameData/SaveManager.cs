@@ -14,7 +14,7 @@ public class SaveManager : MonoBehaviour
 
     private string statsPath;
     private string runStatePath;
-    private string settingsPath;
+    private string analyticsPath;
 
     [SerializeField] bool debugAlwaysGenerateNewLevel;
 
@@ -35,7 +35,8 @@ public class SaveManager : MonoBehaviour
         // Reliable Path Across Devices
         runStatePath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "RunState.json");
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
-        settingsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Settings.json");
+        analyticsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Analytics.json");
+        Debug.Log(analyticsPath);
     }
 
     [ContextMenu("Reset All Save Data")]
@@ -148,45 +149,44 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    public void SaveSettings(SettingsData data)
+    public void SaveMetricsAnalytics(MetricAnalyticsTracker.MetricsAnalytics data)
     {
         try
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(analyticsPath));
 
-            string json = JsonConvert.SerializeObject(data, Formatting.None, new JsonSerializerSettings
+            string analyticsJSON = JsonConvert.SerializeObject(data, Formatting.None, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
 
-            using (FileStream stream = new FileStream(settingsPath, FileMode.Create))
+            using (FileStream stream = new FileStream(analyticsPath, FileMode.Create))
             {
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
-                    writer.Write(json);
+                    writer.Write(analyticsJSON);
                 }
             }
         }
         catch (Exception e)
         {
-            Debug.LogError("Settings data save error: " + e);
+            Debug.LogError("Run data save error: " + e);
         }
     }
 
-
-    public SettingsData LoadSettingsData()
+    public MetricAnalyticsTracker.MetricsAnalytics LoadMetricsAnalytics()
     {
-        if (File.Exists(settingsPath))
+        if (File.Exists(analyticsPath))
         {
             try
             {
-                string settingsDataLoaded = "";
-                using (FileStream stream = new FileStream(settingsPath, FileMode.Open))
+                string analyticsLoaded = "";
+                using (FileStream stream = new FileStream(analyticsPath, FileMode.Open))
                 {
                     using StreamReader reader = new StreamReader(stream);
-                    settingsDataLoaded = reader.ReadToEnd();
+                    analyticsLoaded = reader.ReadToEnd();
                 }
-                return JsonConvert.DeserializeObject<SettingsData>(settingsDataLoaded);
+                return JsonConvert.DeserializeObject<MetricAnalyticsTracker.MetricsAnalytics>(analyticsLoaded);
             }
             catch (Exception e)
             {
@@ -196,8 +196,12 @@ public class SaveManager : MonoBehaviour
         }
         else
         {
-            return new();
+            return null;
         }
     }
 
+    public void DeleteAnalyticsFile()
+    {
+        File.Delete(analyticsPath);
+    }
 }

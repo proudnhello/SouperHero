@@ -8,10 +8,7 @@ using TMPro;
 using static SoupSpoon;
 using System.Linq.Expressions;
 using static UnityEditor.Progress;
-using System.Linq;
 
-//TODO: Don't allow empty/null soups to be swapped
-//FIX: Cannot cook in anything in slots 6-9 (index out of range)
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Singleton { get; private set; }
@@ -19,6 +16,7 @@ public class PlayerInventory : MonoBehaviour
     public static event Action<int> ChangedSpoon;
     public static event Action<int> AddSpoon;
     public static event Action<int> RemoveSpoon;
+    public int maxSpoons = 4;
 
     public bool playerHolding = false;
     public Throwable objectHolding = null;
@@ -33,29 +31,22 @@ public class PlayerInventory : MonoBehaviour
     internal List<Collectable> collectablesHeld;
 
     [SerializeField]
-    SoupSpoon[] spoons;
+    List<SoupSpoon> spoons;
 
-    [Header("Soup Inventory")]
-    private int maxSpoons = 10;
-    private int maxSelectedSpoons = 4;
-    public int currentSpoon = 0;
-    private int selectedSlot = -1;
+    int currentSpoon = 0;
 
 
     void Awake()
     {
         if (Singleton == null) Singleton = this;
-
-        spoons = new SoupSpoon[maxSpoons];
-        spoons[0] = new SoupSpoon(defaultSpoonIngredients, defaultSoupBase);
-        for (int i = 1; i < maxSpoons - 1; i++) //Set the rest of spoons in array to null
+        spoons = new()
         {
-            spoons[i] = null;
-        }
+            new SoupSpoon(defaultSpoonIngredients, defaultSoupBase)
+        };
         collectablesHeld = new();
     }
 
-    public SoupSpoon[] GetSpoons()
+    public List<SoupSpoon> GetSpoons()
     {
         return spoons;
     }
@@ -65,23 +56,9 @@ public class PlayerInventory : MonoBehaviour
         return currentSpoon;
     }
 
-    //Set variable for which soup slot was clicked
-    public void SetSelectedSoup(int index)
-    {
-        selectedSlot = index;
-    }
-
-    //Get which soup slot was clicked
-    public int GetSelectedSoup()
-    {
-        return selectedSlot;
-    }
-
     private void Start()
     {
         PlayerKeybinds.Singleton.useSpoon.action.started += UseSpoon;
-        PlayerKeybinds.Singleton.drinkSoup.action.started += DrinkSoup;
-        PlayerKeybinds.Singleton.inventory.action.started += Inventory;
         PlayerKeybinds.Singleton.cycleSpoonLeft.action.started += CycleSpoonLeft;
         PlayerKeybinds.Singleton.cycleSpoonRight.action.started += CycleSpoonRight;
         PlayerKeybinds.Singleton.bowl1.action.started += Bowl1;
@@ -94,8 +71,6 @@ public class PlayerInventory : MonoBehaviour
     private void OnDisable()
     {
         PlayerKeybinds.Singleton.useSpoon.action.started -= UseSpoon;
-        PlayerKeybinds.Singleton.drinkSoup.action.started -= DrinkSoup;
-        PlayerKeybinds.Singleton.inventory.action.started -= Inventory;
         PlayerKeybinds.Singleton.cycleSpoonLeft.action.started -= CycleSpoonLeft;
         PlayerKeybinds.Singleton.cycleSpoonRight.action.started -= CycleSpoonRight;
         PlayerKeybinds.Singleton.bowl1.action.started -= Bowl1;
@@ -131,76 +106,39 @@ public class PlayerInventory : MonoBehaviour
 
     public bool CookSoup(List<Ingredient> ingredients, SoupBase b)
     {
-        if (selectedSlot < 0) return false; //Check to make sure valid slot is selected
+        if (spoons.Count == maxSpoons) return false;
 
-        spoons[selectedSlot] = new SoupSpoon(ingredients, b);
-        SoupUI.Singleton.AddSoupInSlot(selectedSlot);
-        SoupUI.Singleton.SetUsesText(selectedSlot);
-        //SoupUI.Singleton.SetImage(selectedSlot);
-        currentSpoon = 0; //Reset to spoon in first slot
-        
-        if(selectedSlot < maxSelectedSpoons) //If soup is made in selected spot
-        {
-            currentSpoon = selectedSlot;
-            AddSpoon?.Invoke(currentSpoon);
-            ChangedSpoon?.Invoke(currentSpoon);
-        }
+        spoons.Add(new SoupSpoon(ingredients, b));
+        currentSpoon = spoons.Count - 1;
+        AddSpoon?.Invoke(currentSpoon);
+        ChangedSpoon?.Invoke(currentSpoon);
 
         MetricsTracker.Singleton.RecordSoupsCooked();
 
         return true;
     }
 
-    public void SwapSoups(int index1, int index2)
+    void CycleSpoons(int direction)
     {
-        (spoons[index1], spoons[index2]) = (spoons[index2], spoons[index1]);
-    }
+        if (spoons.Count <= 1) return;
 
-    // Select bowl when scrolling with the scroll wheel
-    void CycleCurrentBowl(int direction) 
-    {
-        if (direction < 0)
+        currentSpoon = (currentSpoon + direction) % spoons.Count;
+        
+        if (currentSpoon == -1)
         {
-            currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
-        }
-        else if (direction > 0)
-        {
-            currentSpoon = FindNextAvalaibleIndex(currentSpoon, true);
+            currentSpoon = spoons.Count - 1;
         }
         ChangedSpoon?.Invoke(currentSpoon);
     }
 
-    // Select bowl when choosing a bowl with keys 1-4
-    void ChooseCurrentBowl(int bowl)
+    void ChangeBowl(int bowl)
     {
-        if (currentSpoon == bowl) return; //If current spoon is already selected, return
-        if (spoons[bowl] != null && spoons[bowl].spoonAbilities != null)
+        if (bowl == 0 || spoons.Count > bowl)
         {
             currentSpoon = bowl;
             ChangedSpoon?.Invoke(currentSpoon);
         }
     }
-
-    //Iterate to find next avaliable spoon and return the index
-    //If increment bool is false: decriment, if true: increment
-    //Lo: I know this is stupid, but everything is stupid.
-    public int FindNextAvalaibleIndex(int curr, bool increment)
-    {
-        if (increment) {
-            for (int i = curr + 1; i < maxSelectedSpoons; i++)
-            {
-                if (spoons[i] != null && spoons[i].spoonAbilities != null) { return i; }
-            }
-        } else {
-            if(curr == 0) { curr = maxSelectedSpoons; }
-            for (int i = curr - 1 ; i > 0; i--)
-            {
-                if (spoons[i] != null && spoons[i].spoonAbilities != null) { return i; }
-            }
-        }
-        return 0;
-    }
-    
 
     void UseSpoon(InputAction.CallbackContext ctx)
     {
@@ -240,80 +178,48 @@ public class PlayerInventory : MonoBehaviour
             noUsesLeft = false;
         }
 
+
         // remove spoon if no uses left
         if (noUsesLeft)
         {
-            spoons[currentSpoon] = null;
+            spoons.RemoveAt(currentSpoon);
             RemoveSpoon?.Invoke(currentSpoon);
-            currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
+            currentSpoon--;
+            currentSpoon = currentSpoon < 0 ? spoons.Count - 1 : currentSpoon;
         }
 
         // Invoke the changed spoon event to indicate it has changed
         ChangedSpoon?.Invoke(currentSpoon);
     }
 
-    void DrinkSoup(InputAction.CallbackContext ctx)
-    {
-        // Index into current spoon
-        SoupSpoon spoon = spoons[currentSpoon];
-
-        if (CookingManager.Singleton.IsCooking() || spoon.GetUses() < 5)
-        {
-            return;
-        }
-
-        spoon.DrinkSoup(gameObject.GetComponent<Entity>());
-
-        bool noUsesLeft = true;
-
-        if (spoon.GetUses() > 0)
-        {
-            noUsesLeft = false;
-        }
-
-        if (noUsesLeft)
-        {
-            spoons[currentSpoon] = null;
-            RemoveSpoon?.Invoke(currentSpoon);
-            currentSpoon = FindNextAvalaibleIndex(currentSpoon, false);
-        }
-
-        ChangedSpoon?.Invoke(currentSpoon);
-    }
-
-    public void Inventory(InputAction.CallbackContext ctx)
-    {
-        //CookingManager.Singleton.PlayerPressedInventory();
-    }
-
     void CycleSpoonLeft(InputAction.CallbackContext ctx)
     {
-        CycleCurrentBowl(-1);
+        CycleSpoons(-1);
     }
 
     void CycleSpoonRight(InputAction.CallbackContext ctx)
     {
-        CycleCurrentBowl(1);
+        CycleSpoons(1);
     }
 
     void Bowl1(InputAction.CallbackContext ctx)
     {
-        ChooseCurrentBowl(0);
+        ChangeBowl(0);
     }
 
     void Bowl2(InputAction.CallbackContext ctx)
     {
-        ChooseCurrentBowl(1);
+        ChangeBowl(1);
     }
 
     void Bowl3(InputAction.CallbackContext ctx)
     {
-        ChooseCurrentBowl(2);
+        ChangeBowl(2);
     }
 
     void Bowl4(InputAction.CallbackContext ctx)
     {
-        ChooseCurrentBowl(3);
+        ChangeBowl(3);
     }
 
     void Throw(Throwable item)

@@ -128,24 +128,16 @@ public class AbilityCSVtoSO
             }
             else
             {
-                (PlayerInventory inventory, GameObject playerPrefab) = FindPlayerInventory();
+                PlayerInventory[] inventories = FindPlayerInventory();
                 List<Ingredient> defaultSpoonIngredients = new()
                 {
                     abilityIngredient
                 };
 
-                Debug.Log($"Default Ability Ingredient: {abilityIngredient.name}");
-
-
-                // set to dirty to mark it has unsaved changes
-                EditorUtility.SetDirty(playerPrefab);
-
-
-                inventory.defaultSpoonIngredients = defaultSpoonIngredients;
-
-                // save to asset database
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
+                foreach (PlayerInventory i in inventories)
+                {
+                    i.defaultSpoonIngredients = defaultSpoonIngredients;
+                }
           
             }          
         }
@@ -249,68 +241,59 @@ public class AbilityCSVtoSO
 
 
 
-    static (PlayerInventory, GameObject) FindPlayerInventory()
-    {
-        string name = "Player";
-
-        // Use AssetDatabase to search for the prefab asset by name in the Assets folder
-        string[] guids = AssetDatabase.FindAssets(name, new[] { "Assets/Entities/Player" });
-
-        //foreach (string guid in guids)
-        //{
-        //    Debug.Log("GUIDS: " + guid);
-        //}
-
-        if (guids.Length == 0)
-        {
-            Debug.LogError($"No prefab found with name: {name}");
-        }
-
-        PlayerInventory playerInventory = new PlayerInventory();
-        foreach (string guid in guids) {
-            // Convert GUID to asset path
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-
-            // Load the prefab at the specified path
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            if (prefab != null)
-            {
-                // Get the PlayerInventory component from the prefab
-                PlayerInventory foundInventory = prefab.GetComponent<PlayerInventory>();
-                if (foundInventory == null)
-                {
-                    Debug.Log("Prefab does not contain a PlayerInventory component.");
-                 
-                    //return null;
-                }
-                else
-                {
-                    // player inventory found
-                    Debug.Log("Player Inventory Found");
-                    Debug.Log("Asset Path: " + path);
-                    return (foundInventory, prefab);
-                }               
-            }
-        }
-
-        Debug.LogError("No Inventory Found");
-
-        return (null, null);
-    }
-
-
-    //static PlayerInventory[] FindPlayerInventory()
+    //static PlayerInventory FindPlayerInventory()
     //{
-    //    // sprites need to be in Resources folder to be found when unused
-    //    var inventory = Resources.FindObjectsOfTypeAll<PlayerInventory>();
-    //    if (inventory == null || inventory.Length == 0)
+    //    string name = "Player";
+
+    //    // Use AssetDatabase to search for the prefab asset by name in the Assets folder
+    //    string[] guids = AssetDatabase.FindAssets(name, new[] { "Assets/Entities/Player" });
+
+    //    foreach (string guid in guids)
     //    {
-    //        Debug.LogError("No inventory found.");
+    //        Debug.Log("GUIDS: " + guid);
+    //    }
+
+    //    if (guids.Length == 0)
+    //    {
+    //        Debug.LogError($"No prefab found with name: {name}");
     //        return null;
     //    }
 
-    //    return inventory;
+    //    // Convert GUID to asset path
+    //    string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+    //    Debug.Log("Asset Path: " + path);
+
+    //    // Load the prefab at the specified path
+    //    GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+    //    if (prefab != null)
+    //    {
+    //        // Get the PlayerInventory component from the prefab
+    //        PlayerInventory foundInventory = prefab.GetComponent<PlayerInventory>();
+    //        if (foundInventory == null)
+    //        {
+    //            Debug.LogError("Prefab does not contain a PlayerInventory component.");
+    //            return null;
+    //        }
+    //        return foundInventory;
+    //    }
+
+    //    Debug.LogError("No Inventory Found");
+    //    return null;
     //}
+
+
+    static PlayerInventory[] FindPlayerInventory()
+    {
+        // sprites need to be in Resources folder to be found when unused
+        var inventory = Resources.FindObjectsOfTypeAll<PlayerInventory>();
+        if (inventory == null || inventory.Length == 0)
+        {
+            Debug.LogError("No collectable found.");
+            return null;
+        }
+
+        return inventory;
+    }
 
     //static PlayerInventory FindPlayerInventory()
     //{

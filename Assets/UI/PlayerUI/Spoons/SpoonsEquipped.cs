@@ -15,8 +15,8 @@ public class SpoonsEquipped : MonoBehaviour
     [SerializeField] TMP_Text[] usesTextComponents;
     private int prevSpoon = -1;
 
-    private Vector3 selectedSize = new Vector3(1.2f, 1.2f, 1.2f);
-    private Vector3 originalSize = new Vector3(0.8f, 0.8f, 0.8f);
+    private Vector2 normalSize = new Vector2(82, 50);
+   // private Vector2 selectedSize = new Vector2(123, 75);
 
     private void Start()
     {
@@ -37,26 +37,59 @@ public class SpoonsEquipped : MonoBehaviour
     {
         if (prevSpoon >= 0) //Revert changes on previous spoon, except at game start
         {
-            imageComponents[prevSpoon].rectTransform.localScale = originalSize;
+            imageComponents[prevSpoon].rectTransform.localScale = new Vector3(.66f, .66f, .66f);
             SetAlpha(prevSpoon, 0.3f);
         }
 
         //Highlight current spoon
         prevSpoon = spoon;
         SetAlpha(spoon, 1);
-        imageComponents[spoon].rectTransform.localScale = selectedSize;
 
-        SoupUI.Singleton.SetUsesText(spoon);
+        imageComponents[spoon].rectTransform.localScale = new Vector3(1f, 1f, 1f);
+        SetUsesText(spoon);
     }
 
+    //Enable spoon image when cooked
     void AddSpoon(int spoon)
     {
-        transform.GetChild(spoon).GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(spoon).gameObject.SetActive(true);
     }
 
+    //Disable last spoon image when uses run out
     void RemoveSpoon(int spoon)
     {
-        transform.GetChild(spoon).GetChild(0).gameObject.SetActive(false);
+        int spoonsLength = PlayerInventory.Singleton.GetSpoons().Count;
+        transform.GetChild(spoonsLength).gameObject.SetActive(false); //Remove last spoon
+
+        spoonSprites.RemoveAt(spoon);
+        spoonSprites.Insert(3, imageComponents[spoon].sprite); //3 is last index
+
+        UpdateSpoonImageComponents();
+
+        for (var i = 0; i < spoonsLength; i++) //Update new uses
+        {
+            SetUsesText(i);
+        }
+    }
+
+    void SetUsesText(int spoon)
+    {
+        SoupSpoon soupSpoon = PlayerInventory.Singleton.GetSpoons()[spoon]; //Get current spoon
+
+        if (soupSpoon.uses != -1)
+        {
+            usesTextComponents[spoon].text = soupSpoon.uses.ToString();
+        } else
+        {
+            usesTextComponents[spoon].text = "∞";
+        }
+    }
+
+    void UpdateSpoonImageComponents()
+    {
+        for (var i = 0; i < 4; i++) {
+            imageComponents[i].sprite = spoonSprites[i];
+        }
     }
 
     void SetAlpha(int spoon, float alphaAmount) //Set alpha value of spoons (more or less transparent)

@@ -43,10 +43,6 @@ public class EntityInflictionEffectHandler
 
         public void StartStatusEffect(IEnumerator method)
         {
-            if (entity == null) {
-                Debug.Log("Entity is null!");
-            }
-            
             entity.StartCoroutine(StatusMethod = method);
         }
 
