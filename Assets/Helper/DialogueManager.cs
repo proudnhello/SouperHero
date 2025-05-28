@@ -11,6 +11,9 @@ public class DialogueManager : MonoBehaviour
     private Queue<string> sentenceKeys;
 
     public Animator animator;
+
+    private bool isDialogueActive = false;
+    
     public static DialogueManager Singleton { get; private set; }
     private void Awake()
     {
@@ -35,6 +38,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogue dialogue)
     {
+        isDialogueActive = true;
         animator.SetBool("IsOpen", true);
         nameText.text = LocalizationManager.GetLocalizedDialogue(dialogue.nameKey);
         sentenceKeys.Clear();
@@ -50,15 +54,19 @@ public class DialogueManager : MonoBehaviour
     public void DisplayNextSentence()
     {
         if (sentenceKeys.Count == 0){
+            isDialogueActive = false;
             EndDialogue();
             return;
         }
 
-        // ----- ONCE WORKING SWAP THIS OUT FOR A LOCALIZATION CALL ------
         string sentence = LocalizationManager.GetLocalizedDialogue(sentenceKeys.Dequeue()); 
         StopAllCoroutines();
         StartCoroutine(TypeSentence(sentence));
-        // -------------------------------------------------------------
+    }
+
+    public bool IsDialogueActive()
+    {
+        return isDialogueActive;
     }
 
     IEnumerator TypeSentence(string sentence)
