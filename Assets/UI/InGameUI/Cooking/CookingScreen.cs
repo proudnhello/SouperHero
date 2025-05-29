@@ -22,7 +22,7 @@ public class CookingScreen : MonoBehaviour
     private FinishedSoup statSpoon;
 
     [SerializeField] IngredientCookingSlot[] IngredientCookingSlots;
-    [SerializeField] BowlCookingSlot BowlCookingSlot;
+    public BowlCookingSlot BowlCookingSlot;
 
 
     [Header("Move Cooking Anim")]
@@ -45,6 +45,11 @@ public class CookingScreen : MonoBehaviour
         else Singleton = this;
         CookingContent.localPosition = new Vector2(CookingContent.localPosition.x, ClosedYPos);
         CookingContent.gameObject.SetActive(false);
+
+        foreach (IngredientCookingSlot c in IngredientCookingSlots)
+        {
+            c.Init();
+        }
     }
 
     public void EnterCooking(Campfire source)
@@ -53,11 +58,6 @@ public class CookingScreen : MonoBehaviour
         isCooking = true;
         CookingContent.gameObject.SetActive(true);
         PlayerEntityManager.Singleton.input.Player.PauseGame.started += ExitCooking;
-
-        foreach (IngredientCookingSlot c in IngredientCookingSlots)
-        {
-            c.RemoveIngredient();
-        }
 
         EnterCookingScreen?.Invoke();
         if (IMoveCookingUI != null) StopCoroutine(IMoveCookingUI);
@@ -92,6 +92,7 @@ public class CookingScreen : MonoBehaviour
                 if (c.ingredientReference != null) c.ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
                 c.RemoveIngredient();
             }
+            BowlCookingSlot.RemoveBowl();
         } else // has fully opened
         {
             AtCookingScreen = true;
@@ -134,7 +135,7 @@ public class CookingScreen : MonoBehaviour
     }
 
     internal bool SoupIsValid;
-    public void DisplayChangedSlots()
+    public void CheckIfSoupIsValid()
     {
         SoupIsValid = false;
         if (!IsCooking) return;
@@ -143,6 +144,7 @@ public class CookingScreen : MonoBehaviour
 
         foreach (var slot in IngredientCookingSlots)
         {
+            if (slot.ingredientReference == null) continue;
             if (slot.ingredientReference.ingredient is AbilityIngredient)
             {
                 SoupIsValid = true;
@@ -157,19 +159,19 @@ public class CookingScreen : MonoBehaviour
         List<Ingredient> cookedIngredients = new();
         foreach (var slot in IngredientCookingSlots)
         {
+            if (slot.ingredientReference == null) continue;
             cookedIngredients.Add(slot.ingredientReference.ingredient);
             PlayerInventory.Singleton.RemoveIngredientCollectable(slot.ingredientReference, true);
             slot.OnCook();
         }
 
         FinishedSoup soup = new(cookedIngredients, BowlCookingSlot.soupBaseReference);
-        PlayerInventory.Singleton.BowlIsCooked(BowlCookingSlot.soupInventoryIndex, soup);
+        PlayerInventory.Singleton.BowlIsCooked(BowlCookingSlot.soupSlotReference, soup);
 
         cookedIngredients.Clear();
         BowlCookingSlot.RemoveBowl();
 
         CookSoup?.Invoke();
         MetricsTracker.Singleton.RecordSoupsCooked();
-
     }
 }

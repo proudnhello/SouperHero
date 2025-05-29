@@ -11,6 +11,12 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     [SerializeField] Image faceImage;
     internal Collectable ingredientReference;
 
+    public void Init()
+    {
+        ingredientReference = null;
+        faceImage.gameObject.SetActive(false);
+        faceImage.color = Color.white;
+    }
     public void AddIngredient(Collectable ingredient)
     {
         ingredientReference = ingredient;
@@ -18,7 +24,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
         faceImage.gameObject.SetActive(true);
         faceImage.sprite = ingredientReference.collectableUI._SpriteReference;
         faceImage.color = Color.white;
-        CookingScreen.Singleton.DisplayChangedSlots();
+        CookingScreen.Singleton.CheckIfSoupIsValid();
     }
 
     public void MouseDownOn()
@@ -39,10 +45,18 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     {
         ingredientReference = null;
         faceImage.gameObject.SetActive(false);
-        CookingScreen.Singleton.DisplayChangedSlots();
+        CookingScreen.Singleton.CheckIfSoupIsValid();
     }
 
-    public void MouseUpOn(bool tap)
+    public void Tap()
+    {
+        if (ingredientReference != null)
+        {
+            ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
+            CursorManager.Singleton.DropCollectable();
+        }
+    }
+    public void MouseUpOn()
     {
         if (CursorManager.Singleton.currentCollectableReference != null)
         {

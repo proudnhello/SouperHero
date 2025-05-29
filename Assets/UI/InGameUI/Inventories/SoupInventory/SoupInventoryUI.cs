@@ -25,22 +25,29 @@ public class SoupInventoryUI : MonoBehaviour
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
         InventoryHolder.localPosition = new Vector2(InventoryHolder.localPosition.x, ClosedYPos);
-        CookingScreen.EnterCookingScreen +=  EnterCookingScreen;
-        CookingScreen.ExitCookingScreen += ExitCookingScreen;
+        CookingScreen.EnterCookingScreen += OpenInventoryScreen;
+        CookingScreen.ExitCookingScreen += CloseInventoryScreen;
         PlayerInventory.ChangedEquippedSoup += ChangeEquippedSoup;
+        PlayerInventory.UsedSoupAttack += ChangeUseCount;
     }
 
     int selectedEquippedSoup = 0;
     public void InitializeSlots(ISoupBowl[] bowls)
     {
         for (int i = 0; i < InventorySlots.Length; i++) InventorySlots[i].Init(i, bowls[i]);
+        for (int i = 0; i < PlayerInventory.Singleton.maxEquippedSoups; i++)
+        {
+            if (i == selectedEquippedSoup) InventorySlots[i].EquipSlot();
+            else InventorySlots[i].UnequipSlot();
+        }
     }
 
     private void OnDisable()
     {
-        CookingScreen.EnterCookingScreen -= EnterCookingScreen;
-        CookingScreen.ExitCookingScreen -= ExitCookingScreen;
+        CookingScreen.EnterCookingScreen -= OpenInventoryScreen;
+        CookingScreen.ExitCookingScreen -= CloseInventoryScreen;
         PlayerInventory.ChangedEquippedSoup -= ChangeEquippedSoup;
+        PlayerInventory.UsedSoupAttack -= ChangeUseCount;
     }
 
     public void ChangeEquippedSoup()
@@ -52,11 +59,13 @@ public class SoupInventoryUI : MonoBehaviour
 
     public void ToggleInventory()
     {
-        MoveInventory(!isOpening);
+        if (IsOpen) CloseInventoryScreen();
+        else OpenInventoryScreen();
     }
 
     public void MoveInventory(bool open)
     {
+        IsOpen = open;
         if (IMoveInventoryUI != null) StopCoroutine(IMoveInventoryUI);
         StartCoroutine(IMoveInventoryUI = MoveInventoryUI(open));
         selectedSwapSlot = -1;
@@ -64,12 +73,11 @@ public class SoupInventoryUI : MonoBehaviour
 
     float openAnimTimeProgressed;
     IEnumerator IMoveInventoryUI;
-    bool isOpening;
+    internal bool IsOpen;
     private IEnumerator MoveInventoryUI(bool open)
     {
-        isOpening = open;
 
-        while (openAnimTimeProgressed >= 0 || openAnimTimeProgressed < OpenAnimationTime)
+        while (openAnimTimeProgressed >= 0 && openAnimTimeProgressed <= OpenAnimationTime)
         {
             var percentCompleted = Mathf.Clamp01(openAnimTimeProgressed / OpenAnimationTime);
             var scaledPercentaged = OpenAnimationCurve.Evaluate(percentCompleted);
@@ -82,18 +90,26 @@ public class SoupInventoryUI : MonoBehaviour
             openAnimTimeProgressed = open ? openAnimTimeProgressed + Time.deltaTime : openAnimTimeProgressed - Time.deltaTime;
         }
 
+        openAnimTimeProgressed = open ? OpenAnimationTime : 0;
         InventoryHolder.localPosition = new Vector2(InventoryHolder.localPosition.x, open ? OpenYPos : ClosedYPos);
+        IMoveInventoryUI = null;
     }
 
-    public void EnterCookingScreen()
+    public void OpenInventoryScreen()
     {
         MoveInventory(true);
-        foreach (var slot in InventorySlots) slot.EnterCookingScreen();
+        foreach (var slot in InventorySlots) slot.EnterInventoryScreen();
     }
-    public void ExitCookingScreen()
+    public void CloseInventoryScreen()
     {
+        if (CookingScreen.Singleton.IsCooking) return; // cannot close while cooking
+
         MoveInventory(false);
         for (int i = 0; i < InventorySlots.Length; i++)
+        {
+            InventorySlots[i].ExitInventoryScreen();
+        }
+        for (int i = 0; i < PlayerInventory.Singleton.maxEquippedSoups; i++)
         {
             if (i == selectedEquippedSoup) InventorySlots[i].EquipSlot();
             else InventorySlots[i].UnequipSlot();
@@ -117,22 +133,25 @@ public class SoupInventoryUI : MonoBehaviour
         {
             InventorySlots[selectedSwapSlot].DeselectSlot();
             PlayerInventory.Singleton.SwapTwoSlots(slot, selectedSwapSlot);
+            if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == slot) CookingScreen.Singleton.BowlCookingSlot.soupSlotReference = selectedSwapSlot;
+            else if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == selectedSwapSlot) CookingScreen.Singleton.BowlCookingSlot.soupSlotReference = slot;
             InventorySlots[slot].SetSoup(PlayerInventory.Singleton.GetBowl(slot));
             InventorySlots[selectedSwapSlot].SetSoup(PlayerInventory.Singleton.GetBowl(selectedSwapSlot));
             selectedSwapSlot = -1;
         }
     }
-    public int SelectBowlCookingSlot()
+    public int AddBowlToCookingSlot()
     {
         if (selectedSwapSlot < 0) return -1;
-        if (InventorySlots[selectedSwapSlot].bowlHeld is not SoupBase) return -1;
-        InventorySlots[selectedSwapSlot].DeselectSlot();
+        if (InventorySlots[selectedSwapSlot].bowlHeld is not SoupBase) return -2;
+        InventorySlots[selectedSwapSlot].AddBowlToCookingSlot();
+        InventorySlots[selectedEquippedSoup].DeselectSlot();
         int slot = selectedSwapSlot;
         selectedSwapSlot = -1;
         return slot;
     }
 
-    public void DeselectBowlCookingSlot(int slot)
+    public void RemoveBowlCookingSlot(int slot)
     {
         InventorySlots[slot].RemoveBowlFromCookingSlot();
     }
@@ -143,5 +162,10 @@ public class SoupInventoryUI : MonoBehaviour
     public void AddSoupInSlot(ISoupBowl bowl, int index)
     {
         InventorySlots[index].SetSoup(bowl);
+    }
+
+    public void ChangeUseCount()
+    {
+        InventorySlots[selectedEquippedSoup].UpdateUseCount();
     }
 }

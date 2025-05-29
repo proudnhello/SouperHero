@@ -111,6 +111,16 @@ public class CursorManager : MonoBehaviour
         if (IWhileDraggingCollectable != null) StopCoroutine(IWhileDraggingCollectable);
         IWhileDraggingCollectable = null;
 
+        if (CookingScreen.Singleton.IsCooking && Vector2.Distance(Input.mousePosition, mouseDownPosition) < MOUSE_DISTANCE_FOR_TAP)
+        {
+            lastCursorInteract.Tap();
+            if (currentCollectableReference == null)
+            {
+                ChangeToCrosshairSprite();
+                return;
+            }
+        }
+
         if (!validCollectablePlacement) // not valid or has been dropped
         {
             lastCursorInteract.ReturnIngredientHereFromCursor();
@@ -127,7 +137,7 @@ public class CursorManager : MonoBehaviour
         {
             if (hit.gameObject.TryGetComponent(out ICursorInteractable interactable))
             {
-                interactable.MouseUpOn(Vector2.Distance(transform.position, mouseDownPosition) < MOUSE_DISTANCE_FOR_TAP);
+                interactable.MouseUpOn();
                 break;
             }
         }

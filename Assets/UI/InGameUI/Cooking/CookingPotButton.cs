@@ -7,12 +7,15 @@ public class CookingPotButton : MonoBehaviour
 {
     bool isInteractable = false;
     [SerializeField] Collider2D _PotCollider;
+    [SerializeField] GameObject CookPrompt;
     SpriteRenderer _SpriteRenderer;
     int _OutlineThickness = Shader.PropertyToID("_OutlineThickness");
     private void Awake()
     {
         CookingScreen.CookingScreenIsOut += CookingScreenState;
         _SpriteRenderer = GetComponent<SpriteRenderer>();
+        _SpriteRenderer.material.SetFloat(_OutlineThickness, 0);
+        CookPrompt.SetActive(false);
     }
 
     void CookingScreenState(bool enter)
@@ -50,9 +53,11 @@ public class CookingPotButton : MonoBehaviour
         while (true)
         {
             isInteractable = false;
+            CookPrompt.SetActive(false);
             _SpriteRenderer.material.SetFloat(_OutlineThickness, 0);
 
             if (!CookingScreen.Singleton.SoupIsValid) { yield return null; continue; }
+            CookPrompt.SetActive(true);
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (!_PotCollider.bounds.IntersectRay(ray)) { yield return null; continue; }

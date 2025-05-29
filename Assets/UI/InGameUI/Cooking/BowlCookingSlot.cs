@@ -11,34 +11,52 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
     [SerializeField] Image SlotOutline;
     [SerializeField] Image SlotContent;
 
-    internal int soupInventoryIndex = -1;
-    internal SoupBase soupBaseReference;
+    internal int soupSlotReference = -1;
+    internal SoupBase soupBaseReference = null;
+
+    private void Start()
+    {
+        RemoveBowl();
+    }
 
     public void MouseDownOn()
     {
         if (soupBaseReference == null)
         {
-            int slot = SoupInventoryUI.Singleton.SelectBowlCookingSlot();
+            int slot = SoupInventoryUI.Singleton.AddBowlToCookingSlot();
             if (slot >= 0)
             {
-                soupBaseReference = (SoupBase)PlayerInventory.Singleton.GetBowl(slot);
-                soupInventoryIndex = slot;
-                SlotOutline.gameObject.SetActive(false);
-                SlotContent.gameObject.SetActive(true);
-                SlotContent.sprite = soupBaseReference.baseSprite;
+                AddBowlFromSlot(slot);
+                CookingScreen.Singleton.CheckIfSoupIsValid();
             }
         }
         else
         {
-            SoupInventoryUI.Singleton.DeselectBowlCookingSlot(soupInventoryIndex);
+            int slot = SoupInventoryUI.Singleton.AddBowlToCookingSlot();
+            if (slot == -2) return; // if bowl selected isn't a base, don't swap
             RemoveBowl();
+            if (slot >= 0)
+            {
+                AddBowlFromSlot(slot);
+            }
+            CookingScreen.Singleton.CheckIfSoupIsValid();
         }
+    }
+
+    void AddBowlFromSlot(int slot)
+    {
+        soupBaseReference = (SoupBase)PlayerInventory.Singleton.GetBowl(slot);
+        SlotOutline.gameObject.SetActive(false);
+        SlotContent.gameObject.SetActive(true);
+        SlotContent.sprite = soupBaseReference.baseSprite;
+        soupSlotReference = slot;
     }
 
     public void RemoveBowl()
     {
+        if (soupBaseReference != null) SoupInventoryUI.Singleton.RemoveBowlCookingSlot(soupSlotReference);
         soupBaseReference = null;
-        soupInventoryIndex = -1;
+        soupSlotReference = -1;
         SlotOutline.gameObject.SetActive(true);
         usesText.text = "";
         SlotContent.gameObject.SetActive(false);

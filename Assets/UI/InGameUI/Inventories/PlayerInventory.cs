@@ -25,6 +25,11 @@ public class PlayerInventory : MonoBehaviour
                 soupsHeld = new ISoupBowl[newInventory.maxSoups];
                 soupsHeld[0] = new FinishedSoup(newInventory.defaultSoupIngredients, newInventory.defaultSoupBase);
                 soupsHeldCount = 1;
+                foreach (var soup in newInventory.otherStartingBases)
+                {
+                    soupsHeld[soupsHeldCount] = soup;
+                    soupsHeldCount++;
+                }
             }
         }
     }
@@ -41,6 +46,8 @@ public class PlayerInventory : MonoBehaviour
     public SoupBase emptyBowlBase;
     public List<Ingredient> emptyBowlIngredients;
     FinishedSoup emptyBowlAttack;
+
+    public SoupBase[] otherStartingBases;
 
 
     [Header("Soup Inventory")]
@@ -99,10 +106,10 @@ public class PlayerInventory : MonoBehaviour
         SoupInventoryUI.Singleton.AddSoupInSlot(data.soupsHeld[slot], slot);
     }
 
-    public void BowlIsCooked(int slot, FinishedSoup soup)
+    public void BowlIsCooked(int slot, FinishedSoup finishedSoup)
     {
-        data.soupsHeld[slot] = soup;
-        SoupInventoryUI.Singleton.AddSoupInSlot(data.soupsHeld[slot], slot);
+        data.soupsHeld[slot] = finishedSoup;
+        SoupInventoryUI.Singleton.AddSoupInSlot(data.soupsHeld[slot], slot);      
     }
 
     public void SwapTwoSlots(int slot1, int slot2)
@@ -133,6 +140,7 @@ public class PlayerInventory : MonoBehaviour
     // Select bowl when scrolling with the scroll wheel
     void CycleCurrentBowl(int direction) 
     {
+        if (SoupInventoryUI.Singleton.IsOpen) return;
         if (direction > 0)
         {
             selectedEquippedSoup = (selectedEquippedSoup + 1) % maxEquippedSoups;
@@ -147,6 +155,7 @@ public class PlayerInventory : MonoBehaviour
     // Select bowl when choosing a bowl with keys 1-4
     void ChooseCurrentBowl(int bowl)
     {
+        if (SoupInventoryUI.Singleton.IsOpen) return;
         if (selectedEquippedSoup == bowl) return; //If current spoon is already selected, return
         selectedEquippedSoup = bowl;
         ChangedEquippedSoup?.Invoke();
@@ -241,12 +250,12 @@ public class PlayerInventory : MonoBehaviour
 
     void CycleSpoonLeft(InputAction.CallbackContext ctx)
     {
-        CycleCurrentBowl(-1);
+        CycleCurrentBowl(1);
     }
 
     void CycleSpoonRight(InputAction.CallbackContext ctx)
     {
-        CycleCurrentBowl(1);
+        CycleCurrentBowl(-1);
     }
 
     void Bowl1(InputAction.CallbackContext ctx)

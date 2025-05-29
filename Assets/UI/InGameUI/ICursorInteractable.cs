@@ -5,7 +5,12 @@ public interface ICursorInteractable
     {
 
     }
-    public void MouseUpOn(bool tap)
+    public void MouseUpOn()
+    {
+
+    }
+
+    public void Tap()
     {
 
     }

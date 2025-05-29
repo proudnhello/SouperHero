@@ -630,14 +630,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d98b355b0b40ab4d977bad610b7003b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHolding: 0
-  objectHolding: {fileID: 0}
   defaultSoupIngredients:
   - {fileID: 11400000, guid: 53160cc7134787b42ab12515fae5fd1f, type: 2}
   defaultSoupBase: {fileID: 11400000, guid: a767bd7958f23c14292b8f38452a24bf, type: 2}
   emptyBowlBase: {fileID: 11400000, guid: 09ed9fd8edaf3a8449d9e80db1a52469, type: 2}
   emptyBowlIngredients:
   - {fileID: 11400000, guid: d126e76d82bc55e408c1004deb83bc4e, type: 2}
+  otherStartingBases:
+  - {fileID: 11400000, guid: bcdb093ca95d08645b63242566977041, type: 2}
+  - {fileID: 11400000, guid: db01e3e3ab3a36746845995323ac74f0, type: 2}
 --- !u!212 &5557595635640825330
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -800,7 +801,7 @@ MonoBehaviour:
   - {x: 0.3866005, y: -0.7193146, z: 0}
   m_ShapePathHash: -2124240203
   m_Mesh: {fileID: 0}
-  m_InstanceId: 105166
+  m_InstanceId: 76656
   m_LocalBounds:
     m_Center: {x: -0.018909454, y: -0.6550865, z: 0}
     m_Extent: {x: 0.43659973, y: 0.06422806, z: 0}

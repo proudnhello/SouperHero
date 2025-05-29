@@ -1,3 +1,4 @@
+using FMOD;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,14 +9,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     Collectable _Collectable;
     internal Sprite _SpriteReference;
     Image _Image;
-    Collider2D _Collider2D;
-    public float ColliderRadius
-    {
-        get
-        {
-            return _Collider2D.bounds.size.x;
-        }
-    }
+    public float ColliderRadius = 10f;
 
     // Start is called before the first frame update
     public void Init(Collectable col)
@@ -24,7 +18,6 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
         _Collectable = col;
         _Image = GetComponent<Image>();
         _SpriteReference = _Image.sprite;
-        _Collider2D = GetComponent<Collider2D>();
     }
 
     public void PickUp()
@@ -66,28 +59,24 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
         if (currentCookingSlot != null && currentCookingSlot != slot) currentCookingSlot.RemoveIngredient();
         currentCookingSlot = slot;
     }
-    public void MouseUpOn(bool tap) 
+
+    public void Tap()
     {
         if (CursorManager.Singleton.currentCollectableReference == _Collectable) // add directly to available cooking slot
         {
-            if (tap)
+            IngredientCookingSlot slot = CookingScreen.Singleton.GetAvailableSoupSlot();
+            if (slot != null)
             {
-                IngredientCookingSlot slot = CookingScreen.Singleton.GetAvailableSoupSlot();
-                if (slot != null)
-                {
-                    currentCookingSlot = slot;
-                    currentCookingSlot.AddIngredient(_Collectable);
-                } else
-                {
-                    ReturnIngredientHereFromCursor();
-                }
-            } 
+                currentCookingSlot = slot;
+                currentCookingSlot.AddIngredient(_Collectable);
+            }
             else
             {
                 ReturnIngredientHereFromCursor();
             }
+
             CursorManager.Singleton.DropCollectable();
-        } 
+        }
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
