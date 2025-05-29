@@ -27,12 +27,12 @@ public class PlayerRenderer : EntityRenderer
         currentState = states[0];
         currentState.Enter();
 
-        PlayerInventory.UsedSpoon += Swing;
+        PlayerInventory.UsedSoupAttack += Swing;
     }
 
     public void Disable()
     {
-        PlayerInventory.UsedSpoon -= Swing;
+        PlayerInventory.UsedSoupAttack -= Swing;
     }
 
     public void ChangeState(int index)

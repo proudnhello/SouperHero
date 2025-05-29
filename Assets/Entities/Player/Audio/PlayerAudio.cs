@@ -21,7 +21,7 @@ public class PlayerAudio
             AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[0]),
             AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[0])
         };
-        PlayerInventory.UsedSpoon += SwingSpoon;
+        PlayerInventory.UsedSoupAttack += SwingSpoon;
 
         dash = new List<EventInstance>
         {
@@ -43,7 +43,7 @@ public class PlayerAudio
         CollectableObject.Collected += Pickup;
 
         cookSoup = AudioManager.Singleton.CreateInstance(AudioManager.Singleton.PLAYER_SFX[1]);
-        CookingManager.CookSoup += CookSoup;
+        CookingScreen.CookSoup += CookSoup;
     }
 
     public void SwingSpoon()

@@ -17,7 +17,7 @@ public class ChargedShot : AbilityAbstractClass
     float chargeTime = 0f;
     float maxChargeTime = 2f;
 
-    protected override void Press(AbilityStats stats, List<SoupSpoon.SpoonInfliction> inflictions)
+    protected override void Press(AbilityStats stats, List<FinishedSoup.SoupInfliction> inflictions)
     {
         //base.Press(stats, inflictions);
         if (currentChargeIndicator == null)
@@ -35,14 +35,14 @@ public class ChargedShot : AbilityAbstractClass
         }
     }
 
-    protected override void Hold(AbilityStats stats, List<SoupSpoon.SpoonInfliction> inflictions)
+    protected override void Hold(AbilityStats stats, List<FinishedSoup.SoupInfliction> inflictions)
     {
         //base.Hold(stats, inflictions);
         chargeTime += Time.deltaTime;
         currentChargeIndicator.UpdateChargePercentage(chargeTime / maxChargeTime);
     }
 
-    protected override void Release(AbilityStats stats, List<SoupSpoon.SpoonInfliction> inflictions)
+    protected override void Release(AbilityStats stats, List<FinishedSoup.SoupInfliction> inflictions)
     {
         //base.Release(stats, inflictions);
         if (chargeTime >= maxChargeTime)

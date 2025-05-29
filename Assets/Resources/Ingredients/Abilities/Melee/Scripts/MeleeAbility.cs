@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 
 [CreateAssetMenu(menuName = "Abilities/Melee")]
 public class MeleeAbility : AbilityAbstractClass

@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 using skner.DualGrid;
 using System.Collections;
-using static SoupSpoon;
+using static FinishedSoup;
 
 public class PlayerEntityManager : Entity
 {
@@ -150,7 +150,6 @@ public class PlayerEntityManager : Entity
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print(shielded);
         // If we're charging or shielded and we hit an enemy, apply the inflictions
         if (CollisionLayers.Singleton.InEnemyLayer(collision.gameObject) && (playerMovement.charging || shielded))
         {

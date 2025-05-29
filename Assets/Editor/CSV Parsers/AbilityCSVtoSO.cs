@@ -136,7 +136,7 @@ public class AbilityCSVtoSO
 
                 foreach (PlayerInventory i in inventories)
                 {
-                    i.defaultSpoonIngredients = defaultSpoonIngredients;
+                    i.defaultSoupIngredients = defaultSpoonIngredients;
                 }
           
             }          

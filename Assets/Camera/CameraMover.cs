@@ -38,14 +38,14 @@ public class CameraMover : MonoBehaviour
             _cam.orthographicSize = 0.5f * UNITS_PER_PIXEL * Screen.height;
 
             yield return new WaitUntil(() => toggleZoomOut);
-            if (CookingManager.Singleton.IsCooking() || PlayerEntityManager.Singleton.playerMovement.IsMoving()) 
+            if (CookingScreen.Singleton.IsCooking || PlayerEntityManager.Singleton.playerMovement.IsMoving()) 
             {
                 toggleZoomOut = false;
             } else
             {
                 _cam.orthographicSize = 0.25f * UNITS_PER_PIXEL * Screen.height;
                 yield return new WaitUntil(() => !toggleZoomOut ||
-                    CookingManager.Singleton.IsCooking() ||
+                    CookingScreen.Singleton.IsCooking ||
                     PlayerEntityManager.Singleton.playerMovement.IsMoving());
             }
 
@@ -60,9 +60,9 @@ public class CameraMover : MonoBehaviour
     // This method is called once per frame
     void CalculateTargetPos()
     {
-        if (CookingManager.Singleton.IsCooking())
+        if (CookingScreen.Singleton.IsCooking)
         {
-            Vector3 newPos = CookingManager.Singleton.CurrentCampfire.transform.position + CookingManager.Singleton.CurrentCampfire.CameraOffset;
+            Vector3 newPos = CookingScreen.Singleton.CurrentCampfire.transform.position + CookingScreen.Singleton.CurrentCampfire.CameraOffset;
             transform.position = new Vector3(newPos.x, newPos.y, -20);
         } else
         {

@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
 public class EntityInflictionEffectHandler

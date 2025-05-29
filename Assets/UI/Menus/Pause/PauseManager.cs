@@ -31,7 +31,7 @@ public class PauseManager : MonoBehaviour
     // void Update()
     // {
     //     if (Input.GetKeyDown(pauseKey) && pauseScreen != null
-    //         && !CookingManager.Singleton.IsCooking()) //Don't pause when cooking
+    //         && !CookingManager.Singleton.IsCooking) //Don't pause when cooking
     //     {
     //         isPaused = !isPaused;
     //         if (isPaused)
@@ -53,7 +53,7 @@ public class PauseManager : MonoBehaviour
 
     void OnPauseButton()
     {
-        if (pauseScreen != null && !CookingManager.Singleton.IsCooking()) //Don't pause when cooking ---- Why????
+        if (pauseScreen != null && !CookingScreen.Singleton.IsCooking) //Don't pause when cooking ---- Why????
         {
             isPaused = !isPaused;
             if (isPaused)
@@ -70,7 +70,6 @@ public class PauseManager : MonoBehaviour
     public void PauseGame()
     {
         Time.timeScale = 0;
-        CursorManager.Singleton.cursorObject.SetActive(false);
         pauseScreen.SetActive(true);
         PlayerEntityManager.Singleton.input.Disable();
     }
@@ -78,7 +77,6 @@ public class PauseManager : MonoBehaviour
     public void ResumeGame()
     {
         Time.timeScale = 1;
-        CursorManager.Singleton.cursorObject.SetActive(true);
         pauseScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Enable();
     }

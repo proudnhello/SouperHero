@@ -49,6 +49,25 @@ public class Collectable : MonoBehaviour
         collectableObj.Drop(spawnPoint);
     }
 
+    public void Drop()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(PlayerEntityManager.Singleton.transform.position, 0.01f);
+        foreach (Collider2D collider in colliders)
+        {
+            // If the collectable were to be spawned in a pit hazard, don't spawn it
+            if (collider.gameObject.CompareTag("PitHazard"))
+            {
+                return;
+            }
+        }
+        gameObject.transform.SetParent(null);
+        gameObject.transform.localScale = Vector3.one;
+        collectableUI.gameObject.SetActive(false);
+        collectableObj.gameObject.SetActive(true);
+        collectableObj.Drop(PlayerEntityManager.Singleton.gameObject.transform.position);
+        PlayerInventory.Singleton.RemoveIngredientCollectable(this, false);
+    }
+
     public void Collect()
     {
         collectableObj.gameObject.SetActive(false);

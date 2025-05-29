@@ -67,7 +67,7 @@ public abstract class EnemyBaseClass : Entity
         RunStateManager.Singleton.TrackEnemyDeath(enemyIndex);
     }
 
-    public override void ApplyInfliction(List<SoupSpoon.SpoonInfliction> spoonInflictions, Transform source, bool quiet = false)
+    public override void ApplyInfliction(List<FinishedSoup.SoupInfliction> spoonInflictions, Transform source, bool quiet = false)
     {
         // If the enemy is not currently moving towards something, make them move towards the player
         // I'm so excited for this to break when we implement enemies taking damage from things other than the player

@@ -5,7 +5,7 @@ using UnityEngine;
 public class HazardousGround : Hazard
 {
     [SerializeField] List<FlavorIngredient.InflictionFlavor> appliedInflictions;
-    List<SoupSpoon.SpoonInfliction> inflictionType;
+    List<FinishedSoup.SoupInfliction> inflictionType;
     [SerializeField] float mult = 1f;
 
     [SerializeField] float leaveTimer = 0f;
@@ -15,10 +15,10 @@ public class HazardousGround : Hazard
     protected override void Start()
     {
         base.Start();
-        inflictionType = new List<SoupSpoon.SpoonInfliction>();
+        inflictionType = new List<FinishedSoup.SoupInfliction>();
         foreach (FlavorIngredient.InflictionFlavor infliction in appliedInflictions)
         {
-            SoupSpoon.SpoonInfliction spoonInfliction = new SoupSpoon.SpoonInfliction(infliction);
+            FinishedSoup.SoupInfliction spoonInfliction = new FinishedSoup.SoupInfliction(infliction);
             spoonInfliction.add = infliction.amount;
             spoonInfliction.mult = mult;
             inflictionType.Add(spoonInfliction);
@@ -62,11 +62,11 @@ public class HazardousGround : Hazard
                 entity.RemoveCantAttack();
             }
             EffectedAnimationEnd(entity);
-            foreach (SoupSpoon.SpoonInfliction infliction in inflictionType)
+            foreach (FinishedSoup.SoupInfliction infliction in inflictionType)
             {
-                SoupSpoon.SpoonInfliction copy = new SoupSpoon.SpoonInfliction(infliction);
+                FinishedSoup.SoupInfliction copy = new FinishedSoup.SoupInfliction(infliction);
                 copy.InflictionFlavor.statusEffectDuration = leaveTimer;
-                entity.ApplyInfliction(new List<SoupSpoon.SpoonInfliction> { infliction }, transform, true);
+                entity.ApplyInfliction(new List<FinishedSoup.SoupInfliction> { infliction }, transform, true);
             }
         }
     }

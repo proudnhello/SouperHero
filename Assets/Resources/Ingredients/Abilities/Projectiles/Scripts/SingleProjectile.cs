@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 
 // To create a projectile scriptable object, just go to the project overview, right click, click "create", and
 // at the top should be a menu titled "abilities". Should be under that menu.

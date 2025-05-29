@@ -15,6 +15,7 @@ public class SaveManager : MonoBehaviour
     private string statsPath;
     private string runStatePath;
     private string settingsPath;
+    private string inventoryPath;
 
     [SerializeField] bool debugAlwaysGenerateNewLevel;
 
@@ -36,6 +37,7 @@ public class SaveManager : MonoBehaviour
         runStatePath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "RunState.json");
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
         settingsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Settings.json");
+        inventoryPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Inventory.json");
     }
 
     [ContextMenu("Reset All Save Data")]
@@ -46,6 +48,7 @@ public class SaveManager : MonoBehaviour
         {
             File.Delete(runStatePath);
             File.Delete(statsPath);
+            File.Delete(inventoryPath);
         } catch (Exception e)
         {
             Debug.LogError("Error deleting save data " + e);
@@ -58,6 +61,7 @@ public class SaveManager : MonoBehaviour
         GetPaths();
         try
         {
+            File.Delete(inventoryPath);
             File.Delete(runStatePath);
         } catch (Exception e)
         {
@@ -190,13 +194,65 @@ public class SaveManager : MonoBehaviour
             }
             catch (Exception e)
             {
-                Debug.LogError("Error occured while loading run data: " + e);
+                Debug.LogError("Error occured while loading settings data: " + e);
                 return null;
             }
         }
         else
         {
             return new();
+        }
+    }
+
+    public void SaveInventory(PlayerInventory.InventoryData data)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(inventoryPath));
+
+            string json = JsonConvert.SerializeObject(data, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+
+            using (FileStream stream = new FileStream(inventoryPath, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(json);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Inventory data save error: " + e);
+        }
+    }
+
+
+    public PlayerInventory.InventoryData LoadInventoryData(PlayerInventory inventory)
+    {
+        if (File.Exists(inventoryPath))
+        {
+            try
+            {
+                string dataLoaded = "";
+                using (FileStream stream = new FileStream(inventoryPath, FileMode.Open))
+                {
+                    using StreamReader reader = new StreamReader(stream);
+                    dataLoaded = reader.ReadToEnd();
+                }
+                return JsonConvert.DeserializeObject<PlayerInventory.InventoryData>(dataLoaded);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error occured while loading inventory data: " + e);
+                return null;
+            }
+        }
+        else
+        {
+            return new(inventory);
         }
     }
 
