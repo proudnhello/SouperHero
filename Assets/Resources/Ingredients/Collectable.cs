@@ -64,6 +64,7 @@ public class Collectable : MonoBehaviour
         gameObject.transform.localScale = Vector3.one;
         collectableUI.gameObject.SetActive(false);
         collectableObj.gameObject.SetActive(true);
+        collectableObj.SetInteractable(true);
         collectableObj.Drop(PlayerEntityManager.Singleton.gameObject.transform.position);
         PlayerInventory.Singleton.RemoveIngredientCollectable(this, false);
     }
@@ -72,6 +73,7 @@ public class Collectable : MonoBehaviour
     {
         collectableObj.gameObject.SetActive(false);
         collectableUI.gameObject.SetActive(true);
+        collectableUI.PickUp();
         PlayerInventory.Singleton.CollectIngredientCollectable(this);
     }
 }

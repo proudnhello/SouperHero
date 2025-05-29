@@ -51,14 +51,14 @@ public class CursorManager : MonoBehaviour
     ICursorInteractable lastCursorInteract;
     private void MouseDown(InputAction.CallbackContext ctx)
     {
-        mouseDownPosition = transform.localPosition;
+        mouseDownPosition = Input.mousePosition;
 
-        PointerEventData m_PointerEventData = new PointerEventData(EventSystem.current) { position = transform.localPosition};
+        PointerEventData m_PointerEventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
         List<RaycastResult> hits = new List<RaycastResult>();
         EventSystem.current.RaycastAll(m_PointerEventData, hits);
-        if (hits.Count > 0)
+        foreach (var hit in hits)
         {
-            if (hits[0].gameObject.TryGetComponent(out ICursorInteractable interactable))
+            if (hit.gameObject.TryGetComponent(out ICursorInteractable interactable))
             {
                 lastCursorInteract = interactable;
                 interactable.MouseDownOn();
@@ -79,32 +79,27 @@ public class CursorManager : MonoBehaviour
     bool validCollectablePlacement;
     IEnumerator WhileDraggingCollectable()
     {
-        validCollectablePlacement = true;
-        while (true)
+        while (currentCollectableReference != null)
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, currentCollectableReference.collectableUI.ColliderRadius);
+            validCollectablePlacement = true;
             foreach (var collider in colliders)
             {
                 if (collider.CompareTag("Ingredient") || collider.CompareTag("BasketWall"))
                 {
-                    _CursorImage.color = INVALID_PLACEMENT_COLOR;
                     validCollectablePlacement = false;
-                    yield return null;
-                    continue;
+                    break;
                 }
                 if (collider.gameObject.TryGetComponent(out IngredientCookingSlot slot))
                 {
                     if (slot.ingredientReference != null || !CookingScreen.Singleton.AtCookingScreen)
                     {
-                        _CursorImage.color = INVALID_PLACEMENT_COLOR;
                         validCollectablePlacement = false;
-                        yield return null;
-                        continue;
+                        break;
                     }
                 }
             }
-            _CursorImage.color = VALID_PLACEMENT_COLOR;
-            validCollectablePlacement = true;
+            _CursorImage.color = validCollectablePlacement ? VALID_PLACEMENT_COLOR : INVALID_PLACEMENT_COLOR;
             yield return null;
         }
     }
@@ -113,7 +108,10 @@ public class CursorManager : MonoBehaviour
     {
         if (currentCollectableReference == null) return;
 
-        if (!validCollectablePlacement)
+        if (IWhileDraggingCollectable != null) StopCoroutine(IWhileDraggingCollectable);
+        IWhileDraggingCollectable = null;
+
+        if (!validCollectablePlacement) // not valid or has been dropped
         {
             lastCursorInteract.ReturnIngredientHereFromCursor();
             currentCollectableReference = null;
@@ -121,18 +119,22 @@ public class CursorManager : MonoBehaviour
             return;
         }
 
-        PointerEventData m_PointerEventData = new PointerEventData(EventSystem.current) { position = transform.position };
+        PointerEventData m_PointerEventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
         List<RaycastResult> hits = new List<RaycastResult>();
         EventSystem.current.RaycastAll(m_PointerEventData, hits);
 
-        if (hits.Count > 0)
+        foreach (var hit in hits)
         {
-            if (hits[0].gameObject.TryGetComponent(out ICursorInteractable interactable)) interactable.MouseUpOn(Vector2.Distance(transform.position, mouseDownPosition) < MOUSE_DISTANCE_FOR_TAP);
+            if (hit.gameObject.TryGetComponent(out ICursorInteractable interactable))
+            {
+                interactable.MouseUpOn(Vector2.Distance(transform.position, mouseDownPosition) < MOUSE_DISTANCE_FOR_TAP);
+                break;
+            }
         }
 
         if (currentCollectableReference != null) // if CursorInteractable doesn't modify cursor, then just drop it
         {
-            if (lastCursorInteract is IngredientCookingSlot) ((IngredientCookingSlot)lastCursorInteract).RemoveIngredient();
+            if (lastCursorInteract is IngredientCookingSlot slot) slot.RemoveIngredient();
             currentCollectableReference.collectableUI.DropItemOnScreen(transform.position);
             currentCollectableReference = null;
         }
@@ -145,13 +147,14 @@ public class CursorManager : MonoBehaviour
         _CursorImage.sprite = CrosshairSprite;
         _CursorImage.rectTransform.sizeDelta = new Vector2(CrosshairSprite.texture.width, CrosshairSprite.texture.height);
         _CursorImage.color = Color.white;
+        _CursorImage.rectTransform.localScale = Vector3.one;
     }
 
     void ChangeToCollectableSprite(Sprite sprite)
     {
-        _CursorImage.sprite = CrosshairSprite;
-        _CursorImage.rectTransform.sizeDelta = new Vector2(sprite.texture.width, sprite.texture.height);
-        _CursorImage.color = new Color(1, 1, 1, .5f);
+        _CursorImage.sprite = sprite;
+        _CursorImage.rectTransform.sizeDelta = new Vector2(sprite.rect.width, sprite.rect.height);
+        _CursorImage.rectTransform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
     }
 
     void Update()
@@ -162,6 +165,7 @@ public class CursorManager : MonoBehaviour
 
     public void OnExitCooking()
     {
+        if (currentCollectableReference != null) currentCollectableReference.collectableUI.ReturnIngredientHereFromCursor();
         currentCollectableReference = null;
         ChangeToCrosshairSprite();
     }
@@ -169,7 +173,11 @@ public class CursorManager : MonoBehaviour
     public void DropCollectable()
     {
         ChangeToCrosshairSprite();
-        Collectable c = currentCollectableReference;
         currentCollectableReference = null;
+    }
+
+    public void TryDropCollectable(Collectable collectable)
+    {
+        if (collectable == currentCollectableReference) DropCollectable();
     }
 }

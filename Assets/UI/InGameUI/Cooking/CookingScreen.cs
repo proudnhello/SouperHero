@@ -73,7 +73,6 @@ public class CookingScreen : MonoBehaviour
             var percentCompleted = Mathf.Clamp01(moveCookingAnimTimeProgressed / MoveCookingAnimationTime);
             var scaledPercentaged = MoveCookingAnimationCurve.Evaluate(percentCompleted);
             var newYPos = Mathf.Lerp(ClosedYPos, OpenYPos, scaledPercentaged);
-            Debug.Log(moveCookingAnimTimeProgressed);
 
             CookingContent.localPosition = new Vector2(CookingContent.localPosition.x, newYPos);
 

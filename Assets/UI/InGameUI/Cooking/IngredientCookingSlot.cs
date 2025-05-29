@@ -14,6 +14,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     public void AddIngredient(Collectable ingredient)
     {
         ingredientReference = ingredient;
+        ingredientReference.collectableUI.PlaceInCookingSlot(this);
         faceImage.gameObject.SetActive(true);
         faceImage.sprite = ingredientReference.collectableUI._SpriteReference;
         faceImage.color = Color.white;

@@ -59,7 +59,7 @@ public class SoupInventoryUI : MonoBehaviour
     {
         if (IMoveInventoryUI != null) StopCoroutine(IMoveInventoryUI);
         StartCoroutine(IMoveInventoryUI = MoveInventoryUI(open));
-        selectedSlot = -1;
+        selectedSwapSlot = -1;
     }
 
     float openAnimTimeProgressed;
@@ -100,35 +100,35 @@ public class SoupInventoryUI : MonoBehaviour
         }
     }
 
-    int selectedSlot = -1;
+    int selectedSwapSlot = -1;
     public void SetSelectedSoup(int slot)
     {
-        if (selectedSlot == -1)
+        if (selectedSwapSlot == -1)
         {
-            selectedSlot = slot;
+            selectedSwapSlot = slot;
             InventorySlots[slot].SelectSlot();
         }
-        else if (slot == selectedSlot)
+        else if (slot == selectedSwapSlot)
         {
-            selectedSlot = -1;
+            selectedSwapSlot = -1;
             InventorySlots[slot].DeselectSlot();
         }
         else // Swap
         {
-            InventorySlots[selectedSlot].DeselectSlot();
-            PlayerInventory.Singleton.SwapTwoSlots(slot, selectedSlot);
+            InventorySlots[selectedSwapSlot].DeselectSlot();
+            PlayerInventory.Singleton.SwapTwoSlots(slot, selectedSwapSlot);
             InventorySlots[slot].SetSoup(PlayerInventory.Singleton.GetBowl(slot));
-            InventorySlots[selectedSlot].SetSoup(PlayerInventory.Singleton.GetBowl(selectedSlot));
-            selectedSlot = -1;
+            InventorySlots[selectedSwapSlot].SetSoup(PlayerInventory.Singleton.GetBowl(selectedSwapSlot));
+            selectedSwapSlot = -1;
         }
     }
     public int SelectBowlCookingSlot()
     {
-        if (selectedSlot < 0) return -1;
-        if (InventorySlots[selectedSlot].bowlHeld is not SoupBase) return -1;
-        InventorySlots[selectedSlot].DeselectSlot();
-        int slot = selectedSlot;
-        selectedSlot = -1;
+        if (selectedSwapSlot < 0) return -1;
+        if (InventorySlots[selectedSwapSlot].bowlHeld is not SoupBase) return -1;
+        InventorySlots[selectedSwapSlot].DeselectSlot();
+        int slot = selectedSwapSlot;
+        selectedSwapSlot = -1;
         return slot;
     }
 

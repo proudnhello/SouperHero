@@ -11,7 +11,10 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     Collider2D _Collider2D;
     public float ColliderRadius
     {
-        get => _Collider2D.bounds.size.x;
+        get
+        {
+            return _Collider2D.bounds.size.x;
+        }
     }
 
     // Start is called before the first frame update
@@ -24,9 +27,12 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
         _Collider2D = GetComponent<Collider2D>();
     }
 
-    public Collectable GetCollectable()
+    public void PickUp()
     {
-        return _Collectable;
+        _Image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        _Image.raycastTarget = true;
+        currentCookingSlot = null;
+        rb.rotation = 0;
     }
 
     public void MouseDownOn()
@@ -40,6 +46,8 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     {
         _Image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         _Image.raycastTarget = true;
+        if (currentCookingSlot != null) currentCookingSlot.RemoveIngredient();
+        currentCookingSlot = null;
     }
 
     public void DropItemOnScreen(Vector3 position)
@@ -48,9 +56,16 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
         _Image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         _Image.raycastTarget = true;
         currentCookingSlot = null;
+        rb.velocity = Vector2.zero;
+        rb.rotation = 0;
     }
 
     IngredientCookingSlot currentCookingSlot; 
+    public void PlaceInCookingSlot(IngredientCookingSlot slot)
+    {
+        if (currentCookingSlot != null && currentCookingSlot != slot) currentCookingSlot.RemoveIngredient();
+        currentCookingSlot = slot;
+    }
     public void MouseUpOn(bool tap) 
     {
         if (CursorManager.Singleton.currentCollectableReference == _Collectable) // add directly to available cooking slot
@@ -79,7 +94,10 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     {
         if (collision.gameObject.CompareTag("IngredientCatcher"))
         {
-            _Collectable.Drop();      
+            if (currentCookingSlot != null) currentCookingSlot.RemoveIngredient();
+            currentCookingSlot = null;
+            CursorManager.Singleton.TryDropCollectable(_Collectable);
+            _Collectable.Drop();
         }
     }
 }
