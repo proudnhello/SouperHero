@@ -24,6 +24,24 @@ public class Collectable : MonoBehaviour
             }
         }
 
+        GeneratePromptText();
+
+        collectableObj.Init(this);
+        collectableUI.Init(this);
+        collectableObj.Drop(spawnPoint);
+    }
+
+    public void SpawnInUI(Vector2 spawnPoint)
+    {
+        GeneratePromptText();
+        collectableObj.Init(this);
+        collectableUI.Init(this);
+        collectableUI.PickUp();
+        BasketUI.Singleton.SpawnIngredient(this, spawnPoint);
+    }
+
+    void GeneratePromptText()
+    {
         promptText = ingredient.name + "\n";
 
         if (ingredient.GetType() == typeof(AbilityIngredient))
@@ -43,10 +61,6 @@ public class Collectable : MonoBehaviour
                 promptText += flavor.inflictionType.ToString() + "\n";
             }
         }
-
-        collectableObj.Init(this);
-        collectableUI.Init(this);
-        collectableObj.Drop(spawnPoint);
     }
 
     public void Drop()

@@ -64,6 +64,11 @@ public class CookingScreen : MonoBehaviour
         StartCoroutine(IMoveCookingUI = MoveCookingUI(true));
     }
 
+    private void OnDisable()
+    {
+        PlayerEntityManager.Singleton.input.Player.PauseGame.started -= ExitCooking;
+    }
+
     float moveCookingAnimTimeProgressed = 0;
     IEnumerator IMoveCookingUI;
     private IEnumerator MoveCookingUI(bool open)
@@ -110,6 +115,7 @@ public class CookingScreen : MonoBehaviour
 
         // Save game after cooking
         RunStateManager.Singleton.SaveRunState();
+        PlayerInventory.Singleton.SaveInventory();
 
         ExitCookingScreen?.Invoke();
         AtCookingScreen = false;

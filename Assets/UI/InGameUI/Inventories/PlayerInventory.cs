@@ -14,6 +14,7 @@ public class PlayerInventory : MonoBehaviour
     public class InventoryData
     {
         public  List<Collectable> collectablesHeld;
+        internal List<Vector2> collectableLocations;
         public ISoupBowl[] soupsHeld;
         public int soupsHeldCount;
 
@@ -22,6 +23,7 @@ public class PlayerInventory : MonoBehaviour
             if (newInventory != null)
             {
                 collectablesHeld = new();
+                collectableLocations = new();
                 soupsHeld = new ISoupBowl[newInventory.maxSoups];
                 soupsHeld[0] = new FinishedSoup(newInventory.defaultSoupIngredients, newInventory.defaultSoupBase);
                 soupsHeldCount = 1;
@@ -67,6 +69,11 @@ public class PlayerInventory : MonoBehaviour
     void Start()
     {
         data = SaveManager.Singleton.LoadInventoryData(this);
+        //for (int i = 0; i < data.collectablesHeld.Count; i++)
+        //{
+        //    data.collectablesHeld[i].SpawnInUI(data.collectableLocations[i]);
+        //}
+
         SoupInventoryUI.Singleton.InitializeSlots(data.soupsHeld);
         ChangedEquippedSoup?.Invoke();
         PlayerKeybinds.Singleton.useSpoon.action.started += UseSoupAttack;
@@ -141,14 +148,32 @@ public class PlayerInventory : MonoBehaviour
     void CycleCurrentBowl(int direction) 
     {
         if (SoupInventoryUI.Singleton.IsOpen) return;
-        if (direction > 0)
+
+        void Shift()
         {
-            selectedEquippedSoup = (selectedEquippedSoup + 1) % maxEquippedSoups;
+            if (direction > 0)
+            {
+                selectedEquippedSoup = (selectedEquippedSoup + 1) % maxEquippedSoups;
+            }
+            else if (direction < 0)
+            {
+                selectedEquippedSoup = (selectedEquippedSoup - 1) < 0 ? maxEquippedSoups - 1 : selectedEquippedSoup - 1;
+            }
         }
-        else if (direction < 0)
+
+        int currSoup = selectedEquippedSoup;
+        for (int i = 0; i < maxEquippedSoups; i++)
         {
-            selectedEquippedSoup = (selectedEquippedSoup - 1) < 0 ? maxEquippedSoups - 1 : selectedEquippedSoup - 1;
+            Shift();
+            if (data.soupsHeld[selectedEquippedSoup] is FinishedSoup) break;
         }
+        // if looped through and could not find a finished soup... just shift one over
+        if (data.soupsHeld[selectedEquippedSoup] is not FinishedSoup)
+        {
+            Shift();
+        }
+        if (currSoup == selectedEquippedSoup) return;
+
         ChangedEquippedSoup?.Invoke();
     }
 
@@ -161,9 +186,6 @@ public class PlayerInventory : MonoBehaviour
         ChangedEquippedSoup?.Invoke();
     }
 
-    //Iterate to find next avaliable spoon and return the index
-    //If increment bool is false: decriment, if true: increment
-    //Lo: I know this is stupid, but everything is stupid.
     int FindNextAvailableSlot()
     {
         for (int i = 0; i < maxSoups; i++)
@@ -285,6 +307,17 @@ public class PlayerInventory : MonoBehaviour
         Vector2 playerPos = PlayerEntityManager.Singleton.GetPlayerPosition();
 
         item.ThrowItem(playerPos, direction);    
+    }
+
+    public void SaveInventory()
+    {
+        return;
+        data.collectableLocations.Clear();
+        foreach (var collectable in data.collectablesHeld)
+        {
+            data.collectableLocations.Add(collectable.collectableUI.transform.position);
+        }
+        SaveManager.Singleton.SaveInventory(data);
     }
 
 }

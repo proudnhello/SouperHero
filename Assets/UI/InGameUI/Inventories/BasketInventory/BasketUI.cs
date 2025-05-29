@@ -24,6 +24,13 @@ public class BasketUI : MonoBehaviour
         Singleton = this;
     }
 
+    public void SpawnIngredient(Collectable collectable, Vector2 spawnPoint)
+    {
+        collectable.transform.SetParent(this.transform, false);
+        collectable.collectableUI.transform.position = spawnPoint;
+        basketCollectables.Add(collectable);
+    }
+
     public void AddIngredient(Collectable collectable, bool needsAdd)
     {
         //TODO: Set parent of collectable to pot
