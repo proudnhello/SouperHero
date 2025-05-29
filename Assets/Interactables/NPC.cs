@@ -8,6 +8,8 @@ public class NPC : Interactable
     [SerializeField] private DialogueTrigger dialogueTrigger;
     [SerializeField] private bool repeatable = true; // if the NPC can be interacted with multiple times
 
+    private bool isSpeaking = false; // if the NPC is currently speaking
+
     private new void Awake()
     {
         base.Awake();
@@ -20,7 +22,21 @@ public class NPC : Interactable
             // Trigger the dialogue
             if (dialogueTrigger != null)
             {
-                dialogueTrigger.TriggerDialogue();
+                if (isSpeaking)
+                {
+                    DialogueManager.Singleton.DisplayNextSentence(); // Display next sentence if already speaking
+
+                    // Check if dialogue has finished
+                    if (!DialogueManager.Singleton.IsDialogueActive())
+                    {
+                        isSpeaking = false; // Reset speaking state when dialogue ends
+                    }
+                }
+                else
+                {
+                    isSpeaking = true; // Set speaking state to true
+                    dialogueTrigger.TriggerDialogue();
+                }
             }
             else
             {

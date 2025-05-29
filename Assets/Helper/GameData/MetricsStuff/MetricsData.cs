@@ -63,6 +63,8 @@ public class MetricsData
 
         wasRunSuccessful = successfulRun;
 
+        // update analytics
+        MetricAnalyticsTracker.Singleton.RecordCurrentStatsHistory();
     }
 
 
