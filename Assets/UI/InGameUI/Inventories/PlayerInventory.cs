@@ -11,12 +11,13 @@ public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Singleton { get; private set; }
 
+    [Serializable]
     public class InventoryData
     {
-        public  List<Collectable> collectablesHeld;
-        internal List<Vector2> collectableLocations;
-        public ISoupBowl[] soupsHeld;
-        public int soupsHeldCount;
+        public List<int> collectablesHeld;
+        public List<Vector2> collectableLocations;
+        public List<float> collectableRotations;
+        public SerializedSoup[] soupsHeld;
 
         public InventoryData(PlayerInventory newInventory = null)
         {
@@ -24,15 +25,83 @@ public class PlayerInventory : MonoBehaviour
             {
                 collectablesHeld = new();
                 collectableLocations = new();
-                soupsHeld = new ISoupBowl[newInventory.maxSoups];
-                soupsHeld[0] = new FinishedSoup(newInventory.defaultSoupIngredients, newInventory.defaultSoupBase);
-                soupsHeldCount = 1;
-                foreach (var soup in newInventory.otherStartingBases)
+                collectableRotations = new();
+                soupsHeld = new SerializedSoup[newInventory.maxSoups];
+                for (int i = 0; i < soupsHeld.Length; i++) soupsHeld[i] = new(0);
+            }
+        }
+    }
+
+    [Serializable]
+    public class SerializedSoup
+    {
+        public int[] ingredients; // null if just soup base
+        public int soupbase;
+        public int uses;
+
+        public SerializedSoup() { }
+        public SerializedSoup(int empty)
+        {
+            this.ingredients = null;
+            this.soupbase = -1;
+            this.uses = -1;
+        }
+
+        public SerializedSoup(SoupBase soupBase)
+        {
+            soupbase = soupBase.uuid;
+        }
+
+        public SerializedSoup(FinishedSoup finishedSoup)
+        {
+            this.uses = finishedSoup.uses;
+            this.soupbase = finishedSoup.soupBase.uuid;
+            this.ingredients = new int[finishedSoup.ingredientList.Count];
+            int count = 0;
+            foreach (var ing in finishedSoup.ingredientList) this.ingredients[count] = ing.uuid;
+        }
+
+        public ISoupBowl ConvertToSoup(PlayerInventory _inventory)
+        {
+            Debug.Log("SOUP BASE: " + soupbase);
+            if (soupbase == -1) return null;
+            else if (ingredients == null) return _inventory.RetrieveSoupBaseByUUID[soupbase];
+
+            SoupBase soup = _inventory.RetrieveSoupBaseByUUID[soupbase];
+
+            List<Ingredient> ing = new();
+            foreach (var inting in ingredients)
+            {
+                if (_inventory.RetrieveCollectableByUUID.TryGetValue(inting, out Collectable value))
                 {
-                    soupsHeld[soupsHeldCount] = soup;
-                    soupsHeldCount++;
+                    ing.Add(value.ingredient);
+                }
+                else
+                {
+                    bool hasFound = false;
+                    foreach (var i in _inventory.defaultSoupIngredients)
+                    {
+                        if (i.uuid == inting)
+                        {
+                            hasFound = true;
+                            ing.Add(i);
+                            break;
+                        }
+                    }
+                    if (hasFound) break;
+                    foreach (var i in _inventory.emptyBowlIngredients)
+                    {
+                        if (i.uuid == inting)
+                        {
+                            ing.Add(i);
+                            break;
+                        }
+                    }
                 }
             }
+            FinishedSoup finishedSoup = new(ing, soup);
+            finishedSoup.uses = this.uses;
+            return finishedSoup;
         }
     }
 
@@ -52,6 +121,7 @@ public class PlayerInventory : MonoBehaviour
     public SoupBase[] otherStartingBases;
 
 
+
     [Header("Soup Inventory")]
     private int maxSoups = 10;
     internal int maxEquippedSoups = 4;
@@ -59,22 +129,69 @@ public class PlayerInventory : MonoBehaviour
 
     internal int selectedEquippedSoup = 0;
 
+    Dictionary<int, Collectable> RetrieveCollectableByUUID = new();
+    static readonly string FlavorCollectablePath = "Ingredients/Flavors/Collectables/";
+    static readonly string AbilityCollectablePath = "Ingredients/Abilities/Collectables/";
+    Dictionary<int, SoupBase> RetrieveSoupBaseByUUID = new();
+    static readonly string SoupBasePath = "Bowls/";
+
+    // local inventory
+    internal List<Collectable> collectablesHeld;
+    internal ISoupBowl[] soupsHeld;
 
     void Awake()
     {
         if (Singleton == null) Singleton = this;
         emptyBowlAttack = new FinishedSoup(emptyBowlIngredients, emptyBowlBase);
+
+        Collectable[] flavors = Resources.LoadAll<Collectable>(FlavorCollectablePath);
+        if (flavors != null) foreach (var collectable in flavors) RetrieveCollectableByUUID.Add(collectable.ingredient.uuid, collectable);
+        Collectable[] abilities = Resources.LoadAll<Collectable>(AbilityCollectablePath);
+        if (abilities != null) foreach (var collectable in abilities) RetrieveCollectableByUUID.Add(collectable.ingredient.uuid, collectable);
+
+        // i think i have to make anothehr dictionary just for ingredients since theres no collectable of the default soup ingredient
+
+        SoupBase[] bases = Resources.LoadAll<SoupBase>(SoupBasePath);
+        if (bases != null) foreach (var soup in bases) RetrieveSoupBaseByUUID.Add(soup.uuid, soup);
     }
 
     void Start()
     {
-        data = SaveManager.Singleton.LoadInventoryData(this);
-        //for (int i = 0; i < data.collectablesHeld.Count; i++)
-        //{
-        //    data.collectablesHeld[i].SpawnInUI(data.collectableLocations[i]);
-        //}
+        collectablesHeld = new();
+        soupsHeld = new ISoupBowl[maxSoups];
 
-        SoupInventoryUI.Singleton.InitializeSlots(data.soupsHeld);
+        data = SaveManager.Singleton.LoadInventoryData(this);
+        if (data == null) // empty inventory, give default soup attack and bases
+        {
+            data = new(this);
+            soupsHeld[0] = new FinishedSoup(defaultSoupIngredients, defaultSoupBase);
+            int count = 1;
+            foreach (var soup in otherStartingBases)
+            {
+                soupsHeld[count] = soup;
+                count++;
+            }
+        } 
+        else // populate inventories with existing soups and ingredients
+        {
+            for (int i = 0; i < data.soupsHeld.Length; i++)
+            {
+                Debug.Log(data.soupsHeld[i].ingredients);
+            }
+            for (int i = 0; i < data.soupsHeld.Length; i++)
+            {
+                soupsHeld[i] = data.soupsHeld[i].ConvertToSoup(this);
+            }
+            for (int i = 0; i < data.collectablesHeld.Count; i++)
+            {
+                collectablesHeld.Add(Instantiate(RetrieveCollectableByUUID[data.collectablesHeld[i]].gameObject).GetComponent<Collectable>());
+                collectablesHeld[i].SpawnInUI(data.collectableLocations[i], data.collectableRotations[i]);
+            }
+        }
+
+
+
+        SoupInventoryUI.Singleton.InitializeSlots(soupsHeld);
         ChangedEquippedSoup?.Invoke();
         PlayerKeybinds.Singleton.useSpoon.action.started += UseSoupAttack;
         PlayerKeybinds.Singleton.drinkSoup.action.started += DrinkSoup;
@@ -102,34 +219,33 @@ public class PlayerInventory : MonoBehaviour
     public void AddBowlToInventory(ISoupBowl bowl)
     {
         int slot = FindNextAvailableSlot();
-        data.soupsHeld[slot] = bowl;
-        data.soupsHeldCount++;
+        soupsHeld[slot] = bowl;
         SoupInventoryUI.Singleton.AddSoupInSlot(bowl, slot);
     }
 
     void BowlIsEmptied(int slot)
     {
-        data.soupsHeld[slot] = ((FinishedSoup)data.soupsHeld[slot]).soupBase;
-        SoupInventoryUI.Singleton.AddSoupInSlot(data.soupsHeld[slot], slot);
+        soupsHeld[slot] = ((FinishedSoup)soupsHeld[slot]).soupBase;
+        SoupInventoryUI.Singleton.AddSoupInSlot(soupsHeld[slot], slot);
     }
 
     public void BowlIsCooked(int slot, FinishedSoup finishedSoup)
     {
-        data.soupsHeld[slot] = finishedSoup;
-        SoupInventoryUI.Singleton.AddSoupInSlot(data.soupsHeld[slot], slot);      
+        soupsHeld[slot] = finishedSoup;
+        SoupInventoryUI.Singleton.AddSoupInSlot(soupsHeld[slot], slot);      
     }
 
     public void SwapTwoSlots(int slot1, int slot2)
     {
-        (data.soupsHeld[slot1], data.soupsHeld[slot2]) = (data.soupsHeld[slot2], data.soupsHeld[slot1]);
+        (soupsHeld[slot1], soupsHeld[slot2]) = (soupsHeld[slot2], soupsHeld[slot1]);
     }
 
-    public ISoupBowl GetBowl(int slot) => data.soupsHeld[slot];
-    public ISoupBowl GetCurrentBowl() => data.soupsHeld[selectedEquippedSoup];
+    public ISoupBowl GetBowl(int slot) => soupsHeld[slot];
+    public ISoupBowl GetCurrentBowl() => soupsHeld[selectedEquippedSoup];
 
     public void CollectIngredientCollectable(Collectable collectable)
     {
-        data.collectablesHeld.Add(collectable);
+        collectablesHeld.Add(collectable);
         MetricsTracker.Singleton.RecordIngredientCollected();
         BasketUI.Singleton.AddIngredient(collectable, true);
     }
@@ -140,7 +256,7 @@ public class PlayerInventory : MonoBehaviour
     // (The collider under the basket calls it in reverse, the cook button calls it forward)
     public void RemoveIngredientCollectable(Collectable collectable, bool needsDestroy)
     {
-        data.collectablesHeld.Remove(collectable);
+        collectablesHeld.Remove(collectable);
         BasketUI.Singleton.RemoveIngredient(collectable, needsDestroy);
     }
 
@@ -165,10 +281,10 @@ public class PlayerInventory : MonoBehaviour
         for (int i = 0; i < maxEquippedSoups; i++)
         {
             Shift();
-            if (data.soupsHeld[selectedEquippedSoup] is FinishedSoup) break;
+            if (soupsHeld[selectedEquippedSoup] is FinishedSoup) break;
         }
         // if looped through and could not find a finished soup... just shift one over
-        if (data.soupsHeld[selectedEquippedSoup] is not FinishedSoup)
+        if (soupsHeld[selectedEquippedSoup] is not FinishedSoup)
         {
             Shift();
         }
@@ -190,7 +306,7 @@ public class PlayerInventory : MonoBehaviour
     {
         for (int i = 0; i < maxSoups; i++)
         {
-            if (data.soupsHeld[i] is not SoupBase && data.soupsHeld[i] is not FinishedSoup) return i;
+            if (soupsHeld[i] is not SoupBase && soupsHeld[i] is not FinishedSoup) return i;
         }
         return -1;
     }
@@ -199,7 +315,7 @@ public class PlayerInventory : MonoBehaviour
     {
         for(int i = 0; i < maxEquippedSoups; i++)
         {
-            if (data.soupsHeld[i] is FinishedSoup)
+            if (soupsHeld[i] is FinishedSoup)
             {
                 selectedEquippedSoup = i;
                 ChangedEquippedSoup?.Invoke();
@@ -224,7 +340,7 @@ public class PlayerInventory : MonoBehaviour
         }
 
         // Index into current spoon
-        ISoupBowl bowl = data.soupsHeld[selectedEquippedSoup];
+        ISoupBowl bowl = soupsHeld[selectedEquippedSoup];
 
         if (bowl is FinishedSoup finishedSoup)
         {
@@ -249,7 +365,7 @@ public class PlayerInventory : MonoBehaviour
         if (CookingScreen.Singleton.IsCooking) return;
 
         // Index into current spoon
-        ISoupBowl bowl = data.soupsHeld[selectedEquippedSoup];
+        ISoupBowl bowl = soupsHeld[selectedEquippedSoup];
 
         if (bowl is FinishedSoup finishedSoup)
         {
@@ -311,11 +427,22 @@ public class PlayerInventory : MonoBehaviour
 
     public void SaveInventory()
     {
-        return;
-        data.collectableLocations.Clear();
-        foreach (var collectable in data.collectablesHeld)
+        for (int i = 0; i < soupsHeld.Length; i++)
         {
-            data.collectableLocations.Add(collectable.collectableUI.transform.position);
+            if (soupsHeld[i] is FinishedSoup finishedSoup) data.soupsHeld[i] = new(finishedSoup);
+            else if (soupsHeld[i] is SoupBase soupBase) data.soupsHeld[i] = new(soupBase);
+            else data.soupsHeld[i] = new(0);
+
+        }
+
+        data.collectableLocations.Clear();
+        data.collectablesHeld.Clear();
+        data.collectableRotations.Clear();
+        for (int i = 0; i < collectablesHeld.Count; i++)
+        {
+            data.collectablesHeld.Add(collectablesHeld[i].ingredient.uuid);
+            data.collectableLocations.Add(collectablesHeld[i].collectableUI.transform.localPosition);
+            data.collectableRotations.Add(collectablesHeld[i].collectableUI.transform.localRotation.eulerAngles.z);
         }
         SaveManager.Singleton.SaveInventory(data);
     }

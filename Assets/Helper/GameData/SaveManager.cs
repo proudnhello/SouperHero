@@ -253,7 +253,7 @@ public class SaveManager : MonoBehaviour
         }
         else
         {
-            return new(inventory);
+            return null;
         }
     }
 

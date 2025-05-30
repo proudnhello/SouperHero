@@ -21,7 +21,7 @@ public class CollectableObject : Interactable
         _collider = GetComponent<Collider2D>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
         StartCoroutine(Fade());
     }

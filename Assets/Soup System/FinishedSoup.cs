@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,6 +109,7 @@ public class FinishedSoup : ISoupBowl
     }
 
     // ~~~ VARIABLES ~~~
+    public List<Ingredient> ingredientList;
     public List<SoupAbility> soupAbilities;
     public List<SoupInfliction> soupInflictions;
     public int uses; // -1 = infinite
@@ -122,6 +124,7 @@ public class FinishedSoup : ISoupBowl
     // Makes a Finished Soup
     public FinishedSoup(List<Ingredient> ingredients, SoupBase stock)
     {
+        ingredientList = ingredients;
         soupBase = stock;
 
         // Track abilities and inflictions using dictionaries

@@ -75,12 +75,12 @@ SpriteRenderer:
   m_SortingLayerID: 326946545
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2076703166, guid: b9e81c74ecaa0884dbe05bd78277d615, type: 3}
+  m_Sprite: {fileID: -65095416, guid: 0a6b6c77f33125e47a8ee510611c1bee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.125, y: 1.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -134,8 +134,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1.125, y: 1.125}
+    newSize: {x: 1.125, y: 1.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -173,7 +173,7 @@ RectTransform:
   m_GameObject: {fileID: 3388838937524246683}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1.6666666}
+  m_LocalScale: {x: 1.8, y: 1.8, z: 5.9999995}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6063786777005417206}
@@ -181,7 +181,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 108.7, y: 100}
+  m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!50 &155414985996046896
 Rigidbody2D:
@@ -238,7 +238,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2076703166, guid: b9e81c74ecaa0884dbe05bd78277d615, type: 3}
+  m_Sprite: {fileID: -65095416, guid: 0a6b6c77f33125e47a8ee510611c1bee, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -305,15 +305,15 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -32.750977, y: 51.589844}
-      - {x: -50.828613, y: 33.99707}
-      - {x: -51.862793, y: -12.130859}
-      - {x: -35.771973, y: -46.408203}
-      - {x: 8.5801935, y: -50.192936}
-      - {x: 40.46582, y: -21.374023}
-      - {x: 42.73497, y: 12.807194}
-      - {x: 54.68007, y: 28.898014}
-      - {x: 37.466682, y: 43.756283}
+    - - {x: 0.18878925, y: 15.234932}
+      - {x: -13.362022, y: 14.000576}
+      - {x: -12.014, y: 4.1840687}
+      - {x: -14.909161, y: -6.4149895}
+      - {x: -8.88967, y: -15.325302}
+      - {x: 10.57934, y: -14.660233}
+      - {x: 15.013943, y: -6.539734}
+      - {x: 14.758953, y: 7.8907795}
+      - {x: 9.787312, y: 13.619179}
   m_UseDelaunayMesh: 0
 --- !u!1 &5854243488706272828
 GameObject:

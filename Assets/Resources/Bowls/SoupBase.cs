@@ -10,6 +10,7 @@ public class SoupBase : ScriptableObject, ISoupBowl
     public string baseName;
     public Sprite baseSprite;
     public Sprite finishedSprite;
+    public int uuid;
 
     public float cooldown;
     public int maxFlavorIngredients;

@@ -31,13 +31,15 @@ public class Collectable : MonoBehaviour
         collectableObj.Drop(spawnPoint);
     }
 
-    public void SpawnInUI(Vector2 spawnPoint)
+    public void SpawnInUI(Vector2 spawnPoint, float rotation)
     {
         GeneratePromptText();
         collectableObj.Init(this);
         collectableUI.Init(this);
+        collectableObj.gameObject.SetActive(false);
+        collectableUI.gameObject.SetActive(true);
         collectableUI.PickUp();
-        BasketUI.Singleton.SpawnIngredient(this, spawnPoint);
+        BasketUI.Singleton.SpawnIngredient(this, spawnPoint, rotation);
     }
 
     void GeneratePromptText()
@@ -74,8 +76,7 @@ public class Collectable : MonoBehaviour
                 return;
             }
         }
-        gameObject.transform.SetParent(null);
-        gameObject.transform.localScale = Vector3.one;
+        collectableUI.transform.SetParent(transform);
         collectableUI.gameObject.SetActive(false);
         collectableObj.gameObject.SetActive(true);
         collectableObj.SetInteractable(true);
