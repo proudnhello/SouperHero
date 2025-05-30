@@ -18,6 +18,7 @@ public class CursorManager : MonoBehaviour
     [SerializeField] Color VALID_PLACEMENT_COLOR;
     [SerializeField] Color INVALID_PLACEMENT_COLOR;
     [SerializeField] float MOUSE_DISTANCE_FOR_TAP;
+    [SerializeField] float TIME_FOR_TAP = .25f;
 
     internal int selectedSlot = -1;
     public bool IsHoldingSomething { get => currentCollectableReference != null; }
@@ -48,10 +49,12 @@ public class CursorManager : MonoBehaviour
     }
 
     Vector2 mouseDownPosition;
+    float mouseDownTime;
     ICursorInteractable lastCursorInteract;
     private void MouseDown(InputAction.CallbackContext ctx)
     {
         mouseDownPosition = Input.mousePosition;
+        mouseDownTime = Time.time;
 
         PointerEventData m_PointerEventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
         List<RaycastResult> hits = new List<RaycastResult>();
@@ -111,7 +114,8 @@ public class CursorManager : MonoBehaviour
         if (IWhileDraggingCollectable != null) StopCoroutine(IWhileDraggingCollectable);
         IWhileDraggingCollectable = null;
 
-        if (CookingScreen.Singleton.IsCooking && Vector2.Distance(Input.mousePosition, mouseDownPosition) < MOUSE_DISTANCE_FOR_TAP)
+        if (CookingScreen.Singleton.IsCooking && Vector2.Distance(Input.mousePosition, mouseDownPosition) < MOUSE_DISTANCE_FOR_TAP
+            && (Time.time - mouseDownTime) < TIME_FOR_TAP)
         {
             lastCursorInteract.Tap();
             if (currentCollectableReference == null)

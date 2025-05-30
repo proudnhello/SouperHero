@@ -49,6 +49,7 @@ public class SaveManager : MonoBehaviour
             File.Delete(runStatePath);
             File.Delete(statsPath);
             File.Delete(inventoryPath);
+            File.Delete(settingsPath);
         } catch (Exception e)
         {
             Debug.LogError("Error deleting save data " + e);

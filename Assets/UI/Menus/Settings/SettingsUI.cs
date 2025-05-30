@@ -4,17 +4,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class SettingsStuff : MonoBehaviour
+public class SettingsUI : MonoBehaviour
 {
     public TMP_Dropdown resolutionDropdown;
-    Resolution[] resolutions;
-    List<Resolution> SelectedResolutionList = new List<Resolution>();
-    int selectedRes;
+    public TMP_Dropdown languageDropdown;
+    public Toggle fullscreenToggle;
+    public Toggle useGrayscale;
 
-    // Start is called before the first frame update
-    void Start()
+
+    List<Resolution> SelectedResolutionList = new List<Resolution>();
+
+    private void Awake()
     {
-        resolutions = Screen.resolutions;
+        Resolution[] resolutions = Screen.resolutions;
 
         resolutionDropdown.ClearOptions();
 
@@ -33,14 +35,32 @@ public class SettingsStuff : MonoBehaviour
         resolutionDropdown.AddOptions(resolutionStringList);
     }
 
-    public void ChangeResolution()
+    private void Start()
     {
-        selectedRes = resolutionDropdown.value;
+        resolutionDropdown.value = SettingsManager.Singleton.Resolution;
+        languageDropdown.value = SettingsManager.Singleton.Language;
+        fullscreenToggle.isOn = SettingsManager.Singleton.FullScreen;
+        useGrayscale.isOn = SettingsManager.Singleton.UseGrayscale;
+    }
+
+    public void ChangeResolution(int selectedRes)
+    {
         Screen.SetResolution(SelectedResolutionList[selectedRes].width, SelectedResolutionList[selectedRes].height, Screen.fullScreen);
+        SettingsManager.Singleton.Resolution = selectedRes;
     }
 
     public void SetFullscreen(bool full)
     {
-        Screen.fullScreen = full;
+        SettingsManager.Singleton.FullScreen = full;
+    }
+
+    public void ChangeLanguage(int langID)
+    {
+        SettingsManager.Singleton.Language = langID;
+    }
+
+    public void UseGrayscale(bool use)
+    {
+        SettingsManager.Singleton.UseGrayscale = use;
     }
 }

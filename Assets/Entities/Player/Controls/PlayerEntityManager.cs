@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 using skner.DualGrid;
 using System.Collections;
 

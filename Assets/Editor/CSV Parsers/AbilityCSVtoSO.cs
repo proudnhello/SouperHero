@@ -141,7 +141,7 @@ public class AbilityCSVtoSO
                 EditorUtility.SetDirty(playerPrefab);
 
 
-                inventory.defaultSpoonIngredients = defaultSpoonIngredients;
+                inventory.defaultSoupIngredients = defaultSpoonIngredients;
 
                 // save to asset database
                 AssetDatabase.SaveAssets();

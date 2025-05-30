@@ -161,6 +161,7 @@ public class CookingScreen : MonoBehaviour
 
     public void CookTheSoup()
     {
+        SoupIsValid = false;
         // Cook the soup with what is currently in the pot
         List<Ingredient> cookedIngredients = new();
         foreach (var slot in IngredientCookingSlots)

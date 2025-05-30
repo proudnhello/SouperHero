@@ -84,7 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2582505847464537533}
-  - component: {fileID: 6959296706810635680}
+  - component: {fileID: 4997247117706086133}
   m_Layer: 5
   m_Name: SoupInventory
   m_TagString: Untagged
@@ -115,7 +115,7 @@ RectTransform:
   m_AnchoredPosition: {x: -1677, y: -2203}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &6959296706810635680
+--- !u!114 &4997247117706086133
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,7 +124,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5484195382152117326}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17558b9c90c2d3847afb4c9f2c532cbb, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f8d07fff718a2b498f85d45918ad0e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryHolder: {fileID: 2582505847464537533}
@@ -139,7 +139,7 @@ MonoBehaviour:
   - {fileID: 8115741544457405673}
   - {fileID: 6317317295322633957}
   - {fileID: 6819385157183396919}
-  ClosedYPos: -634.8
+  ClosedYPos: -632.4
   OpenYPos: -450.93
   OpenAnimationCurve:
     serializedVersion: 2
@@ -149,19 +149,37 @@ MonoBehaviour:
       value: 0
       inSlope: 0
       outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.009720519
+      value: -0.0001237467
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.49562618
+      value: 0.85653853
+      inSlope: 1.0160707
+      outSlope: 1.0160707
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.23273344
+      outWeight: 0.26987895
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 0.036717985
+      outSlope: 0.036717985
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.22921214
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
