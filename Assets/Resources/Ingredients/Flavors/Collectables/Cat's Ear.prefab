@@ -210,7 +210,6 @@ GameObject:
   - component: {fileID: 7844715750633300087}
   - component: {fileID: 1033134474327871371}
   - component: {fileID: 1390189039599825447}
-  - component: {fileID: 2530082954606009824}
   m_Layer: 5
   m_Name: ItemUI
   m_TagString: Ingredient
@@ -366,25 +365,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3840ada9edf0af45a838800545b7415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2530082954606009824
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6869763702667733351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62d3cd119d040944aaf6ba2e1586d4c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  image: {fileID: 7844715750633300087}
-  parentAfterDrag: {fileID: 0}
-  ingredientType: 
-  previousParent: {fileID: 6063786777005417206}
-  ingredient: {fileID: 0}
-  isDragging: 0
-  droppedOn: 0
-  worldDropped: 0
-  validPlacement: 1
-  ingredientRadius: 0
+  ColliderRadius: 0.55
