@@ -28,7 +28,7 @@ public class Campfire : Interactable
 
     private void Prep()
     {
-        CookingManager.Singleton.EnterCooking(this);
+        CookingScreen.Singleton.EnterCooking(this);
         isPrepping = true;
         StartCoroutine(TrackPlayerDistance());
     }
@@ -44,7 +44,7 @@ public class Campfire : Interactable
         {
             if (Vector2.Distance(PlayerEntityManager.Singleton.transform.position, transform.position) > playerDistanceToCancelCooking)
             {
-                CookingManager.Singleton.ExitCooking();
+                CookingScreen.Singleton.ExitCooking();
             }
             yield return null;
         }

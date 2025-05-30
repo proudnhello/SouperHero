@@ -245,7 +245,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1811423268807079575}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 436596f54e98a194f869c7bc81178747, type: 3}
+  m_Script: {fileID: 11500000, guid: 3aee02afee1cb704d98a4f66b5ac1672, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cooldownFill: {fileID: 7074513061694018147}
@@ -486,8 +486,8 @@ SpriteMask:
   m_MaskAlphaCutoff: 0.2
   m_FrontSortingLayerID: -655090433
   m_BackSortingLayerID: -655090433
-  m_FrontSortingLayer: 6
-  m_BackSortingLayer: 6
+  m_FrontSortingLayer: 5
+  m_BackSortingLayer: 5
   m_FrontSortingOrder: 1
   m_BackSortingOrder: -1
   m_IsCustomRangeActive: 1
@@ -628,17 +628,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 4732919122290708663}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41c8e7955e4523042a2f595c721a0303, type: 3}
+  m_Script: {fileID: 11500000, guid: 0d98b355b0b40ab4d977bad610b7003b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpoons: 4
-  playerHolding: 0
-  objectHolding: {fileID: 0}
-  defaultSpoonIngredients:
+  defaultSoupIngredients:
   - {fileID: 11400000, guid: 53160cc7134787b42ab12515fae5fd1f, type: 2}
   defaultSoupBase: {fileID: 11400000, guid: a767bd7958f23c14292b8f38452a24bf, type: 2}
-  collectablesHeld: []
-  spoons: []
+  emptyBowlBase: {fileID: 11400000, guid: 09ed9fd8edaf3a8449d9e80db1a52469, type: 2}
+  emptyBowlIngredients:
+  - {fileID: 11400000, guid: d126e76d82bc55e408c1004deb83bc4e, type: 2}
+  otherStartingBases:
+  - {fileID: 11400000, guid: bcdb093ca95d08645b63242566977041, type: 2}
+  - {fileID: 11400000, guid: db01e3e3ab3a36746845995323ac74f0, type: 2}
 --- !u!212 &5557595635640825330
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -678,7 +679,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -655090433
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: -1336732016, guid: 5e481775ca0e9334ab3cc55e854887dc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -801,7 +802,7 @@ MonoBehaviour:
   - {x: 0.3866005, y: -0.7193146, z: 0}
   m_ShapePathHash: -2124240203
   m_Mesh: {fileID: 0}
-  m_InstanceId: 79270
+  m_InstanceId: 106060
   m_LocalBounds:
     m_Center: {x: -0.018909454, y: -0.6550865, z: 0}
     m_Extent: {x: 0.43659973, y: 0.06422806, z: 0}
@@ -817,17 +818,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805e2272c23d14ca586218a423c9f935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useSpoon: {fileID: 8315179344856997591, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  dash: {fileID: -1738512515163886277, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  interact: {fileID: 1695116655308306880, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  inventory: {fileID: 0}
-  pause: {fileID: -1620099638520961675, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  cycleSpoonLeft: {fileID: -6623283861309736916, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  cycleSpoonRight: {fileID: -3149051397032070306, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  bowl1: {fileID: -3124882222224315404, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  bowl2: {fileID: 5882129507251868267, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  bowl3: {fileID: -8512749637846965080, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
-  bowl4: {fileID: -5777449648321548702, guid: 3de81fee9893aba478a4ba6d6060dda4, type: 3}
+  useSpoon: {fileID: 8315179344856997591, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  drinkSoup: {fileID: -9110785734940658647, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  dash: {fileID: -1738512515163886277, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  interact: {fileID: 1695116655308306880, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  inventory: {fileID: 7166518708626204623, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  pause: {fileID: -1620099638520961675, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  cycleSpoonLeft: {fileID: -6623283861309736916, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  cycleSpoonRight: {fileID: -3149051397032070306, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  bowl1: {fileID: -3124882222224315404, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  bowl2: {fileID: 5882129507251868267, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  bowl3: {fileID: -8512749637846965080, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  bowl4: {fileID: -5777449648321548702, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
 --- !u!1 &4867118698823343567
 GameObject:
   m_ObjectHideFlags: 0
@@ -1183,7 +1185,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -338199173
-  m_SortingLayer: 1
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.24313726, g: 0.11764706, b: 0.14509805, a: 0.8}

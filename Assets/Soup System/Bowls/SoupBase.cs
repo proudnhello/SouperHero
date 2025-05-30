@@ -5,10 +5,11 @@ using static FlavorIngredient;
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Base/New Base")]
 
-public class SoupBase : ScriptableObject
+public class SoupBase : ScriptableObject, ISoupBowl
 {
     public string baseName;
     public Sprite baseSprite;
+    public Sprite finishedSprite;
 
     public float cooldown;
     public int maxFlavorIngredients;
@@ -16,8 +17,6 @@ public class SoupBase : ScriptableObject
     public int maxWildcardIngredients;
     public int maxIngredients;
 
-    // Possibly could have some elegant solution with ingredients or something
-    // Can't be bothered, just cope with two lists
     public List<InflictionFlavor> inherentInflictionFlavors;
     public List<BuffFlavor> inherentBuffFlavors;
 }
