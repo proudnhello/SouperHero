@@ -63,7 +63,6 @@ public class PlayerInventory : MonoBehaviour
 
         public ISoupBowl ConvertToSoup(PlayerInventory _inventory)
         {
-            Debug.Log("SOUP BASE: " + soupbase);
             if (soupbase == -1) return null;
             else if (ingredients == null) return _inventory.RetrieveSoupBaseByUUID[soupbase];
 
@@ -149,8 +148,6 @@ public class PlayerInventory : MonoBehaviour
         Collectable[] abilities = Resources.LoadAll<Collectable>(AbilityCollectablePath);
         if (abilities != null) foreach (var collectable in abilities) RetrieveCollectableByUUID.Add(collectable.ingredient.uuid, collectable);
 
-        // i think i have to make anothehr dictionary just for ingredients since theres no collectable of the default soup ingredient
-
         SoupBase[] bases = Resources.LoadAll<SoupBase>(SoupBasePath);
         if (bases != null) foreach (var soup in bases) RetrieveSoupBaseByUUID.Add(soup.uuid, soup);
     }
@@ -174,10 +171,6 @@ public class PlayerInventory : MonoBehaviour
         } 
         else // populate inventories with existing soups and ingredients
         {
-            for (int i = 0; i < data.soupsHeld.Length; i++)
-            {
-                Debug.Log(data.soupsHeld[i].ingredients);
-            }
             for (int i = 0; i < data.soupsHeld.Length; i++)
             {
                 soupsHeld[i] = data.soupsHeld[i].ConvertToSoup(this);
@@ -327,7 +320,8 @@ public class PlayerInventory : MonoBehaviour
     void UseSoupAttack(InputAction.CallbackContext ctx)
     {
         // Don't Use Spoon if In Cooking Screen or if the player can't attack
-        if (CookingScreen.Singleton.IsCooking || !PlayerEntityManager.Singleton.CanAttack())
+        if (CookingScreen.Singleton.IsCooking || SoupInventoryUI.Singleton.IsOpen ||
+            !PlayerEntityManager.Singleton.CanAttack())
         {
             return;
         }
