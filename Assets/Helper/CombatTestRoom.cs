@@ -50,7 +50,7 @@ public class CombatTestRoom : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(debugKey) && debugScreen != null
-            && !CookingManager.Singleton.IsCooking())
+            && !CookingScreen.Singleton.IsCooking)
         {
             debugging = !debugging;
             if (debugging)
@@ -70,7 +70,6 @@ public class CombatTestRoom : MonoBehaviour
         setPosition();
         debugging = true;
         Time.timeScale = 0;
-        CursorManager.Singleton.cursorObject.SetActive(false);
         debugScreen.SetActive(true);
         playScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Disable();
@@ -81,7 +80,6 @@ public class CombatTestRoom : MonoBehaviour
         resetSpawnPos();
         debugging = false;
         Time.timeScale = 1;
-        CursorManager.Singleton.cursorObject.SetActive(true);
         debugScreen.SetActive(false);
         playScreen.SetActive(true);
 

@@ -6,7 +6,7 @@ using UnityEngine;
 using static EntityInflictionEffectHandler;
 using Unity.VisualScripting;
 using System;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 
 public abstract class Entity : MonoBehaviour
 {

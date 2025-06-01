@@ -73,14 +73,14 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
-  m_SortingLayer: 4
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 625000687, guid: b9e81c74ecaa0884dbe05bd78277d615, type: 3}
+  m_Sprite: {fileID: 507189701, guid: 0a6b6c77f33125e47a8ee510611c1bee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.125, y: 1.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -134,8 +134,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1.125, y: 1.125}
+    newSize: {x: 1.125, y: 1.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -156,7 +156,6 @@ GameObject:
   - component: {fileID: 7855966722942875405}
   - component: {fileID: 1152078203828340505}
   - component: {fileID: 6834714729904923402}
-  - component: {fileID: 2804046324513310002}
   - component: {fileID: 6621155585423889570}
   m_Layer: 5
   m_Name: PumpkinUI
@@ -182,7 +181,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 108.7, y: 100}
+  m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!50 &155414985996046896
 Rigidbody2D:
@@ -239,7 +238,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 625000687, guid: b9e81c74ecaa0884dbe05bd78277d615, type: 3}
+  m_Sprite: {fileID: 507189701, guid: 0a6b6c77f33125e47a8ee510611c1bee, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -261,28 +260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3840ada9edf0af45a838800545b7415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2804046324513310002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3388838937524246683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62d3cd119d040944aaf6ba2e1586d4c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  image: {fileID: 1152078203828340505}
-  parentAfterDrag: {fileID: 0}
-  ingredientType: 
-  previousParent: {fileID: 6063786777005417206}
-  ingredient: {fileID: 0}
-  isDragging: 0
-  droppedOn: 0
-  worldDropped: 0
-  validPlacement: 1
-  ingredientRadius: 0
+  ColliderRadius: 0.55
 --- !u!60 &6621155585423889570
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -327,15 +305,15 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -32.750977, y: 51.589844}
-      - {x: -50.828613, y: 33.99707}
-      - {x: -51.862793, y: -12.130859}
-      - {x: -35.771973, y: -46.408203}
-      - {x: 8.5801935, y: -50.192936}
-      - {x: 40.46582, y: -21.374023}
-      - {x: 42.73497, y: 12.807194}
-      - {x: 54.68007, y: 28.898014}
-      - {x: 37.466682, y: 43.756283}
+    - - {x: -4.958313, y: 15.330845}
+      - {x: -12.432224, y: 7.230259}
+      - {x: -16.11713, y: 1.1244192}
+      - {x: -16.103699, y: -8.353764}
+      - {x: -0.82629967, y: -16.75605}
+      - {x: 15.495272, y: -14.277132}
+      - {x: 14.087023, y: 1.6893054}
+      - {x: 10.724319, y: 9.485998}
+      - {x: 2.1486626, y: 14.424438}
   m_UseDelaunayMesh: 0
 --- !u!1 &5854243488706272828
 GameObject:

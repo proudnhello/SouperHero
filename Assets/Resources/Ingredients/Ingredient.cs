@@ -9,6 +9,7 @@ public class Ingredient : ScriptableObject
     public string IngredientName;
     public Sprite Icon;
     public Sprite IconUI;
+    public int uuid;
 
     [Header("Encyclopedia")]
     public Sprite EncyclopediaImage;

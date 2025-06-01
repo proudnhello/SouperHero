@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using static UnityEditor.Progress;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 
 public class Throwable : Interactable

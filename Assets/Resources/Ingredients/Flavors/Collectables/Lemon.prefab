@@ -91,12 +91,12 @@ SpriteRenderer:
   m_SortingLayerID: 326946545
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1226854342, guid: e715e5becefa5ce4b800f3eb80bde891, type: 3}
+  m_Sprite: {fileID: -1567195404, guid: 0a6b6c77f33125e47a8ee510611c1bee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 1.125, y: 1.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -138,8 +138,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 2}
+    oldSize: {x: 1.125, y: 1.125}
+    newSize: {x: 1.125, y: 1.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -210,7 +210,6 @@ GameObject:
   - component: {fileID: 7844715750633300087}
   - component: {fileID: 1033134474327871371}
   - component: {fileID: 1390189039599825447}
-  - component: {fileID: 1827027202429074144}
   m_Layer: 5
   m_Name: ItemUI
   m_TagString: Ingredient
@@ -234,7 +233,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 151.44255, y: 130.59099}
   m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!60 &2274963630873298620
@@ -337,7 +336,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -59303175, guid: d9528a1aceeb6a04f91926eb1dbb0781, type: 3}
+  m_Sprite: {fileID: -1567195404, guid: 0a6b6c77f33125e47a8ee510611c1bee, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -367,25 +366,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3840ada9edf0af45a838800545b7415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1827027202429074144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6869763702667733351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62d3cd119d040944aaf6ba2e1586d4c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  image: {fileID: 7844715750633300087}
-  parentAfterDrag: {fileID: 0}
-  ingredientType: 
-  previousParent: {fileID: 6063786777005417206}
-  ingredient: {fileID: 0}
-  isDragging: 0
-  droppedOn: 0
-  worldDropped: 0
-  validPlacement: 1
-  ingredientRadius: 0
+  ColliderRadius: 0.55
