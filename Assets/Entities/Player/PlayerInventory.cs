@@ -7,7 +7,7 @@ using System;
 using TMPro;
 using static SoupSpoon;
 using System.Linq.Expressions;
-//using static UnityEditor.Progress;
+using static UnityEditor.Progress;
 
 public class PlayerInventory : MonoBehaviour
 {
