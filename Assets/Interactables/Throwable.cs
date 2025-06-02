@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using static UnityEditor.Progress;
+//using static UnityEditor.Progress;
 using Infliction = FinishedSoup.SoupInfliction;
 using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 
