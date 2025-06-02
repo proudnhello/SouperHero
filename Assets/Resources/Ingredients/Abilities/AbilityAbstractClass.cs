@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 
 // Base ability abstract class. Contains declarations for functions that abilities will implement
 public abstract class AbilityAbstractClass : ScriptableObject

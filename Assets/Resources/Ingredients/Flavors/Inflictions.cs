@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using StatusEffectInstance = EntityInflictionEffectHandler.StatusEffectInstance;
-using Infliction = SoupSpoon.SpoonInfliction;
+using Infliction = FinishedSoup.SoupInfliction;
 using UnityEngine.AI;
 using Unity.VisualScripting.FullSerializer;
 using System.Collections.Generic;
