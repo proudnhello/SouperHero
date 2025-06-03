@@ -92,12 +92,12 @@ public class DeerAI : EnemyBaseClass
 
     public class IdleState : IState
     {
-        HabaperroAI sm;
+        DeerAI sm;
         IEnumerator IHandleDetection;
         IEnumerator IHandlePatrol;
         Vector2 centerPoint;
-        NavMeshPath path;
-        public IdleState(HabaperroAI _sm)
+        UnityEngine.AI.NavMeshPath path;
+        public IdleState(DeerAI _sm)
         {
             sm = _sm;
             path = new();
@@ -112,7 +112,7 @@ public class DeerAI : EnemyBaseClass
         float CalculatePathLength()
         {
             float distance = -1;
-            if (path.status != NavMeshPathStatus.PathComplete) return distance;
+            if (path.status != UnityEngine.AI.NavMeshPathStatus.PathComplete) return distance;
 
             distance = Vector2.Distance(sm.transform.position, path.corners[0]);
             for (int i = 1; i < path.corners.Length; i++)
@@ -133,8 +133,8 @@ public class DeerAI : EnemyBaseClass
                     continue;
                 }
 
-                NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), sm._playerTransform.position,
-                    NavMesh.AllAreas, path);
+                UnityEngine.AI.NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), sm._playerTransform.position,
+                    UnityEngine.AI.NavMesh.AllAreas, path);
 
                 float distance = CalculatePathLength();
                 if ((distance >= 0 && distance < sm.PlayerDetectionPathLength) || sm.alwaysAggro)
@@ -176,8 +176,8 @@ public class DeerAI : EnemyBaseClass
                         Vector2 targetDir = new Vector3(Mathf.Cos(targetAngle), Mathf.Sin(targetAngle));
                         float dist = Random.Range(sm.PatrolDistance.x, sm.PatrolDistance.y);
                         targetPoint = targetDir * Random.Range(sm.PatrolDistance.x, sm.PatrolDistance.y) + centerPoint;
-                        NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), targetPoint,
-                            NavMesh.AllAreas, path);
+                        UnityEngine.AI.NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), targetPoint,
+                            UnityEngine.AI.NavMesh.AllAreas, path);
                         distance = CalculatePathLength();
                     } while (distance < 0 || distance >= sm.MaxPatrolPathLength);
                     
@@ -211,9 +211,9 @@ public class DeerAI : EnemyBaseClass
 
     public class AttackState : IState
     {
-        HabaperroAI sm;
+        DeerAI sm;
         IEnumerator IHandleMovementExplosion;
-        public AttackState(HabaperroAI _sm)
+        public AttackState(DeerAI _sm)
         {
             sm = _sm;
         }
