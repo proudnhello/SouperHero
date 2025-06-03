@@ -107,6 +107,12 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             set => m_RebindOverlay = value;
         }
 
+        public GameObject dupeText
+        {
+            get => m_DupeText;
+            set => m_DupeText = value;
+        }
+
         /// <summary>
         /// Event that is triggered every time the UI updates to reflect the current binding.
         /// This can be used to tie custom visualizations to bindings.
@@ -283,6 +289,18 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                         if (m_RebindOverlay != null)
                             m_RebindOverlay.SetActive(false);
                         m_RebindStopEvent?.Invoke(this, operation);
+
+                        if (CheckDuplicateBindings(action, bindingIndex, allCompositeParts))
+                        {
+                            action.RemoveBindingOverride(bindingIndex);
+                            m_DupeText.SetActive(true);
+                            CleanUp();
+                            PerformInteractiveRebind(action, bindingIndex, allCompositeParts);
+                            return;
+                        }
+
+                        m_DupeText.SetActive(false);
+
                         UpdateBindingDisplay();
                         CleanUp();
 
@@ -320,6 +338,41 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             m_RebindStartEvent?.Invoke(this, m_RebindOperation);
 
             m_RebindOperation.Start();
+        }
+
+        private bool CheckDuplicateBindings(InputAction action, int bindingIndex, bool allCompositeParts = false)
+        {
+            InputBinding newBinding = action.bindings[bindingIndex];
+
+            foreach (InputBinding binding in action.actionMap.bindings)
+            {
+                if (binding.action == newBinding.action)
+                {
+                    // Skip the key user is binding
+                    continue;
+                }
+
+                if (binding.effectivePath == newBinding.effectivePath)
+                {
+                    // Duplicate binding
+                    return (true);
+                }
+            }
+
+            if (allCompositeParts)
+            {
+                for (int i = 1; i < bindingIndex; i++)
+                {
+                    if (action.bindings[i].effectivePath == newBinding.overridePath)
+                    {
+                        // Duplicate composite binding
+                        return (true);
+                    }
+                }
+            }
+
+            // No dupes
+            return (false);
         }
 
         protected void OnEnable()
@@ -397,6 +450,10 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         [Tooltip("Optional text label that will be updated with prompt for user input.")]
         [SerializeField]
         private TMPro.TextMeshProUGUI m_RebindText;
+
+        [Tooltip("Optional text label that tells the user that the input is already in use.")]
+        [SerializeField]
+        private GameObject m_DupeText;
 
         [Tooltip("Event that is triggered when the way the binding is display should be updated. This allows displaying "
             + "bindings in custom ways, e.g. using images instead of text.")]
