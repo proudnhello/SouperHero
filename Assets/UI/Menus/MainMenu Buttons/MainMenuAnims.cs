@@ -4,9 +4,12 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class MainMenuAnims : MonoBehaviour
 {
+    //public static MainMenuAnims Singleton { get; private set; }
+
     public GameObject camera;
     public GameObject blackFade;
     public GameObject titleText;
@@ -33,12 +36,19 @@ public class MainMenuAnims : MonoBehaviour
 
     [Header("Start Sequence")]
 
-    public RectTransform loadingProgress;
     private bool isLoading = false;
 
-    public GameObject find;
-    public GameObject the;
-    public GameObject exit;
+    [Header("Menus")]
+    [SerializeField] private GameObject loadingScreen;
+    [SerializeField] private GameObject mainMenu;
+
+    [Header("Loading Bar")]
+    [SerializeField] public Slider loadingSlider;
+
+    [Header("Words")]
+    [SerializeField] private GameObject find;
+    [SerializeField] private GameObject the;
+    [SerializeField] private GameObject exit;
 
     private Sequence s;
     private Sequence moveInSecondarySequence;
@@ -144,42 +154,35 @@ public class MainMenuAnims : MonoBehaviour
 
     public void NewGame()
     {
-        if (isLoading)
-        {
-            return;
-        }
-
+        if (isLoading) return;
         isLoading = true;
-        Sequence loadSequence = DOTween.Sequence();
-        loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
-        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
-        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
-        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
-        loadSequence.AppendInterval(2f);
-        loadSequence.OnComplete(() =>
-        {
-            GameManager.Singleton.NewGame();
-            isLoading = false;
-        });
+
+        LoadScreen(false);
     }
 
     public void ContinueFromLoad()
     {
-        if (isLoading)
-        {
-            return;
-        }
-
+        if (isLoading) return;
         isLoading = true;
+
+        LoadScreen(true);
+    }
+
+    //If there is save data (continueGame is true), load the save. If not, load a new game
+    private void LoadScreen(bool continueGame)
+    {
+        mainMenu.SetActive(false);
+        loadingScreen.SetActive(true);
+
         Sequence loadSequence = DOTween.Sequence();
-        loadSequence.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 1), 0.5f).SetEase(Ease.InQuad));
         loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
         loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
         loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
         loadSequence.AppendInterval(2f);
         loadSequence.OnComplete(() =>
         {
-            GameManager.Singleton.LoadSave();
+            if (continueGame) GameManager.Singleton.LoadSave();
+            else GameManager.Singleton.NewGame();
             isLoading = false;
         });
     }

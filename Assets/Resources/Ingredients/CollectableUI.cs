@@ -32,6 +32,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     public void MouseDownOn()
     {
         CursorManager.Singleton.PickupCollectable(_Collectable);
+        Encyclopedia.Singleton.PullUpEntry(_Collectable.ingredient);
         _Image.color = new Color(1.0f, 1.0f, 1.0f, .25f);
         _Image.raycastTarget = false;
     }
