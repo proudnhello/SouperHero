@@ -127,9 +127,4 @@ public class Encyclopedia : MonoBehaviour
             AbilityEntry.text = LocalizationManager.GetLocalizedString(((AbilityIngredient)ing).AbilityDescription);   // Localize ability description
         }
     }
-
-    public void setInActive()
-    {
-        this.RenderedObject.SetActive(false);
-    }
 }
