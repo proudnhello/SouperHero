@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Singleton { get; private set; }
 
-    private float ProcGenLoadingProgress = 0;
+    private float loadingProgressBuffer = 0;
 
     private void Awake()
     {
@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
         AsyncOperation async = SceneManager.LoadSceneAsync(1);
         GameObject loadingBar = GameObject.Find("/LoadingCanvas/LoadingScreen/LoadingBar");
 
+        //Display loading bar
         StartCoroutine(LoadingBar(async, loadingBar));
 
         // Don't let the scene start until all Studio Banks have finished loading
@@ -92,9 +93,9 @@ public class GameManager : MonoBehaviour
         while (value < 1f && loadingBar)
         {
             float loadingProgressVal = async.progress;
-            value = Mathf.Clamp01(((loadingProgressVal/0.9f) / 2f) + ((ProcGenLoadingProgress/0.9f) / 2f));
+            value = Mathf.Clamp01(((loadingProgressVal/0.9f) / 2f) + ((loadingProgressBuffer/0.9f) / 2f));
             loadingBar.GetComponent<Slider>().value = value;
-            ProcGenLoadingProgress += 0.1f;
+            loadingProgressBuffer += 0.1f;
             yield return null;
         }
     }
