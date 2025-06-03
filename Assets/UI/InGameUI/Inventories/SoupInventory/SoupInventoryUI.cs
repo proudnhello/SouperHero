@@ -168,4 +168,15 @@ public class SoupInventoryUI : MonoBehaviour
     {
         InventorySlots[selectedEquippedSoup].UpdateUseCount();
     }
+
+    public void OpenSoupTooltip(int index)
+    {
+        if (!CookingScreen.Singleton.IsCooking) return; // Only open when cooking
+
+        Debug.Log("Index: " + index + " HOVER IN");
+    }
+    public void CloseSoupTooltip(int index)
+    {
+        Debug.Log("Index: " + index + " HOVER OUT");
+    }
 }

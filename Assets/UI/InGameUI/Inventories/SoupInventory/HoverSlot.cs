@@ -10,23 +10,18 @@ using UnityEngine.UI;
 
 // Utilized this tutorial: https://www.youtube.com/watch?v=-fdG9sG2yk4&t=6s
 
-public class ClickButton : Selectable, IPointerClickHandler, ISubmitHandler
+public class HoverSlot : Selectable
 {
-    [Header("Click Settings")]
-    private float singleClickDelay = 0.25f;
+    [Header("Hover Settings")]
     private float hoverDelay = 0.5f;
     private bool hoverEnabled = true;
 
-    [Header("ClickEvents")]
-    public UnityEvent OnClick;
+    [Header("Hover Events")]
     public UnityEvent OnHoverEnter;
     public UnityEvent OnHoverExit;
 
-    private float _lackClickTime = 0f;
-    private Coroutine _clickCoroutine;
     private Coroutine _hoverRoutine;
 
-    private WaitForSeconds _waitTimeSingleClickDelay;
     private WaitForSeconds _waitTimeHoverDelay;
 
     private Coroutine _resetRoutine;
@@ -47,17 +42,10 @@ public class ClickButton : Selectable, IPointerClickHandler, ISubmitHandler
     {
         base.Start();
 
-        _waitTimeSingleClickDelay = new WaitForSeconds(singleClickDelay);
         _waitTimeHoverDelay = new WaitForSeconds(hoverDelay);
     }
 
     #region Setup
-
-    public void SetClickDelays(float singleClickDelay)
-    {
-        this.singleClickDelay = singleClickDelay;
-        _waitTimeSingleClickDelay = new WaitForSeconds(singleClickDelay);
-    }
 
     public void SetHoverDelay(float hoverDelay)
     {
@@ -68,69 +56,6 @@ public class ClickButton : Selectable, IPointerClickHandler, ISubmitHandler
     public void SetHoverEnabled(bool hoverEnabled)
     {
         this.hoverEnabled = hoverEnabled;
-    }
-
-    #endregion
-
-
-    #region Clicking
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        HandlingInput();
-    }
-
-    public void OnSubmit(BaseEventData eventData)
-    {
-        DoStateTransition(SelectionState.Pressed, true);
-
-        HandlingInput();
-
-        if(_resetRoutine != null)
-        {
-            StopCoroutine(OnFinishSubmit());
-        }
-
-        _resetRoutine = StartCoroutine(OnFinishSubmit());
-    }
-
-    private void HandlingInput()
-    {
-        if(!interactable) { return; }
-
-        float timeSinceLastClick = Time.time - _lackClickTime;
-        _lackClickTime = Time.time;
-        HandleSingleClick();
-    }
-
-    private void HandleSingleClick()
-    {
-        if(_clickCoroutine != null)
-        {
-            StopCoroutine(_clickCoroutine);
-        }
-
-        _clickCoroutine = StartCoroutine(SingleClickDelay());
-    }
-
-    private IEnumerator SingleClickDelay()
-    {
-        yield return _waitTimeSingleClickDelay;
-        OnClick?.Invoke();
-    }
-
-    private IEnumerator OnFinishSubmit()
-    {
-        var fadeTime = colors.fadeDuration;
-        var elapsedTime = 0f;
-
-        while (elapsedTime < fadeTime)
-        {
-            elapsedTime += Time.unscaledDeltaTime;
-            yield return null;
-        }
-
-        DoStateTransition(currentSelectionState, false);
     }
 
     #endregion
