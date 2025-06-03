@@ -177,18 +177,29 @@ public class SoupInventoryUI : MonoBehaviour
     {
         if (!IsOpen) return; // Only display when inventory is open
 
-        SoupTooltip.SetActive(true);
-
-        switch (PlayerInventory.Singleton.GetBowl(index))
+        var bowl = PlayerInventory.Singleton.GetBowl(index);
+        switch (bowl)
         {
             case (FinishedSoup):
-                TooltipText.text = "Finished soup";
+                SoupTooltip.SetActive(true);
+                TooltipText.text = ((FinishedSoup)bowl).soupBase.baseName;
+                TooltipText.text += '\n' + "Abilities: ";
+                foreach (var ability in ((FinishedSoup)bowl).soupAbilities)
+                {
+                    TooltipText.text += ability.ability._abilityName + " ";
+                }
+                //TooltipText.text += '\n' + "Inflictions: ";
+                foreach (var infliction in ((FinishedSoup)bowl).soupInflictions)
+                {
+                    //TooltipText.text += infliction.ToString() + " ";
+                }
                 break;
             case (null):
-                TooltipText.text = "Nothing";
+                SoupTooltip.SetActive(false);
                 break;
             default:
-                TooltipText.text = "Soup base";
+                SoupTooltip.SetActive(true);
+                TooltipText.text = ((SoupBase)bowl).baseName;
                 break;
         }
     }
