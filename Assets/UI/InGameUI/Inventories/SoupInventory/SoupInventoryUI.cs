@@ -20,6 +20,10 @@ public class SoupInventoryUI : MonoBehaviour
     [SerializeField] AnimationCurve OpenAnimationCurve;
     [SerializeField] float OpenAnimationTime;
 
+    [Header("Tooltip")]
+    [SerializeField] GameObject SoupTooltip;
+    [SerializeField] TMP_Text TooltipText;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -171,12 +175,15 @@ public class SoupInventoryUI : MonoBehaviour
 
     public void OpenSoupTooltip(int index)
     {
-        if (!CookingScreen.Singleton.IsCooking) return; // Only open when cooking
+        if (!IsOpen) return; // Only display when inventory is open
 
-        Debug.Log("Index: " + index + " HOVER IN");
+        //Debug.Log("Index: " + index + " HOVER IN");
+        SoupTooltip.SetActive(true);
+        Debug.Log(PlayerInventory.Singleton.GetBowl(index));
     }
     public void CloseSoupTooltip(int index)
     {
-        Debug.Log("Index: " + index + " HOVER OUT");
+        SoupTooltip.SetActive(false);
+        //Debug.Log("Index: " + index + " HOVER OUT");
     }
 }
