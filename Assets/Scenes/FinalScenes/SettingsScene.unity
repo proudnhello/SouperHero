@@ -1890,6 +1890,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &231710527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1959,6 +1971,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 876499500}
+  - {fileID: 1561415012}
   m_Father: {fileID: 1054342146}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2928,6 +2941,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &453186632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3158,6 +3183,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 1649600262}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3353,6 +3379,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.InputSystem.Samples.RebindUI.RebindActionUI,
           Unity.InputSystem.RebindingUI
         m_MethodName: StartInteractiveRebind
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4155,6 +4193,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 1637357560}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -4491,6 +4530,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &598957170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4528,6 +4579,140 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 598957167}
+  m_CullTransparentMesh: 1
+--- !u!1 &616606183
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 616606184}
+  - component: {fileID: 616606186}
+  - component: {fileID: 616606185}
+  m_Layer: 5
+  m_Name: SavedText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &616606184
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616606183}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1155577376}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 74}
+  m_SizeDelta: {x: 100, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &616606185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616606183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Keybinds are now saved!
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 24
+  m_fontSizeBase: 24
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &616606186
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616606183}
   m_CullTransparentMesh: 1
 --- !u!1 &621463619
 GameObject:
@@ -5630,6 +5815,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &821833823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5726,6 +5923,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 638907745}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -6927,6 +7125,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1023175039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7124,6 +7334,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1031667957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7216,6 +7438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions: {fileID: -944628639613478452, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
+  saveText: {fileID: 616606183}
 --- !u!114 &1054342148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7287,6 +7510,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 17903770}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -7846,6 +8070,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 487197378}
+  - {fileID: 616606184}
   m_Father: {fileID: 1054342146}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -7899,7 +8124,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1054342147}
         m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
-        m_MethodName: OnDisable
+        m_MethodName: SaveSettings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8005,6 +8230,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 1662579055}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -8368,6 +8594,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1209074750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8568,6 +8806,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.InputSystem.Samples.RebindUI.RebindActionUI,
           Unity.InputSystem.RebindingUI
         m_MethodName: StartInteractiveRebind
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10333,6 +10583,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1451067580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11140,6 +11402,140 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1561415011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1561415012}
+  - component: {fileID: 1561415014}
+  - component: {fileID: 1561415013}
+  m_Layer: 5
+  m_Name: AlreadyBinded
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1561415012
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561415011}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 243669415}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 179}
+  m_SizeDelta: {x: 400, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1561415013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561415011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: That keybind is already binded
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4278190335
+  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 48
+  m_fontSizeBase: 48
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1561415014
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561415011}
+  m_CullTransparentMesh: 1
 --- !u!1 &1562617621
 GameObject:
   m_ObjectHideFlags: 0
@@ -11458,6 +11854,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 1016749626}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -11726,6 +12123,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.InputSystem.Samples.RebindUI.RebindActionUI,
           Unity.InputSystem.RebindingUI
         m_MethodName: StartInteractiveRebind
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12539,6 +12948,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1695778619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13206,6 +13627,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 1855759447}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -13445,6 +13867,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 621463621}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -13947,11 +14370,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Action: {fileID: 1695116655308306880, guid: faa658d2e88af964b9bd48bc262b2173, type: 3}
   m_BindingId: 440715a6-6ee2-424a-b937-cf20ea5ade42
-  m_DisplayStringOptions: 12
+  m_DisplayStringOptions: 4
   m_ActionLabel: {fileID: 0}
   m_BindingText: {fileID: 1686329429}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -14116,6 +14540,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 1591801359}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -14488,6 +14913,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1905733223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14710,6 +15147,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 2049082235}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -14905,6 +15343,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.InputSystem.Samples.RebindUI.RebindActionUI,
           Unity.InputSystem.RebindingUI
         m_MethodName: StartInteractiveRebind
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1054342147}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Unity.InputSystem.RebindingUI
+        m_MethodName: HideSaveText
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15504,6 +15954,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 1902981154}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -16330,6 +16781,7 @@ MonoBehaviour:
   m_BindingText: {fileID: 37080186}
   m_RebindOverlay: {fileID: 243669414}
   m_RebindText: {fileID: 876499501}
+  m_DupeText: {fileID: 1561415011}
   m_UpdateBindingUIEvent:
     m_PersistentCalls:
       m_Calls: []

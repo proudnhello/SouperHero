@@ -8,7 +8,7 @@ public class PauseManager : MonoBehaviour
 {
     internal static bool isPaused = false;
     [SerializeField] GameObject pauseScreen;
-    [SerializeField] KeyCode pauseKey = KeyCode.Escape;
+
 
     private void Awake()
     {

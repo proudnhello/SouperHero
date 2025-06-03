@@ -33,6 +33,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
         {
             faceImage.color = new Color(1, 1, 1, .25f);
             CursorManager.Singleton.PickupCollectable(ingredientReference);
+            Encyclopedia.Singleton.PullUpEntry(ingredientReference.ingredient);
         }
     }
 
