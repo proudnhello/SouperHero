@@ -179,7 +179,19 @@ public class SoupInventoryUI : MonoBehaviour
 
         //Debug.Log("Index: " + index + " HOVER IN");
         SoupTooltip.SetActive(true);
-        Debug.Log(PlayerInventory.Singleton.GetBowl(index));
+
+        switch (PlayerInventory.Singleton.GetBowl(index))
+        {
+            case (FinishedSoup):
+                TooltipText.text = "Finished soup";
+                break;
+            case (null):
+                TooltipText.text = "Nothing";
+                break;
+            default:
+                TooltipText.text = "Soup base";
+                break;
+        }
     }
     public void CloseSoupTooltip(int index)
     {
