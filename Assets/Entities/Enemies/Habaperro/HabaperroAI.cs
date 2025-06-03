@@ -83,7 +83,7 @@ public class HabaperroAI : EnemyBaseClass
         freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
     }
 
-    protected override void Die()
+    protected void ExplodedDeath()
     {
         currentState.OnExit();
         agent.updatePosition = false;
@@ -265,10 +265,11 @@ public class HabaperroAI : EnemyBaseClass
                 sm._sprite.color = Color.white;
                 sm._collider.enabled = false;
                 sm.animator.Play("Boom");
-                Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
+                Explosion e = Instantiate(sm.explosion, sm.transform.position + sm.ExplosionSpawnOffset, Quaternion.identity);
+                e.Explode(20);
                 yield return new WaitForSeconds(sm.PostExplosionWaitTime);
                 IHandleMovementExplosion = null;
-                sm.Die();
+                sm.ExplodedDeath();
             }
         }
 
