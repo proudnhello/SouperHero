@@ -110,6 +110,7 @@ public class FlavorCSVtoSO
 
             flavorIngredient.Source = splitData[8];
             flavorIngredient.FlavorProfile = splitData[9];
+            flavorIngredient.uuid = Int32.Parse(splitData[11]);
 
             AssetDatabase.CreateAsset(flavorIngredient, $"{writeFolderPath}{flavorIngredient.IngredientName}.asset");
 

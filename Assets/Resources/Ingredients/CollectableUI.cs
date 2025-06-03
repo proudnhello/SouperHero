@@ -26,6 +26,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
         _Image.raycastTarget = true;
         currentCookingSlot = null;
         rb.rotation = 0;
+        transform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
     }
 
     public void MouseDownOn()

@@ -107,26 +107,12 @@ public class AbilityCSVtoSO
 
             abilityIngredient.Source = splitData[16];
             abilityIngredient.AbilityDescription = splitData[17];
+            abilityIngredient.uuid = Int32.Parse(splitData[18]);
 
             AssetDatabase.CreateAsset(abilityIngredient, $"{writeFolderPath}{abilityIngredient.IngredientName}.asset");
 
             // Set Collectable
-            if (splitData[0] != "Default Spoon")
-            {
-                // Set This To a Collectable
-                GameObject ingredientCollectable = FindCollectableByName(splitData[0]);
-
-                // set to dirty to mark it has unsaved changes
-                EditorUtility.SetDirty(ingredientCollectable);
-
-                // change prefab
-                ingredientCollectable.GetComponent<Collectable>().ingredient = abilityIngredient;
-
-                // save to asset database
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-            }
-            else
+            if (splitData[0] == "Default Spoon")
             {
                 (PlayerInventory inventory, GameObject playerPrefab) = FindPlayerInventory();
                 List<Ingredient> defaultSpoonIngredients = new()
@@ -146,6 +132,42 @@ public class AbilityCSVtoSO
                 // save to asset database
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
+            }
+            else if (splitData[0] == "Empty Attack")
+            {
+                (PlayerInventory inventory, GameObject playerPrefab) = FindPlayerInventory();
+                List<Ingredient> emptySoupIngredients = new()
+                {
+                    abilityIngredient
+                };
+
+                Debug.Log($"Empty Ability Ingredient: {abilityIngredient.name}");
+
+
+                // set to dirty to mark it has unsaved changes
+                EditorUtility.SetDirty(playerPrefab);
+
+                inventory.emptyBowlIngredients = emptySoupIngredients;
+
+                // save to asset database
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+            else
+            {
+                // Set This To a Collectable
+                GameObject ingredientCollectable = FindCollectableByName(splitData[0]);
+
+                // set to dirty to mark it has unsaved changes
+                EditorUtility.SetDirty(ingredientCollectable);
+
+                // change prefab
+                ingredientCollectable.GetComponent<Collectable>().ingredient = abilityIngredient;
+
+                // save to asset database
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                
           
             }          
         }

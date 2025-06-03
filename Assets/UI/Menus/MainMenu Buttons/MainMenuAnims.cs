@@ -7,16 +7,22 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuAnims : MonoBehaviour
 {
+    public GameObject camera;
     public GameObject blackFade;
     public GameObject titleText;
     public GameObject book;
     public RectTransform firstButton;
     public RectTransform secondButton;
     public RectTransform thirdButton;
-    
+
     public RectTransform fourthButton;
     public RectTransform fifthButton;
     public RectTransform sixthButton;
+
+    public RectTransform tutorialButton;
+    public RectTransform cosmeticsButton;
+
+    public GameObject cosmeticsSet;
 
     public GameObject secondaryButtonSet;
     public GameObject primaryButtonSet;
@@ -84,10 +90,10 @@ public class MainMenuAnims : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             playerAnimator.SetTrigger("Left Click");
-            if(!isDone)
+            if (!isDone)
             {
                 s.Kill();
                 titleText.transform.localPosition = new Vector3(titleText.transform.localPosition.x, 0, titleText.transform.localPosition.z);
@@ -205,5 +211,58 @@ public class MainMenuAnims : MonoBehaviour
     public void StartTutorial()
     {
         SceneManager.LoadScene(5);
+    }
+
+    public void GoToCosmetics()
+    {
+        if (isLoading)
+        {
+            return;
+        }
+
+        isLoading = true;
+        Sequence cosmeticsInSequence = DOTween.Sequence();
+
+        cosmeticsInSequence.Append(primaryButtonSet.transform.DOLocalMoveX(1500, 0.25f).SetEase(Ease.InQuad));
+        cosmeticsInSequence.Append(secondaryButtonSet.transform.DOLocalMoveX(1500, 0.25f).SetEase(Ease.InQuad));
+        cosmeticsInSequence.Append(book.transform.DOLocalMoveX(950, 0.5f).SetEase(Ease.InQuad));
+        cosmeticsInSequence.Append(cosmeticsButton.transform.DOLocalMoveY(-650, 0.25f).SetEase(Ease.InQuad));
+        cosmeticsInSequence.Append(tutorialButton.transform.DOLocalMoveY(-650, 0.25f).SetEase(Ease.InQuad));
+        cosmeticsInSequence.Append(titleText.transform.DOLocalMoveY(550, 0.25f).SetEase(Ease.InQuad));
+
+        cosmeticsInSequence.Append(camera.transform.DOLocalMoveX(-8, 0.5f).SetEase(Ease.OutQuad));
+
+        cosmeticsInSequence.Append(cosmeticsSet.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
+
+        cosmeticsInSequence.OnComplete(() =>
+        {
+            isLoading = false;
+        });
+    }
+
+    public void GetOutOfCosmetics()
+    {
+        if (isLoading)
+        {
+            return;
+        }
+
+        Sequence cosmeticsOutSequence = DOTween.Sequence();
+
+        cosmeticsOutSequence.Append(cosmeticsSet.transform.DOLocalMoveX(-1800, 0.5f).SetEase(Ease.InQuad));
+
+        cosmeticsOutSequence.Append(camera.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
+
+        cosmeticsOutSequence.Append(titleText.transform.DOLocalMoveY(0, 0.25f).SetEase(Ease.OutQuad));
+        cosmeticsOutSequence.Append(tutorialButton.transform.DOLocalMoveY(-449, 0.25f).SetEase(Ease.OutQuad));
+        cosmeticsOutSequence.Append(cosmeticsButton.transform.DOLocalMoveY(-449, 0.25f).SetEase(Ease.OutQuad));
+        cosmeticsOutSequence.Append(book.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
+        cosmeticsOutSequence.Append(secondaryButtonSet.transform.DOLocalMoveX(549, 0.25f).SetEase(Ease.OutQuad));
+        cosmeticsOutSequence.Append(primaryButtonSet.transform.DOLocalMoveX(549, 0.25f).SetEase(Ease.OutQuad));
+
+        cosmeticsOutSequence.OnComplete(() =>
+        {
+            isLoading = false;
+        });
     }
 }

@@ -75,12 +75,12 @@ SpriteRenderer:
   m_SortingLayerID: 326946545
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -118985276, guid: e715e5becefa5ce4b800f3eb80bde891, type: 3}
+  m_Sprite: {fileID: 681941359, guid: 0a6b6c77f33125e47a8ee510611c1bee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.125, y: 1.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -134,8 +134,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1.125, y: 1.125}
+    newSize: {x: 1.125, y: 1.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -181,7 +181,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 108}
+  m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!50 &155414985996046896
 Rigidbody2D:
@@ -238,7 +238,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1988475201, guid: d9528a1aceeb6a04f91926eb1dbb0781, type: 3}
+  m_Sprite: {fileID: 681941359, guid: 0a6b6c77f33125e47a8ee510611c1bee, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -305,15 +305,16 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 34.27246, y: 17.676758}
-      - {x: 6.402459, y: 24.601986}
-      - {x: 3.2460938, y: 50.745117}
-      - {x: -41.557617, y: 44.003906}
-      - {x: -56.100586, y: 16.098633}
-      - {x: -57.314346, y: -18.798275}
-      - {x: -23.145996, y: -45.44922}
-      - {x: 36.5663, y: -49.656673}
-      - {x: 56.62635, y: -14.923405}
+    - - {x: 13.149874, y: 2.7966003}
+      - {x: 2.8107543, y: 8.097776}
+      - {x: 1.0230103, y: 15.427096}
+      - {x: -9.831303, y: 14.757755}
+      - {x: -14.966396, y: 9.514004}
+      - {x: -15.907932, y: -0.6626587}
+      - {x: -14.0433235, y: -8.279416}
+      - {x: -9.292511, y: -12.268589}
+      - {x: 9.54323, y: -14.423523}
+      - {x: 16.689949, y: -4.832188}
   m_UseDelaunayMesh: 0
 --- !u!1 &5854243488706272828
 GameObject:

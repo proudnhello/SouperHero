@@ -43,7 +43,10 @@ public class EntityInflictionEffectHandler
 
         public void StartStatusEffect(IEnumerator method)
         {
-            entity.StartCoroutine(StatusMethod = method);
+            if (entity.isActiveAndEnabled)
+            {
+                entity.StartCoroutine(StatusMethod = method);
+            }
         }
 
         public void WorsenStatusEffect(Infliction infliction)
