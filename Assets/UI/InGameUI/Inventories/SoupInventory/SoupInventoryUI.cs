@@ -177,7 +177,6 @@ public class SoupInventoryUI : MonoBehaviour
     {
         if (!IsOpen) return; // Only display when inventory is open
 
-        //Debug.Log("Index: " + index + " HOVER IN");
         SoupTooltip.SetActive(true);
 
         switch (PlayerInventory.Singleton.GetBowl(index))
@@ -193,9 +192,9 @@ public class SoupInventoryUI : MonoBehaviour
                 break;
         }
     }
+    
     public void CloseSoupTooltip(int index)
     {
         SoupTooltip.SetActive(false);
-        //Debug.Log("Index: " + index + " HOVER OUT");
     }
 }
