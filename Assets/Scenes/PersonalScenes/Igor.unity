@@ -13216,6 +13216,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1489918274}
     m_Modifications:
+    - target: {fileID: 1972107248630855910, guid: 1d47865cab017bd45bc0e8519be2f4ae, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1972107248630855910, guid: 1d47865cab017bd45bc0e8519be2f4ae, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2487204167016473254, guid: 1d47865cab017bd45bc0e8519be2f4ae, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -13379,6 +13387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   submergeMask: {fileID: 0}
+  bounds: []
   needsBounds: 1
   baseStats:
     maxHealth: 0
@@ -13387,18 +13396,29 @@ MonoBehaviour:
   currentStats:
     health: 0
     moveSpeed: 0
+  _rigidbody: {fileID: 0}
   falling: 0
   flying: 0
+  cantAttack: 0
   hitmarker: {fileID: 0}
   collectable: {fileID: 0}
   playerCollisionDamage: 10
   interactableLayer:
-    serializedVersion: 2
     m_Bits: 0
+  _sprite: {fileID: 0}
   _playerTransform: {fileID: 0}
+  _initialColor:
+    r: 0
+    g: 0
+    b: 0
+    a: 0
+  _collider: {fileID: 0}
+  agent: {fileID: 0}
   enemyEmitter: {fileID: 0}
+  alwaysAggro: 0
+  hasDied: 0
+  enemyIndex: 0
   playerLayer:
-    serializedVersion: 2
     m_Bits: 0
   FreezeEnemyWhenThisFar: 30
   PlayerDetectionIntervalWhenFrozen: 1.5
@@ -13415,13 +13435,19 @@ MonoBehaviour:
   AttackDistanceCheckInterval: 0.3
   DistanceFromPlayerToDisengage: 20
   TimeForIgniteAnim: 1
-  IgnitionFlashColor: {r: 0, g: 0, b: 0, a: 0}
+  IgnitionFlashColor:
+    r: 0
+    g: 0
+    b: 0
+    a: 0
   IgnitionFlashStartInterval: 0
   IgnitionFlashIntervalMultiplier: 0
   IgnitionFlashIntervalToTriggerExplosion: 0
   PostExplosionWaitTime: 1
   explosion: {fileID: 0}
   ExplosionSpawnOffset: {x: 0, y: 0, z: 0}
+  animator: {fileID: 0}
+  freezeEnemy: 0
 --- !u!43 &1067714367
 Mesh:
   m_ObjectHideFlags: 0
