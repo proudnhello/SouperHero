@@ -188,10 +188,11 @@ public class SoupInventoryUI : MonoBehaviour
                 {
                     TooltipText.text += ability.ability._abilityName + " ";
                 }
-                //TooltipText.text += '\n' + "Inflictions: ";
+                TooltipText.text += '\n' + "Inflictions: ";
                 foreach (var infliction in ((FinishedSoup)bowl).soupInflictions)
                 {
                     //TooltipText.text += infliction.ToString() + " ";
+                    TooltipText.text += infliction.InflictionFlavor.inflictionType.ToString();
                 }
                 break;
             case (null):
