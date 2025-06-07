@@ -36,18 +36,9 @@ public class DeerAI : EnemyBaseClass
 
     [Header("Attack State")]
     [SerializeField] protected float AttackSpeedMultiplier = 1.5f;
-    [SerializeField] protected float DistanceToPlayerForExplosion = 5f;
     [SerializeField] protected float AttackDistanceCheckInterval = .3f;
     [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
-    [SerializeField] protected float TimeForIgniteAnim = 1f;
-    [SerializeField] protected Color IgnitionFlashColor;
-    [SerializeField] protected float IgnitionFlashStartInterval;
-    [SerializeField] protected float IgnitionFlashIntervalMultiplier;
-    [SerializeField] protected float IgnitionFlashIntervalToTriggerExplosion;
-    [SerializeField] protected float PostExplosionWaitTime = 1f;
-    [SerializeField] private Explosion explosion;
-    [SerializeField] protected Vector3 ExplosionSpawnOffset;
-
+    
     protected Animator animator;
     internal List<IState> states;
     internal IState currentState;
@@ -82,7 +73,7 @@ public class DeerAI : EnemyBaseClass
         freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
     }
 
-    protected void ExplodedDeath()
+    protected void Death()
     {
         currentState.OnExit();
         agent.updatePosition = false;
@@ -186,7 +177,7 @@ public class DeerAI : EnemyBaseClass
                 
                 sm.agent.isStopped = false;
                 sm.agent.SetDestination(targetPoint);
-                sm.animator.Play("Walk");
+                // sm.animator.Play("Walk");
                 sm._sprite.flipX = sm.agent.path.corners[0].x > sm.transform.position.x;
                 Vector2 lastPos;
                 do
