@@ -10,7 +10,8 @@ Shader "Cosmetics/ColorReplacement"
         _FilterColor2("Filter Color 2", Color) = (0,1.0,0,1.0) 
         _FilterColor3("Filter Color 3", Color) = (0,0,1.0,1.0)
         _FilterColor4("Filter Color 4", Color) = (1.0,1.0,0,1.0) 
-        _FilterColor5("Filter Color 5", Color) = (1.0,0,1.0,1.0) 
+        _FilterColor5("Filter Color 5", Color) = (1.0,0,1.0,1.0)
+        _FilterColor6("Filter Color 6", Color) = (1.0,0,1.0,1.0) 
 
 
         _ColorReplacement1("ColorReplacement1", Color) = (1.0,0,0,1.0) 
@@ -23,6 +24,8 @@ Shader "Cosmetics/ColorReplacement"
         _Threshold4("Threshold4",Range(0,1)) = 0
         _ColorReplacement5("_ColorReplacement5", Color) = (1.0,0,1.0,1.0)
         _Threshold5("Threshold5",Range(0,1)) = 0
+        _ColorReplacement6("_ColorReplacement6", Color) = (1.0,0,1.0,1.0)
+        _Threshold6("Threshold6",Range(0,1)) = 0
 
     }
 
@@ -50,6 +53,7 @@ Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
             uniform float4 _FilterColor3;
             uniform float4 _FilterColor4;
             uniform float4 _FilterColor5;
+            uniform float4 _FilterColor6;
 
             //Colors Replacement
             uniform float4 _ColorReplacement1;
@@ -57,6 +61,7 @@ Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
             uniform float4 _ColorReplacement3;
             uniform float4 _ColorReplacement4;
             uniform float4 _ColorReplacement5;
+            uniform float4 _ColorReplacement6;
 
 
             uniform float _Threshold1;
@@ -64,6 +69,7 @@ Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
             uniform float _Threshold3;
             uniform float _Threshold4;
             uniform float _Threshold5;
+            uniform float _Threshold6;
 
 
             float _LerpValue;
@@ -123,6 +129,10 @@ Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
                 half dis5 = distance(_FilterColor5);
                 fixed InThreshold_5 = dis5 <= _Threshold5 ? 1 : 0;
                 _color = _color * (1-InThreshold_5) + lerp(_ColorReplacement5, _color, smoothstep(0, _Threshold5, dis5)) * InThreshold_5;
+
+                half dis6 = distance(_FilterColor6);
+                fixed InThreshold_6 = dis6 <= _Threshold6 ? 1 : 0;
+                _color = _color * (1-InThreshold_6) + lerp(_ColorReplacement6, _color, smoothstep(0, _Threshold6, dis6)) * InThreshold_6;
 
                 return _color;
             }
