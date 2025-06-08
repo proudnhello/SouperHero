@@ -31,12 +31,15 @@ public abstract class AbilityAbstractClass : ScriptableObject
         PlayerEntityManager.Singleton.StartCoroutine(AbilityCoroutine(stats, inflictions));
     }
 
+    bool oneFrame = false;
     protected virtual IEnumerator AbilityCoroutine(AbilityStats stats, List<Infliction> inflictions)
     {
         Press(stats, inflictions);
+        oneFrame = false;
 
-        while(PlayerEntityManager.Singleton.input.Player.UseSpoon.inProgress)
+        while(PlayerEntityManager.Singleton.input.Player.UseSpoon.inProgress || !oneFrame)
         {
+            oneFrame = true;
             Hold(stats, inflictions);
             yield return null;
         }
