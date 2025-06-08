@@ -2,8 +2,8 @@ using System.Collections.Generic;
 
 public class UnlockGameData
 {
-    public List<string> CosmeticsUnlocked;
-    public Dictionary<string, int> AchievementsData;
+    public List<string> CosmeticsUnlocked; // cosmetics unlocked
+    public Dictionary<string, int> AchievementsData; // achievement uuid, stat progress
 
     public UnlockGameData(bool newData = false)
     {
