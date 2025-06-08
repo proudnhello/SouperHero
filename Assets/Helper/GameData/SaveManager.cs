@@ -16,6 +16,7 @@ public class SaveManager : MonoBehaviour
     private string runStatePath;
     private string settingsPath;
     private string inventoryPath;
+    private string unlockPath;
 
     [SerializeField] bool debugAlwaysGenerateNewLevel;
 
@@ -38,6 +39,7 @@ public class SaveManager : MonoBehaviour
         statsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Stats.json");
         settingsPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Settings.json");
         inventoryPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "Inventory.json");
+        unlockPath = Path.Combine(Application.persistentDataPath + Path.AltDirectorySeparatorChar + "unlocks.json");
     }
 
     [ContextMenu("Reset All Save Data")]
@@ -50,6 +52,7 @@ public class SaveManager : MonoBehaviour
             File.Delete(statsPath);
             File.Delete(inventoryPath);
             File.Delete(settingsPath);
+            File.Delete(unlockPath);
         } catch (Exception e)
         {
             Debug.LogError("Error deleting save data " + e);
@@ -248,6 +251,58 @@ public class SaveManager : MonoBehaviour
             catch (Exception e)
             {
                 Debug.LogError("Error occured while loading inventory data: " + e);
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public void SaveUnlockData(UnlockGameData data)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(unlockPath));
+
+            string json = JsonConvert.SerializeObject(data, Formatting.None, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+
+            using (FileStream stream = new FileStream(unlockPath, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(json);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Unlock data save error: " + e);
+        }
+    }
+
+
+    public UnlockGameData LoadUnlockData()
+    {
+        if (File.Exists(unlockPath))
+        {
+            try
+            {
+                string dataLoaded = "";
+                using (FileStream stream = new FileStream(unlockPath, FileMode.Open))
+                {
+                    using StreamReader reader = new StreamReader(stream);
+                    dataLoaded = reader.ReadToEnd();
+                }
+                return JsonConvert.DeserializeObject<UnlockGameData>(dataLoaded);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error occured while loading unlock data: " + e);
                 return null;
             }
         }
