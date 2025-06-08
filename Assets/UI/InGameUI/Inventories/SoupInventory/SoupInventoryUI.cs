@@ -20,6 +20,10 @@ public class SoupInventoryUI : MonoBehaviour
     [SerializeField] AnimationCurve OpenAnimationCurve;
     [SerializeField] float OpenAnimationTime;
 
+    [Header("Tooltip")]
+    [SerializeField] GameObject SoupTooltip;
+    [SerializeField] TMP_Text TooltipText;
+
     private void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
@@ -167,5 +171,42 @@ public class SoupInventoryUI : MonoBehaviour
     public void ChangeUseCount()
     {
         InventorySlots[selectedEquippedSoup].UpdateUseCount();
+    }
+
+    public void OpenSoupTooltip(int index)
+    {
+        if (!IsOpen) return; // Only display when inventory is open
+
+        var bowl = PlayerInventory.Singleton.GetBowl(index);
+        switch (bowl)
+        {
+            case (FinishedSoup):
+                SoupTooltip.SetActive(true);
+                TooltipText.text = ((FinishedSoup)bowl).soupBase.baseName;
+                TooltipText.text += '\n' + "Abilities: ";
+                foreach (var ability in ((FinishedSoup)bowl).soupAbilities)
+                {
+                    TooltipText.text += ability.ability._abilityName + " ";
+                }
+                TooltipText.text += '\n' + "Inflictions: ";
+                foreach (var infliction in ((FinishedSoup)bowl).soupInflictions)
+                {
+                    //TooltipText.text += infliction.ToString() + " ";
+                    TooltipText.text += infliction.InflictionFlavor.inflictionType.ToString();
+                }
+                break;
+            case (null):
+                SoupTooltip.SetActive(false);
+                break;
+            default:
+                SoupTooltip.SetActive(true);
+                TooltipText.text = ((SoupBase)bowl).baseName;
+                break;
+        }
+    }
+    
+    public void CloseSoupTooltip(int index)
+    {
+        SoupTooltip.SetActive(false);
     }
 }

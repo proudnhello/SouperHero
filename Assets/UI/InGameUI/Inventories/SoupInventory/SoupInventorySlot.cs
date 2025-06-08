@@ -112,4 +112,14 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
         if (!SoupInventoryUI.Singleton.IsOpen) return;
         SoupInventoryUI.Singleton.SetSelectedSoup(slotIndex);
     }
+
+    public void HoverIn()
+    {
+        SoupInventoryUI.Singleton.OpenSoupTooltip(slotIndex);
+    }
+
+    public void HoverOut()
+    {
+        SoupInventoryUI.Singleton.CloseSoupTooltip(slotIndex);
+    }
 }
