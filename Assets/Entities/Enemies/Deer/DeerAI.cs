@@ -39,12 +39,12 @@ public class DeerAI : EnemyBaseClass
     [SerializeField] protected float AttackDistanceCheckInterval = .3f;
     [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
     // [SerializeField] protected float SlipperySurfaceMultiplier = 1.15f;
-    [SerializeField] protected float MinimumTimeBetweenCharges = 2f;
+    [SerializeField] protected float MinimumTimeBetweenCharges = 4f;
     [SerializeField] protected float DistanceToPlayerForCharge = 5f;
-    [SerializeField] protected float ChargeSpeed = 5f;
+    [SerializeField] protected float ChargeSpeed = 6.5f;
     [SerializeField] protected float ChargeForce = 100f;
-    [SerializeField] protected float ChargeTime = 1f;
-        
+    [SerializeField] protected float ChargeTime = 0.75f;
+
     protected Animator animator;
     internal List<IState> states;
     internal IState currentState;
