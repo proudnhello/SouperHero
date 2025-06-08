@@ -64,7 +64,7 @@ public class ChargedShot : AbilityAbstractClass
             {
                 projStats.size = 2f;
             }
-            projStats.speed *= 20f;
+            projStats.speed *= 10f;
 
             projectileObject.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
                                PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
