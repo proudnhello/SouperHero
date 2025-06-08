@@ -38,7 +38,13 @@ public class DeerAI : EnemyBaseClass
     [SerializeField] protected float AttackSpeedMultiplier = 1.5f;
     [SerializeField] protected float AttackDistanceCheckInterval = .3f;
     [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
-    
+    // [SerializeField] protected float SlipperySurfaceMultiplier = 1.15f;
+    [SerializeField] protected float MinimumTimeBetweenCharges = 2f;
+    [SerializeField] protected float DistanceToPlayerForCharge = 5f;
+    [SerializeField] protected float ChargeSpeed = 5f;
+    [SerializeField] protected float ChargeForce = 100f;
+    [SerializeField] protected float ChargeTime = 1f;
+        
     protected Animator animator;
     internal List<IState> states;
     internal IState currentState;
@@ -162,7 +168,7 @@ public class DeerAI : EnemyBaseClass
                 {
                     float distance;
                     do
-                    {
+                    {                        
                         float targetAngle = Random.Range(0, 2 * Mathf.PI);
                         Vector2 targetDir = new Vector3(Mathf.Cos(targetAngle), Mathf.Sin(targetAngle));
                         float dist = Random.Range(sm.PatrolDistance.x, sm.PatrolDistance.y);
@@ -203,22 +209,63 @@ public class DeerAI : EnemyBaseClass
     public class AttackState : IState
     {
         DeerAI sm;
-        IEnumerator IHandleMovementExplosion;
+        IEnumerator IHandleCharge;
         public AttackState(DeerAI _sm)
         {
             sm = _sm;
         }
         public void OnEnter()
         {
-            sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
-            //sm.StartCoroutine(IHandleMovementExplosion = HandleMovementExplosion());
+            sm.StartCoroutine(IHandleCharge = HandleCharge());
+
         }
 
+        IEnumerator HandleCharge()
+        {
+            // sm.animator.Play("Walk");
+            while (true)
+            {              
+                sm.agent.isStopped = false;
+                float dist = 0;
+                float time = 0;
+                do
+                {
+                    sm.agent.SetDestination(sm._playerTransform.position);
+
+                    // once tater's rb has slowed down enough, then allow sprite to flip based on nav agent navigation
+                    if (sm.agent.velocity.magnitude > sm._rigidbody.velocity.magnitude) sm._sprite.flipX = sm.agent.destination.x > sm.transform.position.x;
+
+                    yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);
+                    sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
+                    dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
+
+                    if (dist > sm.DistanceFromPlayerToDisengage && !sm.alwaysAggro)
+                    {
+                        sm.ChangeState(ChargerStates.IDLE); // disengage if too far (but not if set to always aggro)
+                    }
+
+                    time += sm.AttackDistanceCheckInterval;
+                } while (time < sm.MinimumTimeBetweenCharges || dist > sm.DistanceToPlayerForCharge || !sm.CanAttack());
+                sm.agent.isStopped = true;
+
+                // PERFORM CHARGES if can attack
+                // sm.animator.Play("Attack");
+                Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
+                sm._sprite.flipX = vel.x > 0;
+                for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
+                {
+                    if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);
+                    yield return null;
+                }
+
+                // sm.animator.Play("Walk");
+
+            }
+        }
 
         public void OnExit()
         {
-            // if (IHandleMovementExplosion != null) sm.StopCoroutine(IHandleMovementExplosion);
-            // sm._sprite.color = Color.white;
+            if (IHandleCharge != null) sm.StopCoroutine(IHandleCharge);
         }
     }
 
