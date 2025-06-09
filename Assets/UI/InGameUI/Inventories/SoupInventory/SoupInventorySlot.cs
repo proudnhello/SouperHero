@@ -55,7 +55,7 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
         }
         else
         {
-            SlotContent.rectTransform.sizeDelta = new Vector2(75, 75);
+            SlotContent.rectTransform.sizeDelta = new Vector2(82, 50);
             SlotContent.sprite = EmptySoupSlotSprite;
             SlotContent.enabled = SoupInventoryUI.Singleton.IsOpen;
         }

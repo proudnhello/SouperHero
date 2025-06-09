@@ -146,7 +146,13 @@ public class PlayerInventory : MonoBehaviour
         Collectable[] flavors = Resources.LoadAll<Collectable>(FlavorCollectablePath);
         if (flavors != null) foreach (var collectable in flavors) RetrieveCollectableByUUID.Add(collectable.ingredient.uuid, collectable);
         Collectable[] abilities = Resources.LoadAll<Collectable>(AbilityCollectablePath);
-        if (abilities != null) foreach (var collectable in abilities) RetrieveCollectableByUUID.Add(collectable.ingredient.uuid, collectable);
+        if (abilities != null)
+        {
+            foreach (var collectable in abilities)
+            {
+                RetrieveCollectableByUUID.Add(collectable.ingredient.uuid, collectable);
+            }
+        }
 
         SoupBase[] bases = Resources.LoadAll<SoupBase>(SoupBasePath);
         if (bases != null) foreach (var soup in bases) RetrieveSoupBaseByUUID.Add(soup.uuid, soup);

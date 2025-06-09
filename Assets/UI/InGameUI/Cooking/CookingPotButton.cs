@@ -50,6 +50,7 @@ public class CookingPotButton : MonoBehaviour
         if (!_PotCollider.bounds.IntersectRay(ray)) return;
 
         CookPrompt.SetActive(false);
+        _SpriteRenderer.material.SetFloat(_OutlineThickness, 0);
         CookingScreen.Singleton.CookTheSoup();
     }
 
@@ -65,11 +66,12 @@ public class CookingPotButton : MonoBehaviour
 
             if (!CookingScreen.Singleton.SoupIsValid) { yield return null; continue; }
             CookPrompt.SetActive(true);
+            _SpriteRenderer.material.SetFloat(_OutlineThickness, 12.35f);
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (!_PotCollider.bounds.IntersectRay(ray)) { yield return null; continue; }
 
-            _SpriteRenderer.material.SetFloat(_OutlineThickness, 1);
+            _SpriteRenderer.material.SetFloat(_OutlineThickness, 21.6f);
             isInteractable = true;
             yield return null;
         }

@@ -18,6 +18,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
         _Collectable = col;
         _Image = GetComponent<Image>();
         _SpriteReference = _Image.sprite;
+
     }
 
     public void PickUp()
@@ -66,7 +67,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     {
         if (CursorManager.Singleton.currentCollectableReference == _Collectable) // add directly to available cooking slot
         {
-            IngredientCookingSlot slot = CookingScreen.Singleton.GetAvailableSoupSlot();
+            IngredientCookingSlot slot = CookingScreen.Singleton.GetAvailableSoupSlot(_Collectable.ingredient);
             if (slot != null)
             {
                 currentCookingSlot = slot;
