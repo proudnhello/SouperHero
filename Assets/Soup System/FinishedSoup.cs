@@ -35,8 +35,8 @@ public class FinishedSoup : ISoupBowl
         {
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
-            icon = ingredient.Icon;
-            iconUI = ingredient.IconUI;
+            icon = ingredient.abilityType.icon;
+            iconUI = ingredient.abilityType.icon;
             // uses = ingredient.uses;
             inherentInflictions = ingredient.inherentInflictionFlavors;
         }

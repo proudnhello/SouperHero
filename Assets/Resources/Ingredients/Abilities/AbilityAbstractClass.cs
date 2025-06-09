@@ -10,6 +10,7 @@ public abstract class AbilityAbstractClass : ScriptableObject
 {
     [Header("Info")]
     [SerializeField] public string _abilityName;
+    public Sprite icon;
 
     protected virtual void Press(AbilityStats stats, List<Infliction> inflictions)
     {

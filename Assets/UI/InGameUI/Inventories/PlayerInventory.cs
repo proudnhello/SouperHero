@@ -150,7 +150,6 @@ public class PlayerInventory : MonoBehaviour
         {
             foreach (var collectable in abilities)
             {
-                print(collectable.ingredient.uuid + collectable.name);
                 RetrieveCollectableByUUID.Add(collectable.ingredient.uuid, collectable);
             }
         }
