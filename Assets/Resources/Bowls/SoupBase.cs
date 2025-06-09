@@ -16,7 +16,6 @@ public class SoupBase : ScriptableObject, ISoupBowl
     public int maxFlavorIngredients;
     public int maxAbilityIngredients;
     public int maxWildcardIngredients;
-    public int maxIngredients;
 
     public List<InflictionFlavor> inherentInflictionFlavors;
     public List<BuffFlavor> inherentBuffFlavors;

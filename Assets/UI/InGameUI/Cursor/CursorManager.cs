@@ -156,6 +156,12 @@ public class CursorManager : MonoBehaviour
         ChangeToCrosshairSprite();
     }
 
+    public void ManuallyReturnIngredientFromCursor()
+    {
+        lastCursorInteract.ReturnIngredientHereFromCursor();
+        currentCollectableReference = null;
+    }
+
     void ChangeToCrosshairSprite()
     {
         _CursorImage.sprite = CrosshairSprite;
