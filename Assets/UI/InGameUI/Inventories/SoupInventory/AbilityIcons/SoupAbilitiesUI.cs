@@ -15,9 +15,9 @@ public class SoupAbilitiesUI : MonoBehaviour
     {
         PlayerInventory.ChangedEquippedSoup += UpdateIcons;
         PlayerInventory.UsedSoupAttack += UpdateIcons;
-        foreach (var icon in soupAbilityIcons) icon.enabled = false;
+        foreach (var icon in soupAbilityIcons) icon.gameObject.SetActive(false);
     }
-
+    
     private void OnDisable()
     {
         PlayerInventory.ChangedEquippedSoup -= UpdateIcons;
@@ -27,13 +27,13 @@ public class SoupAbilitiesUI : MonoBehaviour
     void UpdateIcons()
     {
         ISoupBowl bowl = PlayerInventory.Singleton.GetCurrentBowl();
-        foreach (var icon in soupAbilityIcons) icon.enabled = false;
+        foreach (var icon in soupAbilityIcons) icon.gameObject.SetActive(false);
 
         if (bowl is FinishedSoup soup)
         {
             for (int i = 0; i < soup.soupAbilities.Count; i++)
             {
-                soupAbilityIcons[i].enabled = true;
+                soupAbilityIcons[i].gameObject.SetActive(true);
                 soupAbilityIcons[i].sprite = soup.soupAbilities[i].iconUI;
             }
         }
