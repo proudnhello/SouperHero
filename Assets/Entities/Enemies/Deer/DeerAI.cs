@@ -25,7 +25,7 @@ public class DeerAI : EnemyBaseClass
     [SerializeField] protected float PlayerDetectionIntervalWhenFrozen = 1.5f;
 
     [Header("Idle State")]
-    [SerializeField] protected float PlayerDetectionPathLength = 5f;
+    [SerializeField] protected float PlayerDetectionPathLength = 15f;
     [SerializeField] protected float PlayerDetectionInterval = .5f;
     [SerializeField] protected Vector2 PatrolDistance = new Vector2(2.5f, 3.5f);
     [SerializeField] protected float MaxPatrolPathLength;
@@ -38,7 +38,6 @@ public class DeerAI : EnemyBaseClass
     [SerializeField] protected float AttackSpeedMultiplier = 1.5f;
     [SerializeField] protected float AttackDistanceCheckInterval = .3f;
     [SerializeField] protected float DistanceFromPlayerToDisengage = 10f;
-    // [SerializeField] protected float SlipperySurfaceMultiplier = 1.15f;
     [SerializeField] protected float MinimumTimeBetweenCharges = 1f;
     [SerializeField] protected float DistanceToPlayerForCharge = 4f;
     [SerializeField] protected float ChargeSpeed = 6.5f;
@@ -257,8 +256,6 @@ public class DeerAI : EnemyBaseClass
                     if (sm._rigidbody.velocity.magnitude < sm.ChargeSpeed) sm._rigidbody.AddForce(vel * Time.deltaTime);
                     yield return null;
                 }
-
-                // sm.animator.Play("Walk");
 
             }
         }
