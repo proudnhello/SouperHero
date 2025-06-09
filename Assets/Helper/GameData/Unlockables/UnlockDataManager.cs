@@ -54,6 +54,7 @@ public class UnlockDataManager : MonoBehaviour
 
     public void ReportAchievementProgress(string uuid, int totalSteps, bool increment = false)
     {
+        Debug.Log(uuid);
         if (IsAchievementUnlocked(uuid)) return;
 
         AchievementData achData = database.GetAchievementData(uuid);
