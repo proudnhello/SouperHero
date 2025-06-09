@@ -6,15 +6,10 @@ public class minimapDetection : MonoBehaviour
 {
     public List<GameObject> minimapRendererList;
 
-
-
     void Start()
     {
-
         updateRenderList();
         turnOffAll();
-
-
     }
 
 

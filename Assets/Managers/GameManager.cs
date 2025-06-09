@@ -100,16 +100,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public static event Action OnStartRun;
     public void StartRun()
     {
         MetricsTracker.Singleton.StartRun();
+        OnStartRun?.Invoke();
     }
 
     // Goes to Win or Death Scene
+    public static event Action OnEndRun;
     public void EndRun(bool successfulRun)
     {
         MetricsTracker.Singleton.EndRun(successfulRun);
         Cursor.visible = true;
+        OnEndRun?.Invoke();
 
         if (successfulRun) SceneManager.LoadScene(3);
         else SceneManager.LoadScene(2);

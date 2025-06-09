@@ -1,12 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using Random = UnityEngine.Random;
 
-public class TaterhopAI : EnemyBaseClass
+public class DeerAI : EnemyBaseClass
 {
+
     // ~~~ DEFINITIONS ~~~
     public enum ChargerStates
     {
@@ -30,6 +28,7 @@ public class TaterhopAI : EnemyBaseClass
     [SerializeField] protected float PlayerDetectionPathLength = 15f;
     [SerializeField] protected float PlayerDetectionInterval = .5f;
     [SerializeField] protected Vector2 PatrolDistance = new Vector2(2.5f, 3.5f);
+    [SerializeField] protected float MaxPatrolPathLength;
     [SerializeField] protected Vector2 PatrolWaitTime = new Vector2(1.5f, 2.5f);
     [SerializeField] protected float WhilePatrolCheckIfStoppedInterval = .3f;
     [SerializeField] protected float WhilePatrolCheckIfStoppedDistance = .1f;
@@ -37,13 +36,13 @@ public class TaterhopAI : EnemyBaseClass
 
     [Header("Attack State")]
     [SerializeField] protected float AttackSpeedMultiplier = 1.5f;
-    [SerializeField] protected float MinimumTimeBetweenCharges = 2f;
-    [SerializeField] protected float DistanceToPlayerForCharge = 5f;
-    [SerializeField] protected float AttackDistanceCheckInterval;
-    [SerializeField] protected float ChargeSpeed = 5f;
+    [SerializeField] protected float AttackDistanceCheckInterval = .3f;
+    [SerializeField] protected float DistanceFromPlayerToDisengage = 10f;
+    [SerializeField] protected float MinimumTimeBetweenCharges = 1f;
+    [SerializeField] protected float DistanceToPlayerForCharge = 4f;
+    [SerializeField] protected float ChargeSpeed = 6.5f;
     [SerializeField] protected float ChargeForce = 100f;
-    [SerializeField] protected float ChargeTime = 1f;
-    [SerializeField] protected float DistanceFromPlayerToDisengage = 20f;
+    [SerializeField] protected float ChargeTime = 0.75f;
 
     protected Animator animator;
     internal List<IState> states;
@@ -76,23 +75,25 @@ public class TaterhopAI : EnemyBaseClass
     protected override void Update()
     {
         if (IsDead()) return;
-        freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
+        freezeEnemy = Vector2.Distance (transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
     }
 
-    protected override void Die()
+    protected void Death()
     {
         currentState.OnExit();
-        base.Die();
+        agent.updatePosition = false;
+        SetHealth(0);
+        Destroy(gameObject);
     }
 
-    public class IdleState : IState
+        public class IdleState : IState
     {
-        TaterhopAI sm;
+        DeerAI sm;
         IEnumerator IHandleDetection;
         IEnumerator IHandlePatrol;
         Vector2 centerPoint;
-        NavMeshPath path;
-        public IdleState(TaterhopAI _sm)
+        UnityEngine.AI.NavMeshPath path;
+        public IdleState(DeerAI _sm)
         {
             sm = _sm;
             path = new();
@@ -115,9 +116,9 @@ public class TaterhopAI : EnemyBaseClass
                     continue;
                 }
 
-                NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), sm._playerTransform.position,
-                    NavMesh.AllAreas, path);
-                if (path.status == NavMeshPathStatus.PathComplete)
+                UnityEngine.AI.NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), sm._playerTransform.position,
+                    UnityEngine.AI.NavMesh.AllAreas, path);
+                if (path.status == UnityEngine.AI.NavMeshPathStatus.PathComplete)
                 {
                     float distance = Vector2.Distance(sm.transform.position, path.corners[0]);
                     for (int i = 1; i < path.corners.Length; i++)
@@ -178,11 +179,12 @@ public class TaterhopAI : EnemyBaseClass
         }
     }
 
+
     public class AttackState : IState
     {
-        TaterhopAI sm;
+        DeerAI sm;
         IEnumerator IHandleCharge;
-        public AttackState(TaterhopAI _sm)
+        public AttackState(DeerAI _sm)
         {
             sm = _sm;
         }
@@ -194,7 +196,7 @@ public class TaterhopAI : EnemyBaseClass
 
         IEnumerator HandleCharge()
         {
-            sm.animator.Play("Walk");
+            // sm.animator.Play("Walk");
             while (true)
             {              
                 sm.agent.isStopped = false;
@@ -221,7 +223,7 @@ public class TaterhopAI : EnemyBaseClass
                 sm.agent.isStopped = true;
 
                 // PERFORM CHARGES if can attack
-                sm.animator.Play("Attack");
+                // sm.animator.Play("Attack");
                 Vector2 vel = (sm._playerTransform.position - sm.transform.position).normalized * sm.ChargeForce * sm.GetMoveSpeed();
                 sm._sprite.flipX = vel.x > 0;
                 for (float chargeTime = 0; chargeTime < sm.ChargeTime; chargeTime += Time.deltaTime)
@@ -230,8 +232,6 @@ public class TaterhopAI : EnemyBaseClass
                     yield return null;
                 }
 
-                sm.animator.Play("Walk");
-
             }
         }
 
@@ -239,7 +239,7 @@ public class TaterhopAI : EnemyBaseClass
         {
             if (IHandleCharge != null) sm.StopCoroutine(IHandleCharge);
             AudioManager.Singleton._MusicHandler.RemoveAgro(sm.enemyIndex);
-
         }
     }
+
 }

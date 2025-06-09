@@ -33,5 +33,8 @@ public class TutorialRunState : MonoBehaviour
 
         // bake the navmesh so the enemy can pathfind
         _navMeshSurface.BuildNavMeshAsync();
+
+        // debug for checking what's going on with run state
+        Debug.Log(RunStateManager.Singleton.GetNewEnemyIndex());
     }
 }
