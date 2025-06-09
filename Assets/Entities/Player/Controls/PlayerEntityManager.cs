@@ -149,7 +149,6 @@ public class PlayerEntityManager : Entity
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print(shielded);
         // If we're charging or shielded and we hit an enemy, apply the inflictions
         if (CollisionLayers.Singleton.InEnemyLayer(collision.gameObject) && (playerMovement.charging || shielded))
         {

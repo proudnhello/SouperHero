@@ -189,6 +189,7 @@ public class TaterhopAI : EnemyBaseClass
         public void OnEnter()
         {
             sm.StartCoroutine(IHandleCharge = HandleCharge());
+            AudioManager.Singleton._MusicHandler.AddAgro(sm.enemyIndex);
         }
 
         IEnumerator HandleCharge()
@@ -237,6 +238,8 @@ public class TaterhopAI : EnemyBaseClass
         public void OnExit()
         {
             if (IHandleCharge != null) sm.StopCoroutine(IHandleCharge);
+            AudioManager.Singleton._MusicHandler.RemoveAgro(sm.enemyIndex);
+
         }
     }
 }

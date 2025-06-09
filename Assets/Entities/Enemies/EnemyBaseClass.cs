@@ -11,6 +11,7 @@ using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 using FMOD.Studio;
 using FMODUnity;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 
 public abstract class EnemyBaseClass : Entity
 {
@@ -33,7 +34,7 @@ public abstract class EnemyBaseClass : Entity
     protected bool alwaysAggro = false;
 
     private bool hasDied = false;
-    int enemyIndex;
+    protected int enemyIndex;
 
     // TODO: make this override InitEntity and call base.InitEntity. Who did it this way?
     protected void initEnemy()
@@ -55,6 +56,7 @@ public abstract class EnemyBaseClass : Entity
     }
     protected virtual void Die(bool drop)
     {
+        AudioManager.Singleton._MusicHandler.RemoveAgro(enemyIndex);
         _sprite.color = _sprite.color / 1.5f;
         _collider.enabled = false;
         _rigidbody.velocity = Vector2.zero;

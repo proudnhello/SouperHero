@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -264,10 +265,12 @@ public class RingerAI : EnemyBaseClass
         }
         if (collider != null)
         {
+            if (playerDetected == false) AudioManager.Singleton._MusicHandler.AddAgro(enemyIndex);
             playerDetected = true;
         }
         else
         {
+            if (playerDetected == true) AudioManager.Singleton._MusicHandler.RemoveAgro(enemyIndex);
             playerDetected = false;
         }
     }
