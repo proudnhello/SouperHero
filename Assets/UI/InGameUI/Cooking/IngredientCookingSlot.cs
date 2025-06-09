@@ -9,14 +9,34 @@ using TMPro;
 public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
 {
     [SerializeField] Image faceImage;
+    [SerializeField] Image slotOutline;
+    [SerializeField] Image slotIcon;
+    [SerializeField] Sprite[] slotIconSprites;
     internal Collectable ingredientReference;
+
+    public enum SlotType
+    {
+        Ability,
+        Flavor,
+        Wildcard
+    }
+    internal SlotType currentSlotType;
 
     public void Init()
     {
         ingredientReference = null;
         faceImage.gameObject.SetActive(false);
         faceImage.color = Color.white;
+        slotOutline.gameObject.SetActive(true);
     }
+
+    public void SetSlotType(SlotType type)
+    {
+        currentSlotType = type;
+        slotIcon.sprite = slotIconSprites[(int)type];
+        slotIcon.transform.localScale = new Vector3(.8f, .8f, .8f);
+    }
+
     public void AddIngredient(Collectable ingredient)
     {
         ingredientReference = ingredient;
@@ -24,6 +44,8 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
         faceImage.gameObject.SetActive(true);
         faceImage.sprite = ingredientReference.collectableUI._SpriteReference;
         faceImage.color = Color.white;
+        slotOutline.gameObject.SetActive(false);
+        slotIcon.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
         CookingScreen.Singleton.CheckIfSoupIsValid();
     }
 
@@ -46,6 +68,8 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     {
         ingredientReference = null;
         faceImage.gameObject.SetActive(false);
+        slotIcon.transform.localScale = new Vector3(.8f, .8f, .8f);
+        slotOutline.gameObject.SetActive(true);
         CookingScreen.Singleton.CheckIfSoupIsValid();
     }
 
@@ -61,8 +85,15 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     {
         if (CursorManager.Singleton.currentCollectableReference != null)
         {
-            AddIngredient(CursorManager.Singleton.currentCollectableReference);
-            CursorManager.Singleton.DropCollectable();
+            if (currentSlotType == SlotType.Wildcard || (CursorManager.Singleton.currentCollectableReference.ingredient is AbilityIngredient && currentSlotType == SlotType.Ability) ||
+                (CursorManager.Singleton.currentCollectableReference.ingredient is FlavorIngredient && currentSlotType == SlotType.Flavor))
+            {
+                AddIngredient(CursorManager.Singleton.currentCollectableReference);
+                CursorManager.Singleton.DropCollectable();
+            } else
+            {
+                CursorManager.Singleton.ManuallyReturnIngredientFromCursor();
+            }
         }
     }
 
@@ -70,6 +101,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     {
         ingredientReference = null;
         faceImage.gameObject.SetActive(false);
+        slotOutline.gameObject.SetActive(true);
     }
 
 }
