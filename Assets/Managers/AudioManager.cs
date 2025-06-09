@@ -16,15 +16,19 @@ public class AudioManager : MonoBehaviour
     [field: Header("FMOD EVENTS")]
     [field: SerializeField] public List<EventReference> PLAYER_SFX { get; private set; }
     [field: SerializeField] public List<EventReference> ENEMY_SFX { get; private set; }
+    [field: SerializeField] public List<EventReference> MUSIC { get; private set; }
+
     public EnemyAudio enemyAudio;
     [SerializeField] float sfxAudio = 0.5f;
     private List<EventInstance> allSFX = new List<EventInstance>();
+    internal MusicHandler _MusicHandler;
 
     private void Awake()
     {
         if (Singleton != null && Singleton != this) { Destroy(this); return; }
         else Singleton = this;
         enemyAudio = new();
+        _MusicHandler = new(this);
     }
 
     public void PlayOneShot(EventReference sound, Vector3 worldPos = default)
