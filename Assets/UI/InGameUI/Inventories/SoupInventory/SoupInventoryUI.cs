@@ -189,12 +189,6 @@ public class SoupInventoryUI : MonoBehaviour
                 {
                     TooltipText.text += ability.ability._abilityName + " ";
                 }
-                TooltipText.text += '\n' + "Inflictions: ";
-                foreach (var infliction in ((FinishedSoup)bowl).soupInflictions)
-                {
-                    TooltipText.text += infliction.ToString() + " ";
-                    TooltipText.text += infliction.InflictionFlavor.inflictionType.ToString();
-                }
                 break;
             case (null):
                 SoupTooltip.SetActive(false);
@@ -222,7 +216,7 @@ public class SoupInventoryUI : MonoBehaviour
         {
             foreach (var ingredient in soup.ingredientList)
             {
-                if (ingredient is FlavorIngredient)
+                if (ingredient is FlavorIngredient && ingredient.ParticleIcon != null)
                 {
                     particles.Add(ingredient.ParticleIcon);
                 }
@@ -233,7 +227,10 @@ public class SoupInventoryUI : MonoBehaviour
         if (particles.Count == 0) return;
 
         ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>();
-        particleSystem.textureSheetAnimation.AddSprite(particles[0]);
+        foreach (var particle in particles)
+        {
+            particleSystem.textureSheetAnimation.AddSprite(particle);
+        }
         particleSystem.Play();
     }
 
