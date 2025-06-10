@@ -17,7 +17,7 @@ public class CosmeticSwitching : MonoBehaviour
     [SerializeField] GameObject lockedText;
     [SerializeField] TextMeshProUGUI descriptionText;
 
-    void Awake()
+    void Start()
     {
         FixCosmeticToSelected();
     }
@@ -50,6 +50,7 @@ public class CosmeticSwitching : MonoBehaviour
     {
         selectedCosmetic = currCosmetic;
         PlayerCosmeticRenderer.Singleton.SetPlayerCosmetic(selectedCosmetic.Material);
+        UnlockDataManager.Singleton.SetCosmetic(selectedCosmetic);
         UpdateSelectUI();
     }
 
@@ -89,16 +90,8 @@ public class CosmeticSwitching : MonoBehaviour
 
     public void FixCosmeticToSelected()
     {
-        foreach (CosmeticData cosmetic in _database.AllCosmetics)
-        {
-            if (cosmetic.Material = player.material)
-            {
-                selectedCosmetic = cosmetic;
-                currCosmetic = cosmetic;
-                break;
-            }
-        }
-
+        selectedCosmetic = currCosmetic = UnlockDataManager.Singleton.GetCurrentCosmetic();
+        SwapToSelectedCosmetic();
         ChangeCosmeticText(currCosmetic.UUID);
         unlockText.SetActive(false);
         selectButton.SetActive(false);

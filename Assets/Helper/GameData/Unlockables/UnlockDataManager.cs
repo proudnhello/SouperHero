@@ -1,3 +1,4 @@
+using Steamworks;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public class UnlockDataManager : MonoBehaviour
         database.Init();
         unlockData = SaveManager.Singleton.LoadUnlockData();
         unlockData ??= new(true);
+        PlayerCosmeticRenderer.Singleton.SetPlayerCosmetic(database.GetCosmeticData(unlockData.selectedCosmetic).Material);
         if (SteamLoginManager.Singleton.IsConnected())
         {
             Debug.Log("Connected to Steam!");
@@ -27,6 +29,7 @@ public class UnlockDataManager : MonoBehaviour
     public void ResetData()
     {
         unlockData = new(true);
+        PlayerCosmeticRenderer.Singleton.SetPlayerCosmetic(database.GetCosmeticData(unlockData.selectedCosmetic).Material);
     }
 
     [ContextMenu("Complete Data")]
@@ -52,6 +55,17 @@ public class UnlockDataManager : MonoBehaviour
         return unlockData.AchievementsData[uuid] >= database.GetAchievementData(uuid).TotalStatCount;
     }
 
+    public void SetCosmetic(CosmeticData  selectedCosmetic)
+    {
+        unlockData.selectedCosmetic = selectedCosmetic.UUID;
+        SaveManager.Singleton.SaveUnlockData(unlockData);
+    }
+
+    public CosmeticData GetCurrentCosmetic()
+    {
+        return database.GetCosmeticData(unlockData.selectedCosmetic);
+    }
+
     public void ReportAchievementProgress(string uuid, int totalSteps, bool increment = false)
     {
         if (IsAchievementUnlocked(uuid)) return;
@@ -70,11 +84,15 @@ public class UnlockDataManager : MonoBehaviour
 
         SteamLoginManager.Singleton.ReportAchievementProgress(unlockData, achData);
 
-        // if (achData.RewardedCosmetic != null)
-        // {
-        //     if (!unlockData.CosmeticsUnlocked.Contains(achData.RewardedCosmetic.UUID)) unlockData.CosmeticsUnlocked.Add(achData.RewardedCosmetic.UUID);
-        // }
+        if (unlockData.AchievementsData[achData.UUID] >= achData.TotalStatCount)
+        {
+            Debug.Log("ACHIEVED " + achData.UUID);
+            if (achData.RewardedCosmetic != null)
+            {
+                if (!unlockData.CosmeticsUnlocked.Contains(achData.RewardedCosmetic.UUID)) unlockData.CosmeticsUnlocked.Add(achData.RewardedCosmetic.UUID);
+            }
+        }
 
-
+        SaveManager.Singleton.SaveUnlockData(unlockData);
     }
 }
