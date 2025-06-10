@@ -44,7 +44,7 @@ public class SteamLoginManager : MonoBehaviour
 
     public void ReportAchievementProgress(UnlockGameData data, AchievementData achData)
     {
-
+        if (!IsConnected()) return;
         SteamUserStats.GetAchievement(achData.UUID, out bool achieved);
         if (achieved) return;
 
