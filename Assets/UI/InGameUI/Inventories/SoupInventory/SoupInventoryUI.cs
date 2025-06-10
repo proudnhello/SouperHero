@@ -211,22 +211,25 @@ public class SoupInventoryUI : MonoBehaviour
         SoupTooltip.SetActive(false);
     }
 
-    public void EnableFlavorParticles(int index)
+    public void EnableFlavorParticles(ISoupBowl bowl)
     {
         if (IsOpen) return; //Only display when inventory is closed
 
-        var bowl = PlayerInventory.Singleton.GetBowl(index);
-        if (bowl is not FinishedSoup)  return;
-
-        foreach (var ingredient in ((FinishedSoup)bowl).ingredientList)
+        if (bowl is FinishedSoup soup)
         {
-            Debug.Log(ingredient.IngredientName);
-            //Debug.Log(ingredient.IconUI);
+            foreach (var ingredient in soup.ingredientList)
+            {
+                Debug.Log(ingredient.IngredientName);
+                //Debug.Log(ingredient.IconUI);
+            }
         }
+
+
+        
 
     }
 
-    public void DisableFlavorParticles(int index)
+    public void DisableFlavorParticles()
     {
         if (!IsOpen) return; //Only display when inventory is open
     }

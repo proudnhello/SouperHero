@@ -26,14 +26,14 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
     {
         SlotContent.color = Color.white;
         SlotContent.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
-        SoupInventoryUI.Singleton.EnableFlavorParticles(slotIndex); //Lo: TEST
+        SoupInventoryUI.Singleton.EnableFlavorParticles(bowlHeld); //Lo: TEST
     }
 
     public void UnequipSlot()
     {
         SlotContent.color = new Color(.5f, .5f, .5f, .8f);
         SlotContent.transform.localScale = new Vector3(.6f, .6f, .6f);
-        SoupInventoryUI.Singleton.DisableFlavorParticles(slotIndex); //Lo: TEST
+        SoupInventoryUI.Singleton.DisableFlavorParticles(); //Lo: TEST
     }
 
     void RenderSlot()

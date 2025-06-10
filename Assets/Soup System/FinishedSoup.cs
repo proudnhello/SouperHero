@@ -124,7 +124,8 @@ public class FinishedSoup : ISoupBowl
     // Makes a Finished Soup
     public FinishedSoup(List<Ingredient> ingredients, SoupBase stock)
     {
-        ingredientList = ingredients;
+
+        ingredientList = new(ingredients);
         soupBase = stock;
 
         // Track abilities and inflictions using dictionaries
