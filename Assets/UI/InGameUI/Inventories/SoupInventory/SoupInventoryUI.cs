@@ -104,16 +104,20 @@ public class SoupInventoryUI : MonoBehaviour
     public void OpenInventoryScreen()
     {
         MoveInventory(true);
-        foreach (var slot in InventorySlots) slot.EnterInventoryScreen();
+        foreach (var slot in InventorySlots) { 
+            DisableFlavorParticles(slot.gameObject);
+            slot.EnterInventoryScreen(); 
+        }
     }
     public void CloseInventoryScreen()
     {
         if (CookingScreen.Singleton.IsCooking) return; // cannot close while cooking
 
         MoveInventory(false);
-        for (int i = 0; i < InventorySlots.Length; i++)
+        foreach (var slot in InventorySlots)
         {
-            InventorySlots[i].ExitInventoryScreen();
+            EnableFlavorParticles(slot.bowlHeld, slot.gameObject);
+            slot.ExitInventoryScreen();
         }
         for (int i = 0; i < PlayerInventory.Singleton.maxEquippedSoups; i++)
         {
@@ -209,6 +213,8 @@ public class SoupInventoryUI : MonoBehaviour
     public void EnableFlavorParticles(ISoupBowl bowl, GameObject slot)
     {
         if (IsOpen || CookingScreen.Singleton.IsCooking) return; //Only display when inventory is closed and not cooking
+        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>(); //Lo: Possibly replace with index checking
+        if (particleSystem == null) return;
 
         List<Sprite> particles = new List<Sprite> ();
 
@@ -230,7 +236,6 @@ public class SoupInventoryUI : MonoBehaviour
         if (particles.Count == 0) return;
 
         //Add all particle icons and activate particle system for slot
-        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>();
         foreach (var particle in particles)
         {
             particleSystem.textureSheetAnimation.AddSprite(particle);
@@ -240,7 +245,9 @@ public class SoupInventoryUI : MonoBehaviour
 
     public void DisableFlavorParticles(GameObject slot)
     {
-        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>();
+        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>(); //Lo: Possibly replace with index checking
+        if (particleSystem == null) return;
+
         particleSystem.Stop();
     }
 }
