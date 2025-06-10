@@ -63,7 +63,7 @@ public class MetricsData
         {
             totalDeaths++;
         }
-
+        UnlockDataManager.Singleton.ReportAchievementProgress("CompletedRuns1", 1, true);
         // if (successfulRun) totalWins++;
         // else totalDeaths++;
 
