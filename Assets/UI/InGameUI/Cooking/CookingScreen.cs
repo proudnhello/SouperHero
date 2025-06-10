@@ -199,11 +199,12 @@ public class CookingScreen : MonoBehaviour
         List<Ingredient> cookedIngredients = new();
         foreach (var slot in IngredientCookingSlots)
         {
-            if (slot.ingredientReference == null) continue;
-            cookedIngredients.Add(slot.ingredientReference.ingredient);
-            PlayerInventory.Singleton.RemoveIngredientCollectable(slot.ingredientReference, true);
+            if (slot.ingredientReference != null)
+            {
+                cookedIngredients.Add(slot.ingredientReference.ingredient);
+                PlayerInventory.Singleton.RemoveIngredientCollectable(slot.ingredientReference, true);
+            }
             slot.OnCook();
-            DisplayNoBowl();
         }
 
         FinishedSoup soup = new(cookedIngredients, BowlCookingSlot.soupBaseReference);

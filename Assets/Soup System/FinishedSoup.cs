@@ -232,6 +232,7 @@ public class FinishedSoup : ISoupBowl
 
         // set initial lastTimeUsed to cooldown to get atk right away
         lastTimeUsed = Time.time - cooldown;
+        PrintSoup(this);
 
     }
 
@@ -247,6 +248,7 @@ public class FinishedSoup : ISoupBowl
         {
             output += $"{infliction.InflictionFlavor.inflictionType} = {infliction.amount}";
         }
+        Debug.Log(output);
     }
 
     bool hasCooldown = false;
