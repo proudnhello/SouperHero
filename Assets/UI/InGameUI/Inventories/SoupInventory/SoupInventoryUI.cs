@@ -215,7 +215,7 @@ public class SoupInventoryUI : MonoBehaviour
     {
         if (IsOpen || CookingScreen.Singleton.IsCooking) return; //Only display when inventory is closed and not cooking
 
-        List<Material> particles = new List<Material> ();
+        List<Sprite> particles = new List<Sprite> ();
 
         //Add all flavor ingredients' particle icon to list
         if (bowl is FinishedSoup soup)
@@ -233,6 +233,7 @@ public class SoupInventoryUI : MonoBehaviour
         if (particles.Count == 0) return;
 
         ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>();
+        particleSystem.textureSheetAnimation.AddSprite(particles[0]);
         particleSystem.Play();
     }
 

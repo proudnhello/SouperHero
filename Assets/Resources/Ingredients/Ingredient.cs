@@ -8,7 +8,7 @@ public class Ingredient : ScriptableObject
     [Header("Ingredient Info")]
     public string IngredientName;
     public Sprite IconUI;
-    public Material ParticleIcon;
+    public Sprite ParticleIcon;
     public int uuid;
 
     [Header("Encyclopedia")]
