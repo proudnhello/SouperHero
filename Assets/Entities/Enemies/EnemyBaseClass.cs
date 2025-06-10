@@ -11,7 +11,6 @@ using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 using FMOD.Studio;
 using FMODUnity;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 
 public abstract class EnemyBaseClass : Entity
 {

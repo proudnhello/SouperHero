@@ -101,7 +101,9 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     {
         ingredientReference = null;
         faceImage.gameObject.SetActive(false);
+        slotIcon.transform.localScale = new Vector3(.8f, .8f, .8f);
         slotOutline.gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
 
 }
