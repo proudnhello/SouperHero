@@ -54,10 +54,10 @@ public class UnlockDataManager : MonoBehaviour
 
     public void ReportAchievementProgress(string uuid, int totalSteps, bool increment = false)
     {
-        Debug.Log(uuid);
         if (IsAchievementUnlocked(uuid)) return;
 
         AchievementData achData = database.GetAchievementData(uuid);
+        Debug.Log(achData);
 
         if (increment)
         {
@@ -70,10 +70,10 @@ public class UnlockDataManager : MonoBehaviour
 
         SteamLoginManager.Singleton.ReportAchievementProgress(unlockData, achData);
 
-        if (achData.RewardedCosmetic != null)
-        {
-            if (!unlockData.CosmeticsUnlocked.Contains(achData.RewardedCosmetic.UUID)) unlockData.CosmeticsUnlocked.Add(achData.RewardedCosmetic.UUID);
-        }
+        // if (achData.RewardedCosmetic != null)
+        // {
+        //     if (!unlockData.CosmeticsUnlocked.Contains(achData.RewardedCosmetic.UUID)) unlockData.CosmeticsUnlocked.Add(achData.RewardedCosmetic.UUID);
+        // }
 
 
     }

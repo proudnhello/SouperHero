@@ -31,6 +31,7 @@ public class PlayerEntityManager : Entity
         input = new();
         input.Enable();
         entityRenderer = new PlayerRenderer(this, animations);
+        gameObject.GetComponent<SpriteRenderer>().material = PlayerCosmeticRenderer.Singleton.playerMaterial;
     }
 
     private void Start()
