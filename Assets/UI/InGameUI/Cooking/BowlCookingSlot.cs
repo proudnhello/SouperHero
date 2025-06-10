@@ -10,6 +10,7 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
     [SerializeField] TMP_Text usesText;
     [SerializeField] Image SlotOutline;
     [SerializeField] Image SlotContent;
+    [SerializeField] Image EmptySlotIcon;
 
     internal int soupSlotReference = -1;
     internal SoupBase soupBaseReference = null;
@@ -27,6 +28,7 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
             if (slot >= 0)
             {
                 AddBowlFromSlot(slot);
+                CookingScreen.Singleton.DisplayBowlInSlot(soupBaseReference);
                 CookingScreen.Singleton.CheckIfSoupIsValid();
             }
         }
@@ -35,10 +37,13 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
             int slot = SoupInventoryUI.Singleton.AddBowlToCookingSlot();
             if (slot == -2) return; // if bowl selected isn't a base, don't swap
             RemoveBowl();
+            CookingScreen.Singleton.DisplayNoBowl();
             if (slot >= 0)
             {
                 AddBowlFromSlot(slot);
+                CookingScreen.Singleton.DisplayBowlInSlot(soupBaseReference);
             }
+
             CookingScreen.Singleton.CheckIfSoupIsValid();
         }
     }
@@ -50,6 +55,7 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
         SlotContent.gameObject.SetActive(true);
         SlotContent.sprite = soupBaseReference.baseSprite;
         soupSlotReference = slot;
+        EmptySlotIcon.gameObject.SetActive(false);
     }
 
     public void RemoveBowl()
@@ -58,6 +64,7 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
         soupBaseReference = null;
         soupSlotReference = -1;
         SlotOutline.gameObject.SetActive(true);
+        EmptySlotIcon.gameObject.SetActive(true);
         usesText.text = "";
         SlotContent.gameObject.SetActive(false);
     }

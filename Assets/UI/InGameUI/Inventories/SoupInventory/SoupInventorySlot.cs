@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -26,12 +27,14 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
     {
         SlotContent.color = Color.white;
         SlotContent.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+        SoupInventoryUI.Singleton.EnableFlavorParticles(bowlHeld, this.gameObject);
     }
 
     public void UnequipSlot()
     {
         SlotContent.color = new Color(.5f, .5f, .5f, .8f);
         SlotContent.transform.localScale = new Vector3(.6f, .6f, .6f);
+        SoupInventoryUI.Singleton.DisableFlavorParticles(this.gameObject);
     }
 
     void RenderSlot()
@@ -55,7 +58,7 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
         }
         else
         {
-            SlotContent.rectTransform.sizeDelta = new Vector2(75, 75);
+            SlotContent.rectTransform.sizeDelta = new Vector2(82, 50);
             SlotContent.sprite = EmptySoupSlotSprite;
             SlotContent.enabled = SoupInventoryUI.Singleton.IsOpen;
         }

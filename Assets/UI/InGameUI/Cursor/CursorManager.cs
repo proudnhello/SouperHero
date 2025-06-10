@@ -82,9 +82,13 @@ public class CursorManager : MonoBehaviour
     bool validCollectablePlacement;
     IEnumerator WhileDraggingCollectable()
     {
+        float ColliderSize(float multiplier)
+        {
+            return (Camera.main.orthographicSize * .065f - .1f) * multiplier; // by default for orthographic size of 10 = .55 radius
+        }
         while (currentCollectableReference != null)
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, currentCollectableReference.collectableUI.ColliderRadius);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, ColliderSize(currentCollectableReference.collectableUI.ColliderRadiusMult));
             validCollectablePlacement = true;
             foreach (var collider in colliders)
             {
@@ -154,6 +158,12 @@ public class CursorManager : MonoBehaviour
         }
 
         ChangeToCrosshairSprite();
+    }
+
+    public void ManuallyReturnIngredientFromCursor()
+    {
+        lastCursorInteract.ReturnIngredientHereFromCursor();
+        currentCollectableReference = null;
     }
 
     void ChangeToCrosshairSprite()

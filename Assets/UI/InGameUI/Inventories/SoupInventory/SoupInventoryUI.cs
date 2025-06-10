@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.VolumeComponent;
 
 public class SoupInventoryUI : MonoBehaviour
 {
@@ -102,16 +104,20 @@ public class SoupInventoryUI : MonoBehaviour
     public void OpenInventoryScreen()
     {
         MoveInventory(true);
-        foreach (var slot in InventorySlots) slot.EnterInventoryScreen();
+        foreach (var slot in InventorySlots) { 
+            DisableFlavorParticles(slot.gameObject);
+            slot.EnterInventoryScreen(); 
+        }
     }
     public void CloseInventoryScreen()
     {
         if (CookingScreen.Singleton.IsCooking) return; // cannot close while cooking
 
         MoveInventory(false);
-        for (int i = 0; i < InventorySlots.Length; i++)
+        foreach (var slot in InventorySlots)
         {
-            InventorySlots[i].ExitInventoryScreen();
+            EnableFlavorParticles(slot.bowlHeld, slot.gameObject);
+            slot.ExitInventoryScreen();
         }
         for (int i = 0; i < PlayerInventory.Singleton.maxEquippedSoups; i++)
         {
@@ -175,7 +181,7 @@ public class SoupInventoryUI : MonoBehaviour
 
     public void OpenSoupTooltip(int index)
     {
-        if (!IsOpen) return; // Only display when inventory is open
+        if (!IsOpen) return; //Only display when inventory is open
 
         var bowl = PlayerInventory.Singleton.GetBowl(index);
         switch (bowl)
@@ -187,11 +193,6 @@ public class SoupInventoryUI : MonoBehaviour
                 foreach (var ability in ((FinishedSoup)bowl).soupAbilities)
                 {
                     TooltipText.text += ability.ability._abilityName + " ";
-                }
-                //TooltipText.text += '\n' + "Inflictions: ";
-                foreach (var infliction in ((FinishedSoup)bowl).soupInflictions)
-                {
-                    //TooltipText.text += infliction.ToString() + " ";
                 }
                 break;
             case (null):
@@ -207,5 +208,46 @@ public class SoupInventoryUI : MonoBehaviour
     public void CloseSoupTooltip(int index)
     {
         SoupTooltip.SetActive(false);
+    }
+
+    public void EnableFlavorParticles(ISoupBowl bowl, GameObject slot)
+    {
+        if (IsOpen || CookingScreen.Singleton.IsCooking) return; //Only display when inventory is closed and not cooking
+        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>(); //Lo: Possibly replace with index checking
+        if (particleSystem == null) return;
+
+        List<Sprite> particles = new List<Sprite> ();
+
+        //Add all ingredients' particle icon to list
+        if (bowl is FinishedSoup soup)
+        {
+            foreach (var ingredient in soup.ingredientList)
+            {
+                if (ingredient.ParticleIcon != null) { particles.Add(ingredient.ParticleIcon); }
+                
+                //Lo: This temporary. Only occurs if there is more than one flavor on an ingredient
+                if (ingredient.IconUI != null) { particles.Add (ingredient.IconUI); }
+            }
+
+            particles = particles.Distinct().ToList(); //Remove duplicates
+        }
+
+        //If no particles, do not enable particle effects
+        if (particles.Count == 0) return;
+
+        //Add all particle icons and activate particle system for slot
+        foreach (var particle in particles)
+        {
+            particleSystem.textureSheetAnimation.AddSprite(particle);
+        }
+        particleSystem.Play();
+    }
+
+    public void DisableFlavorParticles(GameObject slot)
+    {
+        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>(); //Lo: Possibly replace with index checking
+        if (particleSystem == null) return;
+
+        particleSystem.Stop();
     }
 }

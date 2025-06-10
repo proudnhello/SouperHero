@@ -41,6 +41,7 @@ public class MetricsTracker : MonoBehaviour
     public void RecordEnemyKilled()
     {
         metricsData.curr_NumEnemiesKilled++;
+        UnlockDataManager.Singleton.ReportAchievementProgress("Kill100", 1, true);
     }
 
     public void RecordIngredientCollected()
@@ -51,6 +52,9 @@ public class MetricsTracker : MonoBehaviour
     public void RecordSoupsCooked()
     {
         metricsData.curr_NumSoupsCooked++;
+        UnlockDataManager.Singleton.ReportAchievementProgress("SoupsCooked1", 1, true);
+        UnlockDataManager.Singleton.ReportAchievementProgress("SoupsCooked10", 1, true);
+        UnlockDataManager.Singleton.ReportAchievementProgress("SoupsCooked50", 1, true);
     }
 
     public void NewPlayer()

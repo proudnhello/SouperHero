@@ -161,6 +161,8 @@ public class HopShroomAI : EnemyBaseClass
         {
             sm.agent.speed = sm.GetMoveSpeed() * sm.AttackSpeedMultiplier;
             sm.StartCoroutine(IHandleShoot = HandleShoot());
+            AudioManager.Singleton._MusicHandler.AddAgro(sm.enemyIndex);
+
         }
 
         IEnumerator HandleShoot()
@@ -210,6 +212,7 @@ public class HopShroomAI : EnemyBaseClass
         public void OnExit()
         {
             if (IHandleShoot != null) sm.StopCoroutine(IHandleShoot);
+            AudioManager.Singleton._MusicHandler.RemoveAgro(sm.enemyIndex);
         }
     }
 }

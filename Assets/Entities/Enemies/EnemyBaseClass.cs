@@ -33,7 +33,7 @@ public abstract class EnemyBaseClass : Entity
     protected bool alwaysAggro = false;
 
     private bool hasDied = false;
-    int enemyIndex;
+    protected int enemyIndex;
 
     // TODO: make this override InitEntity and call base.InitEntity. Who did it this way?
     protected void initEnemy()
@@ -55,6 +55,7 @@ public abstract class EnemyBaseClass : Entity
     }
     protected virtual void Die(bool drop)
     {
+        AudioManager.Singleton._MusicHandler.RemoveAgro(enemyIndex);
         _sprite.color = _sprite.color / 1.5f;
         _collider.enabled = false;
         _rigidbody.velocity = Vector2.zero;

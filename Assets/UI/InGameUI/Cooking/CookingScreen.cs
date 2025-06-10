@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using System.Linq;
+using SlotType = IngredientCookingSlot.SlotType;
 
 // Gets Items In the Cooking Slots and Call FillPot
 public class CookingScreen : MonoBehaviour
@@ -49,6 +50,7 @@ public class CookingScreen : MonoBehaviour
         foreach (IngredientCookingSlot c in IngredientCookingSlots)
         {
             c.Init();
+            DisplayNoBowl();
         }
     }
 
@@ -92,12 +94,8 @@ public class CookingScreen : MonoBehaviour
         if (!open) // has fully closed
         {
             CookingContent.gameObject.SetActive(false);
-            foreach (IngredientCookingSlot c in IngredientCookingSlots)
-            {
-                if (c.ingredientReference != null) c.ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
-                c.RemoveIngredient();
-            }
             BowlCookingSlot.RemoveBowl();
+            DisplayNoBowl();
         } else // has fully opened
         {
             AtCookingScreen = true;
@@ -131,11 +129,16 @@ public class CookingScreen : MonoBehaviour
         ExitCooking(default);
     }
 
-    public IngredientCookingSlot GetAvailableSoupSlot()
+    public IngredientCookingSlot GetAvailableSoupSlot(Ingredient ingredient)
     {
         for (int i = 0; i < IngredientCookingSlots.Length; i++)
         {
-            if (IngredientCookingSlots[i].ingredientReference == null) return IngredientCookingSlots[i];
+            var slot = IngredientCookingSlots[i];
+            if (slot.ingredientReference == null && slot.gameObject.activeInHierarchy)
+            {
+                if (ingredient is AbilityIngredient && (slot.currentSlotType == SlotType.Ability || slot.currentSlotType == SlotType.Wildcard)) return slot;
+                else if (ingredient is FlavorIngredient && (slot.currentSlotType == SlotType.Flavor || slot.currentSlotType == SlotType.Wildcard)) return slot;
+            }
         }
         return null;
     }
@@ -159,6 +162,36 @@ public class CookingScreen : MonoBehaviour
         }
     }
 
+    public void DisplayBowlInSlot(SoupBase bowl)
+    {
+        int slot = 0;
+        for (int ing = 0; ing < bowl.maxAbilityIngredients && slot < IngredientCookingSlots.Length; ing++, slot++)
+        {
+            IngredientCookingSlots[slot].gameObject.SetActive(true);
+            IngredientCookingSlots[slot].SetSlotType(SlotType.Ability);
+        }
+        for (int ing = 0; ing < bowl.maxFlavorIngredients && slot < IngredientCookingSlots.Length; ing++, slot++)
+        {
+            IngredientCookingSlots[slot].gameObject.SetActive(true);
+            IngredientCookingSlots[slot].SetSlotType(SlotType.Flavor);
+        }
+        for (int ing = 0; ing < bowl.maxWildcardIngredients && slot < IngredientCookingSlots.Length; ing++, slot++)
+        {
+            IngredientCookingSlots[slot].gameObject.SetActive(true);
+            IngredientCookingSlots[slot].SetSlotType(SlotType.Wildcard);
+        }
+    }
+
+    public void DisplayNoBowl()
+    {
+        foreach (var slot in IngredientCookingSlots)
+        {
+            slot.gameObject.SetActive(false);
+            if (slot.ingredientReference != null) slot.ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
+            slot.RemoveIngredient();
+        }
+    }
+
     public void CookTheSoup()
     {
         SoupIsValid = false;
@@ -166,9 +199,11 @@ public class CookingScreen : MonoBehaviour
         List<Ingredient> cookedIngredients = new();
         foreach (var slot in IngredientCookingSlots)
         {
-            if (slot.ingredientReference == null) continue;
-            cookedIngredients.Add(slot.ingredientReference.ingredient);
-            PlayerInventory.Singleton.RemoveIngredientCollectable(slot.ingredientReference, true);
+            if (slot.ingredientReference != null)
+            {
+                cookedIngredients.Add(slot.ingredientReference.ingredient);
+                PlayerInventory.Singleton.RemoveIngredientCollectable(slot.ingredientReference, true);
+            }
             slot.OnCook();
         }
 

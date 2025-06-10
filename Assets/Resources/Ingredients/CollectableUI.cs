@@ -9,7 +9,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     Collectable _Collectable;
     internal Sprite _SpriteReference;
     Image _Image;
-    public float ColliderRadius = 10f;
+    public float ColliderRadiusMult = 1f;
 
     // Start is called before the first frame update
     public void Init(Collectable col)
@@ -18,6 +18,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
         _Collectable = col;
         _Image = GetComponent<Image>();
         _SpriteReference = _Image.sprite;
+
     }
 
     public void PickUp()
@@ -66,7 +67,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     {
         if (CursorManager.Singleton.currentCollectableReference == _Collectable) // add directly to available cooking slot
         {
-            IngredientCookingSlot slot = CookingScreen.Singleton.GetAvailableSoupSlot();
+            IngredientCookingSlot slot = CookingScreen.Singleton.GetAvailableSoupSlot(_Collectable.ingredient);
             if (slot != null)
             {
                 currentCookingSlot = slot;

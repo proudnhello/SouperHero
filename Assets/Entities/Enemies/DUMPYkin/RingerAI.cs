@@ -231,7 +231,14 @@ public class RingerAI : EnemyBaseClass
     protected override void UpdateAI()
     {
         shootTimer -= Time.deltaTime;
-        currentState.Update(this, Time.deltaTime);
+        currentState?.Update(this, Time.deltaTime);
+    }
+
+    protected override void Die()
+    {
+        currentState.Exit(this);
+        currentState = null;
+        base.Die();
     }
 
     IEnumerator DetectionCoroutine()
@@ -264,10 +271,12 @@ public class RingerAI : EnemyBaseClass
         }
         if (collider != null)
         {
+            if (playerDetected == false) AudioManager.Singleton._MusicHandler.AddAgro(enemyIndex);
             playerDetected = true;
         }
         else
         {
+            if (playerDetected == true) AudioManager.Singleton._MusicHandler.RemoveAgro(enemyIndex);
             playerDetected = false;
         }
     }

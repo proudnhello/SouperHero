@@ -13,24 +13,24 @@ MonoBehaviour:
   m_Name: Rat Skin
   m_EditorClassIdentifier: 
   IngredientName: Rat Skin
-  Icon: {fileID: 0}
-  IconUI: {fileID: -353388288, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  IconUI: {fileID: -1997819179, guid: 6d5b8eea1b993604b9cb6bd4ce96e0c1, type: 3}
+  ParticleIcon: {fileID: 1243655916, guid: 6d5b8eea1b993604b9cb6bd4ce96e0c1, type: 3}
   uuid: 435341
   EncyclopediaImage: {fileID: 21300000, guid: 66ff8b682934c10428107e017241ff1e, type: 3}
   Source: Dropepd by Rattishes
-  AbilityDescription: Rattish ability description
-  abilityType: {fileID: 11400000, guid: 598f166afa706db4898f7489f0e9217f, type: 2}
+  AbilityDescription: Allows you to place a mine at the mouse position
+  abilityType: {fileID: 11400000, guid: 7ed5cee7a49345f48b7a64454560e02a, type: 2}
   baseStats:
-    BaseDuration: 0
-    BaseSize: 5
+    BaseDuration: 2
+    BaseSize: 6
     BaseCrit: 0
-    BaseSpeed: 0
-    cooldown: 0.5
+    BaseSpeed: 1
+    cooldown: 2
   inherentInflictionFlavors:
   - inflictionType: 3
-    amount: 7
-    statusEffectDuration: 1
+    amount: 20
+    statusEffectDuration: 0
   - inflictionType: 4
-    amount: 5
-    statusEffectDuration: 1
-  uses: 15
+    amount: 10
+    statusEffectDuration: 0
+  uses: 5
