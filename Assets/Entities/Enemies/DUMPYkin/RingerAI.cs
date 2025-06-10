@@ -231,7 +231,14 @@ public class RingerAI : EnemyBaseClass
     protected override void UpdateAI()
     {
         shootTimer -= Time.deltaTime;
-        currentState.Update(this, Time.deltaTime);
+        currentState?.Update(this, Time.deltaTime);
+    }
+
+    protected override void Die()
+    {
+        currentState.Exit(this);
+        currentState = null;
+        base.Die();
     }
 
     IEnumerator DetectionCoroutine()
