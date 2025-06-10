@@ -55,7 +55,7 @@ public class MusicHandler
         currMusicState?.OnExit();
         currMusicState = MusicStates[(int)state];
         currMusicState.OnEnter();
-        Debug.Log("Enter state = " + state.ToString());
+        //Debug.Log("Enter state = " + state.ToString());
     }
 
     public void AddAgro(int uuid)
