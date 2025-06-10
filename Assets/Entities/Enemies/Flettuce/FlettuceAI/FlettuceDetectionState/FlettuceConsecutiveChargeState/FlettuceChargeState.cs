@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using static FlavorIngredient.InflictionFlavor;
 
-public class ChargeState : BaseState
+public class FlettuceChargeState : BaseState
 {
     FlettuceAI _blackboard;
     int _chargeNum;
     float _chargeUpStartTime;
     bool _endChargeState;
-    public ChargeState(FlettuceAI blackboard)
+    public FlettuceChargeState(FlettuceAI blackboard)
     {
         _blackboard = blackboard;
     }

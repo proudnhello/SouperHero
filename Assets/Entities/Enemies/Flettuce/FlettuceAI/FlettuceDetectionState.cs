@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using static FlavorIngredient.InflictionFlavor;
 
-public class DetectionState : BaseState
+public class FlettuceDetectionState : BaseState
 {
 
     FlettuceAI _blackboard;
     IEnumerator IHandleCharge;
-    public DetectionState(FlettuceAI blackboaord)
+    public FlettuceDetectionState(FlettuceAI blackboaord)
     {
         _blackboard = blackboaord;
     }

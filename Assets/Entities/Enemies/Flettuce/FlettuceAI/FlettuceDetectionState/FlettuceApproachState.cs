@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ApproachState : BaseState
+public class FlettuceApproachState : BaseState
 {
 
     FlettuceAI _blackboard;
-    public ApproachState(FlettuceAI blackboard)
+    public FlettuceApproachState(FlettuceAI blackboard)
     {
         _blackboard = blackboard;
     }

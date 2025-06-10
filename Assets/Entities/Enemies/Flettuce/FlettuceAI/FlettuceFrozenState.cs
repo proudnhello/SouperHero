@@ -2,13 +2,13 @@
 
 using UnityEngine;
 
-public class FrozenState : BaseState
+public class FlettuceFrozenState : BaseState
 {
     FlettuceAI _blackboard;
 
     // Distance Check Global Variables
     float _timeAtFreeze = -1f;
-    public FrozenState(FlettuceAI blackboard)
+    public FlettuceFrozenState(FlettuceAI blackboard)
     {
         _blackboard = blackboard;
     }

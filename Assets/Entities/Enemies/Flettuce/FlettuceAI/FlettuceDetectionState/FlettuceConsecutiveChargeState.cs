@@ -4,11 +4,11 @@ using System.ComponentModel.Design;
 using UnityEngine;
 using static FlavorIngredient.InflictionFlavor;
 
-public class ConsecutiveChargeState : BaseState
+public class FlettuceConsecutiveChargeState : BaseState
 {
     FlettuceAI _blackboard;
 
-    public ConsecutiveChargeState(FlettuceAI blackboard)
+    public FlettuceConsecutiveChargeState(FlettuceAI blackboard)
     {
         _blackboard = blackboard;
     }

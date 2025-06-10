@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class IdleState : BaseState
+public class FlettuceIdleState : BaseState
 {
     FlettuceAI _blackboard;
     IEnumerator IHandleDetection;
@@ -12,7 +12,7 @@ public class IdleState : BaseState
     Vector2 centerPoint;
     RootFlettuceState.PossibleSubStates currentStates;
     NavMeshPath path;
-    public IdleState(FlettuceAI blackboard)
+    public FlettuceIdleState(FlettuceAI blackboard)
     {
         _blackboard = blackboard;
         path = new();
