@@ -12,6 +12,8 @@ public class PlayerCosmeticRenderer : MonoBehaviour
     {
         if (Singleton != null && Singleton != this) Destroy(this);
         else Singleton = this;
+
+        SetPlayerCosmetic(playerMaterial);
     }
 
     public void SetPlayerCosmetic(Material material)
