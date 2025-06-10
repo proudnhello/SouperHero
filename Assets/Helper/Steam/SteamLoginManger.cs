@@ -60,8 +60,15 @@ public class SteamLoginManager : MonoBehaviour
 
         if (data.AchievementsData[achData.UUID] >= achData.TotalStatCount)
         {
+            Debug.Log("ACHIEVED " + achData.UUID);
             SteamUserStats.SetAchievement(achData.UUID);
             SteamUserStats.StoreStats();
+
+            if (achData.RewardedCosmetic != null)
+            {
+                UnlockGameData unlockData = UnlockDataManager.Singleton.unlockData;
+                if (!unlockData.CosmeticsUnlocked.Contains(achData.RewardedCosmetic.UUID)) unlockData.CosmeticsUnlocked.Add(achData.RewardedCosmetic.UUID);
+            }
         }
     }
 }

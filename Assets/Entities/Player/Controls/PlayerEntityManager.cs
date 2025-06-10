@@ -31,6 +31,7 @@ public class PlayerEntityManager : Entity
         input = new();
         input.Enable();
         entityRenderer = new PlayerRenderer(this, animations);
+        gameObject.GetComponent<SpriteRenderer>().material = PlayerCosmeticRenderer.Singleton.playerMaterial;
     }
 
     private void Start()
@@ -149,7 +150,6 @@ public class PlayerEntityManager : Entity
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print(shielded);
         // If we're charging or shielded and we hit an enemy, apply the inflictions
         if (CollisionLayers.Singleton.InEnemyLayer(collision.gameObject) && (playerMovement.charging || shielded))
         {

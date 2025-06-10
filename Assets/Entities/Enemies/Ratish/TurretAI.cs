@@ -176,10 +176,12 @@ public class TurretAI : EnemyBaseClass
         
         if (collider != null)
         {
+            if (playerDetected == false) AudioManager.Singleton._MusicHandler.AddAgro(enemyIndex);
             playerDetected = true;
         }
         else
         {
+            if (playerDetected == true) AudioManager.Singleton._MusicHandler.RemoveAgro(enemyIndex);
             playerDetected = false;
         }
     }
