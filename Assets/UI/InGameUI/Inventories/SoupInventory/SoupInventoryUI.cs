@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -211,21 +212,24 @@ public class SoupInventoryUI : MonoBehaviour
 
         List<Sprite> particles = new List<Sprite> ();
 
-        //Add all flavor ingredients' particle icon to list
+        //Add all ingredients' particle icon to list
         if (bowl is FinishedSoup soup)
         {
             foreach (var ingredient in soup.ingredientList)
             {
-                if (ingredient is FlavorIngredient && ingredient.ParticleIcon != null)
-                {
-                    particles.Add(ingredient.ParticleIcon);
-                }
+                if (ingredient.ParticleIcon != null) { particles.Add(ingredient.ParticleIcon); }
+                
+                //Lo: This temporary. Only occurs if there is more than one flavor on an ingredient
+                if (ingredient.IconUI != null) { particles.Add (ingredient.IconUI); }
             }
+
+            particles = particles.Distinct().ToList(); //Remove duplicates
         }
 
         //If no particles, do not enable particle effects
         if (particles.Count == 0) return;
 
+        //Add all particle icons and activate particle system for slot
         ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>();
         foreach (var particle in particles)
         {
