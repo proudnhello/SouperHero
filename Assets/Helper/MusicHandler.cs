@@ -51,6 +51,7 @@ public class MusicHandler
     IGameState currMusicState;
     public void ChangeState(MusicState state)
     {
+        if (currMusicState == MusicStates[(int)state]) return;
         currMusicState?.OnExit();
         currMusicState = MusicStates[(int)state];
         currMusicState.OnEnter();
