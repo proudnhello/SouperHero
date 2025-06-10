@@ -9,7 +9,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
     Collectable _Collectable;
     internal Sprite _SpriteReference;
     Image _Image;
-    public float ColliderRadius = 10f;
+    public float ColliderRadiusMult = 1f;
 
     // Start is called before the first frame update
     public void Init(Collectable col)
