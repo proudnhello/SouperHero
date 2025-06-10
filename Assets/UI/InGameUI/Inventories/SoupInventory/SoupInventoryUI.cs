@@ -211,26 +211,34 @@ public class SoupInventoryUI : MonoBehaviour
         SoupTooltip.SetActive(false);
     }
 
-    public void EnableFlavorParticles(ISoupBowl bowl)
+    public void EnableFlavorParticles(ISoupBowl bowl, GameObject slot)
     {
-        if (IsOpen) return; //Only display when inventory is closed
+        if (IsOpen || CookingScreen.Singleton.IsCooking) return; //Only display when inventory is closed and not cooking
 
+        List<Material> particles = new List<Material> ();
+
+        //Add all flavor ingredients' particle icon to list
         if (bowl is FinishedSoup soup)
         {
             foreach (var ingredient in soup.ingredientList)
             {
-                Debug.Log(ingredient.IngredientName);
-                //Debug.Log(ingredient.IconUI);
+                if (ingredient is FlavorIngredient)
+                {
+                    particles.Add(ingredient.ParticleIcon);
+                }
             }
         }
 
+        //If no particles, do not enable particle effects
+        if (particles.Count == 0) return;
 
-        
-
+        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>();
+        particleSystem.Play();
     }
 
-    public void DisableFlavorParticles()
+    public void DisableFlavorParticles(GameObject slot)
     {
-        if (!IsOpen) return; //Only display when inventory is open
+        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>();
+        particleSystem.Stop();
     }
 }
