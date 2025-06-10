@@ -95,6 +95,8 @@ public class MainMenuAnims : MonoBehaviour
 
         moveOutSecondarySequence.SetAutoKill(false);
         moveOutSecondarySequence.Pause();
+
+        AudioManager.Singleton._MusicHandler.ChangeState(MusicHandler.MusicState.MAINMENU);
     }
 
     // Update is called once per frame
@@ -173,6 +175,8 @@ public class MainMenuAnims : MonoBehaviour
     {
         mainMenu.SetActive(false);
         loadingScreen.SetActive(true);
+
+        AudioManager.Singleton._MusicHandler.ChangeState(MusicHandler.MusicState.LOADING);
 
         Sequence loadSequence = DOTween.Sequence();
         loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
