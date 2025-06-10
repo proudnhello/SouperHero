@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3974013682598785430}
   - component: {fileID: 9150220430885545898}
   - component: {fileID: 3035158651208107137}
+  - component: {fileID: 2208506287994171892}
   m_Layer: 0
   m_Name: GlobalScripts
   m_TagString: Untagged
@@ -130,6 +131,19 @@ MonoBehaviour:
       Data3: 1700991106
       Data4: -1380604785
     Path: event:/ENEMY_DAMAGE
+  <MUSIC>k__BackingField:
+  - Guid:
+      Data1: -1187937636
+      Data2: 1317851467
+      Data3: -388061515
+      Data4: 588041235
+    Path: event:/MUSIC/TITLE_MUSIC
+  - Guid:
+      Data1: 760039639
+      Data2: 1290353880
+      Data3: -1669430597
+      Data4: -38587504
+    Path: event:/MUSIC/HUB_MUSIC
   sfxAudio: 0.5
 --- !u!114 &3974013682598785430
 MonoBehaviour:
@@ -168,6 +182,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grayscaleRenderFeature: {fileID: -1249927028318715107, guid: 5a95090a61c448e44804b80f1c292a5e, type: 2}
+--- !u!114 &2208506287994171892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562167665148321109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2faaf06d0e433e4419a27d8d7c359f5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMaterial: {fileID: 2100000, guid: 9d875805ccfcbc94bb0130d5736945a2, type: 2}
 --- !u!1 &6558347992649273066
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,5 +312,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AllCosmetics:
   - {fileID: 11400000, guid: ea5b9581e6c888b4ea07e98d829c9172, type: 2}
+  - {fileID: 11400000, guid: 5f717f74559084972ab508bc21f21cb1, type: 2}
+  - {fileID: 11400000, guid: 7b513e28336c94584bdfbaaa77b6cc6a, type: 2}
+  - {fileID: 11400000, guid: 8dbfb771bd21642c189152e858691c19, type: 2}
+  - {fileID: 11400000, guid: 40bffcd4f5b5d4e93a03bd67131c7fa3, type: 2}
+  - {fileID: 11400000, guid: c634262beabba4c23b1df9445cd8085c, type: 2}
+  - {fileID: 11400000, guid: 29b7150fbd4304be5a7b0e0ddec334de, type: 2}
   AllAchievements:
   - {fileID: 11400000, guid: 83c8a11921635694188e2ade1fb454f4, type: 2}
+  - {fileID: 11400000, guid: 28389f5b79d9a4b35b247e37603c1ca4, type: 2}
+  - {fileID: 11400000, guid: b12b43e521ca14f52a725e452d00a44e, type: 2}
+  - {fileID: 11400000, guid: c4d9179f836f84761927bbd76491d353, type: 2}
+  - {fileID: 11400000, guid: e453f8a231c9546dfb9fe4cafc7a73b9, type: 2}
+  - {fileID: 11400000, guid: 9df33ad34f59445c79ed1c998195fc3c, type: 2}

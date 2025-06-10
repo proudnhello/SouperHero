@@ -56,10 +56,16 @@ public class MetricsData
         if (successfulRun)
         {
             best_WinTime = Mathf.Min(runTime, best_WinTime);
+            totalWins++;
+            UnlockDataManager.Singleton.ReportAchievementProgress("Win1", 1, true);
         }
-
-        if (successfulRun) totalWins++;
-        else totalDeaths++;
+        else
+        {
+            totalDeaths++;
+        }
+        UnlockDataManager.Singleton.ReportAchievementProgress("CompletedRuns1", 1, true);
+        // if (successfulRun) totalWins++;
+        // else totalDeaths++;
 
         wasRunSuccessful = successfulRun;
     }

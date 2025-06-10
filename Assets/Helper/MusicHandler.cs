@@ -15,6 +15,7 @@ public class MusicHandler
     public enum MusicState
     {
         MAINMENU,
+        LOADING,
         HUB,
         EXPLORATION
     }
@@ -29,6 +30,7 @@ public class MusicHandler
         _manager = manager;
         MusicStates = new() { 
             new MainMenu(manager), 
+            new LoadingScreen(),
             new Hub(manager),
             new Exploration(manager)
         };
@@ -49,6 +51,7 @@ public class MusicHandler
     IGameState currMusicState;
     public void ChangeState(MusicState state)
     {
+        if (currMusicState == MusicStates[(int)state]) return;
         currMusicState?.OnExit();
         currMusicState = MusicStates[(int)state];
         currMusicState.OnEnter();
@@ -81,15 +84,40 @@ public class MusicHandler
         EventInstance MainMenuTheme;
         public MainMenu(AudioManager manager)
         {
-            //MainMenuTheme = manager.CreateInstance(manager.MUSIC[0]);
+            MainMenuTheme = manager.CreateInstance(manager.MUSIC[0]);
+        }
+        public override void OnEnter()
+        {
+            MainMenuTheme.start();
+        }
+        public override void OnExit()
+        {
+            MainMenuTheme.stop(STOP_MODE.ALLOWFADEOUT);
         }
     }
+
+    public class LoadingScreen : IGameState
+    {
+
+    }
+
     public class Hub : IGameState
     {
         EventInstance HubTheme;
         public Hub(AudioManager manager)
         {
-            //HubTheme = manager.CreateInstance(manager.MUSIC[1]);
+            HubTheme = manager.CreateInstance(manager.MUSIC[1]);
+        }
+        int timelinePos = -1;
+        public override void OnEnter()
+        {
+            HubTheme.start();
+            if (timelinePos >= 0) HubTheme.setTimelinePosition(timelinePos);
+        }
+        public override void OnExit()
+        {
+            HubTheme.getTimelinePosition(out timelinePos);
+            HubTheme.stop(STOP_MODE.ALLOWFADEOUT);
         }
     }
     public class Exploration : IGameState
@@ -128,6 +156,10 @@ public class MusicHandler
                 stateParameter = 0;
                 //Debug.Log("Exploration state is now = " + stateParameter);
             }
+
+        }
+        public override void OnExit()
+        {
 
         }
     }

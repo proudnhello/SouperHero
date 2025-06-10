@@ -15,24 +15,11 @@ public class CosmeticSwitching : MonoBehaviour
     [SerializeField] GameObject cosmeticText;
     [SerializeField] GameObject unlockText;
     [SerializeField] GameObject lockedText;
+    [SerializeField] TextMeshProUGUI descriptionText;
 
-    void Awake()
+    void Start()
     {
-        foreach (CosmeticData cosmetic in _database.AllCosmetics)
-        {
-            if (cosmetic.Material = player.material)
-            {
-                selectedCosmetic = cosmetic;
-                currCosmetic = cosmetic;
-                break;
-            }
-        }
-
-        ChangeCosmeticText(currCosmetic.UUID);
-        unlockText.SetActive(false);
-        selectButton.SetActive(false);
-        selectedText.SetActive(true);
-        lockedText.SetActive(false);
+        FixCosmeticToSelected();
     }
 
     public void SwitchCosmetic(int direction)
@@ -50,7 +37,26 @@ public class CosmeticSwitching : MonoBehaviour
         ChangeCosmeticText(currCosmetic.UUID);
         player.material = currCosmetic.Material;
 
-        if (CheckIfSelected())
+        UpdateSelectUI();
+    }
+
+    private void ChangeCosmeticText(string cosmeticName)
+    {
+        cosmeticText.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText(cosmeticName);
+        cosmeticText.transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(cosmeticName);
+    }
+
+    public void SetSelectedCosmetic()
+    {
+        selectedCosmetic = currCosmetic;
+        PlayerCosmeticRenderer.Singleton.SetPlayerCosmetic(selectedCosmetic.Material);
+        UnlockDataManager.Singleton.SetCosmetic(selectedCosmetic);
+        UpdateSelectUI();
+    }
+
+    private void UpdateSelectUI()
+    {
+        if (selectedCosmetic == currCosmetic)  // Selected cosmetic already
         {
             selectedText.SetActive(true);
             selectButton.SetActive(false);
@@ -61,32 +67,46 @@ public class CosmeticSwitching : MonoBehaviour
         {
             selectedText.SetActive(false);
             if (UnlockDataManager.Singleton.IsCosmeticUnlocked(currCosmetic.UUID))
-            {
+            {   // Not selected cosmetic
                 selectButton.SetActive(true);
                 unlockText.SetActive(false);
                 lockedText.SetActive(false);
             }
-            else
+            else // Locked cosmetic
             {
                 selectButton.SetActive(false);
                 unlockText.SetActive(true);
                 lockedText.SetActive(true);
+
+                SetDescriptionText(currCosmetic);
             }
         }
     }
 
-    private void ChangeCosmeticText(string cosmeticName)
+    public void SwapToSelectedCosmetic()
     {
-        cosmeticText.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText(cosmeticName);
-        cosmeticText.transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(cosmeticName);
+        player.material = selectedCosmetic.Material;
     }
 
-    private bool CheckIfSelected()
+    public void FixCosmeticToSelected()
     {
-        if (selectedCosmetic == currCosmetic)
+        selectedCosmetic = currCosmetic = UnlockDataManager.Singleton.GetCurrentCosmetic();
+        SwapToSelectedCosmetic();
+        ChangeCosmeticText(currCosmetic.UUID);
+        unlockText.SetActive(false);
+        selectButton.SetActive(false);
+        selectedText.SetActive(true);
+        lockedText.SetActive(false);
+    }
+
+    private void SetDescriptionText(CosmeticData cosmetic)
+    {
+        foreach (var ach in UnlockDataManager.Singleton.database.AllAchievements)
         {
-            return (true);
+            if (ach.RewardedCosmetic == cosmetic)
+            {
+                descriptionText.SetText("Achieve \"" + ach.name + "\"");
+            }
         }
-        return (false);
     }
 }

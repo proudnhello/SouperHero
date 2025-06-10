@@ -36,6 +36,7 @@ public class PlayerEntityManager : Entity
     private void Start()
     {
         playerAudio = new PlayerAudio();
+        gameObject.GetComponent<SpriteRenderer>().material = PlayerCosmeticRenderer.Singleton.playerMaterial;
     }
 
     private void OnDisable()

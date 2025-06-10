@@ -137,7 +137,7 @@ public class Throwable : Interactable
             hasContacted = true;
             OnThrowContact();
         }
-        else if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject) || (collider.gameObject.CompareTag("Player")))
+        else if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();
 

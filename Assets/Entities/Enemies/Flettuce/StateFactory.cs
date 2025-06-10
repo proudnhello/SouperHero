@@ -21,32 +21,32 @@ public class StateFactory
 
     public BaseState Idle()
     {
-        return new IdleState(_blackboard);
+        return new FlettuceIdleState(_blackboard);
     }
 
     public BaseState Detection()
     {
-        return new DetectionState(_blackboard);
+        return new FlettuceDetectionState(_blackboard);
     }
 
     public BaseState Frozen()
     {
-        return new FrozenState(_blackboard);
+        return new FlettuceFrozenState(_blackboard);
     }
 
     public BaseState Approach()
     {
-        return new ApproachState(_blackboard);
+        return new FlettuceApproachState(_blackboard);
     }
 
     public BaseState ConsecutiveCharge()
     {
-        return new ConsecutiveChargeState(_blackboard);
+        return new FlettuceConsecutiveChargeState(_blackboard);
     }
 
     public BaseState Charge()
     {
-        return new ChargeState(_blackboard);
+        return new FlettuceChargeState(_blackboard);
     }
 
     public BaseState WaitState(float waitTime, BaseState switchToAfterState)
