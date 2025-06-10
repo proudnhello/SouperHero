@@ -5,6 +5,7 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.VolumeComponent;
 
 public class SoupInventoryUI : MonoBehaviour
 {
@@ -175,7 +176,7 @@ public class SoupInventoryUI : MonoBehaviour
 
     public void OpenSoupTooltip(int index)
     {
-        if (!IsOpen) return; // Only display when inventory is open
+        if (!IsOpen) return; //Only display when inventory is open
 
         var bowl = PlayerInventory.Singleton.GetBowl(index);
         switch (bowl)
@@ -191,7 +192,7 @@ public class SoupInventoryUI : MonoBehaviour
                 TooltipText.text += '\n' + "Inflictions: ";
                 foreach (var infliction in ((FinishedSoup)bowl).soupInflictions)
                 {
-                    //TooltipText.text += infliction.ToString() + " ";
+                    TooltipText.text += infliction.ToString() + " ";
                     TooltipText.text += infliction.InflictionFlavor.inflictionType.ToString();
                 }
                 break;
@@ -208,5 +209,25 @@ public class SoupInventoryUI : MonoBehaviour
     public void CloseSoupTooltip(int index)
     {
         SoupTooltip.SetActive(false);
+    }
+
+    public void EnableFlavorParticles(int index)
+    {
+        if (IsOpen) return; //Only display when inventory is closed
+
+        var bowl = PlayerInventory.Singleton.GetBowl(index);
+        if (bowl is not FinishedSoup)  return;
+
+        foreach (var ingredient in ((FinishedSoup)bowl).ingredientList)
+        {
+            Debug.Log(ingredient.IngredientName);
+            //Debug.Log(ingredient.IconUI);
+        }
+
+    }
+
+    public void DisableFlavorParticles(int index)
+    {
+        if (!IsOpen) return; //Only display when inventory is open
     }
 }

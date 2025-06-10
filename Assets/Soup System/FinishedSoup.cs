@@ -248,7 +248,7 @@ public class FinishedSoup : ISoupBowl
         {
             output += $"{infliction.InflictionFlavor.inflictionType} = {infliction.amount}";
         }
-        Debug.Log(output);
+        //Debug.Log(output);
     }
 
     bool hasCooldown = false;
