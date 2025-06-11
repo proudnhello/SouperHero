@@ -13,7 +13,7 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Singleton { get; private set; }
 
     private string statsPath;
-    private string runStatePath;
+    public string runStatePath;
     private string settingsPath;
     private string inventoryPath;
     private string unlockPath;
