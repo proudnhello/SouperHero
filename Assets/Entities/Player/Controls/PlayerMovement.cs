@@ -163,6 +163,10 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(currentDirection * chargeStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(chargeTime);
         charging = false;
+        if (isCursorMovement)
+        {
+            rb.velocity = Vector2.zero;
+        }
     }
 
     public IEnumerator Dashing()
@@ -176,7 +180,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.velocity = inputDir * dashSpeed;
             }
-            else if(cursorButtonHeld)
+            else
             {
                 rb.velocity = currentDirection * dashSpeed;
             }
@@ -184,6 +188,10 @@ public class PlayerMovement : MonoBehaviour
 
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
+            if (isCursorMovement)
+            {
+                rb.velocity = Vector2.zero;
+            }
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
         }
