@@ -156,7 +156,7 @@ public class DeerAI : EnemyBaseClass
 
                 sm.agent.isStopped = false;
                 sm.agent.SetDestination(targetPoint);
-                sm.animator.Play("Walk");
+                // sm.animator.Play("Walk");
 
                 Vector2 lastPos;
                 do

@@ -4,7 +4,8 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System;
+using System.IO;
+using static RunStateManager;
 
 public class MainMenuAnims : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class MainMenuAnims : MonoBehaviour
 
     public GameObject secondaryButtonSet;
     public GameObject primaryButtonSet;
+
+    public GameObject continueButton;
 
     public Animator playerAnimator;
 
@@ -139,6 +142,18 @@ public class MainMenuAnims : MonoBehaviour
 
     public void StartButton()
     {
+
+        Debug.Log($"State Path: {SaveManager.Singleton.runStatePath}");
+        if (File.Exists(SaveManager.Singleton.runStatePath))
+        {
+            Debug.Log("File exists");
+            continueButton.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("File doesn't exist");
+            continueButton.SetActive(false);
+        }
         StartCoroutine("startCoroutine");
     }
 
