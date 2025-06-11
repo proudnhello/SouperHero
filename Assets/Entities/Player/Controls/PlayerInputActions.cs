@@ -179,6 +179,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CursorMovement"",
+                    ""type"": ""Button"",
+                    ""id"": ""8ecce2e3-0808-4d2a-880f-4ed5545583c7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -252,61 +261,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""right"",
                     ""id"": ""378da70e-f73b-4b4f-9b61-301a0f417763"",
                     ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""44338abe-3b95-4b61-8a78-c22d3cb90627"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""4ef96274-9d50-44da-8a98-9a6f58fc0d74"",
-                    ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""81ede87b-32c3-4a9c-8d2d-b3b514805fd5"",
-                    ""path"": ""<Keyboard>/downArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""f1e58fcb-1a8e-4209-aa14-77070eaef083"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""dea7b212-245b-41c9-b407-f3e08dc399d5"",
-                    ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -465,6 +419,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Inventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92088290-2e17-4578-93d1-e76a533d7a46"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CursorMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1008,6 +973,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
         m_Player_DrinkSoup = m_Player.FindAction("DrinkSoup", throwIfNotFound: true);
         m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
+        m_Player_CursorMovement = m_Player.FindAction("CursorMovement", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1104,6 +1070,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PauseGame;
     private readonly InputAction m_Player_DrinkSoup;
     private readonly InputAction m_Player_Inventory;
+    private readonly InputAction m_Player_CursorMovement;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1125,6 +1092,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @PauseGame => m_Wrapper.m_Player_PauseGame;
         public InputAction @DrinkSoup => m_Wrapper.m_Player_DrinkSoup;
         public InputAction @Inventory => m_Wrapper.m_Player_Inventory;
+        public InputAction @CursorMovement => m_Wrapper.m_Player_CursorMovement;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1185,6 +1153,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Inventory.started += instance.OnInventory;
             @Inventory.performed += instance.OnInventory;
             @Inventory.canceled += instance.OnInventory;
+            @CursorMovement.started += instance.OnCursorMovement;
+            @CursorMovement.performed += instance.OnCursorMovement;
+            @CursorMovement.canceled += instance.OnCursorMovement;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1240,6 +1211,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Inventory.started -= instance.OnInventory;
             @Inventory.performed -= instance.OnInventory;
             @Inventory.canceled -= instance.OnInventory;
+            @CursorMovement.started -= instance.OnCursorMovement;
+            @CursorMovement.performed -= instance.OnCursorMovement;
+            @CursorMovement.canceled -= instance.OnCursorMovement;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1394,6 +1368,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnPauseGame(InputAction.CallbackContext context);
         void OnDrinkSoup(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
+        void OnCursorMovement(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

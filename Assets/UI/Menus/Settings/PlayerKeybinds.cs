@@ -7,6 +7,8 @@ public class PlayerKeybinds : MonoBehaviour
 {
     public static PlayerKeybinds Singleton;
 
+    public InputActionReference movement;
+    public InputActionReference cursorMovement;
     public InputActionReference useSpoon;
     public InputActionReference drinkSoup;
     public InputActionReference dash;

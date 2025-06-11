@@ -10,7 +10,9 @@ public class PlayerMovement : MonoBehaviour
     Vector2 inputDir;
     Rigidbody2D rb;
     private Vector2 _previousMousePosition;
-    InputAction movementInput;
+    InputActionReference movementAction;
+    private bool isCursorMovement = false;
+    private bool cursorButtonHeld = false;
     public bool charging = false;
 
     internal float currrentMoveSpeed = 0;
@@ -35,7 +37,16 @@ public class PlayerMovement : MonoBehaviour
     {
         // PlayerEntityManager.Singleton.input.Player.Dash.started += Dash;
         PlayerKeybinds.Singleton.dash.action.started += Dash;
-        movementInput = PlayerEntityManager.Singleton.input.Player.Movement;
+        isCursorMovement = SettingsManager.Singleton.CursorMovement;
+        if (!isCursorMovement)
+        {
+            movementAction = PlayerKeybinds.Singleton.movement;
+        }
+        else
+        {
+            PlayerKeybinds.Singleton.cursorMovement.action.performed += CursorMoveHeld;
+            PlayerKeybinds.Singleton.cursorMovement.action.canceled += CursorMoveLetGo;
+        }
     }
 
     void OnEnable()
@@ -60,8 +71,12 @@ public class PlayerMovement : MonoBehaviour
             col.enabled = false; // Completely disable collisions
         }
 
-        // PlayerEntityManager.Singleton.input.Player.Dash.started -= Dash;
         PlayerKeybinds.Singleton.dash.action.started -= Dash;
+        if (isCursorMovement)
+        {
+            PlayerKeybinds.Singleton.cursorMovement.action.performed -= CursorMoveHeld;
+            PlayerKeybinds.Singleton.cursorMovement.action.canceled -= CursorMoveLetGo;
+        }
     }
 
     // Update is called once per frame
@@ -78,7 +93,10 @@ public class PlayerMovement : MonoBehaviour
 
         PlayerEntityManager.Singleton.playerAttackPoint.parent.transform.up = currentDirection; // swivel attack point around player
 
-        inputDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+        if (!isCursorMovement)
+        {
+            inputDir = movementAction.action.ReadValue<Vector2>();   
+        }
         _previousMousePosition = Input.mousePosition;
     }
 
@@ -91,16 +109,41 @@ public class PlayerMovement : MonoBehaviour
         // If the player is charging, don't allow movement, but still allow the player to rotate
         if (!charging)
         {
-            if (PlayerEntityManager.Singleton.GetMoveSpeed() >= 1)
+            if (!isCursorMovement)
             {
-                rb.velocity = inputDir * PlayerEntityManager.Singleton.GetMoveSpeed();
+                if (PlayerEntityManager.Singleton.GetMoveSpeed() >= 1)
+                {
+                    rb.velocity = inputDir * PlayerEntityManager.Singleton.GetMoveSpeed();
+                }
+                else
+                {
+                    rb.velocity = inputDir * 1;
+                }
+                currrentMoveSpeed = rb.velocity.magnitude;
             }
-            else
+            else if(cursorButtonHeld)
             {
-                rb.velocity = inputDir * 1;
+                if (PlayerEntityManager.Singleton.GetMoveSpeed() >= 1)
+                {
+                    rb.velocity = currentDirection * PlayerEntityManager.Singleton.GetMoveSpeed();
+                }
+                else
+                {
+                    rb.velocity = currentDirection * 1;
+                }
             }
-            currrentMoveSpeed = rb.velocity.magnitude;
         }
+    }
+
+    public void CursorMoveHeld(InputAction.CallbackContext ctx)
+    {
+        cursorButtonHeld = true;
+    }
+
+    public void CursorMoveLetGo(InputAction.CallbackContext ctx)
+    {
+        cursorButtonHeld = false;
+        rb.velocity = Vector2.zero;
     }
 
     public void Dash(InputAction.CallbackContext ctx)
@@ -128,7 +171,15 @@ public class PlayerMovement : MonoBehaviour
         {
             canDash = false;
             isDashing = true;
-            rb.velocity = inputDir * dashSpeed;
+
+            if (!isCursorMovement)
+            {
+                rb.velocity = inputDir * dashSpeed;
+            }
+            else
+            {
+                rb.velocity = currentDirection * dashSpeed;
+            }
             dash?.Invoke();
 
             yield return new WaitForSeconds(dashDuration);
