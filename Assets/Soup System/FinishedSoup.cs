@@ -24,7 +24,6 @@ public class FinishedSoup : ISoupBowl
         public float lastUseTime;
         // public int uses = 0;
 
-        public Sprite icon;
         public Sprite iconUI;
 
         List<SoupInfliction> inflictions;
@@ -35,7 +34,6 @@ public class FinishedSoup : ISoupBowl
         {
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats, buffs);
-            icon = ingredient.abilityType.icon;
             iconUI = ingredient.abilityType.icon;
             // uses = ingredient.uses;
             inherentInflictions = ingredient.inherentInflictionFlavors;
@@ -124,7 +122,8 @@ public class FinishedSoup : ISoupBowl
     // Makes a Finished Soup
     public FinishedSoup(List<Ingredient> ingredients, SoupBase stock)
     {
-        ingredientList = ingredients;
+
+        ingredientList = new(ingredients);
         soupBase = stock;
 
         // Track abilities and inflictions using dictionaries
@@ -248,7 +247,7 @@ public class FinishedSoup : ISoupBowl
         {
             output += $"{infliction.InflictionFlavor.inflictionType} = {infliction.amount}";
         }
-        Debug.Log(output);
+        //Debug.Log(output);
     }
 
     bool hasCooldown = false;

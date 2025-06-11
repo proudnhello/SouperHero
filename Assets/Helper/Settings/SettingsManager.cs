@@ -12,6 +12,7 @@ public class SettingsData
     public int useGrayscale = 0;
     public int resolution = 0;
     public int fullScreen = 1;
+    public int cursorMovement = 0;
 }
 
 
@@ -75,6 +76,15 @@ public class SettingsManager : MonoBehaviour
         {
             SetProperty(ref settingsData.fullScreen, value ? 1 : 0);
             Screen.fullScreen = value;
+        }
+    }
+
+    public bool CursorMovement
+    {
+        get => settingsData.cursorMovement == 1;
+        set
+        {
+            SetProperty(ref settingsData.cursorMovement, value ? 1 : 0);
         }
     }
 

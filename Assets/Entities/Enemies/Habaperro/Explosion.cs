@@ -11,11 +11,11 @@ public class Explosion : MonoBehaviour
     public float radiusToCollider = .5f;
     List<Entity> entitiesAffected = new();
 
-    public void Explode(int damage = 10)
+    public void Explode(int damage = 10, float size = 6f)
     {
         StartCoroutine(DestroyTimer());
-        transform.localScale = new Vector3(radius, radius, radius);
-        Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, radius * radiusToCollider, CollisionLayers.Singleton.GetEntityLayer());
+        transform.localScale = new Vector3(size, size, size);
+        Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, size * radiusToCollider, CollisionLayers.Singleton.GetEntityLayer());
         string s = "";
         foreach (var col in cols)
         {

@@ -1,3 +1,9 @@
+/*
+ * This file was modified with LLMs: 
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log03.md
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log02.md
+ */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
