@@ -42,8 +42,9 @@ public class CosmeticSwitching : MonoBehaviour
 
     private void ChangeCosmeticText(string cosmeticName)
     {
-        cosmeticText.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText(cosmeticName);
-        cosmeticText.transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(cosmeticName);
+        string localizedCosmeticName = LocalizationManager.GetLocalizedString(cosmeticName);
+        cosmeticText.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText(localizedCosmeticName);
+        cosmeticText.transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(localizedCosmeticName);
     }
 
     public void SetSelectedCosmetic()
@@ -105,7 +106,9 @@ public class CosmeticSwitching : MonoBehaviour
         {
             if (ach.RewardedCosmetic == cosmetic)
             {
-                descriptionText.SetText("Achieve \"" + ach.name + "\"");
+                string localizedText = LocalizationManager.GetLocalizedString("Achieve") + LocalizationManager.GetLocalizedString(ach.name) + "\"";
+                //descriptionText.SetText("Achieve \"" + ach.name + "\"");
+                descriptionText.SetText(localizedText);
             }
         }
     }
