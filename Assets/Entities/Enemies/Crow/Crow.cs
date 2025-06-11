@@ -207,6 +207,7 @@ public class Crow : EnemyBaseClass
                 (bomb == null || !bomb.activeInHierarchy)) // The current bomb has blown up
             {
                 // Drop a bomb
+                animator.Play("Caw");
                 bomb = Instantiate(bombPrefab, transform.position, Quaternion.identity);
                 LandmineObject landmine = bomb.GetComponent<LandmineObject>();
                 if (landmine != null)
@@ -260,6 +261,7 @@ public class Crow : EnemyBaseClass
         currentState = idleState;
 
         animator = GetComponent<Animator>();
+        animator.Play("Hop");
 
         StartCoroutine(DetectionCoroutine());
         StartCoroutine(HopCoroutine());
@@ -270,7 +272,6 @@ public class Crow : EnemyBaseClass
     protected override void UpdateAI()
     {
         currentState?.Update(this, Time.deltaTime);
-        print("Current State: " + currentState.GetType().Name);
     }
 
     protected override void Die()

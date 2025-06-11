@@ -193,7 +193,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 6.7110486, y: -1.6559674, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_LocalScale: {x: 4.55, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6469048247852976357}
@@ -341,7 +341,7 @@ MonoBehaviour:
     health: 0
     moveSpeed: 0
   falling: 0
-  flying: 0
+  flying: 1
   hitmarker: {fileID: 594101713564386973, guid: 88876a640853de543b8ab5cacc641fba, type: 3}
   collectable: {fileID: 0}
   playerCollisionDamage: 0
@@ -350,10 +350,10 @@ MonoBehaviour:
     m_Bits: 256
   _playerTransform: {fileID: 0}
   enemyEmitter: {fileID: 0}
-  retreatRadius: 3
-  bombRadius: 3
+  retreatRadius: 2
+  bombRadius: 2
   detectionRadius: 9
-  followingRadius: 15
+  followingRadius: 30
   detectionDelay: 0.2
   playerLayer:
     serializedVersion: 2
@@ -433,7 +433,7 @@ MonoBehaviour:
   - {x: 0.07457423, y: -0.15322182, z: 0.000000018626451}
   m_ShapePathHash: -481595115
   m_Mesh: {fileID: 0}
-  m_InstanceId: 143598
+  m_InstanceId: 205690
   m_LocalBounds:
     m_Center: {x: 0.0033590794, y: -0.12735718, z: 0}
     m_Extent: {x: 0.10760343, y: 0.025864631, z: 0}
