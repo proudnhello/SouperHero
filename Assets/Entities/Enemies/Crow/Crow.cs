@@ -117,6 +117,22 @@ public class Crow : EnemyBaseClass
                 crow.CurrentTarget = holder + awayFromPlayer * crow.hopDistance; // Set the target to hop away from the player
             }
             float distance = Vector2.Distance(crow.transform.position, crow._playerTransform.position);
+            // Drop a bomb if
+            if (
+                crow.playerDetected && // We can see the player
+                Vector2.Distance(crow.transform.position, PlayerEntityManager.Singleton.GetPlayerPosition()) < crow.bombRadius && // The player is within the bomb radius
+                (crow.bomb == null || !crow.bomb.activeInHierarchy)) // The current bomb has blown up
+            {
+                // Drop a bomb
+                crow.animator.Play("Caw");
+                crow.bomb = Instantiate(crow.bombPrefab, crow.transform.position, Quaternion.identity);
+                LandmineObject landmine = crow.bomb.GetComponent<LandmineObject>();
+                if (landmine != null)
+                {
+                    landmine.init(crow.bombSize);
+                    landmine.StartCoroutine(landmine.Detonate(crow.bombTimer, crow.bombSize, crow.bombDamage));
+                }
+            }
             if (distance > crow.retreatRadius && (crow.bomb == null || !crow.bomb.activeInHierarchy))
             {
                 // If they're a bit far and the bomb has blown up, switch to follow state
@@ -199,23 +215,6 @@ public class Crow : EnemyBaseClass
             }
 
             yield return Hop();
-
-            // Drop a bomb if
-            if (
-                playerDetected && // We can see the player
-                Vector2.Distance(transform.position, PlayerEntityManager.Singleton.GetPlayerPosition()) < bombRadius && // The player is within the bomb radius
-                (bomb == null || !bomb.activeInHierarchy)) // The current bomb has blown up
-            {
-                // Drop a bomb
-                animator.Play("Caw");
-                bomb = Instantiate(bombPrefab, transform.position, Quaternion.identity);
-                LandmineObject landmine = bomb.GetComponent<LandmineObject>();
-                if (landmine != null)
-                {
-                    landmine.init(bombSize);
-                    StartCoroutine(landmine.Detonate(bombTimer, bombSize, bombDamage));
-                }
-            }
 
             yield return new WaitForSeconds(hopDelay);
         }
