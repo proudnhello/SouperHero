@@ -119,9 +119,8 @@ public class PlayerMovement : MonoBehaviour
                 {
                     rb.velocity = inputDir * 1;
                 }
-                currrentMoveSpeed = rb.velocity.magnitude;
             }
-            else if(cursorButtonHeld)
+            else if (cursorButtonHeld)
             {
                 if (PlayerEntityManager.Singleton.GetMoveSpeed() >= 1)
                 {
@@ -132,6 +131,7 @@ public class PlayerMovement : MonoBehaviour
                     rb.velocity = currentDirection * 1;
                 }
             }
+            currrentMoveSpeed = rb.velocity.magnitude;
         }
     }
 
@@ -176,7 +176,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.velocity = inputDir * dashSpeed;
             }
-            else
+            else if(cursorButtonHeld)
             {
                 rb.velocity = currentDirection * dashSpeed;
             }
