@@ -58,7 +58,6 @@ public class MusicHandler
         currMusicState?.OnExit();
         currMusicState = MusicStates[(int)state];
         currMusicState.OnEnter();
-        Debug.Log("Enter state = " + state.ToString());
     }
 
     public void AddAgro(int uuid)
@@ -159,7 +158,6 @@ public class MusicHandler
                 stateParameter = 2;
                 InGameTheme.setParameterByID(IsCombat.id, 1);
                 InGameTheme.setParameterByID(IsCooking.id, 0);
-                Debug.Log("Exploration state = Combat");
             }
             else if (CookingScreen.Singleton.IsCooking) // cooking
             {
@@ -167,7 +165,6 @@ public class MusicHandler
                 stateParameter = 1;
                 InGameTheme.setParameterByID(IsCombat.id, 0);
                 InGameTheme.setParameterByID(IsCooking.id, 1);
-                Debug.Log("Exploration state = Cooking");
             }
             else // regular
             {
@@ -175,7 +172,6 @@ public class MusicHandler
                 stateParameter = 0;
                 InGameTheme.setParameterByID(IsCombat.id, 0);
                 InGameTheme.setParameterByID(IsCooking.id, 0);
-                Debug.Log("Exploration state = Regular");
             }
 
         }
