@@ -10,6 +10,10 @@ public class SettingsUI : MonoBehaviour
     public TMP_Dropdown languageDropdown;
     public Toggle fullscreenToggle;
     public Toggle useGrayscale;
+    public Toggle cursorMoveToggle;
+
+    [SerializeField] GameObject movementKeybindObject;
+    [SerializeField] GameObject cursorMovementKeybindObject;
 
 
     List<Resolution> SelectedResolutionList = new List<Resolution>();
@@ -41,6 +45,8 @@ public class SettingsUI : MonoBehaviour
         languageDropdown.value = SettingsManager.Singleton.Language;
         fullscreenToggle.isOn = SettingsManager.Singleton.FullScreen;
         useGrayscale.isOn = SettingsManager.Singleton.UseGrayscale;
+        cursorMoveToggle.isOn = SettingsManager.Singleton.CursorMovement;
+        CursorMove(cursorMoveToggle.isOn);
     }
 
     public void ChangeResolution(int selectedRes)
@@ -62,5 +68,20 @@ public class SettingsUI : MonoBehaviour
     public void UseGrayscale(bool use)
     {
         SettingsManager.Singleton.UseGrayscale = use;
+    }
+
+    public void CursorMove(bool isOn)
+    {
+        if (isOn)
+        {
+            movementKeybindObject.SetActive(false);
+            cursorMovementKeybindObject.SetActive(true);
+        }
+        else
+        {
+            movementKeybindObject.SetActive(true);
+            cursorMovementKeybindObject.SetActive(false);
+        }
+        SettingsManager.Singleton.CursorMovement = isOn;
     }
 }
