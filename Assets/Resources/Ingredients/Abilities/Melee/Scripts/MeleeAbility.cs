@@ -1,3 +1,10 @@
+/*
+ * An old version of this file was modified with the help of LLMs: 
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log13.md
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log12.md
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log11.md
+ */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;

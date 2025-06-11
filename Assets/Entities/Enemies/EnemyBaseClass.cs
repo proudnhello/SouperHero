@@ -1,4 +1,10 @@
 // This file was edited with help from GitHub Copilot
+
+/*
+ * This file was modified with LLMs: 
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log04.md
+ */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;

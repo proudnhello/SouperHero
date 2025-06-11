@@ -1,3 +1,7 @@
+/*
+ * This file was modified with the help of LLMs: https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log14.md
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

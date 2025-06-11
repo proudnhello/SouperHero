@@ -6,6 +6,11 @@ using System;
 using Newtonsoft.Json;
 
 
+/*
+ * This file was modified with LLMs: 
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log03.md
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log02.md
+ */
 
 public class SaveManager : MonoBehaviour
 {

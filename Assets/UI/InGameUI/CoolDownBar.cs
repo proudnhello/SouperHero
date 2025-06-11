@@ -1,3 +1,8 @@
+/*
+ * This file was modified with the help of LLMs: 
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log10.md
+ */
+
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
