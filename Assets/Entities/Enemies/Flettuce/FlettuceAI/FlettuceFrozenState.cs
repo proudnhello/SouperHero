@@ -1,3 +1,7 @@
+/*
+ * This file and associated HSFM files were modified with LLMs: https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log15.md
+ */
+
 // This is separate from the status effect frozen, this is for freezing enemy movement off screen to save computation
 
 using UnityEngine;

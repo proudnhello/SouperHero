@@ -1,3 +1,8 @@
+/*
+ * An old version of this file was modified with the help of LLMs: 
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log10.md
+ */
+
 // portions of this file were generated using GitHub Copilot
 using System.Collections.Generic;
 using UnityEngine;

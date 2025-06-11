@@ -119,9 +119,8 @@ public class PlayerMovement : MonoBehaviour
                 {
                     rb.velocity = inputDir * 1;
                 }
-                currrentMoveSpeed = rb.velocity.magnitude;
             }
-            else if(cursorButtonHeld)
+            else if (cursorButtonHeld)
             {
                 if (PlayerEntityManager.Singleton.GetMoveSpeed() >= 1)
                 {
@@ -132,6 +131,7 @@ public class PlayerMovement : MonoBehaviour
                     rb.velocity = currentDirection * 1;
                 }
             }
+            currrentMoveSpeed = rb.velocity.magnitude;
         }
     }
 
@@ -163,6 +163,10 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(currentDirection * chargeStrength, ForceMode2D.Impulse);
         yield return new WaitForSeconds(chargeTime);
         charging = false;
+        if (isCursorMovement)
+        {
+            rb.velocity = Vector2.zero;
+        }
     }
 
     public IEnumerator Dashing()
@@ -184,6 +188,10 @@ public class PlayerMovement : MonoBehaviour
 
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
+            if (isCursorMovement)
+            {
+                rb.velocity = Vector2.zero;
+            }
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
         }
