@@ -1,3 +1,8 @@
+/*
+ * An old version of this file was modified with the help of LLMs: 
+ * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log16.md
+ */
+
 using FMOD.Studio;
 using System;
 using System.Collections;
