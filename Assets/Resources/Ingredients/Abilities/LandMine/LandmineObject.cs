@@ -33,4 +33,22 @@ public class LandmineObject : MonoBehaviour
         ex.Explode(inflictions, size);
         Destroy(gameObject);
     }
+
+    public IEnumerator Detonate(float timeActive, float size, float damage)
+    {
+        float remainingTime = timeActive;
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        while (remainingTime > 0.1)
+        {
+            cycleTime = remainingTime / 6;
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(cycleTime);
+            spriteRenderer.color = new Color(1, 0, 0, 1);
+            yield return new WaitForSeconds(cycleTime);
+            remainingTime -= cycleTime * 2;
+        }
+        Explosion ex = Instantiate(explosion, transform.position, Quaternion.identity);
+        ex.Explode((int)damage, size);
+        Destroy(gameObject);
+    }
 }
