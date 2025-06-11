@@ -188,11 +188,11 @@ public class SoupInventoryUI : MonoBehaviour
         {
             case (FinishedSoup):
                 SoupTooltip.SetActive(true);
-                TooltipText.text = ((FinishedSoup)bowl).soupBase.baseName;
-                TooltipText.text += '\n' + "Abilities: ";
+                TooltipText.text = LocalizationManager.GetLocalizedString(((FinishedSoup)bowl).soupBase.baseName);
+                TooltipText.text += '\n' + LocalizationManager.GetLocalizedString("Abilities") + ": ";
                 foreach (var ability in ((FinishedSoup)bowl).soupAbilities)
                 {
-                    TooltipText.text += ability.ability._abilityName + " ";
+                    TooltipText.text += LocalizationManager.GetLocalizedString(ability.ability._abilityName) + " ";
                 }
                 break;
             case (null):
@@ -200,7 +200,7 @@ public class SoupInventoryUI : MonoBehaviour
                 break;
             default:
                 SoupTooltip.SetActive(true);
-                TooltipText.text = ((SoupBase)bowl).baseName;
+                TooltipText.text = LocalizationManager.GetLocalizedString(((SoupBase)bowl).baseName);
                 break;
         }
     }
