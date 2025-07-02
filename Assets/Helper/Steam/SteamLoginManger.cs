@@ -16,11 +16,16 @@ public class SteamLoginManager : MonoBehaviour
     }
     public bool IsConnected()
     {
+#if UNITY_STANDALONE
         return SteamAPI.Init() && SteamManager.Initialized;
+#else
+        return false;
+#endif
     }
 
     public void UpdateSteamAchievementData(UnlockGameData data)
     {
+#if UNITY_STANDALONE
         foreach (var ach in data.AchievementsData)
         {
             SteamUserStats.GetAchievement(ach.Key, out bool achieved);
@@ -40,10 +45,12 @@ public class SteamLoginManager : MonoBehaviour
             }
         }
         SteamUserStats.StoreStats();
+#endif
     }
 
     public void ReportAchievementProgress(UnlockGameData data, AchievementData achData)
     {
+#if UNITY_STANDALONE
         if (!IsConnected()) return;
         SteamUserStats.GetAchievement(achData.UUID, out bool achieved);
         if (achieved) return;
@@ -64,5 +71,6 @@ public class SteamLoginManager : MonoBehaviour
             SteamUserStats.SetAchievement(achData.UUID);
             SteamUserStats.StoreStats();
         }
+#endif
     }
 }
