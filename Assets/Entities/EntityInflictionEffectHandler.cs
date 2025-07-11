@@ -93,7 +93,7 @@ public class EntityInflictionEffectHandler
                     hitmarkerText = "";
                     instance.StartStatusEffect(Inflictions.Burn(instance));
                 }
-                else if (infliction.InflictionFlavor.inflictionType == InflictionType.HEARTY_Health)
+                else if (infliction.InflictionFlavor.inflictionType == InflictionType.Health)
                 {
                     Inflictions.Health(infliction, entity);
                     hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
@@ -105,13 +105,13 @@ public class EntityInflictionEffectHandler
                     instance.StartStatusEffect(Inflictions.Damage(instance));
                     hitmarkerText = "-" + infliction.amount + " " + hitmarkerText;
                 } 
-                else if (infliction.InflictionFlavor.inflictionType == InflictionType.GREASY_Knockback)
+                else if (infliction.InflictionFlavor.inflictionType == InflictionType.SLIMY_Knockback)
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Knockback(instance, entity._rigidbody, source));
                     hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
-                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UMAMI_Vampirism)
+                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.VAMPIRISM_LifeSteal)
                 {
                     Inflictions.Vampirism(infliction, entity, source);
                     // Display nothing, as it'll appear as healing the player and damage to the enemy

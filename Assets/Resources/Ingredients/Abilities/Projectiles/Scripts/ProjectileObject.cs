@@ -27,11 +27,11 @@ public class ProjectileObject : MonoBehaviour
         persistenceTime = 0;
 
         transform.position = spawnPoint;
-        transform.localScale = new Vector3(stats.size * SIZE_MULTIPLIER, stats.size * SIZE_MULTIPLIER, stats.size * SIZE_MULTIPLIER);
+        transform.localScale = new Vector3(stats.ModifiedSize * SIZE_MULTIPLIER, stats.ModifiedSize * SIZE_MULTIPLIER, stats.ModifiedSize * SIZE_MULTIPLIER);
         transform.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
         this.inflictions = inflictions;
         gameObject.SetActive(true);
-        rb.velocity = dir * stats.speed;
+        rb.velocity = dir * stats.ModifiedSpeed;
         canHitPlayer = false;
         bounceCounter = 0;
         if (frames != null) StartCoroutine(HandleAnimation(frames, animFPS));
@@ -101,7 +101,7 @@ public class ProjectileObject : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (persistenceTime < stats.duration)
+        if (persistenceTime < stats.ModifiedDuration)
         {
             persistenceTime += Time.fixedDeltaTime;
         } 

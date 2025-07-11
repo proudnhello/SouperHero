@@ -102,21 +102,12 @@ public class FlavorCSVtoSO
 
             }
 
-            flavorIngredient.Pairing = new(splitData[10]);
+            flavorIngredient.Pairing = new(splitData[7]);
 
             flavorIngredient.inflictionFlavors = inherentInflictionFlavors;
             flavorIngredient.buffFlavors = inherentBuffFlavors;
 
-            // Set Icon
-            if (!string.IsNullOrWhiteSpace(splitData[7]))
-            {
-                Sprite icon = FindSpriteByName(splitData[7]);
-                flavorIngredient.EncyclopediaImage = icon;
-            }
-
-            flavorIngredient.Source = splitData[8];
-            flavorIngredient.FlavorProfile = splitData[9];
-            flavorIngredient.uuid = Int32.Parse(splitData[11]);
+            flavorIngredient.uuid = Int32.Parse(splitData[8]);
 
             AssetDatabase.CreateAsset(flavorIngredient, $"{writeFolderPath}{flavorIngredient.IngredientName}.asset");
 

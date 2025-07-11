@@ -21,15 +21,15 @@ public class FiredZone : AbilityAbstractClass
     {
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();
-        stats.size *= SIZE_MULTIPLIER;
-        stats.speed *= SPEED_MULTIPLIER;
+        stats.ModifiedSize *= SIZE_MULTIPLIER;
+        stats.ModifiedSpeed *= SPEED_MULTIPLIER;
 
         Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection;
         
         //proj.transform.localScale = new Vector3(stats.size, stats.size, stats.size);
         SpriteRenderer spriteRenderer = proj.GetZoneArea().GetComponent<SpriteRenderer>();
         //Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
-        float radius = spriteRenderer.sprite.bounds.extents.x * stats.size / 2;
+        float radius = spriteRenderer.sprite.bounds.extents.x * stats.ModifiedSize / 2;
 
         Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (radius * currentDirection);
 

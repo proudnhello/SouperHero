@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 9150220430885545898}
   - component: {fileID: 3035158651208107137}
   - component: {fileID: 2208506287994171892}
+  - component: {fileID: 617301856155367379}
   m_Layer: 0
   m_Name: GlobalScripts
   m_TagString: Untagged
@@ -202,6 +203,80 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMaterial: {fileID: 2100000, guid: 9d875805ccfcbc94bb0130d5736945a2, type: 2}
+--- !u!114 &617301856155367379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562167665148321109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46efbbcc02b8b5a458c7ea647cfc4f09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flavorInfo:
+  - KEY: TOUGH
+    ICON: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    isBuffType: 1
+    buffType: 0
+    inflictionType: 3
+    COLOR: {r: 0.33725485, g: 0.5927836, b: 0.9137255, a: 1}
+  - KEY: HEAVY
+    ICON: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    isBuffType: 1
+    buffType: 1
+    inflictionType: 3
+    COLOR: {r: 0.9137255, g: 0.7308298, b: 0.33725485, a: 1}
+  - KEY: SPICY
+    ICON: {fileID: -259105072, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
+    isBuffType: 0
+    buffType: 0
+    inflictionType: 1
+    COLOR: {r: 0.9607844, g: 0.27450982, b: 0.043137256, a: 1}
+  - KEY: FROSTY
+    ICON: {fileID: -962913628, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
+    isBuffType: 0
+    buffType: 0
+    inflictionType: 2
+    COLOR: {r: 0.043137267, g: 0.9101717, b: 0.9607843, a: 1}
+  - KEY: SPIKY
+    ICON: {fileID: -1922018047, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
+    isBuffType: 0
+    buffType: 0
+    inflictionType: 3
+    COLOR: {r: 0.50583476, g: 0.33552852, b: 0.91194963, a: 1}
+  - KEY: SLIMY
+    ICON: {fileID: 1273416523, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
+    isBuffType: 0
+    buffType: 0
+    inflictionType: 4
+    COLOR: {r: 0.692756, g: 0.7106918, b: 0.18549499, a: 1}
+  - KEY: VAMPIRISM
+    ICON: {fileID: 1783340123, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
+    isBuffType: 0
+    buffType: 0
+    inflictionType: 5
+    COLOR: {r: 0.24632539, g: 0.087931566, b: 0.7169812, a: 1}
+  abilityInfo:
+  - ability: {fileID: 11400000, guid: 7669e1591ef98e3488d1ea147fcd49af, type: 2}
+    icon: {fileID: -1961311837, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  - ability: {fileID: 11400000, guid: 46431a8678a0e25458ac6d195ca2d8cb, type: 2}
+    icon: {fileID: 675560192, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  - ability: {fileID: 11400000, guid: a5a6dff00227a45428a6a9cc463b2c18, type: 2}
+    icon: {fileID: -353388288, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  - ability: {fileID: 11400000, guid: e5fc1701434be6b4c99ae06103fb6c9e, type: 2}
+    icon: {fileID: 58999075, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  - ability: {fileID: 11400000, guid: 7ed5cee7a49345f48b7a64454560e02a, type: 2}
+    icon: {fileID: 58999075, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  - ability: {fileID: 11400000, guid: 598f166afa706db4898f7489f0e9217f, type: 2}
+    icon: {fileID: -1961311837, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  - ability: {fileID: 11400000, guid: 9e4a6e70f045ff847907b4b7efa9880c, type: 2}
+    icon: {fileID: 1310673895, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  - ability: {fileID: 11400000, guid: 69ae0ed6b0e7c924089136ac535fb500, type: 2}
+    icon: {fileID: 1310673895, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
+  - ability: {fileID: 11400000, guid: 247cf6f5597a9d94eb6e5f9df8953fe5, type: 2}
+    icon: {fileID: -2022810754, guid: 549e3ee2e8a6bc243864313710fb2ecf, type: 3}
 --- !u!1 &6558347992649273066
 GameObject:
   m_ObjectHideFlags: 0

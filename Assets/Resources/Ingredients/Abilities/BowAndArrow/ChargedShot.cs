@@ -30,8 +30,8 @@ public class ChargedShot : AbilityAbstractClass
         currentChargeIndicator.gameObject.SetActive(true);
         currentChargeIndicator.UpdateChargePercentage(0);
         chargeTime = 0;
-        maxChargeTime = baseChargeTime / stats.speed;
-        if (stats.speed < 1)
+        maxChargeTime = baseChargeTime / stats.ModifiedSpeed;
+        if (stats.ModifiedSpeed < 1)
         {
             maxChargeTime = baseChargeTime;
         }
@@ -52,19 +52,19 @@ public class ChargedShot : AbilityAbstractClass
             // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
             ProjectileObject projectileObject = spawner.GetProjectile();
             AbilityStats projStats = stats;
-            if (stats.speed < 1)
+            if (stats.ModifiedSpeed < 1)
             {
-                projStats.speed = 2f;
+                projStats.ModifiedSpeed = 2f;
             }
-            if (stats.duration < 1)
+            if (stats.ModifiedDuration < 1)
             {
-                projStats.duration = 2f;
+                projStats.ModifiedDuration = 2f;
             }
-            if (stats.size < 1)
+            if (stats.ModifiedSize < 1)
             {
-                projStats.size = 2f;
+                projStats.ModifiedSize = 2f;
             }
-            projStats.speed *= 10f;
+            projStats.ModifiedSpeed *= 10f;
 
             projectileObject.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
                                PlayerEntityManager.Singleton.playerAttackPoint.transform.up,

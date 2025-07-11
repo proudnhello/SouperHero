@@ -34,8 +34,8 @@ public class MeleeAbility : AbilityAbstractClass
 
         HashSet<Collider2D> hitColliders = new();
 
-        passedStats.size *= SIZE_MULTIPLIER;
-        float length = passedStats.size;
+        passedStats.ModifiedSize *= SIZE_MULTIPLIER;
+        float length = passedStats.ModifiedSize;
 
         for (float angle = -RayCastAngleRad; angle <= RayCastAngleRad; angle += 2*RayCastAngleRad/(RayCastNum-1))
         {

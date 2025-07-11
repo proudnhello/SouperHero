@@ -104,7 +104,7 @@ public class PlayerEntityManager : Entity
         this.shieldObject = shieldObject;
         shieldObject.SetActive(true);
 
-        shieldDurationCoroutine = StartCoroutine(ShieldDuration(stats.duration));
+        shieldDurationCoroutine = StartCoroutine(ShieldDuration(stats.ModifiedDuration));
     }
 
     public IEnumerator RemoveShield()
@@ -145,7 +145,7 @@ public class PlayerEntityManager : Entity
     public void Charge(AbilityStats stats, List<Infliction> inflictions)
     {
         chargeInflictions = inflictions;
-        playerMovement.StartCoroutine(playerMovement.Charge(stats.duration, stats.speed));
+        playerMovement.StartCoroutine(playerMovement.Charge(stats.ModifiedDuration, stats.ModifiedSpeed));
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

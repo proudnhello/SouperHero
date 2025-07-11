@@ -20,16 +20,15 @@ public class ZoneCore : MonoBehaviour
         this.stats = passedStats;
         this.inflictions = inflictions;
         persistenceTime = 0;
-
         transform.position = spawnPoint;
-        zoneArea.transform.localScale = new Vector3(passedStats.size, passedStats.size, passedStats.size);
+        zoneArea.transform.localScale = new Vector3(passedStats.ModifiedSize, passedStats.ModifiedSize, passedStats.ModifiedSize);
         gameObject.SetActive(true);
         zoneArea.inflictions = inflictions;
         stuckToPlayer = onPlayer;
         playerCenteredZone = ability;
         if(!stuckToPlayer)
         {
-            rb.velocity = dir * stats.speed;
+            rb.velocity = dir * stats.ModifiedSpeed;
         }
     }
 
@@ -56,7 +55,7 @@ public class ZoneCore : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (persistenceTime < stats.duration)
+        if (persistenceTime < stats.ModifiedDuration)
         {
             persistenceTime += Time.fixedDeltaTime;
         }

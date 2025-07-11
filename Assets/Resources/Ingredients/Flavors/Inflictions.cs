@@ -92,7 +92,7 @@ public class Inflictions
         target.ApplyInfliction(list, source);
 
         Infliction heal = new(instance);
-        heal.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health;
+        heal.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType.Health;
         // Only heal half the amount of damage (that was supposed to be dealt)
         heal.InflictionFlavor.amount /= 2;
 
@@ -102,7 +102,8 @@ public class Inflictions
         if(entity)
         {
             entity.ApplyInfliction(list, source);
-        }else if(source.tag == "Player")
+        }
+        else if(source.tag == "Player")
         {
             PlayerEntityManager.Singleton.ApplyInfliction(list, source);
         }

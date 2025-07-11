@@ -62,11 +62,6 @@ public class FinishedSoup : ISoupBowl
             // uses += ingredient.uses;
         }
 
-        public bool OnCooldown()
-        {
-            return (Time.time - lastUseTime) < statsWithBuffs.cooldown;
-        }
-
         public void PrintAbility()
         {
             string output = $"{ability._abilityName}=\n";
@@ -229,6 +224,10 @@ public class FinishedSoup : ISoupBowl
         // now that all infliction values are set, make it a finalized inflictions list
         soupInflictions = inflictionTracker.Values.ToList();
 
+        if (FlavorBuffCounter.TryGetValue(BuffFlavor.BuffType.SWEET_Speed, out var amount))
+        {
+            cooldown *= 1 / (1 + amount); // based on amount of cooldown buff, reduce cooldown (TWEAK THIS ALGORITHM)
+        }
         // set initial lastTimeUsed to cooldown to get atk right away
         lastTimeUsed = Time.time - cooldown;
         PrintSoup(this);
@@ -240,7 +239,7 @@ public class FinishedSoup : ISoupBowl
         string output = "SPOON Abilities\n";
         foreach (var ability in spoon.soupAbilities)
         {
-            output += $"{ability.ability._abilityName}=D{ability.statsWithBuffs.duration},SIZ{ability.statsWithBuffs.size},CRIT{ability.statsWithBuffs.crit},SP{ability.statsWithBuffs.speed},CO{ability.statsWithBuffs.cooldown}\n";
+            output += $"{ability.ability._abilityName}=D{ability.statsWithBuffs.ModifiedDuration},SIZ{ability.statsWithBuffs.ModifiedSize}\n";
         }
         output += "INFLICTIONS\n";
         foreach (var infliction in spoon.soupInflictions)

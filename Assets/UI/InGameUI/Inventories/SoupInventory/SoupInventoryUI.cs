@@ -223,10 +223,15 @@ public class SoupInventoryUI : MonoBehaviour
         {
             foreach (var ingredient in soup.ingredientList)
             {
-                if (ingredient.ParticleIcon != null) { particles.Add(ingredient.ParticleIcon); }
-                
-                //Lo: This temporary. Only occurs if there is more than one flavor on an ingredient
-                if (ingredient.IconUI != null) { particles.Add (ingredient.IconUI); }
+                if (ingredient is FlavorIngredient flav)
+                {
+                    foreach (var buff in flav.buffFlavors) particles.Add(BioDatabase.Singleton.BuffFlavorIcons[buff.buffType].ICON);
+                    foreach (var inflict in flav.inflictionFlavors) particles.Add(BioDatabase.Singleton.InflictionFlavorIcons[inflict.inflictionType].ICON);
+                }
+                else if (ingredient is AbilityIngredient ab)
+                {
+                    foreach (var inflict in ab.inherentInflictionFlavors) particles.Add(BioDatabase.Singleton.InflictionFlavorIcons[inflict.inflictionType].ICON);
+                }           
             }
 
             particles = particles.Distinct().ToList(); //Remove duplicates

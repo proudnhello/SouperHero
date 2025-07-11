@@ -24,8 +24,8 @@ public class DoubleProjectile : AbilityAbstractClass
     protected override void Release(AbilityStats stats, List<Infliction> inflictions)
     {
 
-        stats.size *= SIZE_MULTIPLIER;
-        stats.speed *= SPEED_MULTIPLIER;
+        stats.ModifiedSize *= SIZE_MULTIPLIER;
+        stats.ModifiedSpeed *= SPEED_MULTIPLIER;
 
         Vector2 currDir = PlayerEntityManager.Singleton.playerAttackPoint.transform.up;
 
