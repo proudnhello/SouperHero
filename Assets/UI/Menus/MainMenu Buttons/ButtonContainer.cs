@@ -65,18 +65,12 @@ public class ButtonContainer : MonoBehaviour
                 {
                     button._buttonBackgroundRectTransform.DOScale(button._targetScale, button._animTime).SetEase(Ease.OutQuint);
 
-                    // Button's spoon here :)
-                    button._spoon1.SetActive(true);
-
                     //rect.DOLocalMoveX(originalPositions[button] * _xScaleFactor, _animTime).SetEase(Ease.OutQuad);
                 }
                 else
                 {
                     button._buttonBackgroundRectTransform.DOKill();
                     button._buttonBackgroundRectTransform.transform.localScale = Vector3.zero;
-
-                    // Button's spoon gone :(
-                    button._spoon1.SetActive(false);
 
                     //rect.DOLocalMoveX(originalPositions[button], _animTime).SetEase(Ease.OutQuad);
                 }
