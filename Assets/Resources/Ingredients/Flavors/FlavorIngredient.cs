@@ -57,22 +57,21 @@ public class FlavorIngredient : Ingredient
     {
         public enum InflictionType
         {
-            Health,
             SPICY_Burn,
             FROSTY_Freeze,
             SPIKY_Damage,
             SLIMY_Knockback,
-            VAMPIRISM_LifeSteal
+            VAMPIRISM_LifeSteal,
+            _Health,
+            _Water
         }
         public InflictionType inflictionType;
         public int amount;
-        public float statusEffectDuration;
 
         public InflictionFlavor(InflictionFlavor other)
         {
             inflictionType = other.inflictionType;
             amount = other.amount;
-            statusEffectDuration = other.statusEffectDuration;
         }
 
         public InflictionFlavor() { }
@@ -81,35 +80,39 @@ public class FlavorIngredient : Ingredient
     public List<BuffFlavor> buffFlavors;
     public List<InflictionFlavor> inflictionFlavors;
 
-public static readonly Dictionary<BuffFlavor.BuffType, Color> buffColorMapping = new Dictionary<BuffFlavor.BuffType, Color>
-{
-    { BuffFlavor.BuffType.SWEET_Speed, new Color(0.5f, 0f, 0.5f) }, // Purple
-    { BuffFlavor.BuffType.TOUGH_Duration, Color.yellow },
-    { BuffFlavor.BuffType.HEAVY_Size, new Color(0f, 1f, 0f) }, // Green
-};
+    public static readonly Dictionary<BuffFlavor.BuffType, Color> buffColorMapping = new Dictionary<BuffFlavor.BuffType, Color>
+    {
+        { BuffFlavor.BuffType.SWEET_Speed, new Color(0.5f, 0f, 0.5f) }, // Purple
+        { BuffFlavor.BuffType.TOUGH_Duration, Color.yellow },
+        { BuffFlavor.BuffType.HEAVY_Size, new Color(0f, 1f, 0f) }, // Green
+    };
 
     public static readonly Dictionary<InflictionFlavor.InflictionType, Color> inflictionColorMapping = new Dictionary<InflictionFlavor.InflictionType, Color>
     {
         { InflictionFlavor.InflictionType.SPICY_Burn, Color.red },
         { InflictionFlavor.InflictionType.FROSTY_Freeze, new Color(0f, 1f, 1f) }, // Cyan
-        { InflictionFlavor.InflictionType.Health, Color.green },
+        { InflictionFlavor.InflictionType._Health, Color.green },
         { InflictionFlavor.InflictionType.SPIKY_Damage, new Color(1f, 0f, 1f) }, // Magenta
         { InflictionFlavor.InflictionType.SLIMY_Knockback, new Color(0.55f, 0.27f, 0.07f) }, // SaddleBrown
-        { InflictionFlavor.InflictionType.VAMPIRISM_LifeSteal, new Color(0.58f, 0, 0.82f) } // Purple
     };
     public static Dictionary<InflictionFlavor.InflictionType, string> inflictionTextMapping = new Dictionary<InflictionFlavor.InflictionType, string>{
         {InflictionFlavor.InflictionType.SPICY_Burn, "Burn Infliction"},
         {InflictionFlavor.InflictionType.FROSTY_Freeze, "Freeze Infliction"},
-        {InflictionFlavor.InflictionType.Health, "Health Infliction"},
+        {InflictionFlavor.InflictionType._Health, "Health Infliction"},
         {InflictionFlavor.InflictionType.SPIKY_Damage, "Damage Infliction"},
-        {InflictionFlavor.InflictionType.SLIMY_Knockback, "Knockback Infliction"},
-        {InflictionFlavor.InflictionType.VAMPIRISM_LifeSteal, "Vampirism Infliction"}
+        {InflictionFlavor.InflictionType.SLIMY_Knockback, "Knockback Infliction"}
     };
 
     public static string GetFlavorHitmarker(InflictionFlavor.InflictionType flavorKey)
-    {   
-        LocalizedString localString = new LocalizedString(LocalizationManager.GetTable(), inflictionTextMapping[flavorKey]); 
-        return localString.GetLocalizedString();
+    {
+        if (inflictionTextMapping.ContainsKey(flavorKey)) return new LocalizedString(LocalizationManager.GetTable(), inflictionTextMapping[flavorKey]).GetLocalizedString();
+        return "";
+    }
+
+    public static Color GetFlavorHitmarkerColor(InflictionFlavor.InflictionType flavorKey)
+    {
+        if (inflictionColorMapping.ContainsKey(flavorKey)) return inflictionColorMapping[flavorKey];
+        return Color.white;
     }
 
 }

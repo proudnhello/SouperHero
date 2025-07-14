@@ -22,7 +22,7 @@ public abstract class Entity : MonoBehaviour
     public struct CurrentStats
     {
         public int health;
-        public float moveSpeed;
+        //public float moveSpeed;
     }
 
     public SpriteMask submergeMask;
@@ -109,7 +109,7 @@ public abstract class Entity : MonoBehaviour
     public void ResetStats()
     {
         currentStats.health = baseStats.maxHealth;
-        currentStats.moveSpeed = baseStats.baseMoveSpeed;
+        speedMults.Clear();
     }
 
     // Quiet makes it so no sound or hitmarker is played. Used currently for ground hazards
@@ -165,22 +165,28 @@ public abstract class Entity : MonoBehaviour
         return currentStats.health <= 0;
     }
 
+    Dictionary<int, float> speedMults = new();
     public float GetMoveSpeed()
     {
-        if (currentStats.moveSpeed < 1)
+        float speed = baseStats.baseMoveSpeed;
+        foreach (var mult in speedMults.Values) speed *= mult;
+        if (speed < 1)
         {
             return 1f;
         }
-        return currentStats.moveSpeed;
+        return speed;
     }
-    public virtual void SetMoveSpeed(float newSpeed)
+    public virtual void SetMoveSpeed(int sourceID, float speedMult)
     {
-        currentStats.moveSpeed = newSpeed;
+        if (!speedMults.TryAdd(sourceID, speedMult))
+        {
+            speedMults[sourceID] = speedMult;
+        }
     }
 
-    public virtual void ResetMoveSpeed()
+    public virtual void ResetMoveSpeed(int sourceID)
     {
-        currentStats.moveSpeed = baseStats.baseMoveSpeed;
+        speedMults.Remove(sourceID);
     }
 
     public float GetInvincibility()

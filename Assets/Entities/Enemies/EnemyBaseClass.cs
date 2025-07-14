@@ -146,7 +146,7 @@ public abstract class EnemyBaseClass : Entity
     public override void Fall(Transform _respawnPoint)
     {
         GetComponent<Collider2D>().enabled = false;
-        SetMoveSpeed(0);
+        SetMoveSpeed(11, 0);
         SetHealth(0);
         falling = true;
         agent.updatePosition = false;

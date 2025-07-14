@@ -71,7 +71,7 @@ public class AbilityCSVtoSO
             FlavorIngredient.InflictionFlavor.InflictionType inflictionType;
             List<InflictionFlavor> inherentInflictionFlavors = new();
 
-            for (int i=7; i<13; i += 3)
+            for (int i=7; i<11; i += 2)
             {
                 if (!string.IsNullOrEmpty(splitData[i]))
                 {
@@ -83,7 +83,6 @@ public class AbilityCSVtoSO
 
                         inflictionFlavor.amount = int.Parse(splitData[i + 1]);
 
-                        inflictionFlavor.statusEffectDuration = float.Parse(splitData[i + 2]);
 
                         // add parsed infliction flavor
                         inherentInflictionFlavors.Add(inflictionFlavor);
@@ -102,7 +101,7 @@ public class AbilityCSVtoSO
             AbilityAbstractClass abilityType = FindAbilityByName(splitData[2]);
             abilityIngredient.abilityType = abilityType;
 
-            abilityIngredient.uuid = Int32.Parse(splitData[13]);
+            abilityIngredient.uuid = Int32.Parse(splitData[11]);
 
             AssetDatabase.CreateAsset(abilityIngredient, $"{writeFolderPath}{abilityIngredient.IngredientName}.asset");
 

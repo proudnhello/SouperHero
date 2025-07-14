@@ -20,7 +20,6 @@ public class StatTooltip : MonoBehaviour, ITooltipSource
 
     public void SetStat(float amount)
     {
-        Debug.Log("amount is " + amount);
         StatText.text = amount.ToString("F1") + StatSuffix;
     }
 

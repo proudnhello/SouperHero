@@ -12,9 +12,12 @@ using System.Collections.Generic;
 public class Inflictions
 {
     #region INFLICTION PARAMETERS
-    static float BURN_INTERVAL = 2f;
+    static float BURN_INTERVAL_DURATION = 1f;
+    static int MAX_BURN_INTERVALS = 10;
     static float BURN_INTERVAL_DEVIATION = .25f;
-    static float FREEZE_TIME_DEVIATION = 0f;
+    static float FREEZE_INTERVAL_DURATION = .25f;
+    static float FREEZE_TIME_DEVIATION = .05f;
+    static int MAX_FREEZE_INTERVALS = 10;
     static float KNOCKBACK_MULTIPLIER = 150f;
     #endregion
 
@@ -33,7 +36,7 @@ public class Inflictions
 
     public static IEnumerator Burn(StatusEffectInstance instance)
     {
-        instance.intervals = Mathf.CeilToInt(instance.duration / BURN_INTERVAL);
+        instance.intervals = Mathf.Clamp(Mathf.CeilToInt(instance.amount / BURN_INTERVAL_DURATION),0, MAX_BURN_INTERVALS);
         while(instance.intervals > 0)
         {
             instance.intervals--;
@@ -42,23 +45,42 @@ public class Inflictions
             string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(instance.type);
             instance.entity.DisplayHitmarker(hitmarkerColor, "-" + instance.amount + " " + hitmarkerText);
             instance.entity.entityRenderer.TakeDamage();
-            yield return new WaitForSeconds(BURN_INTERVAL + Random.Range(-BURN_INTERVAL_DEVIATION, BURN_INTERVAL_DEVIATION));
+            yield return new WaitForSeconds(BURN_INTERVAL_DURATION + Random.Range(-BURN_INTERVAL_DEVIATION, BURN_INTERVAL_DEVIATION));
         }
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 
     public static void WorsenBurn(StatusEffectInstance instance, Infliction newInfliction)
     {
-        instance.duration = instance.duration > newInfliction.InflictionFlavor.statusEffectDuration ? instance.duration : newInfliction.InflictionFlavor.statusEffectDuration;
         instance.amount = instance.amount > newInfliction.InflictionFlavor.amount ? instance.amount : newInfliction.InflictionFlavor.amount;
-        instance.intervals = Mathf.CeilToInt(instance.duration / BURN_INTERVAL);
+        instance.intervals = Mathf.Clamp(Mathf.CeilToInt(instance.intervals + instance.amount / BURN_INTERVAL_DURATION), 0, MAX_BURN_INTERVALS);
     }
 
     public static IEnumerator Freeze(StatusEffectInstance instance)
     {
-        instance.entity.SetMoveSpeed(instance.entity.GetMoveSpeed() / instance.amount);
-        yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
-        instance.entity.ResetMoveSpeed();
+        instance.entity.SetMoveSpeed(10, 1 / instance.amount);
+        instance.intervals = Mathf.CeilToInt(instance.amount);
+        do
+        {
+            instance.intervals--;
+            yield return new WaitForSeconds(FREEZE_INTERVAL_DURATION + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
+        } while (instance.intervals > 0);
+        instance.entity.ResetMoveSpeed(10);
+        instance.entity.inflictionHandler.EndStatusEffect(instance);
+    }
+
+    public static void WorsenFreeze(StatusEffectInstance instance, Infliction newInfliction)
+    {
+        instance.intervals = Mathf.Clamp(Mathf.CeilToInt(newInfliction.amount+instance.intervals), 0, MAX_FREEZE_INTERVALS);
+    }
+
+    public static IEnumerator Water(StatusEffectInstance instance)
+    {
+        instance.entity.SetMoveSpeed(15123, 1 / instance.amount);
+
+        yield return new WaitUntil(() => instance.triggerEnd);
+
+        instance.entity.ResetMoveSpeed(15123);
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 
@@ -92,7 +114,7 @@ public class Inflictions
         target.ApplyInfliction(list, source);
 
         Infliction heal = new(instance);
-        heal.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType.Health;
+        heal.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType._Health;
         // Only heal half the amount of damage (that was supposed to be dealt)
         heal.InflictionFlavor.amount /= 2;
 

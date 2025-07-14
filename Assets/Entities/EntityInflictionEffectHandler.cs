@@ -20,17 +20,16 @@ public class EntityInflictionEffectHandler
     public class StatusEffectInstance
     {
         public float amount;
-        public float duration;
         public Entity entity;
         public IEnumerator StatusMethod;
         public int intervals;
         public InflictionType type;
+        public bool triggerEnd = false;
 
         public StatusEffectInstance(Entity entity, Infliction infliction)
         {
             this.entity = entity;
             amount = infliction.amount;
-            duration = infliction.InflictionFlavor.statusEffectDuration;
             type = infliction.InflictionFlavor.inflictionType;
         }
 
@@ -56,8 +55,18 @@ public class EntityInflictionEffectHandler
                 case InflictionType.SPICY_Burn:
                     Inflictions.WorsenBurn(this, infliction);
                     break;
+                case InflictionType.FROSTY_Freeze:
+                    Inflictions.WorsenFreeze(this, infliction);
+                    break;
             }
-            
+        }
+
+        public void End()
+        {
+            if (entity.isActiveAndEnabled)
+            {
+                triggerEnd = true;
+            }
         }
     }
 
@@ -77,10 +86,9 @@ public class EntityInflictionEffectHandler
     {
         foreach (var infliction in spoonInflictions)
         {
-            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[infliction.InflictionFlavor.inflictionType];
+            Color hitmarkerColor = FlavorIngredient.GetFlavorHitmarkerColor(infliction.InflictionFlavor.inflictionType);
             string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(infliction.InflictionFlavor.inflictionType);
-            if(hitmarkerColor == null) hitmarkerColor = Color.white;
-            if(hitmarkerText == null) hitmarkerText = "DEFAULT HITMARKER TEXT";
+            hitmarkerText ??= "";
             if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType)) 
                 activeStatuses[infliction.InflictionFlavor.inflictionType].WorsenStatusEffect(infliction);
             else
@@ -90,10 +98,10 @@ public class EntityInflictionEffectHandler
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     // Handle hitmarkers in the damage coroutine
-                    hitmarkerText = "";
+                    hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
                     instance.StartStatusEffect(Inflictions.Burn(instance));
                 }
-                else if (infliction.InflictionFlavor.inflictionType == InflictionType.Health)
+                else if (infliction.InflictionFlavor.inflictionType == InflictionType._Health)
                 {
                     Inflictions.Health(infliction, entity);
                     hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
@@ -114,13 +122,18 @@ public class EntityInflictionEffectHandler
                 }else if(infliction.InflictionFlavor.inflictionType == InflictionType.VAMPIRISM_LifeSteal)
                 {
                     Inflictions.Vampirism(infliction, entity, source);
-                    // Display nothing, as it'll appear as healing the player and damage to the enemy
-                    hitmarkerText = "";
                 }else if(infliction.InflictionFlavor.inflictionType == InflictionType.FROSTY_Freeze)
                 {
                     StatusEffectInstance instance = new(entity, infliction);
                     activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Freeze(instance));
+                    hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
+                }
+                else if (infliction.InflictionFlavor.inflictionType == InflictionType._Water)
+                {
+                    StatusEffectInstance instance = new(entity, infliction);
+                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
+                    instance.StartStatusEffect(Inflictions.Water(instance));
                 }
             }
             if (!quiet)
@@ -157,6 +170,18 @@ public class EntityInflictionEffectHandler
 
     public void EndStatusEffect(StatusEffectInstance instance)
     {
-        if (activeStatuses.ContainsKey(instance.type)) activeStatuses.Remove(instance.type);
+        if (activeStatuses.ContainsKey(instance.type))
+        {
+            activeStatuses[instance.type].End();
+            activeStatuses.Remove(instance.type);
+        }
+    }
+    public void EndStatusEffect(InflictionType type)
+    {
+        if (activeStatuses.ContainsKey(type))
+        {
+            activeStatuses[type].End();
+            activeStatuses.Remove(type);
+        }
     }
 }

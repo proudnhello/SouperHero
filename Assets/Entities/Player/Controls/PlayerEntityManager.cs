@@ -182,7 +182,7 @@ public class PlayerEntityManager : Entity
     public override void Fall(Transform respawnPoint)
     {
         GetComponent<Collider2D>().enabled = false;
-        SetMoveSpeed(0);
+        SetMoveSpeed(11, 0);
         StartCoroutine(FallAnimation(respawnPoint));
     }
 
@@ -200,7 +200,7 @@ public class PlayerEntityManager : Entity
         }
 
         sprite.size = initialScale;
-        ResetMoveSpeed();
+        ResetMoveSpeed(11);
         DealDamage(GetBaseStats().maxHealth / 9); // Deal damage to the player == 1/9 of max health or one heart
         transform.position = respawnPoint.position;
         GetComponent<Collider2D>().enabled = true;
