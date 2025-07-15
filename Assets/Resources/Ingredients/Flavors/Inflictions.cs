@@ -23,6 +23,7 @@ public class Inflictions
 
     public static void Health(InflictionStat infliction, Entity entity)
     {
+        entity.DisplayHitmarker(FlavorIngredient.InflictionFlavor.InflictionType._Health, infliction.Amount);
         entity.ModifyHealth(Mathf.CeilToInt(infliction.Amount));
     }
 
@@ -30,6 +31,7 @@ public class Inflictions
     {
         instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
         instance.entity.entityRenderer.TakeDamage();
+        instance.entity.DisplayHitmarker(instance.type, instance.amount);
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
@@ -41,9 +43,7 @@ public class Inflictions
         {
             instance.intervals--;
             instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
-            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[instance.type];
-            string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(instance.type);
-            instance.entity.DisplayHitmarker(hitmarkerColor, "-" + instance.amount + " " + hitmarkerText);
+            instance.entity.DisplayHitmarker(instance.type, instance.amount);
             instance.entity.entityRenderer.TakeDamage();
             yield return new WaitForSeconds(BURN_INTERVAL_DURATION + Random.Range(-BURN_INTERVAL_DEVIATION, BURN_INTERVAL_DEVIATION));
         }
@@ -60,6 +60,7 @@ public class Inflictions
     {
         instance.entity.SetMoveSpeed(10, 1 / instance.amount);
         instance.intervals = Mathf.CeilToInt(instance.amount);
+        instance.entity.DisplayHitmarker(instance.type, instance.amount);
         do
         {
             instance.intervals--;
@@ -107,17 +108,25 @@ public class Inflictions
     // Deal damage to the target and (try to) heal the source by applying the respective inflictions
     public static void Vampirism(InflictionStat instance, Entity target, Transform source)
     {
-        InflictionStat damage = new(FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage);
-        damage.CombineStats(instance);
-        target.ApplyInfliction(new() { damage}, source);
+        //InflictionStat damage = new(FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage);
+        //damage.CombineStats(instance);
+        //target.ApplyInfliction(new() { damage}, source, true);
 
-        if (source.TryGetComponent(out Entity entity))
+        if (!source.TryGetComponent(out Entity entity))
+        {
+            if (source.CompareTag("Player")) entity = PlayerEntityManager.Singleton;
+        }
+
+        Debug.Log(entity);
+
+        if (entity != null)
         {
             InflictionStat heal = new(FlavorIngredient.InflictionFlavor.InflictionType._Health);
             heal.CombineStats(instance);
             // Only heal half the amount of damage (that was supposed to be dealt)
-            heal.mult *= .5f;
-            entity.ApplyInfliction(new() { heal }, source);
+            heal.add /= 2;
+            List<InflictionStat> heals = new() { heal };
+            entity.ApplyInfliction(heals, source);
         }
     }
 }

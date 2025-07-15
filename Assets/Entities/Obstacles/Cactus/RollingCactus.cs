@@ -42,7 +42,7 @@ public class RollingCactus : Entity
 
     // There's a load of code when it comes to inflictions that assumes we have agents or rigidbodies. The humble tree does not.
     // So, you can only damage it directly. This is a bit of a hack, but it works.
-    public override void ApplyInfliction(List<InflictionStat> spoonInflictions, Transform source, bool quiet = false)
+    public override void ApplyInfliction(List<InflictionStat> spoonInflictions, Transform source)
     {
         foreach (InflictionStat infliction in spoonInflictions)
         {

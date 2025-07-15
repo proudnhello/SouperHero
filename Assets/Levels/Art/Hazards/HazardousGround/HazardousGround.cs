@@ -42,9 +42,9 @@ public class HazardousGround : Hazard
         {
             if (entity != null && !entity.flying)
             {
-                if (!entity.HasInfliction(inflictions[0]))
+                if (!entity.HasInfliction(inflictions[0].InflictionType))
                 {
-                    entity.ApplyInfliction(inflictions, transform, true);
+                    entity.ApplyInfliction(inflictions, transform);
                 }
             }
         }
@@ -60,7 +60,7 @@ public class HazardousGround : Hazard
                 entity.RemoveCantAttack();
             }
             EffectedAnimationEnd(entity);
-            if (entity.HasInfliction(inflictions[0]))
+            if (entity.HasInfliction(inflictions[0].InflictionType))
             {
                 entity.inflictionHandler.EndStatusEffect(inflictions[0].InflictionType);
             }

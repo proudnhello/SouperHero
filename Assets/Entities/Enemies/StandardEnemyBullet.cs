@@ -2,16 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InflictionStat = FinishedSoup.SoupInflictionStat;
+using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 
 //Bullet class that is called when enemy bullet is instantiated from EnemyRanged
-public class HopShroomSpore : MonoBehaviour
+public class StandardEnemyBullet : MonoBehaviour
 {
     public float bulletLifeTime = 3f;
     public float bulletSpeed = 15f;
-    public int bulletDamage = 10;
     public Vector2 direction;
     [SerializeField] Sprite[] ProjectileFrames;
     [SerializeField] float ProjectileAnimFPS;
+    [SerializeField] List<InflictionFlavor> BulletFlavors;
+    List<InflictionStat> BulletInflictions = new();
 
     private Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
@@ -24,6 +27,12 @@ public class HopShroomSpore : MonoBehaviour
         rb.velocity = direction * bulletSpeed;
         transform.localRotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
         StartCoroutine(HandleAnimation());
+        foreach (var flavor in BulletFlavors)
+        {
+            InflictionStat infliction = new(flavor.inflictionType);
+            infliction.Add(flavor.amount);
+            BulletInflictions.Add(infliction);
+        }
     }
 
     public void SetDirection(Vector2 d)
@@ -41,7 +50,7 @@ public class HopShroomSpore : MonoBehaviour
     {
         if (collider.gameObject.tag == "Player")
         {
-            PlayerEntityManager.Singleton.DealDamage((int)bulletDamage);       
+            PlayerEntityManager.Singleton.ApplyInfliction(BulletInflictions, transform);    
         }
         else if (CollisionLayers.Singleton.InDestroyableLayer(collider.gameObject))
         {
@@ -51,18 +60,18 @@ public class HopShroomSpore : MonoBehaviour
             }
             if(collider.gameObject.GetComponent<Entity>() != null)
             {
-                collider.gameObject.GetComponent<Entity>().DealDamage(bulletDamage);
+                collider.gameObject.GetComponent<Entity>().ApplyInfliction(BulletInflictions, transform);
             }
         }else if (CollisionLayers.Singleton.InEnemyLayer(collider.gameObject))
         {
             Entity entity = collider.gameObject.GetComponent<Entity>();
             if (entity != null)
             {
-                entity.DealDamage(bulletDamage);
+                entity.ApplyInfliction(BulletInflictions, transform);
             }
         }
 
-        if (collider.gameObject.tag != "PitHazard")
+        if (!collider.gameObject.CompareTag("PitHazard"))
         {
             Destroy(this.gameObject);
         }   

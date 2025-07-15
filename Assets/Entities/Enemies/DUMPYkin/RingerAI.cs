@@ -25,7 +25,7 @@ public class RingerAI : EnemyBaseClass
     [SerializeField] private float timeBetweenShots = 2.0f;
     [SerializeField] private int numberOfShots = 18;
     public Transform firingPoint;
-    public HopShroomSpore bullet;
+    public StandardEnemyBullet bullet;
     private Animator animator;
 
     private RingerState currentState;
@@ -194,7 +194,7 @@ public class RingerAI : EnemyBaseClass
                 float angle = 360 / ringer.numberOfShots;
                 for(float i = 0; i <= 360; i += angle)
                 {
-                    HopShroomSpore bullet = Instantiate(ringer.bullet, ringer.firingPoint.position, Quaternion.Euler(0, 0, i));
+                    StandardEnemyBullet bullet = Instantiate(ringer.bullet, ringer.firingPoint.position, Quaternion.Euler(0, 0, i));
                     bullet.SetDirection(new Vector2(Mathf.Cos(i * Mathf.Deg2Rad), Mathf.Sin(i * Mathf.Deg2Rad)));
                 }
             }

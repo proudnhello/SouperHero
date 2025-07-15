@@ -74,7 +74,7 @@ public abstract class EnemyBaseClass : Entity
         RunStateManager.Singleton.TrackEnemyDeath(enemyIndex);
     }
 
-    public override void ApplyInfliction(List<FinishedSoup.SoupInflictionStat> spoonInflictions, Transform source, bool quiet = false)
+    public override void ApplyInfliction(List<FinishedSoup.SoupInflictionStat> spoonInflictions, Transform source)
     {
         // If the enemy is not currently moving towards something, make them move towards the player
         // I'm so excited for this to break when we implement enemies taking damage from things other than the player
@@ -93,13 +93,8 @@ public abstract class EnemyBaseClass : Entity
             }
         }
 
-        // Play enemy damage sfx
-        if (!quiet)
-        {
-            EnemyDamageEvent?.Invoke(this);
-        }
-
-        base.ApplyInfliction(spoonInflictions, source, quiet);
+        base.ApplyInfliction(spoonInflictions, source);
+        if (inflictionHandler.HasInfliction(InflictionType.SPIKY_Damage)) EnemyDamageEvent?.Invoke(this);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

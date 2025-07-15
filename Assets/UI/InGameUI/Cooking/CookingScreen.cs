@@ -191,6 +191,8 @@ public class CookingScreen : MonoBehaviour
             IngredientCookingSlots[slot].gameObject.SetActive(true);
             IngredientCookingSlots[slot].SetSlotType(SlotType.Wildcard);
         }
+        cookingBioDisplay.DisplayBowl(bowl);
+
     }
 
     public void DisplayNoBowl()
@@ -201,6 +203,7 @@ public class CookingScreen : MonoBehaviour
             if (slot.ingredientReference != null) slot.ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
             slot.RemoveIngredient();
         }
+        cookingBioDisplay.ClearDisplay();
     }
 
     public void CookTheSoup()

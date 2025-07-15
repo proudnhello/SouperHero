@@ -95,17 +95,19 @@ public class FlavorIngredient : Ingredient
         { InflictionFlavor.InflictionType.FROSTY_Freeze, new Color(0f, 1f, 1f) }, // Cyan
         { InflictionFlavor.InflictionType._Health, Color.green },
         { InflictionFlavor.InflictionType.SPIKY_Damage, new Color(1f, 0f, 1f) }, // Magenta
-        { InflictionFlavor.InflictionType.SLIMY_Knockback, new Color(0.55f, 0.27f, 0.07f) }, // SaddleBrown
+        //{ InflictionFlavor.InflictionType.SLIMY_Knockback, new Color(0.55f, 0.27f, 0.07f) }, // SaddleBrown
+        { InflictionFlavor.InflictionType.VAMPIRISM_LifeSteal, new Color(1f, .2f, .4f) }
     };
     public static Dictionary<InflictionFlavor.InflictionType, string> inflictionTextMapping = new Dictionary<InflictionFlavor.InflictionType, string>{
-        {InflictionFlavor.InflictionType.SPICY_Burn, "Burn Infliction"},
-        {InflictionFlavor.InflictionType.FROSTY_Freeze, "Freeze Infliction"},
-        {InflictionFlavor.InflictionType._Health, "Health Infliction"},
-        {InflictionFlavor.InflictionType.SPIKY_Damage, "Damage Infliction"},
-        {InflictionFlavor.InflictionType.SLIMY_Knockback, "Knockback Infliction"}
+        {InflictionFlavor.InflictionType.SPICY_Burn, "Burn Hitmarker"},
+        {InflictionFlavor.InflictionType.FROSTY_Freeze, "Freeze Hitmarker"},
+        {InflictionFlavor.InflictionType._Health, "Health Hitmarker"},
+        {InflictionFlavor.InflictionType.SPIKY_Damage, "Damage Hitmarker"},
+        //{InflictionFlavor.InflictionType.SLIMY_Knockback, "Knockback Hitmarker"},
+        {InflictionFlavor.InflictionType.VAMPIRISM_LifeSteal, "Vampirism Hitmarker" }
     };
 
-    public static string GetFlavorHitmarker(InflictionFlavor.InflictionType flavorKey)
+    public static string GetFlavorHitmarkerText(InflictionFlavor.InflictionType flavorKey)
     {
         if (inflictionTextMapping.ContainsKey(flavorKey)) return new LocalizedString(LocalizationManager.GetTable(), inflictionTextMapping[flavorKey]).GetLocalizedString();
         return "";

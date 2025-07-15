@@ -28,6 +28,7 @@ public class CookingFlavorTooltip : MonoBehaviour
     public void EndAnim()
     {
         StopAllCoroutines();
+        if (!Tooltip.gameObject.activeInHierarchy) return;
         StartCoroutine(IFadeAnim = FadeAnim(false));
     }
 

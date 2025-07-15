@@ -248,7 +248,7 @@ public class FinishedSoup : ISoupBowl
         }
         // set initial lastTimeUsed to cooldown to get atk right away
         lastTimeUsed = Time.time - cooldown;
-        PrintSoup(this);
+        //PrintSoup(this);
 
     }
 

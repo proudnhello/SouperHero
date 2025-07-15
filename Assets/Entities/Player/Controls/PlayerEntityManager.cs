@@ -22,7 +22,6 @@ public class PlayerEntityManager : Entity
     private bool shielded = false;
     private GameObject shieldObject;
     private List<Infliction> shieldInflictions;
-
     private void Awake()
     {
         if (Singleton == null) Singleton = this;
@@ -74,10 +73,15 @@ public class PlayerEntityManager : Entity
         return transform.position;
     }
 
+    public override bool IsInvincible()
+    {
+        return playerMovement.charging || shielded;
+    }
+
     public override void DealDamage(int damage)
     {
         // If we're charging, don't apply inflictions
-        if (!playerMovement.charging && !shielded)
+        if (!IsInvincible())
         {
             base.DealDamage(damage);
         }
@@ -124,13 +128,9 @@ public class PlayerEntityManager : Entity
         StartCoroutine(RemoveShield());
     }
 
-    public override void ApplyInfliction(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
+    public override void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
     {
-        // If we're charging, don't apply inflictions
-        if (!playerMovement.charging && !shielded)
-        {
-            base.ApplyInfliction(spoonInflictions, source, quiet);
-        }
+        base.ApplyInfliction(spoonInflictions, source);
 
         // If we're shielded, remove it
         if (shielded)

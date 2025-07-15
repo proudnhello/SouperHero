@@ -28,7 +28,6 @@ public class Crow : EnemyBaseClass
     [SerializeField] protected GameObject bombPrefab; // Prefab of the bomb to drop
     GameObject bomb;
     [SerializeField] protected float bombTimer = 1.5f; // Time before the bomb explodes after being dropped
-    [SerializeField] protected float bombDamage = 20f; // Damage dealt by the bomb
     [SerializeField] protected float bombSize = 6f; // Size of the bomb explosion
 
     bool playerDetected = false;
@@ -130,7 +129,7 @@ public class Crow : EnemyBaseClass
                 if (landmine != null)
                 {
                     landmine.init(crow.bombSize);
-                    landmine.StartCoroutine(landmine.Detonate(crow.bombTimer, crow.bombSize, crow.bombDamage));
+                    landmine.StartCoroutine(landmine.Detonate(crow.bombTimer, crow.bombSize));
                 }
             }
             if (distance > crow.retreatRadius && (crow.bomb == null || !crow.bomb.activeInHierarchy))

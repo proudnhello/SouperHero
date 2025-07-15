@@ -15,9 +15,9 @@ public class CookingBioDisplay : MonoBehaviour
         }
     }
 
-    public void DisplayBowl()
+    public void DisplayBowl(SoupBase bowl)
     {
-
+        ClearIngredients();
     }
 
     public void ClearDisplay()
