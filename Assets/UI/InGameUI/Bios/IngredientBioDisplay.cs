@@ -18,7 +18,7 @@ public class IngredientBioDisplay : MonoBehaviour
     [SerializeField] TMP_Text IngredientTypeHeader;
     [SerializeField] GameObject FlavorSection;
     [SerializeField] TMP_Text FlavorEntry;
-    [SerializeField] FlavorIconTooltip[] FlavorIconTooltips;
+    [SerializeField] BasketFlavorIconTooltip[] FlavorIconTooltips;
     [SerializeField] GameObject AbilitySection;
     [SerializeField] TMP_Text AbilityEntry;
     [SerializeField] Image AbilityIcon;

@@ -34,7 +34,7 @@ public class SoupAbilitiesUI : MonoBehaviour
             for (int i = 0; i < soup.soupAbilities.Count; i++)
             {
                 soupAbilityIcons[i].gameObject.SetActive(true);
-                soupAbilityIcons[i].sprite = soup.soupAbilities[i].iconUI;
+                soupAbilityIcons[i].sprite = BioDatabase.Singleton.AbilityIcons[soup.soupAbilities[i].ability];
             }
         }
     }

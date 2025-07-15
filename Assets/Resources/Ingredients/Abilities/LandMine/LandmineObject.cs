@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Infliction = FinishedSoup.SoupInfliction;
+using Infliction = FinishedSoup.SoupInflictionStat;
 
 public class LandmineObject : MonoBehaviour
 {

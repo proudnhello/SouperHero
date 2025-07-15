@@ -44,13 +44,13 @@ public class FallenTree : Entity
 
     // There's a load of code when it comes to inflictions that assumes we have agents or rigidbodies. The humble tree does not.
     // So, you can only damage it directly. This is a bit of a hack, but it works.
-    public override void ApplyInfliction(List<FinishedSoup.SoupInfliction> spoonInflictions, Transform source, bool quiet = false)
+    public override void ApplyInfliction(List<FinishedSoup.SoupInflictionStat> spoonInflictions, Transform source, bool quiet = false)
     {
-        foreach (FinishedSoup.SoupInfliction infliction in spoonInflictions)
+        foreach (FinishedSoup.SoupInflictionStat infliction in spoonInflictions)
         {
-            if (infliction.InflictionFlavor.inflictionType == FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage)
+            if (infliction.InflictionType == FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage)
             {
-                DealDamage((int)infliction.amount);
+                DealDamage((int)infliction.Amount);
             }
         }
         if (IsDead())

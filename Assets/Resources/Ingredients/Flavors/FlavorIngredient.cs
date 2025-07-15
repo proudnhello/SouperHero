@@ -19,7 +19,8 @@ public class FlavorIngredient : Ingredient
         public bool isBuff; // 0 = buff, 1 = infliction, -1 = error
         public BuffFlavor.BuffType FlavorPairingBuff; // Only one pairing is set
         public InflictionFlavor.InflictionType FlavorPairingInfliction;
-        public FlavorPairing(string pairing)
+        public float amount;
+        public FlavorPairing(string pairing, string amount)
         {
             if (Enum.TryParse(pairing, out BuffFlavor.BuffType buffType))
             {
@@ -30,7 +31,8 @@ public class FlavorIngredient : Ingredient
             {
                 isBuff = false;
                 FlavorPairingInfliction = inflictionType;
-            } 
+            }
+            if (!float.TryParse(amount, out this.amount)) this.amount = .2f;
         } 
 
         public int GetPairing()
@@ -50,7 +52,7 @@ public class FlavorIngredient : Ingredient
             SWEET_Speed
         }
         public BuffType buffType;
-        public float amount;
+        public int amount;
     }
     [Serializable]
     public class InflictionFlavor

@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using StatusEffectInstance = EntityInflictionEffectHandler.StatusEffectInstance;
-using Infliction = FinishedSoup.SoupInfliction;
+using InflictionStat = FinishedSoup.SoupInflictionStat;
 using UnityEngine.AI;
 using Unity.VisualScripting.FullSerializer;
 using System.Collections.Generic;
@@ -21,9 +21,9 @@ public class Inflictions
     static float KNOCKBACK_MULTIPLIER = 150f;
     #endregion
 
-    public static void Health(Infliction infliction, Entity entity)
+    public static void Health(InflictionStat infliction, Entity entity)
     {
-        entity.ModifyHealth(Mathf.CeilToInt(infliction.amount));
+        entity.ModifyHealth(Mathf.CeilToInt(infliction.Amount));
     }
 
     public static IEnumerator Damage(StatusEffectInstance instance)
@@ -50,9 +50,9 @@ public class Inflictions
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 
-    public static void WorsenBurn(StatusEffectInstance instance, Infliction newInfliction)
+    public static void WorsenBurn(StatusEffectInstance instance, InflictionStat newInfliction)
     {
-        instance.amount = instance.amount > newInfliction.InflictionFlavor.amount ? instance.amount : newInfliction.InflictionFlavor.amount;
+        instance.amount = instance.amount > newInfliction.Amount ? instance.amount : newInfliction.Amount;
         instance.intervals = Mathf.Clamp(Mathf.CeilToInt(instance.intervals + instance.amount / BURN_INTERVAL_DURATION), 0, MAX_BURN_INTERVALS);
     }
 
@@ -69,9 +69,9 @@ public class Inflictions
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 
-    public static void WorsenFreeze(StatusEffectInstance instance, Infliction newInfliction)
+    public static void WorsenFreeze(StatusEffectInstance instance, InflictionStat newInfliction)
     {
-        instance.intervals = Mathf.Clamp(Mathf.CeilToInt(newInfliction.amount+instance.intervals), 0, MAX_FREEZE_INTERVALS);
+        instance.intervals = Mathf.Clamp(Mathf.CeilToInt(newInfliction.Amount+instance.intervals), 0, MAX_FREEZE_INTERVALS);
     }
 
     public static IEnumerator Water(StatusEffectInstance instance)
@@ -105,29 +105,19 @@ public class Inflictions
     }
 
     // Deal damage to the target and (try to) heal the source by applying the respective inflictions
-    public static void Vampirism(Infliction instance, Entity target, Transform source)
+    public static void Vampirism(InflictionStat instance, Entity target, Transform source)
     {
-        Infliction damage = new(instance);
-        damage.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage;
-        List<Infliction> list = new List<Infliction>();
-        list.Add(damage);
-        target.ApplyInfliction(list, source);
+        InflictionStat damage = new(FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage);
+        damage.CombineStats(instance);
+        target.ApplyInfliction(new() { damage}, source);
 
-        Infliction heal = new(instance);
-        heal.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType._Health;
-        // Only heal half the amount of damage (that was supposed to be dealt)
-        heal.InflictionFlavor.amount /= 2;
-
-        list.Clear();
-        list.Add(heal);
-        Entity entity = source.GetComponent<Entity>();
-        if(entity)
+        if (source.TryGetComponent(out Entity entity))
         {
-            entity.ApplyInfliction(list, source);
-        }
-        else if(source.tag == "Player")
-        {
-            PlayerEntityManager.Singleton.ApplyInfliction(list, source);
+            InflictionStat heal = new(FlavorIngredient.InflictionFlavor.InflictionType._Health);
+            heal.CombineStats(instance);
+            // Only heal half the amount of damage (that was supposed to be dealt)
+            heal.mult *= .5f;
+            entity.ApplyInfliction(new() { heal }, source);
         }
     }
 }

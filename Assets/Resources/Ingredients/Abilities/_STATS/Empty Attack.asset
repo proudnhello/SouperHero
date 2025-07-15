@@ -13,22 +13,15 @@ MonoBehaviour:
   m_Name: Empty Attack
   m_EditorClassIdentifier: 
   IngredientName: Empty Attack
-  IconUI: {fileID: 0}
-  ParticleIcon: {fileID: 0}
   uuid: 5153
-  EncyclopediaImage: {fileID: 0}
   abilityType: {fileID: 11400000, guid: 598f166afa706db4898f7489f0e9217f, type: 2}
   baseStats:
     BaseDuration: 0
     BaseSize: 10
-    BaseCrit: 0
     BaseSpeed: 0
-    cooldown: 0
   inherentInflictionFlavors:
+  - inflictionType: 2
+    amount: 1
   - inflictionType: 3
     amount: 1
-    statusEffectDuration: 0
-  - inflictionType: 4
-    amount: 1
-    statusEffectDuration: 0
   uses: -1

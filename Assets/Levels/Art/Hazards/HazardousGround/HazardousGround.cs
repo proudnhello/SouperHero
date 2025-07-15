@@ -5,7 +5,7 @@ using UnityEngine;
 public class HazardousGround : Hazard
 {
     [SerializeField] List<FlavorIngredient.InflictionFlavor> HazardInflictions;
-    List<FinishedSoup.SoupInfliction> inflictions;
+    List<FinishedSoup.SoupInflictionStat> inflictions;
 
 
     // If true, the entity will be able to attack while on the ground. False will prevent attacking
@@ -13,11 +13,11 @@ public class HazardousGround : Hazard
     protected override void Start()
     {
         base.Start();
-        inflictions = new List<FinishedSoup.SoupInfliction>();
+        inflictions = new List<FinishedSoup.SoupInflictionStat>();
         foreach (FlavorIngredient.InflictionFlavor infliction in HazardInflictions)
         {
-            FinishedSoup.SoupInfliction spoonInfliction = new FinishedSoup.SoupInfliction(infliction);
-            spoonInfliction.AddIngredient(infliction);
+            FinishedSoup.SoupInflictionStat spoonInfliction = new FinishedSoup.SoupInflictionStat(infliction.inflictionType);
+            spoonInfliction.Add(infliction.amount);
             inflictions.Add(spoonInfliction);
         }
     }
@@ -62,7 +62,7 @@ public class HazardousGround : Hazard
             EffectedAnimationEnd(entity);
             if (entity.HasInfliction(inflictions[0]))
             {
-                entity.inflictionHandler.EndStatusEffect(inflictions[0].InflictionFlavor.inflictionType);
+                entity.inflictionHandler.EndStatusEffect(inflictions[0].InflictionType);
             }
         }
     }

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 //using static UnityEditor.Progress;
-using Infliction = FinishedSoup.SoupInfliction;
+using Infliction = FinishedSoup.SoupInflictionStat;
 using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 
 public class Throwable : Interactable
@@ -39,8 +39,8 @@ public class Throwable : Interactable
 
         foreach (var inflictionFlavor in InflictionFlavorsOnThrowContact)
         {
-            Infliction throwableInfliction = new(inflictionFlavor);
-            throwableInfliction.AddIngredient(inflictionFlavor);
+            Infliction throwableInfliction = new(inflictionFlavor.inflictionType);
+            throwableInfliction.Add(inflictionFlavor.amount);
             inflictionsOnThrowContact.Add(throwableInfliction);
         }
 

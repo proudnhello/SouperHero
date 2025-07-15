@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEngine;
 using BuffType = FlavorIngredient.BuffFlavor.BuffType;
 
 [System.Serializable]
@@ -12,11 +13,11 @@ public struct AbilityStats
     {
         get
         {
-            return (BaseDuration + durationAdd) * durationMult;
+            return BaseDuration + durationAdd + (BaseDuration + durationAdd) * durationMult;
         }
         set { BaseDuration = value; }
     }
-    float durationAdd, durationMult;
+    internal float durationAdd, durationMult;
 
 
     public float BaseSize;
@@ -24,60 +25,63 @@ public struct AbilityStats
     {
         get
         {
-            return (BaseSize + sizeAdd) * sizeMult;
+            return BaseSize + sizeAdd + (BaseSize + sizeAdd) * sizeMult;
         }
         set { BaseSize = value; }
     }
-    float sizeAdd, sizeMult;
+    internal float sizeAdd, sizeMult;
 
     public float BaseSpeed;
     public float ModifiedSpeed
     {
         get
         {
-            return (BaseSpeed + speedAdd) * speedMult;
+            return BaseSpeed + speedAdd + (BaseSpeed + speedAdd) * speedMult;
         }
         set { BaseSpeed = value; }
     }
-    float speedAdd, speedMult;
+    internal float speedAdd, speedMult;
 
-    public AbilityStats(AbilityStats baseStats, List<FlavorIngredient.BuffFlavor> buffs)
+    public AbilityStats(AbilityStats baseStats)
     {
         this = baseStats;
-        durationMult = 1;
-        sizeMult = 1;
-        speedMult = 1;
+        durationMult = 0;
+        sizeMult = 0;
+        speedMult = 0;
+        
+    }
+
+    public void CombineStats(AbilityStats newStats)
+    {
+        durationAdd += newStats.durationAdd;
+        sizeAdd += newStats.sizeAdd;
+        speedAdd += newStats.speedAdd;
+        durationMult += newStats.durationMult;
+        sizeMult += newStats.sizeMult;
+        speedMult += newStats.speedMult;
+    }
+
+    public void ApplyBuffs(List<FinishedSoup.SoupBuffStat> buffs)
+    {
+        if (buffs == null) return;
 
         foreach (var buff in buffs)
         {
-            switch(buff.buffType)
+            switch (buff.BuffType)
             {
                 case BuffType.TOUGH_Duration:
-                    durationAdd += buff.amount;
+                    durationAdd += buff.add;
+                    durationMult += buff.mult;
                     break;
                 case BuffType.HEAVY_Size:
-                    sizeAdd += buff.amount;
+                    sizeAdd += buff.add;
+                    sizeMult += buff.mult;
                     break;
                 case BuffType.SWEET_Speed:
-                    speedAdd += buff.amount;
+                    speedAdd += buff.add;
+                    speedMult += buff.mult;
                     break;
             }
-        }
-    }
-
-    public void MultiplyStat(BuffType buff, int count) 
-    {
-        switch (buff)
-        {
-            case BuffType.TOUGH_Duration:
-                durationMult += .2f * count;
-                break;
-            case BuffType.HEAVY_Size:
-                sizeMult += .2f * count;
-                break;
-            case BuffType.SWEET_Speed:
-                speedMult += .2f * count;
-                break;
         }
     }
 }

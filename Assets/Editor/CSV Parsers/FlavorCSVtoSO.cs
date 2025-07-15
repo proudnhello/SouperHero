@@ -101,12 +101,12 @@ public class FlavorCSVtoSO
 
             }
 
-            flavorIngredient.Pairing = new(splitData[5]);
+            flavorIngredient.Pairing = new(splitData[5], splitData[6]);
 
             flavorIngredient.inflictionFlavors = inherentInflictionFlavors;
             flavorIngredient.buffFlavors = inherentBuffFlavors;
 
-            flavorIngredient.uuid = Int32.Parse(splitData[6]);
+            flavorIngredient.uuid = Int32.Parse(splitData[7]);
 
             AssetDatabase.CreateAsset(flavorIngredient, $"{writeFolderPath}{flavorIngredient.IngredientName}.asset");
 

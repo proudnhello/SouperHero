@@ -78,7 +78,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18061169a9ef824aa95690e56d66436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runStatePath: 
   debugAlwaysGenerateNewLevel: 0
 --- !u!114 &1369515707859839629
 MonoBehaviour:
@@ -228,35 +227,41 @@ MonoBehaviour:
     buffType: 1
     inflictionType: 3
     COLOR: {r: 0.9137255, g: 0.7308298, b: 0.33725485, a: 1}
+  - KEY: SWEET
+    ICON: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    isBuffType: 1
+    buffType: 2
+    inflictionType: 3
+    COLOR: {r: 0.4477825, g: 0.9137255, b: 0.33725485, a: 1}
   - KEY: SPICY
     ICON: {fileID: -259105072, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
     isBuffType: 0
     buffType: 0
-    inflictionType: 1
+    inflictionType: 0
     COLOR: {r: 0.9607844, g: 0.27450982, b: 0.043137256, a: 1}
   - KEY: FROSTY
     ICON: {fileID: -962913628, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
     isBuffType: 0
     buffType: 0
-    inflictionType: 2
+    inflictionType: 1
     COLOR: {r: 0.043137267, g: 0.9101717, b: 0.9607843, a: 1}
   - KEY: SPIKY
     ICON: {fileID: -1922018047, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
     isBuffType: 0
     buffType: 0
-    inflictionType: 3
+    inflictionType: 2
     COLOR: {r: 0.50583476, g: 0.33552852, b: 0.91194963, a: 1}
   - KEY: SLIMY
     ICON: {fileID: 1273416523, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
     isBuffType: 0
     buffType: 0
-    inflictionType: 4
+    inflictionType: 3
     COLOR: {r: 0.692756, g: 0.7106918, b: 0.18549499, a: 1}
   - KEY: VAMPIRISM
     ICON: {fileID: 1783340123, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
     isBuffType: 0
     buffType: 0
-    inflictionType: 5
+    inflictionType: 4
     COLOR: {r: 0.24632539, g: 0.087931566, b: 0.7169812, a: 1}
   abilityInfo:
   - ability: {fileID: 11400000, guid: 7669e1591ef98e3488d1ea147fcd49af, type: 2}

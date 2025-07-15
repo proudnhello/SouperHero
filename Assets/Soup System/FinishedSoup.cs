@@ -1,3 +1,4 @@
+using FMOD.Studio;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using static FlavorIngredient;
 using BuffFlavor = FlavorIngredient.BuffFlavor;
+using BuffType = FlavorIngredient.BuffFlavor.BuffType;
 using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
@@ -24,87 +26,129 @@ public class FinishedSoup : ISoupBowl
         public float lastUseTime;
         // public int uses = 0;
 
-        public Sprite iconUI;
-
-        List<SoupInfliction> inflictions;
-        List<InflictionFlavor> inherentInflictions;
+        Dictionary<InflictionType, SoupInflictionStat> inflictionTracker;
 
         // New spoon ability for new ability ingredient in the soup
-        public SoupAbility(AbilityIngredient ingredient, List<FlavorIngredient.BuffFlavor> buffs)
+        public SoupAbility(AbilityIngredient ingredient)
         {
             ability = ingredient.abilityType;
-            statsWithBuffs = new(ingredient.baseStats, buffs);
-            iconUI = ingredient.abilityType.icon;
-            // uses = ingredient.uses;
-            inherentInflictions = ingredient.inherentInflictionFlavors;
-        }
-
-        public void CalculateInflictions(Dictionary<InflictionType, SoupInfliction> genericInflictions)
-        {
-            Dictionary<InflictionType, SoupInfliction> inflictionTracker = new(genericInflictions);
-            foreach (var infliction in inherentInflictions)
+            statsWithBuffs = new(ingredient.baseStats);
+            inflictionTracker = new();
+            foreach (var infliction in ingredient.inherentInflictionFlavors)
             {
                 if (!inflictionTracker.ContainsKey(infliction.inflictionType))
-                    inflictionTracker.Add(infliction.inflictionType, new(infliction));
-                inflictionTracker[infliction.inflictionType].AddIngredient(infliction);
+                    inflictionTracker.Add(infliction.inflictionType, new(infliction.inflictionType));
+                inflictionTracker[infliction.inflictionType].Add(infliction.amount);
             }
-            inflictions = inflictionTracker.Values.ToList();
         }
 
-        public List<SoupInfliction> GetSpoonInflictions()
+        public void AddDuplicate(AbilityIngredient ingredient)
         {
-            return inflictions;
-        }
-
-        // This is called if we are adding an ability ingredient we already added
-        public void AddIngredient(AbilityIngredient ingredient)
-        {
-            // uses += ingredient.uses;
-        }
-
-        public void PrintAbility()
-        {
-            string output = $"{ability._abilityName}=\n";
-            foreach (var infliction in inflictions)
+            foreach (var infliction in ingredient.inherentInflictionFlavors)
             {
-                output += $"{infliction.InflictionFlavor.inflictionType} = {infliction.amount}\n";
+                if (!inflictionTracker.ContainsKey(infliction.inflictionType))
+                    inflictionTracker.Add(infliction.inflictionType, new(infliction.inflictionType));
+                inflictionTracker[infliction.inflictionType].Add(infliction.amount);
             }
-            Debug.Log(output);
+            statsWithBuffs.CombineStats(ingredient.baseStats);
+        }
+
+        public void ApplyFlavors(List<SoupBuffStat> buffs, List<SoupInflictionStat> inflictions)
+        {
+            foreach (var inflictionStat in inflictions)
+            {
+                if (!inflictionTracker.ContainsKey(inflictionStat.InflictionType))
+                    inflictionTracker.Add(inflictionStat.InflictionType, new(inflictionStat.InflictionType));
+                inflictionTracker[inflictionStat.InflictionType].CombineStats(inflictionStat);
+            }
+            statsWithBuffs.ApplyBuffs(buffs);
+        }
+
+        public List<SoupInflictionStat> GetSpoonInflictions()
+        {
+            return inflictionTracker.Values.ToList();
+        }
+
+        public float GetDamage() => inflictionTracker.ContainsKey(InflictionType.SPIKY_Damage) ? inflictionTracker[InflictionType.SPIKY_Damage].Amount : 0;
+        public float GetKnockback() => inflictionTracker.ContainsKey(InflictionType.SLIMY_Knockback) ? inflictionTracker[InflictionType.SLIMY_Knockback].Amount : 0;
+
+        public string PrintAbility()
+        {
+            string output = $"{ability._abilityName}\n";
+            output += $"D{statsWithBuffs.ModifiedDuration} = ({statsWithBuffs.BaseDuration} + {statsWithBuffs.durationAdd}) * {statsWithBuffs.durationMult}\n";
+            output += $"SZE{statsWithBuffs.ModifiedSize} = ({statsWithBuffs.BaseSize} + {statsWithBuffs.sizeAdd}) * {statsWithBuffs.sizeMult}\n";
+            output += $"SPD{statsWithBuffs.ModifiedSpeed} = ({statsWithBuffs.BaseSpeed} + {statsWithBuffs.speedAdd}) * {statsWithBuffs.speedMult}\n";
+
+            foreach (var infliction in GetSpoonInflictions())
+            {
+                output += $"{infliction.InflictionType} {infliction.Amount} = {infliction.add} + {infliction.add} * {infliction.mult}\n";
+            }
+            return output;
         }
     }
 
     [System.Serializable]
-    public class SoupInfliction // one for each type
+    public class SoupInflictionStat // one for each type
     {
-        public InflictionFlavor InflictionFlavor;
+        public InflictionType InflictionType;
         public int add;
         public float mult;
-        public float amount
+        public float Amount
         {
             get
             {
-                return add * mult;
+                return add + add * mult;
             }
         }
 
-        public SoupInfliction(InflictionFlavor inflictionEffect) { InflictionFlavor = inflictionEffect; add = 0; mult = 1; }
-
-        public SoupInfliction(SoupInfliction other) { InflictionFlavor = new(other.InflictionFlavor); add = other.add; mult = other.mult; }
-
-        public void AddIngredient(InflictionFlavor effect)
+        public SoupInflictionStat(InflictionType inflictionEffect) { InflictionType = inflictionEffect; add = 0; mult = 0; }
+        public void CombineStats(SoupInflictionStat other)
         {
-            add += effect.amount;
+            add += other.add;
+            mult += other.mult;
         }
-        public void Multiply(int count)
+
+        public void Add(int amount)
         {
-            mult += .2f * count;
+            add += amount;
+        }
+        public void Multiply(float amount)
+        {
+            mult += amount;
+        }
+    }
+
+    [System.Serializable]
+    public class SoupBuffStat
+    {
+        public BuffType BuffType;
+        public int add;
+        public float mult;
+        public float Amount
+        {
+            get
+            {
+                return add + add * mult;
+            }
+        }
+
+        public SoupBuffStat(BuffType buffEffect) { BuffType = buffEffect; add = 0; mult = 0; }
+
+        public void Add(int amount)
+        {
+            add += amount;
+        }
+        public void Multiply(float amount)
+        {
+            mult += amount;
         }
     }
 
     // ~~~ VARIABLES ~~~
     public List<Ingredient> ingredientList;
     public List<SoupAbility> soupAbilities;
-    public List<SoupInfliction> soupInflictions;
+    public Dictionary<InflictionType, SoupInflictionStat> soupInflictionStats;
+    public Dictionary<BuffType, SoupBuffStat> soupBuffStats;
     public int uses; // -1 = infinite
     public float cooldown;
     public SoupBase soupBase;
@@ -120,14 +164,6 @@ public class FinishedSoup : ISoupBowl
 
         ingredientList = new(ingredients);
         soupBase = stock;
-
-        // Track abilities and inflictions using dictionaries
-        Dictionary<AbilityIngredient, SoupAbility> abilityTracker = new();
-        Dictionary<InflictionType, SoupInfliction> inflictionTracker = new();
-
-        // Track number of each flavor
-        Dictionary<BuffFlavor.BuffType, int> FlavorBuffCounter = new();
-        Dictionary<InflictionType, int> FlavorInflictionCounter = new();
 
         // Separate ingredients into ability and flavor categories
         List<AbilityIngredient> abilityIngredients = ingredients.Where(x => x.GetType() == typeof(AbilityIngredient)).Cast<AbilityIngredient>().ToList();
@@ -147,56 +183,34 @@ public class FinishedSoup : ISoupBowl
         uses = 0;
         cooldown = stock.cooldown;
 
-        // Populate ability tracker and calculate total uses and cooldown
+        // Populate ability tracker and calculate total uses
+        Dictionary<AbilityAbstractClass, SoupAbility> abilityTracker = new();
         foreach (var ingredient in abilityIngredients)
         {
-            if (!abilityTracker.ContainsKey(ingredient))
+            if (!abilityTracker.ContainsKey(ingredient.abilityType))
             {
-                abilityTracker.Add(ingredient, new(ingredient, buffFlavors));
+                abilityTracker.Add(ingredient.abilityType, new(ingredient));
             }
-            else
-            {
-                abilityTracker[ingredient].AddIngredient(ingredient);
-            }
+            else abilityTracker[ingredient.abilityType].AddDuplicate(ingredient);
             uses += ingredient.uses;
         }
-
-        // Populate infliction tracker with infliction flavors
-        foreach (var infliction in inflictionFlavors)
-        {
-            if (!inflictionTracker.ContainsKey(infliction.inflictionType))
-                inflictionTracker.Add(infliction.inflictionType, new(infliction));
-            inflictionTracker[infliction.inflictionType].AddIngredient(infliction);
-
-            // Track number of each infliction
-            if (FlavorInflictionCounter.ContainsKey(infliction.inflictionType)) FlavorInflictionCounter[infliction.inflictionType]++;
-            else FlavorInflictionCounter.Add(infliction.inflictionType, 1);
-        }
-
-        // Track number of each buff
-        foreach (var buff in buffFlavors)
-        {
-            if (FlavorBuffCounter.ContainsKey(buff.buffType)) FlavorBuffCounter[buff.buffType]++;
-            else FlavorBuffCounter.Add(buff.buffType, 1);
-        }
-
         // Convert ability track into spoon's finalized list of abilities
         soupAbilities = abilityTracker.Values.ToList();
 
-        void MultiplyFlavorPairing(FlavorIngredient ing, int count)
+        // Track inflictions and buffs using dictionaries
+        soupInflictionStats = new();
+        soupBuffStats = new();
+        foreach (var infliction in inflictionFlavors)
         {
-            foreach (var soupAbility in soupAbilities)
-            {
-                foreach (var buff in ing.buffFlavors)
-                {
-                    soupAbility.statsWithBuffs.MultiplyStat(buff.buffType, count);
-                }
-            }
-
-            foreach (var infliction in ing.inflictionFlavors)
-            {
-                inflictionTracker[infliction.inflictionType].Multiply(count);
-            }
+            if (!soupInflictionStats.ContainsKey(infliction.inflictionType))
+                soupInflictionStats.Add(infliction.inflictionType, new(infliction.inflictionType));
+            soupInflictionStats[infliction.inflictionType].Add(infliction.amount);
+        }
+        foreach (var buff in buffFlavors)
+        {
+            if (!soupBuffStats.ContainsKey(buff.buffType))
+                soupBuffStats.Add(buff.buffType, new(buff.buffType));
+            soupBuffStats[buff.buffType].Add(buff.amount);
         }
 
         // Now based on pairings, multiply corresponding stat
@@ -204,29 +218,33 @@ public class FinishedSoup : ISoupBowl
         {
             if (flavorIngredient.Pairing.isBuff)
             {
-                var pair = (BuffFlavor.BuffType)flavorIngredient.Pairing.GetPairing();
-                if (!FlavorBuffCounter.ContainsKey(pair)) continue;
-                MultiplyFlavorPairing(flavorIngredient, FlavorBuffCounter[pair]);
+                BuffType pair = (BuffType)flavorIngredient.Pairing.GetPairing();
+                if (soupBuffStats.ContainsKey(pair))
+                {
+                    foreach (var buff in flavorIngredient.buffFlavors) soupBuffStats[buff.buffType].Multiply(flavorIngredient.Pairing.amount * soupBuffStats[pair].add);
+                    foreach (var inf in flavorIngredient.inflictionFlavors) soupInflictionStats[inf.inflictionType].Multiply(flavorIngredient.Pairing.amount * soupBuffStats[pair].add);
+                }
             }
             else
             {
-                var pair = (InflictionType)flavorIngredient.Pairing.GetPairing();
-                if (!FlavorInflictionCounter.ContainsKey(pair)) continue;
-                MultiplyFlavorPairing(flavorIngredient, FlavorInflictionCounter[pair]);
+                InflictionType pair = (InflictionType)flavorIngredient.Pairing.GetPairing();
+                if (soupInflictionStats.ContainsKey(pair))
+                {
+                    foreach (var buff in flavorIngredient.buffFlavors) soupBuffStats[buff.buffType].Multiply(flavorIngredient.Pairing.amount * soupInflictionStats[pair].add);
+                    foreach (var inf in flavorIngredient.inflictionFlavors) soupInflictionStats[inf.inflictionType].Multiply(flavorIngredient.Pairing.amount * soupInflictionStats[pair].add);
+                }
             }
         }
 
+        // with all the final stats calculated, apply them to abilities
         foreach (var soupAbility in soupAbilities)
         {
-            soupAbility.CalculateInflictions(inflictionTracker);
+            soupAbility.ApplyFlavors(soupBuffStats.Values.ToList(), soupInflictionStats.Values.ToList());
         }
 
-        // now that all infliction values are set, make it a finalized inflictions list
-        soupInflictions = inflictionTracker.Values.ToList();
-
-        if (FlavorBuffCounter.TryGetValue(BuffFlavor.BuffType.SWEET_Speed, out var amount))
+        if (soupBuffStats.TryGetValue(BuffType.SWEET_Speed, out var speed))
         {
-            cooldown *= 1 / (1 + amount); // based on amount of cooldown buff, reduce cooldown (TWEAK THIS ALGORITHM)
+            cooldown *= 1 / (1 + speed.Amount); // based on amount of cooldown buff, reduce cooldown (TWEAK THIS ALGORITHM)
         }
         // set initial lastTimeUsed to cooldown to get atk right away
         lastTimeUsed = Time.time - cooldown;
@@ -236,17 +254,13 @@ public class FinishedSoup : ISoupBowl
 
     static void PrintSoup(FinishedSoup spoon)
     {
-        string output = "SPOON Abilities\n";
+        string output = spoon.soupBase.baseName + "\nINGREDIENTS\n";
+        foreach (var ing in spoon.ingredientList) output += ing.IngredientName + "\n";
         foreach (var ability in spoon.soupAbilities)
         {
-            output += $"{ability.ability._abilityName}=D{ability.statsWithBuffs.ModifiedDuration},SIZ{ability.statsWithBuffs.ModifiedSize}\n";
-        }
-        output += "INFLICTIONS\n";
-        foreach (var infliction in spoon.soupInflictions)
-        {
-            output += $"{infliction.InflictionFlavor.inflictionType} = {infliction.amount}";
-        }
-        //Debug.Log(output);
+            output += ability.PrintAbility();
+        }       
+        Debug.Log(output);
     }
 
     bool hasCooldown = false;

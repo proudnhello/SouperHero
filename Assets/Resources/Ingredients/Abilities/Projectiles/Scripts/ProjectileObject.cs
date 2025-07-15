@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Infliction = FinishedSoup.SoupInfliction;
+using Infliction = FinishedSoup.SoupInflictionStat;
 
 public class ProjectileObject : MonoBehaviour
 {
