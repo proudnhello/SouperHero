@@ -103,6 +103,11 @@ public class RunStateManager : MonoBehaviour
 
     public void TrackEnemyDeath(int index)
     {
+        if (runData == null)
+        {
+            Debug.LogWarning("Run data is null.");
+            return;
+        }
         runData.enemyStates[index] = 0;
     }
 
