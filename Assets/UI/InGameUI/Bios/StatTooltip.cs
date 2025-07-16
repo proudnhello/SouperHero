@@ -18,12 +18,12 @@ public class StatTooltip : MonoBehaviour, ITooltipSource
     private void Start()
     {
         TooltipText.text = LocalizationManager.GetLocalizedString(TooltipLocalizationKEY);
-        Tooltip.gameObject.SetActive(false);
     }
 
     public void Clear()
     {
         StatText.text = "";
+        StatText.color = Color.white;
     }
 
     public void SetColliderSize(float amount)
@@ -32,11 +32,12 @@ public class StatTooltip : MonoBehaviour, ITooltipSource
         boxCollider2D.size = new Vector2(amount, boxCollider2D.size.y);
     }
 
-    public void SetStat(float amount)
+    public void SetStat(float amount, Color col)
     {
         timeProgressed = 0;
         Tooltip.gameObject.SetActive(false);
         StatText.text = amount.ToString(AmountStringDisplay) + StatSuffix;
+        StatText.color = col;
     }
 
     public void OnHoverEnter()

@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using System.Security;
-using TMPro;
+using BuffType = FlavorIngredient.BuffFlavor.BuffType;
+using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
 public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
 {
@@ -13,6 +12,11 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     [SerializeField] Image slotIcon;
     [SerializeField] Sprite[] slotIconSprites;
     internal Collectable ingredientReference;
+    [SerializeField] RectTransform AbilityBio;
+    [SerializeField] StatTooltip DamageStat;
+    [SerializeField] StatTooltip DurationStat;
+    [SerializeField] float ScaleAbilityBioAnimTime;
+    [SerializeField] AnimationCurve ScaleAbilityBioAnimCurve;
 
     public enum SlotType
     {
@@ -28,6 +32,8 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
         faceImage.gameObject.SetActive(false);
         faceImage.color = Color.white;
         slotOutline.gameObject.SetActive(true);
+        AbilityBio.gameObject.SetActive(false);
+        AbilityBio.localScale = new Vector3(0, 0, 0);
     }
 
     public void SetSlotType(SlotType type)
@@ -88,6 +94,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
             if (currentSlotType == SlotType.Wildcard || (CursorManager.Singleton.currentCollectableReference.ingredient is AbilityIngredient && currentSlotType == SlotType.Ability) ||
                 (CursorManager.Singleton.currentCollectableReference.ingredient is FlavorIngredient && currentSlotType == SlotType.Flavor))
             {
+                if (ingredientReference != null) ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
                 AddIngredient(CursorManager.Singleton.currentCollectableReference);
                 CursorManager.Singleton.DropCollectable();
             } else
@@ -106,4 +113,79 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
         gameObject.SetActive(false);
     }
 
+    public bool HasAbilityIngredient()
+    {
+        if (ingredientReference != null) if (ingredientReference.ingredient is AbilityIngredient) return true;
+        return false;
+    }
+
+    public void EnterCookingScreen()
+    {
+        if (HasAbilityIngredient())
+        {
+            if (IScaleAnim != null) StopCoroutine(IScaleAnim);
+            StartCoroutine(IScaleAnim = ScaleAbilityStats(true));
+        }   
+    }
+
+    public void ExitCookingScreen()
+    {
+        HideAbilityStat();
+    }
+    public void SetAbilityStat(FinishedSoup.SoupAbility ability)
+    {
+        bool special = ability.IsInflictionSpecial(InflictionType.SPIKY_Damage);
+        DamageStat.SetStat(ability.GetDamage(), special ? BioDatabase.Singleton.InflictionFlavorIcons[InflictionType.SPIKY_Damage].COLOR : Color.white);
+        special = ability.IsBuffSpecial(BuffType.TOUGH_Duration);
+        DurationStat.SetStat(ability.GetDuration(), special ? BioDatabase.Singleton.BuffFlavorIcons[BuffType.TOUGH_Duration].COLOR : Color.white);
+
+        if (IScaleAnim != null) StopCoroutine(IScaleAnim);
+        StartCoroutine(IScaleAnim = ScaleAbilityStats(true));
+    }
+
+    public void HideAbilityStat()
+    {
+        if (!AbilityBio.gameObject.activeInHierarchy) return;
+        if (IScaleAnim != null) StopCoroutine(IScaleAnim);
+        StartCoroutine(IScaleAnim = ScaleAbilityStats(false));
+    }
+
+    public void ResetAbilityStatBio()
+    {
+        AbilityBio.gameObject.SetActive(false);
+        animTimeProgressed = 0;
+        AbilityBio.localScale = Vector3.zero;
+    }
+
+    float animTimeProgressed = 0;
+    IEnumerator IScaleAnim;
+    IEnumerator ScaleAbilityStats(bool open)
+    {
+        if (open)
+        {
+            AbilityBio.gameObject.SetActive(true);
+        }
+
+        while (animTimeProgressed >= 0 && animTimeProgressed <= ScaleAbilityBioAnimTime)
+        {
+            var percentCompleted = Mathf.Clamp01(animTimeProgressed / ScaleAbilityBioAnimTime);
+            var scaledPercentaged = ScaleAbilityBioAnimCurve.Evaluate(percentCompleted);
+            var newScale = Mathf.Lerp(0, 1, scaledPercentaged);
+
+            AbilityBio.localScale = new Vector3(newScale, newScale, newScale);
+            yield return null;
+
+            animTimeProgressed = open ? animTimeProgressed + Time.deltaTime : animTimeProgressed - Time.deltaTime;
+        }
+
+        if (open)
+        {
+            animTimeProgressed = ScaleAbilityBioAnimTime;
+            AbilityBio.localScale = Vector3.one;
+        }
+        else
+        {
+            ResetAbilityStatBio();
+        }
+    }
 }

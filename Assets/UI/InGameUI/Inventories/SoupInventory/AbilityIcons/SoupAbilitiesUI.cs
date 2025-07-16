@@ -31,10 +31,12 @@ public class SoupAbilitiesUI : MonoBehaviour
 
         if (bowl is FinishedSoup soup)
         {
-            for (int i = 0; i < soup.soupAbilities.Count; i++)
+            int i = 0;
+            foreach (var ab in soup.soupAbilities.Keys)
             {
                 soupAbilityIcons[i].gameObject.SetActive(true);
-                soupAbilityIcons[i].sprite = BioDatabase.Singleton.AbilityIcons[soup.soupAbilities[i].ability];
+                soupAbilityIcons[i].sprite = BioDatabase.Singleton.AbilityIcons[ab];
+                i++;
             }
         }
     }

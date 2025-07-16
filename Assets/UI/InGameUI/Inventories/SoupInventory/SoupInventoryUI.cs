@@ -190,9 +190,9 @@ public class SoupInventoryUI : MonoBehaviour
                 SoupTooltip.SetActive(true);
                 TooltipText.text = LocalizationManager.GetLocalizedString(((FinishedSoup)bowl).soupBase.baseName);
                 TooltipText.text += '\n' + LocalizationManager.GetLocalizedString("Abilities") + ": ";
-                foreach (var ability in ((FinishedSoup)bowl).soupAbilities)
+                foreach (var ability in ((FinishedSoup)bowl).soupAbilities.Keys)
                 {
-                    TooltipText.text += LocalizationManager.GetLocalizedString(ability.ability._abilityName) + " ";
+                    TooltipText.text += LocalizationManager.GetLocalizedString(ability._abilityName) + " ";
                 }
                 break;
             case (null):

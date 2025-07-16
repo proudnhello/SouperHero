@@ -19,6 +19,7 @@ public class FinishedSoup : ISoupBowl
     {
         //[SerializeField]
         public AbilityAbstractClass ability;
+        public AbilityIngredient baseIngredient;
 
         //[SerializeField]
         public AbilityStats statsWithBuffs;
@@ -31,6 +32,7 @@ public class FinishedSoup : ISoupBowl
         // New spoon ability for new ability ingredient in the soup
         public SoupAbility(AbilityIngredient ingredient)
         {
+            baseIngredient = ingredient;
             ability = ingredient.abilityType;
             statsWithBuffs = new(ingredient.baseStats);
             inflictionTracker = new();
@@ -71,7 +73,21 @@ public class FinishedSoup : ISoupBowl
 
         public float GetDamage() => inflictionTracker.ContainsKey(InflictionType.SPIKY_Damage) ? inflictionTracker[InflictionType.SPIKY_Damage].Amount : 0;
         public float GetKnockback() => inflictionTracker.ContainsKey(InflictionType.SLIMY_Knockback) ? inflictionTracker[InflictionType.SLIMY_Knockback].Amount : 0;
+        public float GetDuration() => statsWithBuffs.ModifiedDuration;
 
+        public bool IsBuffSpecial(BuffType type)
+        {
+            return statsWithBuffs.GetStatByBuff(type) > statsWithBuffs.GetStatByBuff(type, true);
+        }
+        public bool IsInflictionSpecial(InflictionType type)
+        {
+            if (!inflictionTracker.ContainsKey(type)) return false;
+            foreach (var inf in baseIngredient.inherentInflictionFlavors)
+            {
+                if (inf.inflictionType == type) return inflictionTracker[type].Amount > inf.amount;
+            }
+            return false;
+        }
         public string PrintAbility()
         {
             string output = $"{ability._abilityName}\n";
@@ -146,7 +162,7 @@ public class FinishedSoup : ISoupBowl
 
     // ~~~ VARIABLES ~~~
     public List<Ingredient> ingredientList;
-    public List<SoupAbility> soupAbilities;
+    public Dictionary<AbilityAbstractClass, SoupAbility> soupAbilities;
     public Dictionary<InflictionType, SoupInflictionStat> soupInflictionStats;
     public Dictionary<BuffType, SoupBuffStat> soupBuffStats;
     public int uses; // -1 = infinite
@@ -183,20 +199,17 @@ public class FinishedSoup : ISoupBowl
         uses = 0;
         cooldown = stock.cooldown;
 
-        // Populate ability tracker and calculate total uses
-        Dictionary<AbilityAbstractClass, SoupAbility> abilityTracker = new();
+        // Populate abilities and calculate total uses
+        soupAbilities = new();
         foreach (var ingredient in abilityIngredients)
         {
-            if (!abilityTracker.ContainsKey(ingredient.abilityType))
+            if (!soupAbilities.ContainsKey(ingredient.abilityType))
             {
-                abilityTracker.Add(ingredient.abilityType, new(ingredient));
+                soupAbilities.Add(ingredient.abilityType, new(ingredient));
             }
-            else abilityTracker[ingredient.abilityType].AddDuplicate(ingredient);
+            else soupAbilities[ingredient.abilityType].AddDuplicate(ingredient);
             uses += ingredient.uses;
         }
-        // Convert ability track into spoon's finalized list of abilities
-        soupAbilities = abilityTracker.Values.ToList();
-
         // Track inflictions and buffs using dictionaries
         soupInflictionStats = new();
         soupBuffStats = new();
@@ -237,7 +250,7 @@ public class FinishedSoup : ISoupBowl
         }
 
         // with all the final stats calculated, apply them to abilities
-        foreach (var soupAbility in soupAbilities)
+        foreach (var soupAbility in soupAbilities.Values)
         {
             soupAbility.ApplyFlavors(soupBuffStats.Values.ToList(), soupInflictionStats.Values.ToList());
         }
@@ -256,7 +269,7 @@ public class FinishedSoup : ISoupBowl
     {
         string output = spoon.soupBase.baseName + "\nINGREDIENTS\n";
         foreach (var ing in spoon.ingredientList) output += ing.IngredientName + "\n";
-        foreach (var ability in spoon.soupAbilities)
+        foreach (var ability in spoon.soupAbilities.Values)
         {
             output += ability.PrintAbility();
         }       
@@ -281,7 +294,7 @@ public class FinishedSoup : ISoupBowl
         if (uses != 0)
         {
             // Apply each ability using the spoon if there are uses left
-            foreach (SoupAbility ability in soupAbilities)
+            foreach (SoupAbility ability in soupAbilities.Values)
             {
                 // use ability if there are uses left
                 ability.ability.UseAbility(ability.statsWithBuffs, ability.GetSpoonInflictions());

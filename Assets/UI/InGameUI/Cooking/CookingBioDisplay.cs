@@ -21,8 +21,8 @@ public class CookingBioDisplay : MonoBehaviour
     {
         ClearIngredients();
         CooldownStat.gameObject.SetActive(true);
-        CooldownStat.SetStat(bowl.cooldown);
-        UsesStat.SetStat(0);
+        CooldownStat.SetStat(bowl.cooldown, Color.white);
+        UsesStat.SetStat(0, Color.white);
         UsesStat.SetColliderSize(1);
     }
 
@@ -54,12 +54,27 @@ public class CookingBioDisplay : MonoBehaviour
             FlavorIcons[iconUsed].Set(inf);
             iconUsed++;
         }
-        CooldownStat.SetStat(bowl.cooldown);
-        UsesStat.SetStat(bowl.uses);
+
+        Color cooldownColor = bowl.cooldown < bowl.soupBase.cooldown ? BioDatabase.Singleton.BuffFlavorIcons[FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed].COLOR : Color.white;
+        CooldownStat.SetStat(bowl.cooldown, cooldownColor);
+        
+        UsesStat.SetStat(bowl.uses, Color.white);
         int places = 1;
         int d = bowl.uses;
         while (d > 9) { d %= 10; places++; }
         UsesStat.SetColliderSize(places);
+
+        foreach (var slot in cs.IngredientCookingSlots)
+        {
+            if (slot.HasAbilityIngredient())
+            {
+                slot.SetAbilityStat(bowl.soupAbilities[((AbilityIngredient)slot.ingredientReference.ingredient).abilityType]);
+            }
+            else
+            {
+                slot.HideAbilityStat();
+            }
+        }
 
     }
 }

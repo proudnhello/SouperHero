@@ -27,7 +27,7 @@ public class CookingScreen : MonoBehaviour
     [SerializeField] RectTransform CookingContent;
     private FinishedSoup statSpoon;
 
-    [SerializeField] IngredientCookingSlot[] IngredientCookingSlots;
+    public IngredientCookingSlot[] IngredientCookingSlots;
     public BowlCookingSlot BowlCookingSlot;
     public CookingBioDisplay cookingBioDisplay;
 
@@ -70,6 +70,7 @@ public class CookingScreen : MonoBehaviour
         PlayerEntityManager.Singleton.input.Player.PauseGame.started += ExitCooking;
 
         EnterCookingScreen?.Invoke();
+        foreach (var slot in IngredientCookingSlots) slot.EnterCookingScreen();
         if (IMoveCookingUI != null) StopCoroutine(IMoveCookingUI);
         StartCoroutine(IMoveCookingUI = MoveCookingUI(true));
     }
@@ -126,6 +127,7 @@ public class CookingScreen : MonoBehaviour
         ExitCookingScreen?.Invoke();
         AtCookingScreen = false;
         CookingScreenIsOut?.Invoke(AtCookingScreen);
+        foreach (var slot in IngredientCookingSlots) slot.ExitCookingScreen();
 
         if (IMoveCookingUI != null) StopCoroutine(IMoveCookingUI);
         StartCoroutine(IMoveCookingUI = MoveCookingUI(false));
@@ -202,6 +204,7 @@ public class CookingScreen : MonoBehaviour
             slot.gameObject.SetActive(false);
             if (slot.ingredientReference != null) slot.ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
             slot.RemoveIngredient();
+            slot.ResetAbilityStatBio();
         }
         cookingBioDisplay.ClearDisplay();
     }

@@ -172,9 +172,9 @@ public class IngredientBioDisplay : MonoBehaviour
                     dmg = infliction.amount;
                     break;
                 }
-            DamageStat.SetStat(dmg);
+            DamageStat.SetStat(dmg, Color.white);
 
-            DurationStat.SetStat(((AbilityIngredient)ing).baseStats.BaseDuration);
+            DurationStat.SetStat(((AbilityIngredient)ing).baseStats.BaseDuration, Color.white);
         }
     }
 }
