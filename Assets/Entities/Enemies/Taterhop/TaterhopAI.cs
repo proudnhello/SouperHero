@@ -149,12 +149,17 @@ public class TaterhopAI : EnemyBaseClass
                 yield return new WaitForSeconds(Random.Range(sm.PatrolWaitTime.x, sm.PatrolWaitTime.y));
 
                 // FIND NEW POINT
-                float targetAngle = Random.Range(0, 2 * Mathf.PI);
-                Vector2 targetDir = new Vector3(Mathf.Cos(targetAngle), Mathf.Sin(targetAngle));
-                Vector2 targetPoint = targetDir * Random.Range(sm.PatrolDistance.x, sm.PatrolDistance.y) + centerPoint;
+                Vector2 targetPoint;
+                do
+                {
+                    float targetAngle = Random.Range(0, 2 * Mathf.PI);
+                    Vector2 targetDir = new Vector3(Mathf.Cos(targetAngle), Mathf.Sin(targetAngle));
+                    targetPoint = targetDir * Random.Range(sm.PatrolDistance.x, sm.PatrolDistance.y) + centerPoint;
+                    sm.agent.isStopped = false;
+                    sm.agent.SetDestination(targetPoint);
+                } while (!sm.CheckPointSafety(targetPoint));
 
-                sm.agent.isStopped = false;
-                sm.agent.SetDestination(targetPoint);
+                
                 sm.animator.Play("Walk");
 
                 Vector2 lastPos;

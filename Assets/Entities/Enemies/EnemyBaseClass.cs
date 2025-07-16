@@ -87,7 +87,8 @@ public abstract class EnemyBaseClass : Entity
             {
                 // Who the fuck at unity made *this* the way of checking if an animator has an animation?
                 // Not that it works, anyway
-                if (anim.HasState(anim.GetLayerIndex("Base Layer"), Animator.StringToHash("Walk"))){
+                if (anim.HasState(anim.GetLayerIndex("Base Layer"), Animator.StringToHash("Walk")))
+                {
                     anim.Play("Walk");
                 }
             }
@@ -148,7 +149,7 @@ public abstract class EnemyBaseClass : Entity
         // THIS IS BAD AND I SHOULD NOT DO IT
         // But stupid knockback keeps messing everything up and the enemy's about to die anyway so it's probably fine
         // I can't wait for us to add an enemy that doesn't die when it falls and this breaks everything
-        StopAllCoroutines(); 
+        StopAllCoroutines();
         GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         StartCoroutine(Fall(_respawnPoint, 0.05f));
     }
@@ -167,5 +168,28 @@ public abstract class EnemyBaseClass : Entity
         }
 
         Die(false);
+    }
+
+    // Returns true if the current destination has no hazards
+    public bool CheckPointSafety(Vector3 point)
+    {
+        if (agent == null || !agent.isOnNavMesh)
+            return false;
+
+        NavMeshHit hit;
+        // Sample the given point on the NavMesh
+        if (NavMesh.SamplePosition(point, out hit, 1.0f, NavMesh.AllAreas))
+        {
+            print(hit.mask);
+            if (hit.mask != 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
