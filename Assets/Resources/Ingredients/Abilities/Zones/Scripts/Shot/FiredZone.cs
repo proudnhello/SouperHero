@@ -4,7 +4,7 @@ using System.Drawing;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI.Table;
 using static UnityEngine.RuleTile.TilingRuleOutput;
-using Infliction = FinishedSoup.SoupInfliction;
+using Infliction = FinishedSoup.SoupInflictionStat;
 
 // To create a projectile scriptable object, just go to the project overview, right click, click "create", and
 // at the top should be a menu titled "abilities". Should be under that menu.
@@ -21,15 +21,15 @@ public class FiredZone : AbilityAbstractClass
     {
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();
-        stats.size *= SIZE_MULTIPLIER;
-        stats.speed *= SPEED_MULTIPLIER;
+        stats.ModifiedSize *= SIZE_MULTIPLIER;
+        stats.ModifiedSpeed *= SPEED_MULTIPLIER;
 
         Vector2 currentDirection = PlayerEntityManager.Singleton.playerMovement.currentDirection;
         
         //proj.transform.localScale = new Vector3(stats.size, stats.size, stats.size);
         SpriteRenderer spriteRenderer = proj.GetZoneArea().GetComponent<SpriteRenderer>();
         //Vector2 actualSize = new Vector2(rt.rect.width * rt.lossyScale.x, rt.rect.height * rt.lossyScale.y);
-        float radius = spriteRenderer.sprite.bounds.extents.x * stats.size / 2;
+        float radius = spriteRenderer.sprite.bounds.extents.x * stats.ModifiedSize / 2;
 
         Vector2 center = new Vector2(PlayerEntityManager.Singleton.playerAttackPoint.position.x, PlayerEntityManager.Singleton.playerAttackPoint.position.y) + (radius * currentDirection);
 

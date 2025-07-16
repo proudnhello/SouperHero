@@ -13,20 +13,16 @@ MonoBehaviour:
   m_Name: Golden Chantarelle
   m_EditorClassIdentifier: 
   IngredientName: Golden Chantarelle
-  IconUI: {fileID: 0}
-  ParticleIcon: {fileID: 1783340123, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
   uuid: 81068
-  EncyclopediaImage: {fileID: 21300000, guid: 5bf294796ff47de48ab26546768c0188, type: 3}
-  Source: Found from the ground
-  FlavorProfile: Famous UMAMI_Vampirism flavor with a twinge of SALTY_Crit
+  FlavorProfile: 
   Pairing:
-    isBuff: 1
-    FlavorPairingBuff: 2
-    FlavorPairingInfliction: 0
+    isBuff: 0
+    FlavorPairingBuff: 0
+    FlavorPairingInfliction: 3
+    amount: 0.3
   buffFlavors:
-  - buffType: 1
+  - buffType: 0
     amount: 1
   inflictionFlavors:
-  - inflictionType: 5
+  - inflictionType: 4
     amount: 2
-    statusEffectDuration: 2

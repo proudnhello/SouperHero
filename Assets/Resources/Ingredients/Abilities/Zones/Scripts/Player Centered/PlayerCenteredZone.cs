@@ -1,7 +1,7 @@
 // portions of this file were generated using GitHub Copilot
 using System.Collections.Generic;
 using UnityEngine;
-using Infliction = FinishedSoup.SoupInfliction;
+using Infliction = FinishedSoup.SoupInflictionStat;
 
 // To create a projectile scriptable object, just go to the project overview, right click, click "create", and
 // at the top should be a menu titled "abilities". Should be under that menu.
@@ -18,8 +18,8 @@ public class PlayerCenteredZone : AbilityAbstractClass
     {
         // Spawn projectile at player's position, and then set its rotation to be facing the same direction as the player.
         ZoneCore proj = spawner.GetProjectile();
-        stats.size *= SIZE_MULTIPLIER;
-        stats.speed *= SPEED_MULTIPLIER;
+        stats.ModifiedSize *= SIZE_MULTIPLIER;
+        stats.ModifiedSpeed *= SPEED_MULTIPLIER;
         proj.Spawn(PlayerEntityManager.Singleton.playerAttackPoint.position,
             PlayerEntityManager.Singleton.playerAttackPoint.transform.up,
             stats, inflictions, true, this);

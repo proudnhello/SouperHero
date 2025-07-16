@@ -13,7 +13,6 @@ public class HealthCounter : MonoBehaviour
 {
     [Header("UI Configuration")]
     [SerializeField] List<GameObject> heartList;
-    private int playerHealth = 0;
 
     [SerializeField]
     Sprite fullHeart;
@@ -27,7 +26,7 @@ public class HealthCounter : MonoBehaviour
         {
             heart.SetActive(false);
         }
-        playerHealth = PlayerEntityManager.Singleton.GetHealth() / 10;
+        int playerHealth = PlayerEntityManager.Singleton.GetHealth() / 10;
 
         for (int i = 0; i < playerHealth; i++)
         {
@@ -59,7 +58,8 @@ public class HealthCounter : MonoBehaviour
             }
         }
 
-        heartList[Mathf.FloorToInt(playerHealth)].transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(100 * (playerHealth % 10) / 10, 100 * (playerHealth % 10) / 10);
+        if (playerHealth < maxHealth)
+            heartList[Mathf.FloorToInt(playerHealth)].transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(100 * (playerHealth % 10) / 10, 100 * (playerHealth % 10) / 10);
 
     }
 }

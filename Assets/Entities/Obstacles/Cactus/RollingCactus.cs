@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Infliction = FinishedSoup.SoupInfliction;
+using InflictionStat = FinishedSoup.SoupInflictionStat;
 using InflictionFlavor = FlavorIngredient.InflictionFlavor;
 
 public class RollingCactus : Entity
@@ -15,7 +15,7 @@ public class RollingCactus : Entity
     [SerializeField] List<InflictionFlavor> inflictionOnRollFlavors;
     [SerializeField] int KNOCKBACK_INDEX = 1;
     [SerializeField] Vector2 MinMaxDamageToSpeed = new Vector2(5, 40);
-    List<Infliction> inflictionsOnRollContact = new();
+    List<InflictionStat> inflictionsOnRollContact = new();
 
     [SerializeField] int PLAYER_COLLISION_DAMAGE = 5;
 
@@ -28,8 +28,8 @@ public class RollingCactus : Entity
         _Collider.isTrigger = false;
         foreach (var inflictionFlavor in inflictionOnRollFlavors)
         {
-            Infliction cactusInfliction = new(inflictionFlavor);
-            cactusInfliction.AddIngredient(inflictionFlavor);
+            InflictionStat cactusInfliction = new(inflictionFlavor.inflictionType);
+            cactusInfliction.Add(inflictionFlavor.amount);
             inflictionsOnRollContact.Add(cactusInfliction);
         }     
     }
@@ -42,17 +42,17 @@ public class RollingCactus : Entity
 
     // There's a load of code when it comes to inflictions that assumes we have agents or rigidbodies. The humble tree does not.
     // So, you can only damage it directly. This is a bit of a hack, but it works.
-    public override void ApplyInfliction(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
+    public override void ApplyInfliction(List<InflictionStat> spoonInflictions, Transform source)
     {
-        foreach (Infliction infliction in spoonInflictions)
+        foreach (InflictionStat infliction in spoonInflictions)
         {
-            if (infliction.InflictionFlavor.inflictionType == InflictionFlavor.InflictionType.SPIKY_Damage)
+            if (infliction.InflictionType == InflictionFlavor.InflictionType.SPIKY_Damage)
             {
-                DealDamage((int)infliction.amount);
+                DealDamage((int)infliction.Amount);
                 if (IsDead() && !hasContacted)
                 {
                     if (IRoll != null) StopCoroutine(IRoll);
-                    StartCoroutine(IRoll = Roll(source, (int)infliction.amount));
+                    StartCoroutine(IRoll = Roll(source, (int)infliction.Amount));
                 }
             }
         }

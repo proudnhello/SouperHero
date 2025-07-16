@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using Infliction = FinishedSoup.SoupInfliction;
+using Infliction = FinishedSoup.SoupInflictionStat;
 
 // To create a projectile scriptable object, just go to the project overview, right click, click "create", and
 // at the top should be a menu titled "abilities". Should be under that menu.
@@ -24,8 +24,8 @@ public class DoubleProjectile : AbilityAbstractClass
     protected override void Release(AbilityStats stats, List<Infliction> inflictions)
     {
 
-        stats.size *= SIZE_MULTIPLIER;
-        stats.speed *= SPEED_MULTIPLIER;
+        stats.ModifiedSize *= SIZE_MULTIPLIER;
+        stats.ModifiedSpeed *= SPEED_MULTIPLIER;
 
         Vector2 currDir = PlayerEntityManager.Singleton.playerAttackPoint.transform.up;
 

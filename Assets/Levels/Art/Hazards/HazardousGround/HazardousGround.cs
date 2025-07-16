@@ -4,24 +4,21 @@ using UnityEngine;
 
 public class HazardousGround : Hazard
 {
-    [SerializeField] List<FlavorIngredient.InflictionFlavor> appliedInflictions;
-    List<FinishedSoup.SoupInfliction> inflictionType;
-    [SerializeField] float mult = 1f;
+    [SerializeField] List<FlavorIngredient.InflictionFlavor> HazardInflictions;
+    List<FinishedSoup.SoupInflictionStat> inflictions;
 
-    [SerializeField] float leaveTimer = 0f;
 
     // If true, the entity will be able to attack while on the ground. False will prevent attacking
     [SerializeField] bool canAttack = true;
     protected override void Start()
     {
         base.Start();
-        inflictionType = new List<FinishedSoup.SoupInfliction>();
-        foreach (FlavorIngredient.InflictionFlavor infliction in appliedInflictions)
+        inflictions = new List<FinishedSoup.SoupInflictionStat>();
+        foreach (FlavorIngredient.InflictionFlavor infliction in HazardInflictions)
         {
-            FinishedSoup.SoupInfliction spoonInfliction = new FinishedSoup.SoupInfliction(infliction);
-            spoonInfliction.add = infliction.amount;
-            spoonInfliction.mult = mult;
-            inflictionType.Add(spoonInfliction);
+            FinishedSoup.SoupInflictionStat spoonInfliction = new FinishedSoup.SoupInflictionStat(infliction.inflictionType);
+            spoonInfliction.Add(infliction.amount);
+            inflictions.Add(spoonInfliction);
         }
     }
 
@@ -38,15 +35,16 @@ public class HazardousGround : Hazard
         }
     }
 
+
     private void Update()
     {
         foreach (Entity entity in effectedEntities)
         {
             if (entity != null && !entity.flying)
             {
-                if (!entity.HasInfliction(inflictionType[0]))
+                if (!entity.HasInfliction(inflictions[0].InflictionType))
                 {
-                    entity.ApplyInfliction(inflictionType, transform, true);
+                    entity.ApplyInfliction(inflictions, transform);
                 }
             }
         }
@@ -62,11 +60,9 @@ public class HazardousGround : Hazard
                 entity.RemoveCantAttack();
             }
             EffectedAnimationEnd(entity);
-            foreach (FinishedSoup.SoupInfliction infliction in inflictionType)
+            if (entity.HasInfliction(inflictions[0].InflictionType))
             {
-                FinishedSoup.SoupInfliction copy = new FinishedSoup.SoupInfliction(infliction);
-                copy.InflictionFlavor.statusEffectDuration = leaveTimer;
-                entity.ApplyInfliction(new List<FinishedSoup.SoupInfliction> { infliction }, transform, true);
+                entity.inflictionHandler.EndStatusEffect(inflictions[0].InflictionType);
             }
         }
     }

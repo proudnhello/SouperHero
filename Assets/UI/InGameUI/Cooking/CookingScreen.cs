@@ -29,6 +29,7 @@ public class CookingScreen : MonoBehaviour
 
     [SerializeField] IngredientCookingSlot[] IngredientCookingSlots;
     public BowlCookingSlot BowlCookingSlot;
+    public CookingBioDisplay cookingBioDisplay;
 
 
     [Header("Move Cooking Anim")]
@@ -57,6 +58,8 @@ public class CookingScreen : MonoBehaviour
             c.Init();
             DisplayNoBowl();
         }
+
+        cookingBioDisplay.Init(this);
     }
 
     public void EnterCooking(Campfire source)
@@ -156,15 +159,18 @@ public class CookingScreen : MonoBehaviour
 
         if (BowlCookingSlot.soupBaseReference == null) return;
 
+        List<Ingredient> cookedIngredients = new();
         foreach (var slot in IngredientCookingSlots)
         {
             if (slot.ingredientReference == null) continue;
+            cookedIngredients.Add(slot.ingredientReference.ingredient);
             if (slot.ingredientReference.ingredient is AbilityIngredient)
             {
                 SoupIsValid = true;
-                break;
             }
         }
+        if (cookedIngredients.Count > 0) cookingBioDisplay.DisplayIngredients(cookedIngredients);
+        cookedIngredients.Clear();
     }
 
     public void DisplayBowlInSlot(SoupBase bowl)
@@ -185,6 +191,8 @@ public class CookingScreen : MonoBehaviour
             IngredientCookingSlots[slot].gameObject.SetActive(true);
             IngredientCookingSlots[slot].SetSlotType(SlotType.Wildcard);
         }
+        cookingBioDisplay.DisplayBowl(bowl);
+
     }
 
     public void DisplayNoBowl()
@@ -195,6 +203,7 @@ public class CookingScreen : MonoBehaviour
             if (slot.ingredientReference != null) slot.ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
             slot.RemoveIngredient();
         }
+        cookingBioDisplay.ClearDisplay();
     }
 
     public void CookTheSoup()
@@ -217,6 +226,7 @@ public class CookingScreen : MonoBehaviour
 
         cookedIngredients.Clear();
         BowlCookingSlot.RemoveBowl();
+        cookingBioDisplay.ClearDisplay();
 
         CookSoup?.Invoke();
         MetricsTracker.Singleton.RecordSoupsCooked();

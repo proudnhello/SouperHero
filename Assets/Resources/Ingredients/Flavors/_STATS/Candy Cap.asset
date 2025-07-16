@@ -13,20 +13,16 @@ MonoBehaviour:
   m_Name: Candy Cap
   m_EditorClassIdentifier: 
   IngredientName: Candy Cap
-  IconUI: {fileID: 0}
-  ParticleIcon: {fileID: 975749743, guid: 2a1caf13a1ac64d41b25d4f64288b419, type: 3}
   uuid: 5125
-  EncyclopediaImage: {fileID: 21300000, guid: f65ecb6970593fd458da75c30bd886a3, type: 3}
-  Source: Found from the ground
-  FlavorProfile: Strong SWEET_Speed flavor with a hint of HEARTY_Health
+  FlavorProfile: 
   Pairing:
-    isBuff: 0
-    FlavorPairingBuff: 0
-    FlavorPairingInfliction: 1
+    isBuff: 1
+    FlavorPairingBuff: 1
+    FlavorPairingInfliction: 0
+    amount: 0.3
   buffFlavors:
-  - buffType: 3
+  - buffType: 2
     amount: 2
   inflictionFlavors:
-  - inflictionType: 2
+  - inflictionType: 1
     amount: 1
-    statusEffectDuration: 2

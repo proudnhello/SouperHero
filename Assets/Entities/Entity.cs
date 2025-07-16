@@ -6,7 +6,9 @@ using UnityEngine;
 using static EntityInflictionEffectHandler;
 using Unity.VisualScripting;
 using System;
-using Infliction = FinishedSoup.SoupInfliction;
+using Infliction = FinishedSoup.SoupInflictionStat;
+using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
+
 
 public abstract class Entity : MonoBehaviour
 {
@@ -22,7 +24,7 @@ public abstract class Entity : MonoBehaviour
     public struct CurrentStats
     {
         public int health;
-        public float moveSpeed;
+        //public float moveSpeed;
     }
 
     public SpriteMask submergeMask;
@@ -42,6 +44,7 @@ public abstract class Entity : MonoBehaviour
     // If > 0, the entity cannot attack
     // So, once a reason is removed, it should be decremented, but if there are multiple reasons, the entity will continue to be unable to attack
     private int cantAttack = 0;
+
 
     [SerializeField] GameObject hitmarker;
 
@@ -106,29 +109,31 @@ public abstract class Entity : MonoBehaviour
         }
     }
 
+    public virtual bool IsInvincible() => false;
+
     public void ResetStats()
     {
         currentStats.health = baseStats.maxHealth;
-        currentStats.moveSpeed = baseStats.baseMoveSpeed;
+        speedMults.Clear();
     }
 
     // Quiet makes it so no sound or hitmarker is played. Used currently for ground hazards
-    public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
+    public virtual void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
     {
-        inflictionHandler.ApplyInflictions(spoonInflictions, source, quiet);
+        inflictionHandler.ApplyInflictions(spoonInflictions, source);
     }
 
-    public bool HasInfliction(Infliction infliction)
+    public bool HasInfliction(InflictionType infliction)
     {
         return inflictionHandler.HasInfliction(infliction);
     }
 
     // Displays hitmarkers
-    public void DisplayHitmarker(Color color, string text)
+    public void DisplayHitmarker(InflictionType type, float amount)
     {
         GameObject hitmarkerInstance = Instantiate(hitmarker, transform.position, Quaternion.identity);
-        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = text;
-        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = color;
+        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = amount + " " + FlavorIngredient.GetFlavorHitmarkerText(type);
+        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = FlavorIngredient.GetFlavorHitmarkerColor(type);
     }
 
     public BaseStats GetBaseStats()
@@ -165,22 +170,28 @@ public abstract class Entity : MonoBehaviour
         return currentStats.health <= 0;
     }
 
+    Dictionary<int, float> speedMults = new();
     public float GetMoveSpeed()
     {
-        if (currentStats.moveSpeed < 1)
+        float speed = baseStats.baseMoveSpeed;
+        foreach (var mult in speedMults.Values) speed *= mult;
+        if (speed < 1)
         {
             return 1f;
         }
-        return currentStats.moveSpeed;
+        return speed;
     }
-    public virtual void SetMoveSpeed(float newSpeed)
+    public virtual void SetMoveSpeed(int sourceID, float speedMult)
     {
-        currentStats.moveSpeed = newSpeed;
+        if (!speedMults.TryAdd(sourceID, speedMult))
+        {
+            speedMults[sourceID] = speedMult;
+        }
     }
 
-    public virtual void ResetMoveSpeed()
+    public virtual void ResetMoveSpeed(int sourceID)
     {
-        currentStats.moveSpeed = baseStats.baseMoveSpeed;
+        speedMults.Remove(sourceID);
     }
 
     public float GetInvincibility()

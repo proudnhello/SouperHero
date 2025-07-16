@@ -60,7 +60,7 @@ public class FlettuceDetectionState : BaseState
             _blackboard.animator.Play("Attack");
             for (int chargeNum = 1; chargeNum <= _blackboard.NumConsecutiveCharges; chargeNum++)
             {
-                yield return new WaitUntil(() => !_blackboard.inflictionHandler.IsAfflicted(InflictionType.GREASY_Knockback));
+                yield return new WaitUntil(() => !_blackboard.inflictionHandler.HasInfliction(InflictionType.SLIMY_Knockback));
                 Vector2 vel = (_blackboard.PlayerTransform.position - _blackboard.transform.position).normalized * _blackboard.ChargeForce * _blackboard.GetMoveSpeed();
                 for (float chargeTime = 0; chargeTime < _blackboard.ChargeTime; chargeTime += Time.deltaTime)
                 {

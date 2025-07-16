@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Infliction = FinishedSoup.SoupInfliction;
+using InflictionStat = FinishedSoup.SoupInflictionStat;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
 public class EntityInflictionEffectHandler
@@ -20,21 +20,20 @@ public class EntityInflictionEffectHandler
     public class StatusEffectInstance
     {
         public float amount;
-        public float duration;
         public Entity entity;
         public IEnumerator StatusMethod;
         public int intervals;
         public InflictionType type;
+        public bool triggerEnd = false;
 
-        public StatusEffectInstance(Entity entity, Infliction infliction)
+        public StatusEffectInstance(Entity entity, InflictionStat infliction)
         {
             this.entity = entity;
-            amount = infliction.amount;
-            duration = infliction.InflictionFlavor.statusEffectDuration;
-            type = infliction.InflictionFlavor.inflictionType;
+            amount = infliction.Amount;
+            type = infliction.InflictionType;
         }
 
-        public StatusEffectInstance(Entity entity, int amount, InflictionType type)
+        public StatusEffectInstance(Entity entity, float amount, InflictionType type)
         {
             this.entity = entity;
             this.amount = amount;
@@ -49,105 +48,96 @@ public class EntityInflictionEffectHandler
             }
         }
 
-        public void WorsenStatusEffect(Infliction infliction)
+        public void WorsenStatusEffect(InflictionStat infliction)
         {
-            switch (infliction.InflictionFlavor.inflictionType)
+            switch (infliction.InflictionType)
             {
                 case InflictionType.SPICY_Burn:
                     Inflictions.WorsenBurn(this, infliction);
                     break;
+                case InflictionType.FROSTY_Freeze:
+                    Inflictions.WorsenFreeze(this, infliction);
+                    break;
             }
-            
+        }
+
+        public void End()
+        {
+            if (entity.isActiveAndEnabled)
+            {
+                triggerEnd = true;
+            }
         }
     }
 
-    public bool HasInfliction(Infliction infliction)
+    public bool HasInfliction(InflictionType infliction)
     {
-        if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return activeStatuses.ContainsKey(infliction);
     }
 
-    public void ApplyInflictions(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
+    public void ApplyInflictions(List<InflictionStat> spoonInflictions, Transform source)
     {
+        float damage = 0;
         foreach (var infliction in spoonInflictions)
         {
-            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[infliction.InflictionFlavor.inflictionType];
-            string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(infliction.InflictionFlavor.inflictionType);
-            if(hitmarkerColor == null) hitmarkerColor = Color.white;
-            if(hitmarkerText == null) hitmarkerText = "DEFAULT HITMARKER TEXT";
-            if (activeStatuses.ContainsKey(infliction.InflictionFlavor.inflictionType)) 
-                activeStatuses[infliction.InflictionFlavor.inflictionType].WorsenStatusEffect(infliction);
+            if (HasInfliction(infliction.InflictionType)) 
+                activeStatuses[infliction.InflictionType].WorsenStatusEffect(infliction);
             else
             {
-                if (infliction.InflictionFlavor.inflictionType == InflictionType.SPICY_Burn)
+                if (infliction.InflictionType == InflictionType.SPICY_Burn && !entity.IsInvincible())
                 {
                     StatusEffectInstance instance = new(entity, infliction);
-                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
-                    // Handle hitmarkers in the damage coroutine
-                    hitmarkerText = "";
+                    activeStatuses.Add(infliction.InflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Burn(instance));
                 }
-                else if (infliction.InflictionFlavor.inflictionType == InflictionType.HEARTY_Health)
+                else if (infliction.InflictionType == InflictionType._Health)
                 {
                     Inflictions.Health(infliction, entity);
-                    hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
                 }
-                else if (infliction.InflictionFlavor.inflictionType == InflictionType.SPIKY_Damage)
+                else if (infliction.InflictionType == InflictionType.SPIKY_Damage && !entity.IsInvincible())
                 {
-                    StatusEffectInstance instance = new(entity, infliction);
-                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
-                    instance.StartStatusEffect(Inflictions.Damage(instance));
-                    hitmarkerText = "-" + infliction.amount + " " + hitmarkerText;
+                    damage += infliction.Amount;
                 } 
-                else if (infliction.InflictionFlavor.inflictionType == InflictionType.GREASY_Knockback)
+                else if (infliction.InflictionType == InflictionType.SLIMY_Knockback && !entity.IsInvincible())
                 {
                     StatusEffectInstance instance = new(entity, infliction);
-                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
+                    activeStatuses.Add(infliction.InflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Knockback(instance, entity._rigidbody, source));
-                    hitmarkerText = "+" + infliction.amount + " " + hitmarkerText;
-                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.UMAMI_Vampirism)
+                }
+                else if(infliction.InflictionType == InflictionType.VAMPIRISM_LifeSteal && !entity.IsInvincible())
                 {
+                    damage += infliction.Amount;
                     Inflictions.Vampirism(infliction, entity, source);
-                    // Display nothing, as it'll appear as healing the player and damage to the enemy
-                    hitmarkerText = "";
-                }else if(infliction.InflictionFlavor.inflictionType == InflictionType.FROSTY_Freeze)
+                }
+                else if(infliction.InflictionType == InflictionType.FROSTY_Freeze && !entity.IsInvincible())
                 {
                     StatusEffectInstance instance = new(entity, infliction);
-                    activeStatuses.Add(infliction.InflictionFlavor.inflictionType, instance);
+                    activeStatuses.Add(infliction.InflictionType, instance);
                     instance.StartStatusEffect(Inflictions.Freeze(instance));
                 }
+                else if (infliction.InflictionType == InflictionType._Water)
+                {
+                    StatusEffectInstance instance = new(entity, infliction);
+                    activeStatuses.Add(infliction.InflictionType, instance);
+                    instance.StartStatusEffect(Inflictions.Water(instance));
+                }
             }
-            if (!quiet)
-            {
-                entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
-            }
+        }
+
+        if (damage > 0)
+        {
+            DealDamage(damage);
         }
     }
 
-    public void DealDamage(int dmg)
+    public void DealDamage(float dmg)
     {
-        if (!activeStatuses.ContainsKey(InflictionType.SPIKY_Damage))
+        if (!HasInfliction(InflictionType.SPIKY_Damage))
         {
-            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[InflictionType.SPIKY_Damage];
-            string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(InflictionType.SPIKY_Damage);
             StatusEffectInstance instance = new(entity, dmg, InflictionType.SPIKY_Damage);
             activeStatuses.Add(InflictionType.SPIKY_Damage, instance);
             instance.StartStatusEffect(Inflictions.Damage(instance));
-            hitmarkerText = "-" + dmg + " " + hitmarkerText;
-            entity.DisplayHitmarker(hitmarkerColor, hitmarkerText);
         }
-
-    }
-
-    public bool IsAfflicted(InflictionType inflictionType)
-    {
-        return activeStatuses.ContainsKey(inflictionType);
     }
 
     public Dictionary<InflictionType, StatusEffectInstance> GetActiveStatuses()
@@ -157,6 +147,18 @@ public class EntityInflictionEffectHandler
 
     public void EndStatusEffect(StatusEffectInstance instance)
     {
-        if (activeStatuses.ContainsKey(instance.type)) activeStatuses.Remove(instance.type);
+        if (HasInfliction(instance.type))
+        {
+            activeStatuses[instance.type].End();
+            activeStatuses.Remove(instance.type);
+        }
+    }
+    public void EndStatusEffect(InflictionType type)
+    {
+        if (HasInfliction(type))
+        {
+            activeStatuses[type].End();
+            activeStatuses.Remove(type);
+        }
     }
 }

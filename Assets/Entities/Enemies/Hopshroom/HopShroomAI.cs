@@ -30,7 +30,7 @@ public class HopShroomAI : EnemyBaseClass
     [SerializeField] protected float FreezeEnemyWhenThisFar = 30f;
     [SerializeField] protected float PlayerDetectionIntervalWhenFrozen = 1.5f;
     [SerializeField] Transform firingPoint;
-    [SerializeField] HopShroomSpore bullet;
+    [SerializeField] StandardEnemyBullet bullet;
 
     [Header("Idle State")]
     [SerializeField] protected float PlayerDetectionPathLength = 15f;
@@ -200,7 +200,7 @@ public class HopShroomAI : EnemyBaseClass
                 {
                     sm.animator.Play("Attack");
                     yield return new WaitForSeconds(sm.ShotAnimDelay);
-                    HopShroomSpore temp = Instantiate(sm.bullet, sm.firingPoint.position, sm.firingPoint.rotation);
+                    StandardEnemyBullet temp = Instantiate(sm.bullet, sm.firingPoint.position, sm.firingPoint.rotation);
                     temp.direction = (sm._playerTransform.position - sm.transform.position).normalized;
                     sm._sprite.flipX = temp.direction.x <= 0;
                     if (chargeNum < sm.ShotCount) yield return new WaitForSeconds(sm.ShotCooldown);

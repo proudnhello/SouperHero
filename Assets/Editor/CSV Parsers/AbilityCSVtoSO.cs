@@ -62,10 +62,8 @@ public class AbilityCSVtoSO
             // Set Base Stats
             abilityIngredient.baseStats.BaseDuration = float.Parse(splitData[3]);
             abilityIngredient.baseStats.BaseSize = float.Parse(splitData[4]);
-            abilityIngredient.baseStats.BaseCrit = float.Parse(splitData[5]);
-            abilityIngredient.baseStats.BaseSpeed = float.Parse(splitData[6]);
-            abilityIngredient.baseStats.cooldown = float.Parse(splitData[7]);
-            abilityIngredient.uses = int.Parse(splitData[8]);
+            abilityIngredient.baseStats.BaseSpeed = float.Parse(splitData[5]);
+            abilityIngredient.uses = int.Parse(splitData[6]);
 
             
 
@@ -73,7 +71,7 @@ public class AbilityCSVtoSO
             FlavorIngredient.InflictionFlavor.InflictionType inflictionType;
             List<InflictionFlavor> inherentInflictionFlavors = new();
 
-            for (int i=9; i<15; i += 3)
+            for (int i=7; i<11; i += 2)
             {
                 if (!string.IsNullOrEmpty(splitData[i]))
                 {
@@ -85,7 +83,6 @@ public class AbilityCSVtoSO
 
                         inflictionFlavor.amount = int.Parse(splitData[i + 1]);
 
-                        inflictionFlavor.statusEffectDuration = float.Parse(splitData[i + 2]);
 
                         // add parsed infliction flavor
                         inherentInflictionFlavors.Add(inflictionFlavor);
@@ -104,16 +101,7 @@ public class AbilityCSVtoSO
             AbilityAbstractClass abilityType = FindAbilityByName(splitData[2]);
             abilityIngredient.abilityType = abilityType;
 
-            // Set Icon
-            if (!string.IsNullOrWhiteSpace(splitData[15]))
-            {
-                Sprite icon = FindSpriteByName(splitData[15]);
-                abilityIngredient.EncyclopediaImage = icon;
-            }
-
-            abilityIngredient.Source = splitData[16];
-            abilityIngredient.AbilityDescription = splitData[17];
-            abilityIngredient.uuid = Int32.Parse(splitData[18]);
+            abilityIngredient.uuid = Int32.Parse(splitData[11]);
 
             AssetDatabase.CreateAsset(abilityIngredient, $"{writeFolderPath}{abilityIngredient.IngredientName}.asset");
 
@@ -131,7 +119,6 @@ public class AbilityCSVtoSO
 
                 // set to dirty to mark it has unsaved changes
                 EditorUtility.SetDirty(playerPrefab);
-
 
                 inventory.defaultSoupIngredients = defaultSpoonIngredients;
 

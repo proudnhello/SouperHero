@@ -11,7 +11,7 @@ using static Entity;
 //The ranged enemy follows player constantly until they are in range, at which point they freeze and fire bullets
 //Code tutorial for ranged enemy found at: https://www.youtube.com/watch?v=bwi4lteomic
 
-public class TurretAI : EnemyBaseClass
+public class RatishAI : EnemyBaseClass
 {
     [Header("Player Detection")]
     private bool playerDetected = false;
@@ -24,7 +24,7 @@ public class TurretAI : EnemyBaseClass
     [SerializeField] private int numberOfShots = 3;
     private float detectionDelay = 0.3f;
     public Transform firingPoint;
-    public HopShroomSpore bullet;
+    public StandardEnemyBullet bullet;
     private Animator animator;
 
     private TurretState currentState;
@@ -39,9 +39,9 @@ public class TurretAI : EnemyBaseClass
 
     public abstract class TurretState
     {
-        abstract public void Update(TurretAI turret, float deltaT);
-        abstract public void Enter(TurretAI turret, TurretState previousState);
-        abstract public void Exit(TurretAI turret);
+        abstract public void Update(RatishAI turret, float deltaT);
+        abstract public void Enter(RatishAI turret, TurretState previousState);
+        abstract public void Exit(RatishAI turret);
     }
 
     // This is the state where the turret is hidden and not shooting, and as such, cannot take damage
@@ -49,14 +49,14 @@ public class TurretAI : EnemyBaseClass
     {
         float hideTimer = 0;
 
-        public override void Enter(TurretAI turret, TurretState _previousState)
+        public override void Enter(RatishAI turret, TurretState _previousState)
         {
             turret.animator.Play("Retreating");
             turret.c.enabled = false;
             hideTimer = turret.hideTime;
         }
 
-        public override void Update(TurretAI turret, float deltaT)
+        public override void Update(RatishAI turret, float deltaT)
         {
             hideTimer -= deltaT;
             if((turret.playerDetected || turret.alwaysAggro) && hideTimer <= 0)
@@ -66,7 +66,7 @@ public class TurretAI : EnemyBaseClass
             }
         }
 
-        public override void Exit(TurretAI turret)
+        public override void Exit(RatishAI turret)
         {
             return;
         }
@@ -77,7 +77,7 @@ public class TurretAI : EnemyBaseClass
     {
         float emergeTimer = 0;
         TurretState initialState;
-        public override void Enter(TurretAI turret, TurretState previousState)
+        public override void Enter(RatishAI turret, TurretState previousState)
         {
             turret.c.enabled = true;
             initialState = previousState;
@@ -86,7 +86,7 @@ public class TurretAI : EnemyBaseClass
             return;
         }
 
-        public override void Update(TurretAI turret, float deltaT)
+        public override void Update(RatishAI turret, float deltaT)
         {
             emergeTimer -= deltaT;
 
@@ -104,7 +104,7 @@ public class TurretAI : EnemyBaseClass
             return;
         }
 
-        public override void Exit(TurretAI turret)
+        public override void Exit(RatishAI turret)
         {
             return;
         }
@@ -115,7 +115,7 @@ public class TurretAI : EnemyBaseClass
     {
         int remainingShots;
         float shotTimer;
-        public override void Enter(TurretAI turret, TurretState _previousState)
+        public override void Enter(RatishAI turret, TurretState _previousState)
         {
             turret.c.enabled = true;
             remainingShots = turret.numberOfShots;
@@ -124,7 +124,7 @@ public class TurretAI : EnemyBaseClass
             return;
         }
 
-        public override void Update(TurretAI turret, float deltaT)
+        public override void Update(RatishAI turret, float deltaT)
         {
             shotTimer -= deltaT;
             if(shotTimer <= 0)
@@ -141,7 +141,7 @@ public class TurretAI : EnemyBaseClass
             return;
         }
 
-        public override void Exit(TurretAI turret)
+        public override void Exit(RatishAI turret)
         {
             return;
         }
@@ -189,7 +189,7 @@ public class TurretAI : EnemyBaseClass
     public void Shoot()
     {
         animator.Play("Attack");
-        HopShroomSpore bulletInstance = Instantiate(bullet, firingPoint.position, firingPoint.rotation);
+        StandardEnemyBullet bulletInstance = Instantiate(bullet, firingPoint.position, firingPoint.rotation);
         Vector2 playerDirection = PlayerEntityManager.Singleton.transform.position - transform.position;
         bulletInstance.SetDirection(playerDirection);
     }

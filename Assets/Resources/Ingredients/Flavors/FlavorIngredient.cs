@@ -19,7 +19,8 @@ public class FlavorIngredient : Ingredient
         public bool isBuff; // 0 = buff, 1 = infliction, -1 = error
         public BuffFlavor.BuffType FlavorPairingBuff; // Only one pairing is set
         public InflictionFlavor.InflictionType FlavorPairingInfliction;
-        public FlavorPairing(string pairing)
+        public float amount;
+        public FlavorPairing(string pairing, string amount)
         {
             if (Enum.TryParse(pairing, out BuffFlavor.BuffType buffType))
             {
@@ -30,7 +31,8 @@ public class FlavorIngredient : Ingredient
             {
                 isBuff = false;
                 FlavorPairingInfliction = inflictionType;
-            } 
+            }
+            if (!float.TryParse(amount, out this.amount)) this.amount = .2f;
         } 
 
         public int GetPairing()
@@ -45,13 +47,12 @@ public class FlavorIngredient : Ingredient
     {
         public enum BuffType
         {
-            SOUR_Duration,
-            SALTY_Crit, // TODO: Remove crits, as they no longer exist
-            BITTER_Size,
-            SWEET_Speed,
+            TOUGH_Duration,
+            HEAVY_Size,
+            SWEET_Speed
         }
         public BuffType buffType;
-        public float amount;
+        public int amount;
     }
     [Serializable]
     public class InflictionFlavor
@@ -60,20 +61,19 @@ public class FlavorIngredient : Ingredient
         {
             SPICY_Burn,
             FROSTY_Freeze,
-            HEARTY_Health,
             SPIKY_Damage,
-            GREASY_Knockback,
-            UMAMI_Vampirism
+            SLIMY_Knockback,
+            VAMPIRISM_LifeSteal,
+            _Health,
+            _Water
         }
         public InflictionType inflictionType;
         public int amount;
-        public float statusEffectDuration;
 
         public InflictionFlavor(InflictionFlavor other)
         {
             inflictionType = other.inflictionType;
             amount = other.amount;
-            statusEffectDuration = other.statusEffectDuration;
         }
 
         public InflictionFlavor() { }
@@ -82,36 +82,41 @@ public class FlavorIngredient : Ingredient
     public List<BuffFlavor> buffFlavors;
     public List<InflictionFlavor> inflictionFlavors;
 
-public static readonly Dictionary<BuffFlavor.BuffType, Color> buffColorMapping = new Dictionary<BuffFlavor.BuffType, Color>
-{
-    { BuffFlavor.BuffType.SOUR_Duration, Color.yellow },
-    { BuffFlavor.BuffType.SALTY_Crit, new Color(0.65f, 0.16f, 0.16f) }, // Brownish
-    { BuffFlavor.BuffType.BITTER_Size, new Color(0f, 1f, 0f) }, // Green
-    { BuffFlavor.BuffType.SWEET_Speed, new Color(0.5f, 0f, 0.5f) }, // Purple
-};
+    public static readonly Dictionary<BuffFlavor.BuffType, Color> buffColorMapping = new Dictionary<BuffFlavor.BuffType, Color>
+    {
+        { BuffFlavor.BuffType.SWEET_Speed, new Color(0.5f, 0f, 0.5f) }, // Purple
+        { BuffFlavor.BuffType.TOUGH_Duration, Color.yellow },
+        { BuffFlavor.BuffType.HEAVY_Size, new Color(0f, 1f, 0f) }, // Green
+    };
 
     public static readonly Dictionary<InflictionFlavor.InflictionType, Color> inflictionColorMapping = new Dictionary<InflictionFlavor.InflictionType, Color>
     {
         { InflictionFlavor.InflictionType.SPICY_Burn, Color.red },
         { InflictionFlavor.InflictionType.FROSTY_Freeze, new Color(0f, 1f, 1f) }, // Cyan
-        { InflictionFlavor.InflictionType.HEARTY_Health, Color.green },
+        { InflictionFlavor.InflictionType._Health, Color.green },
         { InflictionFlavor.InflictionType.SPIKY_Damage, new Color(1f, 0f, 1f) }, // Magenta
-        { InflictionFlavor.InflictionType.GREASY_Knockback, new Color(0.55f, 0.27f, 0.07f) }, // SaddleBrown
-        { InflictionFlavor.InflictionType.UMAMI_Vampirism, new Color(0.58f, 0, 0.82f) } // Purple
+        //{ InflictionFlavor.InflictionType.SLIMY_Knockback, new Color(0.55f, 0.27f, 0.07f) }, // SaddleBrown
+        { InflictionFlavor.InflictionType.VAMPIRISM_LifeSteal, new Color(1f, .2f, .4f) }
     };
     public static Dictionary<InflictionFlavor.InflictionType, string> inflictionTextMapping = new Dictionary<InflictionFlavor.InflictionType, string>{
-        {InflictionFlavor.InflictionType.SPICY_Burn, "Burn Infliction"},
-        {InflictionFlavor.InflictionType.FROSTY_Freeze, "Freeze Infliction"},
-        {InflictionFlavor.InflictionType.HEARTY_Health, "Health Infliction"},
-        {InflictionFlavor.InflictionType.SPIKY_Damage, "Damage Infliction"},
-        {InflictionFlavor.InflictionType.GREASY_Knockback, "Knockback Infliction"},
-        {InflictionFlavor.InflictionType.UMAMI_Vampirism, "Vampirism Infliction"}
+        {InflictionFlavor.InflictionType.SPICY_Burn, "Burn Hitmarker"},
+        {InflictionFlavor.InflictionType.FROSTY_Freeze, "Freeze Hitmarker"},
+        {InflictionFlavor.InflictionType._Health, "Health Hitmarker"},
+        {InflictionFlavor.InflictionType.SPIKY_Damage, "Damage Hitmarker"},
+        //{InflictionFlavor.InflictionType.SLIMY_Knockback, "Knockback Hitmarker"},
+        {InflictionFlavor.InflictionType.VAMPIRISM_LifeSteal, "Vampirism Hitmarker" }
     };
 
-    public static string GetFlavorHitmarker(InflictionFlavor.InflictionType flavorKey)
-    {   
-        LocalizedString localString = new LocalizedString(LocalizationManager.GetTable(), inflictionTextMapping[flavorKey]); 
-        return localString.GetLocalizedString();
+    public static string GetFlavorHitmarkerText(InflictionFlavor.InflictionType flavorKey)
+    {
+        if (inflictionTextMapping.ContainsKey(flavorKey)) return new LocalizedString(LocalizationManager.GetTable(), inflictionTextMapping[flavorKey]).GetLocalizedString();
+        return "";
+    }
+
+    public static Color GetFlavorHitmarkerColor(InflictionFlavor.InflictionType flavorKey)
+    {
+        if (inflictionColorMapping.ContainsKey(flavorKey)) return inflictionColorMapping[flavorKey];
+        return Color.white;
     }
 
 }

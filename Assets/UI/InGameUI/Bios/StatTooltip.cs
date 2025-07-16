@@ -1,34 +1,35 @@
 using System.Collections;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using Icon = Encyclopedia.FlavorTextToIcon;
+using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
-public class EncyclopediaFlavorIcon : MonoBehaviour
+public class StatTooltip : MonoBehaviour, ITooltipSource
 {
-    [SerializeField] Image FlavorIconDisplay;
     [SerializeField] CanvasGroup Tooltip;
+    [SerializeField] TMP_Text StatText;
+    [SerializeField] string StatSuffix;
     [SerializeField] AnimationCurve FadeCurve;
     [SerializeField] float FadeAnimTime;
-    [SerializeField] TMP_Text TooltipText;      // this just holds a key now
-                                                // key references the actual text we want to display in the tooltip
-
-    public void SetIcon(Icon icon)
+    [SerializeField] TMP_Text TooltipText;
+    [SerializeField] string TooltipLocalizationKEY;
+    private void Start()
     {
-        FlavorIconDisplay.sprite = icon.ICON;
-        TooltipText.text = LocalizationManager.GetLocalizedString(icon.TOOLTIP_TEXT);       // get the localized version of the tooltip text using the key
-        gameObject.SetActive(true);
+        TooltipText.text = LocalizationManager.GetLocalizedString(TooltipLocalizationKEY);
         Tooltip.gameObject.SetActive(false);
     }
 
-    private void OnMouseEnter()
+    public void SetStat(float amount)
+    {
+        StatText.text = amount.ToString("F1") + StatSuffix;
+    }
+
+    public void OnHoverEnter()
     {
         if (IFadeAnim != null) StopCoroutine(IFadeAnim);
         StartCoroutine(IFadeAnim = FadeAnim(true));
     }
 
-    private void OnMouseExit()
+    public void OnHoverExit()
     {
         if (IFadeAnim != null) StopCoroutine(IFadeAnim);
         StartCoroutine(IFadeAnim = FadeAnim(false));
@@ -55,4 +56,5 @@ public class EncyclopediaFlavorIcon : MonoBehaviour
 
         timeProgressed = fadeIn ? FadeAnimTime : 0;
     }
+
 }

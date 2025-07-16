@@ -143,17 +143,8 @@ public class MainMenuAnims : MonoBehaviour
     public void StartButton()
     {
 
-        Debug.Log($"State Path: {SaveManager.Singleton.runStatePath}");
-        if (File.Exists(SaveManager.Singleton.runStatePath))
-        {
-            Debug.Log("File exists");
-            continueButton.SetActive(true);
-        }
-        else
-        {
-            Debug.Log("File doesn't exist");
-            continueButton.SetActive(false);
-        }
+        Debug.Log($"State Path: {SaveManager.Singleton.HasSavedRun()}");
+        continueButton.SetActive(SaveManager.Singleton.HasSavedRun());
         StartCoroutine("startCoroutine");
     }
 

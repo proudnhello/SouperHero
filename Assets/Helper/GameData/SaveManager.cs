@@ -18,7 +18,7 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Singleton { get; private set; }
 
     private string statsPath;
-    public string runStatePath;
+    private string runStatePath;
     private string settingsPath;
     private string inventoryPath;
     private string unlockPath;
@@ -130,6 +130,8 @@ public class SaveManager : MonoBehaviour
             return null;
         }
     }
+
+    public bool HasSavedRun() => File.Exists(runStatePath);
 
     public void SaveMetricsData(MetricsData data)
     {

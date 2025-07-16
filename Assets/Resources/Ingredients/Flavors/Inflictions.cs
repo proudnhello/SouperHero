@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using StatusEffectInstance = EntityInflictionEffectHandler.StatusEffectInstance;
-using Infliction = FinishedSoup.SoupInfliction;
+using InflictionStat = FinishedSoup.SoupInflictionStat;
 using UnityEngine.AI;
 using Unity.VisualScripting.FullSerializer;
 using System.Collections.Generic;
@@ -12,53 +12,76 @@ using System.Collections.Generic;
 public class Inflictions
 {
     #region INFLICTION PARAMETERS
-    static float BURN_INTERVAL = 2f;
+    static float BURN_INTERVAL_DURATION = 1f;
+    static int MAX_BURN_INTERVALS = 10;
     static float BURN_INTERVAL_DEVIATION = .25f;
-    static float FREEZE_TIME_DEVIATION = 0f;
+    static float FREEZE_INTERVAL_DURATION = .25f;
+    static float FREEZE_TIME_DEVIATION = .05f;
+    static int MAX_FREEZE_INTERVALS = 10;
     static float KNOCKBACK_MULTIPLIER = 150f;
     #endregion
 
-    public static void Health(Infliction infliction, Entity entity)
+    public static void Health(InflictionStat infliction, Entity entity)
     {
-        entity.ModifyHealth(Mathf.CeilToInt(infliction.amount));
+        entity.DisplayHitmarker(FlavorIngredient.InflictionFlavor.InflictionType._Health, infliction.Amount);
+        entity.ModifyHealth(Mathf.CeilToInt(infliction.Amount));
     }
 
     public static IEnumerator Damage(StatusEffectInstance instance)
     {
         instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
         instance.entity.entityRenderer.TakeDamage();
+        instance.entity.DisplayHitmarker(instance.type, instance.amount);
         yield return new WaitForSeconds(instance.entity.GetInvincibility());
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 
     public static IEnumerator Burn(StatusEffectInstance instance)
     {
-        instance.intervals = Mathf.CeilToInt(instance.duration / BURN_INTERVAL);
+        instance.intervals = Mathf.Clamp(Mathf.CeilToInt(instance.amount / BURN_INTERVAL_DURATION),0, MAX_BURN_INTERVALS);
         while(instance.intervals > 0)
         {
             instance.intervals--;
             instance.entity.ModifyHealth(-Mathf.CeilToInt(instance.amount));
-            Color hitmarkerColor = FlavorIngredient.inflictionColorMapping[instance.type];
-            string hitmarkerText = FlavorIngredient.GetFlavorHitmarker(instance.type);
-            instance.entity.DisplayHitmarker(hitmarkerColor, "-" + instance.amount + " " + hitmarkerText);
+            instance.entity.DisplayHitmarker(instance.type, instance.amount);
             instance.entity.entityRenderer.TakeDamage();
-            yield return new WaitForSeconds(BURN_INTERVAL + Random.Range(-BURN_INTERVAL_DEVIATION, BURN_INTERVAL_DEVIATION));
+            yield return new WaitForSeconds(BURN_INTERVAL_DURATION + Random.Range(-BURN_INTERVAL_DEVIATION, BURN_INTERVAL_DEVIATION));
         }
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 
-    public static void WorsenBurn(StatusEffectInstance instance, Infliction newInfliction)
+    public static void WorsenBurn(StatusEffectInstance instance, InflictionStat newInfliction)
     {
-        instance.duration = instance.duration > newInfliction.InflictionFlavor.statusEffectDuration ? instance.duration : newInfliction.InflictionFlavor.statusEffectDuration;
-        instance.amount = instance.amount > newInfliction.InflictionFlavor.amount ? instance.amount : newInfliction.InflictionFlavor.amount;
-        instance.intervals = Mathf.CeilToInt(instance.duration / BURN_INTERVAL);
+        instance.amount = instance.amount > newInfliction.Amount ? instance.amount : newInfliction.Amount;
+        instance.intervals = Mathf.Clamp(Mathf.CeilToInt(instance.intervals + instance.amount / BURN_INTERVAL_DURATION), 0, MAX_BURN_INTERVALS);
     }
 
     public static IEnumerator Freeze(StatusEffectInstance instance)
     {
-        instance.entity.SetMoveSpeed(instance.entity.GetMoveSpeed() / instance.amount);
-        yield return new WaitForSeconds(instance.duration + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
-        instance.entity.ResetMoveSpeed();
+        instance.entity.SetMoveSpeed(10, 1 / instance.amount);
+        instance.intervals = Mathf.CeilToInt(instance.amount);
+        instance.entity.DisplayHitmarker(instance.type, instance.amount);
+        do
+        {
+            instance.intervals--;
+            yield return new WaitForSeconds(FREEZE_INTERVAL_DURATION + Random.Range(-FREEZE_TIME_DEVIATION, FREEZE_TIME_DEVIATION));
+        } while (instance.intervals > 0);
+        instance.entity.ResetMoveSpeed(10);
+        instance.entity.inflictionHandler.EndStatusEffect(instance);
+    }
+
+    public static void WorsenFreeze(StatusEffectInstance instance, InflictionStat newInfliction)
+    {
+        instance.intervals = Mathf.Clamp(Mathf.CeilToInt(newInfliction.Amount+instance.intervals), 0, MAX_FREEZE_INTERVALS);
+    }
+
+    public static IEnumerator Water(StatusEffectInstance instance)
+    {
+        instance.entity.SetMoveSpeed(15123, 1 / instance.amount);
+
+        yield return new WaitUntil(() => instance.triggerEnd);
+
+        instance.entity.ResetMoveSpeed(15123);
         instance.entity.inflictionHandler.EndStatusEffect(instance);
     }
 
@@ -83,28 +106,27 @@ public class Inflictions
     }
 
     // Deal damage to the target and (try to) heal the source by applying the respective inflictions
-    public static void Vampirism(Infliction instance, Entity target, Transform source)
+    public static void Vampirism(InflictionStat instance, Entity target, Transform source)
     {
-        Infliction damage = new(instance);
-        damage.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage;
-        List<Infliction> list = new List<Infliction>();
-        list.Add(damage);
-        target.ApplyInfliction(list, source);
+        //InflictionStat damage = new(FlavorIngredient.InflictionFlavor.InflictionType.SPIKY_Damage);
+        //damage.CombineStats(instance);
+        //target.ApplyInfliction(new() { damage}, source, true);
 
-        Infliction heal = new(instance);
-        heal.InflictionFlavor.inflictionType = FlavorIngredient.InflictionFlavor.InflictionType.HEARTY_Health;
-        // Only heal half the amount of damage (that was supposed to be dealt)
-        heal.InflictionFlavor.amount /= 2;
+        if (!source.TryGetComponent(out Entity entity))
+        {
+            if (source.CompareTag("Player")) entity = PlayerEntityManager.Singleton;
+        }
 
-        list.Clear();
-        list.Add(heal);
-        Entity entity = source.GetComponent<Entity>();
-        if(entity)
+        Debug.Log(entity);
+
+        if (entity != null)
         {
-            entity.ApplyInfliction(list, source);
-        }else if(source.tag == "Player")
-        {
-            PlayerEntityManager.Singleton.ApplyInfliction(list, source);
+            InflictionStat heal = new(FlavorIngredient.InflictionFlavor.InflictionType._Health);
+            heal.CombineStats(instance);
+            // Only heal half the amount of damage (that was supposed to be dealt)
+            heal.add /= 2;
+            List<InflictionStat> heals = new() { heal };
+            entity.ApplyInfliction(heals, source);
         }
     }
 }

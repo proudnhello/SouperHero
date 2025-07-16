@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
-using Infliction = FinishedSoup.SoupInfliction;
+using Infliction = FinishedSoup.SoupInflictionStat;
 using skner.DualGrid;
 using System.Collections;
 
@@ -22,7 +22,6 @@ public class PlayerEntityManager : Entity
     private bool shielded = false;
     private GameObject shieldObject;
     private List<Infliction> shieldInflictions;
-
     private void Awake()
     {
         if (Singleton == null) Singleton = this;
@@ -74,10 +73,15 @@ public class PlayerEntityManager : Entity
         return transform.position;
     }
 
+    public override bool IsInvincible()
+    {
+        return playerMovement.charging || shielded;
+    }
+
     public override void DealDamage(int damage)
     {
         // If we're charging, don't apply inflictions
-        if (!playerMovement.charging && !shielded)
+        if (!IsInvincible())
         {
             base.DealDamage(damage);
         }
@@ -104,7 +108,7 @@ public class PlayerEntityManager : Entity
         this.shieldObject = shieldObject;
         shieldObject.SetActive(true);
 
-        shieldDurationCoroutine = StartCoroutine(ShieldDuration(stats.duration));
+        shieldDurationCoroutine = StartCoroutine(ShieldDuration(stats.ModifiedDuration));
     }
 
     public IEnumerator RemoveShield()
@@ -124,13 +128,9 @@ public class PlayerEntityManager : Entity
         StartCoroutine(RemoveShield());
     }
 
-    public override void ApplyInfliction(List<Infliction> spoonInflictions, Transform source, bool quiet = false)
+    public override void ApplyInfliction(List<Infliction> spoonInflictions, Transform source)
     {
-        // If we're charging, don't apply inflictions
-        if (!playerMovement.charging && !shielded)
-        {
-            base.ApplyInfliction(spoonInflictions, source, quiet);
-        }
+        base.ApplyInfliction(spoonInflictions, source);
 
         // If we're shielded, remove it
         if (shielded)
@@ -145,7 +145,7 @@ public class PlayerEntityManager : Entity
     public void Charge(AbilityStats stats, List<Infliction> inflictions)
     {
         chargeInflictions = inflictions;
-        playerMovement.StartCoroutine(playerMovement.Charge(stats.duration, stats.speed));
+        playerMovement.StartCoroutine(playerMovement.Charge(stats.ModifiedDuration, stats.ModifiedSpeed));
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -182,7 +182,7 @@ public class PlayerEntityManager : Entity
     public override void Fall(Transform respawnPoint)
     {
         GetComponent<Collider2D>().enabled = false;
-        SetMoveSpeed(0);
+        SetMoveSpeed(11, 0);
         StartCoroutine(FallAnimation(respawnPoint));
     }
 
@@ -200,7 +200,7 @@ public class PlayerEntityManager : Entity
         }
 
         sprite.size = initialScale;
-        ResetMoveSpeed();
+        ResetMoveSpeed(11);
         DealDamage(GetBaseStats().maxHealth / 9); // Deal damage to the player == 1/9 of max health or one heart
         transform.position = respawnPoint.position;
         GetComponent<Collider2D>().enabled = true;

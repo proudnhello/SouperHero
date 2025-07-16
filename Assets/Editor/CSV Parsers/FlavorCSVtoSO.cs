@@ -65,7 +65,7 @@ public class FlavorCSVtoSO
             List<InflictionFlavor> inherentInflictionFlavors = new();
             List<BuffFlavor> inherentBuffFlavors = new();
 
-            for (int i=1; i<7; i += 3)
+            for (int i=1; i<5; i += 2)
             {
                 if (!string.IsNullOrEmpty(splitData[i]))
                 {
@@ -77,7 +77,6 @@ public class FlavorCSVtoSO
                         };
 
                         inflictionFlavor.amount = int.Parse(splitData[i + 1]);
-                        inflictionFlavor.statusEffectDuration = float.Parse(splitData[i + 2]);
 
                         // add parsed infliction flavor
                         inherentInflictionFlavors.Add(inflictionFlavor);
@@ -102,21 +101,12 @@ public class FlavorCSVtoSO
 
             }
 
-            flavorIngredient.Pairing = new(splitData[10]);
+            flavorIngredient.Pairing = new(splitData[5], splitData[6]);
 
             flavorIngredient.inflictionFlavors = inherentInflictionFlavors;
             flavorIngredient.buffFlavors = inherentBuffFlavors;
 
-            // Set Icon
-            if (!string.IsNullOrWhiteSpace(splitData[7]))
-            {
-                Sprite icon = FindSpriteByName(splitData[7]);
-                flavorIngredient.EncyclopediaImage = icon;
-            }
-
-            flavorIngredient.Source = splitData[8];
-            flavorIngredient.FlavorProfile = splitData[9];
-            flavorIngredient.uuid = Int32.Parse(splitData[11]);
+            flavorIngredient.uuid = Int32.Parse(splitData[7]);
 
             AssetDatabase.CreateAsset(flavorIngredient, $"{writeFolderPath}{flavorIngredient.IngredientName}.asset");
 
