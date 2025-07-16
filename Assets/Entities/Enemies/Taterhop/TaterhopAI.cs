@@ -166,11 +166,6 @@ public class TaterhopAI : EnemyBaseClass
                 if (attempts >= maxAttempts)
                 {
                     Debug.LogWarning("TaterhopAI: Failed to find a safe patrol point after 10 attempts. This may lead to unexpected behavior.");
-                    GameObject[] parents = sm.GetComponentsInParent<GameObject>();
-                    foreach (GameObject parent in parents)
-                    {
-                        Debug.LogWarning($"Parent: {parent.name}");
-                    }
                 }
                 
                 sm.animator.Play("Walk");
