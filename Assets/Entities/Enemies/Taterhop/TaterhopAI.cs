@@ -150,15 +150,28 @@ public class TaterhopAI : EnemyBaseClass
 
                 // FIND NEW POINT
                 Vector2 targetPoint;
+                // try up to 10 times to find a point that is safe, if it failes, we'll just let it kill itself
+                int attempts = 0;
+                int maxAttempts = 10;
                 do
                 {
                     float targetAngle = Random.Range(0, 2 * Mathf.PI);
                     Vector2 targetDir = new Vector3(Mathf.Cos(targetAngle), Mathf.Sin(targetAngle));
                     targetPoint = targetDir * Random.Range(sm.PatrolDistance.x, sm.PatrolDistance.y) + centerPoint;
-                    sm.agent.isStopped = false;
-                    sm.agent.SetDestination(targetPoint);
-                } while (!sm.CheckPointSafety(targetPoint));
-
+                    attempts++;
+                } while (!sm.CheckPointSafety(targetPoint) && attempts < maxAttempts);
+                
+                sm.agent.isStopped = false;
+                sm.agent.SetDestination(targetPoint);
+                if (attempts >= maxAttempts)
+                {
+                    Debug.LogWarning("TaterhopAI: Failed to find a safe patrol point after 10 attempts. This may lead to unexpected behavior.");
+                    GameObject[] parents = sm.GetComponentsInParent<GameObject>();
+                    foreach (GameObject parent in parents)
+                    {
+                        Debug.LogWarning($"Parent: {parent.name}");
+                    }
+                }
                 
                 sm.animator.Play("Walk");
 
