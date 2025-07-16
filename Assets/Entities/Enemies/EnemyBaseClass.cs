@@ -180,7 +180,6 @@ public abstract class EnemyBaseClass : Entity
         // Sample the given point on the NavMesh
         if (NavMesh.SamplePosition(point, out hit, 1.0f, NavMesh.AllAreas))
         {
-            print(hit.mask);
             if (hit.mask != 1)
             {
                 return false;

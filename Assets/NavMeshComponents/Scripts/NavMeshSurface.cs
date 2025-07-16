@@ -443,12 +443,6 @@ namespace NavMeshPlus.Components
                     case NavMeshBuildSourceShape.Mesh:
                     {
                         var m = src.sourceObject as Mesh;
-                        print(src);
-                        if (m == null)
-                            {
-                                print("This one's null " + src);
-                                continue;
-                            }
                         result.Encapsulate(GetWorldBounds(worldToLocal * src.transform, m.bounds));
                         break;
                     }
