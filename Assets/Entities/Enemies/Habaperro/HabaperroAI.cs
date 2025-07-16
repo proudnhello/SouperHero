@@ -180,7 +180,7 @@ public class HabaperroAI : EnemyBaseClass
                         NavMesh.CalculatePath(new Vector2(sm.transform.position.x, sm.transform.position.y), targetPoint,
                             NavMesh.AllAreas, path);
                         distance = CalculatePathLength();
-                    } while (distance < 0 || distance >= sm.MaxPatrolPathLength);
+                    } while (distance < 0 || distance >= sm.MaxPatrolPathLength || !sm.CheckPointSafety(targetPoint));
                     
                     
                 }

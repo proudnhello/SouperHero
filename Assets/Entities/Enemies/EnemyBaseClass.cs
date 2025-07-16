@@ -191,4 +191,47 @@ public abstract class EnemyBaseClass : Entity
         }
         return false;
     }
+
+    public Vector2 RotateUntilSafe(Vector2 point, Vector2 offset)
+    {
+        float angleStep = 5f;
+        int direction = 1;
+        int attempts = 1;
+        bool foundSafe = false;
+        Vector2 targetPoint = point + offset;
+        if (CheckPointSafety(targetPoint))
+        {
+            return targetPoint; // If the initial point is safe, return it
+        }
+
+        while (!foundSafe && attempts <= 72) // 72 * 5 = 360 degrees
+        {
+            float angle = angleStep * attempts * direction;
+            float rad = angle * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(rad);
+            float sin = Mathf.Sin(rad);
+
+            Vector2 rotatedOffset = new Vector2(
+                offset.x * cos - offset.y * sin,
+                offset.x * sin + offset.y * cos
+            );
+
+            targetPoint = point + rotatedOffset;
+
+            if (CheckPointSafety(targetPoint))
+            {
+                foundSafe = true;
+                break;
+            }
+            direction *= -1; // alternate left/right
+            if (direction > 0) attempts++;
+        }
+
+        if (!foundSafe)
+        {
+            targetPoint = point + offset;
+        }
+
+        return targetPoint;
+    }
 }

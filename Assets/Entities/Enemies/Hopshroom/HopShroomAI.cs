@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -177,40 +178,7 @@ public class HopShroomAI : EnemyBaseClass
                 {
                     Vector3 offset = (sm.transform.position - sm._playerTransform.position).normalized * sm.MidDistanceShootPoint;
                     Vector3 targetPoint = sm._playerTransform.position + offset;
-                    if (!sm.CheckPointSafety(targetPoint))
-                    {
-                        float angleStep = 5f;
-                        int direction = 1;
-                        int attempts = 1;
-                        bool foundSafe = false;
-                        while (!foundSafe && attempts <= 72) // 72 * 5 = 360 degrees
-                        {
-                            float angle = angleStep * attempts * direction;
-                            Vector3 dir = (offset).normalized;
-                            float rad = angle * Mathf.Deg2Rad;
-                            float cos = Mathf.Cos(rad);
-                            float sin = Mathf.Sin(rad);
-                            Vector3 rotatedDir = new Vector3(
-                                dir.x * cos - dir.y * sin,
-                                dir.x * sin + dir.y * cos,
-                                0f
-                            );
-                            targetPoint = sm._playerTransform.position + rotatedDir * sm.MidDistanceShootPoint;
-                            if (sm.CheckPointSafety(targetPoint))
-                            {
-                                foundSafe = true;
-                                break;
-                            }
-                            direction *= -1; // alternate left/right
-                            if (direction > 0) attempts++;
-                            yield return null;
-                        }
-                        if (!foundSafe)
-                        {
-                            // fallback: just use original targetPoint and let it kill itself
-                            targetPoint = sm._playerTransform.position + offset;
-                        }
-                    }
+                    targetPoint = sm.RotateUntilSafe(sm._playerTransform.position, offset);
                     sm.agent.SetDestination(targetPoint);
                     sm._sprite.flipX = sm.agent.destination.x <= sm.transform.position.x;
                     lastPos = sm.agent.transform.position;
