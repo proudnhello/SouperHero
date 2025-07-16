@@ -169,7 +169,7 @@ public class CookingScreen : MonoBehaviour
                 SoupIsValid = true;
             }
         }
-        if (cookedIngredients.Count > 0) cookingBioDisplay.DisplayIngredients(cookedIngredients);
+        cookingBioDisplay.DisplayIngredients(cookedIngredients);
         cookedIngredients.Clear();
     }
 

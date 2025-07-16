@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
 {
-    [SerializeField] TMP_Text usesText;
     [SerializeField] Image SlotOutline;
     [SerializeField] Image SlotContent;
     [SerializeField] Image EmptySlotIcon;
@@ -65,7 +64,6 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
         soupSlotReference = -1;
         SlotOutline.gameObject.SetActive(true);
         EmptySlotIcon.gameObject.SetActive(true);
-        usesText.text = "";
         SlotContent.gameObject.SetActive(false);
     }
 

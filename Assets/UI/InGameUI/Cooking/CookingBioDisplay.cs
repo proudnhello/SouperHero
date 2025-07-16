@@ -6,6 +6,8 @@ public class CookingBioDisplay : MonoBehaviour
     CookingScreen cs;
     public Sprite[] tickMarkSprites;
     [SerializeField] CookingFlavorIcon[] FlavorIcons;
+    [SerializeField] StatTooltip CooldownStat;
+    [SerializeField] StatTooltip UsesStat;
     public void Init(CookingScreen cs)
     {
         this.cs = cs;
@@ -18,11 +20,17 @@ public class CookingBioDisplay : MonoBehaviour
     public void DisplayBowl(SoupBase bowl)
     {
         ClearIngredients();
+        CooldownStat.gameObject.SetActive(true);
+        CooldownStat.SetStat(bowl.cooldown);
+        UsesStat.SetStat(0);
+        UsesStat.SetColliderSize(1);
     }
 
     public void ClearDisplay()
     {
         ClearIngredients();
+        CooldownStat.gameObject.SetActive(false);
+        UsesStat.Clear();
     }
 
     public void ClearIngredients()
@@ -46,5 +54,12 @@ public class CookingBioDisplay : MonoBehaviour
             FlavorIcons[iconUsed].Set(inf);
             iconUsed++;
         }
+        CooldownStat.SetStat(bowl.cooldown);
+        UsesStat.SetStat(bowl.uses);
+        int places = 1;
+        int d = bowl.uses;
+        while (d > 9) { d %= 10; places++; }
+        UsesStat.SetColliderSize(places);
+
     }
 }
