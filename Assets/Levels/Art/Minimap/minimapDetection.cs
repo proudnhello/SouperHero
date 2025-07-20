@@ -6,28 +6,15 @@ public class minimapDetection : MonoBehaviour
 {
     public List<GameObject> minimapRendererList;
 
-    void Start()
-    {
-        updateRenderList();
-        turnOffAll();
-    }
-
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            turnOnAll();
+            turnOffAll();
         }
     }
 
-    private void turnOnAll()
-    {
-        for (int i = 0; i < minimapRendererList.Count; i++)
-        {
-            minimapRendererList[i].SetActive(true);
-        }
-    }
 
     private void turnOffAll()
     {
@@ -37,18 +24,5 @@ public class minimapDetection : MonoBehaviour
         }
     }
 
-    private void updateRenderList()
-    {
-        List<GameObject> tempList = new List<GameObject>();
-        for (int i = 0; i < minimapRendererList.Count; i++)
-        {
-            if (minimapRendererList[i].activeSelf)
-            {
-                tempList.Add(minimapRendererList[i]);
-            }
-        }
-
-        minimapRendererList = tempList;
-    }
 
 }

@@ -244,7 +244,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1677076209
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 1
   m_Sprite: {fileID: -873330196, guid: ef90fcaa124f93d4cb7fbda768839126, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -339,7 +339,6 @@ MonoBehaviour:
     invincibility: 1
   currentStats:
     health: 0
-    moveSpeed: 0
   falling: 0
   flying: 1
   hitmarker: {fileID: 594101713564386973, guid: 88876a640853de543b8ab5cacc641fba, type: 3}
@@ -362,7 +361,6 @@ MonoBehaviour:
   hopDistance: 3
   bombPrefab: {fileID: 3072699456046033910, guid: 7d68c25674cceda4cad978e767778c90, type: 3}
   bombTimer: 3
-  bombDamage: 20
   bombSize: 4
 --- !u!195 &1025881416254222162
 NavMeshAgent:
@@ -433,7 +431,7 @@ MonoBehaviour:
   - {x: 0.07457423, y: -0.15322182, z: 0.000000018626451}
   m_ShapePathHash: -481595115
   m_Mesh: {fileID: 0}
-  m_InstanceId: 205690
+  m_InstanceId: 239946
   m_LocalBounds:
     m_Center: {x: 0.0033590794, y: -0.12735718, z: 0}
     m_Extent: {x: 0.10760343, y: 0.025864631, z: 0}
@@ -674,8 +672,8 @@ SpriteMask:
   m_MaskAlphaCutoff: 0.2
   m_FrontSortingLayerID: 1677076209
   m_BackSortingLayerID: 1677076209
-  m_FrontSortingLayer: 6
-  m_BackSortingLayer: 6
+  m_FrontSortingLayer: 7
+  m_BackSortingLayer: 7
   m_FrontSortingOrder: 1
   m_BackSortingOrder: 0
   m_IsCustomRangeActive: 1
@@ -707,7 +705,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.01, y: -0.063, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
+  m_LocalScale: {x: 0.22, y: 0.25, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8066991819060728855}
@@ -750,11 +748,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -480815885
-  m_SortingLayer: 1
+  m_SortingLayerID: 1195212081
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
