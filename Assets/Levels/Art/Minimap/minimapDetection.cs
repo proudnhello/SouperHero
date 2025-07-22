@@ -10,10 +10,15 @@ public class minimapDetection : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!inStart && collision.gameObject.name.Equals("minimapStart"))
+
+        CircleCollider2D startCircleCollider = collision as CircleCollider2D;
+        if (startCircleCollider != null)
         {
             inStart = true;
         }
+
+
+      
 
         if (inStart && collision.gameObject.CompareTag("Player"))
         {
