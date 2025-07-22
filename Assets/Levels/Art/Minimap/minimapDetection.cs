@@ -5,11 +5,17 @@ using UnityEngine;
 public class minimapDetection : MonoBehaviour
 {
     public List<GameObject> minimapRendererList;
+    private bool inStart = false;
 
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (!inStart && collision.gameObject.name.Equals("minimapStart"))
+        {
+            inStart = true;
+        }
+
+        if (inStart && collision.gameObject.CompareTag("Player"))
         {
             turnOffAll();
         }
