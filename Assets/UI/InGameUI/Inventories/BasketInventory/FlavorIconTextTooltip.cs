@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Icon = BioDatabase.FlavorIconInfo;
 using TMPro;
 
-public class BasketFlavorIconTooltip : MonoBehaviour, ITooltipSource
+public class FlavorIconTextTooltip : MonoBehaviour, ITooltipSource
 {
     [SerializeField] Image[] FlavorIcons;
     [SerializeField] CanvasGroup Tooltip;

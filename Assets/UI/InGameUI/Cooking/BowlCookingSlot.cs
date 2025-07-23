@@ -13,58 +13,82 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable
 
     internal int soupSlotReference = -1;
     internal SoupBase soupBaseReference = null;
-
-    private void Start()
+    public void EnterCookingScreen()
     {
-        RemoveBowl();
+        if (soupBaseReference != null) SoupInventoryUI.Singleton.SoupBio.TryDisplayHoverBio(soupBaseReference);
+
+    }
+    public void ExitCookingScreen()
+    {
+        
     }
 
     public void MouseDownOn()
     {
-        if (soupBaseReference == null)
+        if (soupBaseReference != null)
         {
-            int slot = SoupInventoryUI.Singleton.AddBowlToCookingSlot();
-            if (slot >= 0)
-            {
-                AddBowlFromSlot(slot);
-                CookingScreen.Singleton.DisplayBowlInSlot(soupBaseReference);
-                CookingScreen.Singleton.CheckIfSoupIsValid();
-            }
-        }
-        else
-        {
-            int slot = SoupInventoryUI.Singleton.AddBowlToCookingSlot();
-            if (slot == -2) return; // if bowl selected isn't a base, don't swap
-            RemoveBowl();
-            CookingScreen.Singleton.DisplayNoBowl();
-            if (slot >= 0)
-            {
-                AddBowlFromSlot(slot);
-                CookingScreen.Singleton.DisplayBowlInSlot(soupBaseReference);
-            }
+            if (!CookingScreen.Singleton.IsCooking) return;
 
-            CookingScreen.Singleton.CheckIfSoupIsValid();
+            SoupInventoryUI.Singleton.ClickOnSlot(-1);
+            CursorManager.Singleton.PickupBowl(soupBaseReference);
+            RenderSlot(false);
         }
     }
 
-    void AddBowlFromSlot(int slot)
+    public void MouseUpOn()
     {
-        soupBaseReference = (SoupBase)PlayerInventory.Singleton.GetBowl(slot);
-        SlotOutline.gameObject.SetActive(false);
-        SlotContent.gameObject.SetActive(true);
-        SlotContent.sprite = soupBaseReference.baseSprite;
+        if (CursorManager.Singleton.currentBowlReference != null &&
+            CursorManager.Singleton.currentBowlReference != (ISoupBowl)soupBaseReference)
+        {
+            SoupInventoryUI.Singleton.ReleaseOnSlot(-1);
+            CursorManager.Singleton.DropBowl();
+        }
+    }
+
+    public void Tap()
+    {
+        if (CursorManager.Singleton.currentBowlReference != null &&
+            CursorManager.Singleton.currentBowlReference == (ISoupBowl)soupBaseReference)
+        {
+            SoupInventoryUI.Singleton.ReturnBowlFromCookingSlot(soupSlotReference);
+            SoupInventoryUI.Singleton.SoupBio.CloseBio();
+            CursorManager.Singleton.DropBowl();
+        }
+    }
+
+    public void ReturnItemHereFromCursor()
+    {
+        RenderSlot(soupBaseReference != null);
+    }
+
+    public void RenderSlot(bool displayBowl)
+    {
+        if (soupBaseReference != null && displayBowl)
+        {
+            SlotOutline.gameObject.SetActive(false);
+            SlotContent.gameObject.SetActive(true);
+            SlotContent.sprite = soupBaseReference.baseSprite;
+            EmptySlotIcon.gameObject.SetActive(false);
+        }
+        else
+        {
+            SlotOutline.gameObject.SetActive(true);
+            EmptySlotIcon.gameObject.SetActive(true);
+            SlotContent.gameObject.SetActive(false);
+        }
+    }
+
+    public void AddBowlFromSlot(int slot)
+    {
         soupSlotReference = slot;
-        EmptySlotIcon.gameObject.SetActive(false);
+        soupBaseReference = (SoupBase)PlayerInventory.Singleton.GetBowl(slot);
+        RenderSlot(true);
     }
 
     public void RemoveBowl()
     {
-        if (soupBaseReference != null) SoupInventoryUI.Singleton.RemoveBowlCookingSlot(soupSlotReference);
         soupBaseReference = null;
         soupSlotReference = -1;
-        SlotOutline.gameObject.SetActive(true);
-        EmptySlotIcon.gameObject.SetActive(true);
-        SlotContent.gameObject.SetActive(false);
+        RenderSlot(false);
     }
-
 }

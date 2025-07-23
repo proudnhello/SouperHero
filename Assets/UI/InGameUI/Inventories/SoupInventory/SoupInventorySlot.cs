@@ -13,19 +13,26 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Image = UnityEngine.UI.Image;
 
-public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
+public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSource
 {
     [SerializeField] TMP_Text usesText;
     [SerializeField] Image SlotContent;
     [SerializeField] Sprite EmptySoupSlotSprite;
     internal ISoupBowl bowlHeld;
+    bool HasBowl { get => bowlHeld is FinishedSoup || bowlHeld is SoupBase; }
     int slotIndex;
+    bool isSelected = false;
 
     public void Init(int index, ISoupBowl bowl)
     {
         slotIndex = index;
         bowlHeld = bowl;
-        RenderSlot();
+        RenderSlotContents();
+    }
+    public void SetSoup(ISoupBowl bowl)
+    {
+        bowlHeld = bowl;
+        RenderSlotContents();
     }
 
     public void EquipSlot()
@@ -33,6 +40,7 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
         SlotContent.color = Color.white;
         SlotContent.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
         SoupInventoryUI.Singleton.EnableFlavorParticles(bowlHeld, this.gameObject);
+        RenderSlotContents();
     }
 
     public void UnequipSlot()
@@ -40,14 +48,13 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
         SlotContent.color = new Color(.5f, .5f, .5f, .8f);
         SlotContent.transform.localScale = new Vector3(.6f, .6f, .6f);
         SoupInventoryUI.Singleton.DisableFlavorParticles(this.gameObject);
+        RenderSlotContents();
     }
 
-    void RenderSlot()
+    void RenderSlotContents()
     {
         SlotContent.enabled = true;
         SlotContent.rectTransform.sizeDelta = new Vector2(123, 75);
-        SlotContent.color = Color.white;
-        SlotContent.transform.localScale = Vector3.one;
         usesText.text = "";
         if (bowlHeld is FinishedSoup finishedSoup)
         {
@@ -57,8 +64,6 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
         }
         else if (bowlHeld is SoupBase soupBase)
         {
-            if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == slotIndex) AddBowlToCookingSlot();
-            else RemoveBowlFromCookingSlot();
             SlotContent.sprite = soupBase.baseSprite;
         }
         else
@@ -71,39 +76,10 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
 
     public void EnterInventoryScreen()
     {
-
-        RenderSlot();
-    }
-
-    public void ExitInventoryScreen()
-    {
-        RenderSlot();
-    }
-
-    public void SelectSlot()
-    {
-        SlotContent.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
-    }
-
-    public void DeselectSlot()
-    {
-        SlotContent.transform.localScale = Vector3.one;
-    }
-
-    public void AddBowlToCookingSlot() 
-    {
-        SlotContent.color = new Color(.7f, .7f, .7f, .4f);
-    }
-
-    public void RemoveBowlFromCookingSlot()
-    {
         SlotContent.color = Color.white;
-    }
-
-    public void SetSoup(ISoupBowl bowl)
-    {
-        bowlHeld = bowl;
-        RenderSlot();
+        if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == slotIndex) SelectSlot();
+        else DeselectSlot();
+        RenderSlotContents();
     }
 
     public void UpdateUseCount()
@@ -115,19 +91,81 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable
         }
     }
 
-    public void MouseDownOn()
+    public void MouseDownOn() // select slot
     {
-        if (!SoupInventoryUI.Singleton.IsOpen) return;
-        SoupInventoryUI.Singleton.SetSelectedSoup(slotIndex);
+        if (HasBowl)
+        {
+            if (SoupInventoryUI.Singleton.IsOpen)
+            {
+                if (isSelected) // return from bowl slot to here
+                {
+                    SoupInventoryUI.Singleton.ReturnBowlFromCookingSlot(slotIndex);
+                    SoupInventoryUI.Singleton.SoupBio.UnlockSlot();
+                }
+                else
+                {
+                    SoupInventoryUI.Singleton.ClickOnSlot(slotIndex);
+                    CursorManager.Singleton.PickupBowl(bowlHeld);
+                    SelectSlot();
+                    SoupInventoryUI.Singleton.SoupBio.DragBowl(bowlHeld);
+                }
+            }
+        }
     }
 
-    public void HoverIn()
+    public void ReturnItemHereFromCursor()
     {
-        SoupInventoryUI.Singleton.OpenSoupTooltip(slotIndex);
+        SoupInventoryUI.Singleton.SoupBio.ReleaseDrag(bowlHeld, false);
+        DeselectSlot();
     }
 
-    public void HoverOut()
+    public void SelectSlot()
     {
-        SoupInventoryUI.Singleton.CloseSoupTooltip(slotIndex);
+        SlotContent.transform.localScale = new Vector3(.8f, .8f, .8f);
+        isSelected = true;
+    }
+
+    public void DeselectSlot()
+    {
+        SlotContent.transform.localScale = Vector3.one;
+        isSelected = false;
+    }
+
+    public void MouseUpOn()
+    {
+        if (CursorManager.Singleton.currentBowlReference != null)
+        {
+            if (CursorManager.Singleton.currentBowlReference != bowlHeld)
+            {
+                if (SoupInventoryUI.Singleton.ReleaseOnSlot(slotIndex))
+                {
+                    CursorManager.Singleton.DropBowl();
+                }
+            }
+            SoupInventoryUI.Singleton.SoupBio.ReleaseDrag(bowlHeld, false);
+        }
+    }
+    public void Tap()
+    {
+        if (CursorManager.Singleton.currentBowlReference != null && CursorManager.Singleton.currentBowlReference == bowlHeld) 
+        {
+            if (CookingScreen.Singleton.AtCookingScreen && bowlHeld is SoupBase) // add directly to available cooking slot
+            {
+                SoupInventoryUI.Singleton.TapSoupSlot(slotIndex);
+                CursorManager.Singleton.DropBowl();
+                SoupInventoryUI.Singleton.SoupBio.UnlockSlot();
+            }
+            else SoupInventoryUI.Singleton.SoupBio.ReleaseDrag(bowlHeld, true);    
+        }
+    }
+
+    public void OnHoverEnter()
+    {
+        if (HasBowl) SoupInventoryUI.Singleton.SoupBio.TryDisplayHoverBio(bowlHeld);
+    }
+
+    public void OnHoverExit()
+    {
+        if (HasBowl) SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(bowlHeld);
     }
 }

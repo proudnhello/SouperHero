@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.VolumeComponent;
@@ -23,6 +24,7 @@ public class SoupInventoryUI : MonoBehaviour
     [SerializeField] float OpenAnimationTime;
 
     [Header("Tooltip")]
+    public SoupBioDisplay SoupBio;
     [SerializeField] GameObject SoupTooltip;
     [SerializeField] TMP_Text TooltipText;
 
@@ -35,13 +37,14 @@ public class SoupInventoryUI : MonoBehaviour
         CookingScreen.ExitCookingScreen += CloseInventoryScreen;
         PlayerInventory.ChangedEquippedSoup += ChangeEquippedSoup;
         PlayerInventory.UsedSoupAttack += ChangeUseCount;
+        SoupBio.Init(this);
     }
 
     int selectedEquippedSoup = 0;
     public void InitializeSlots(ISoupBowl[] bowls)
     {
         for (int i = 0; i < InventorySlots.Length; i++) InventorySlots[i].Init(i, bowls[i]);
-        for (int i = 0; i < PlayerInventory.Singleton.maxEquippedSoups; i++)
+        for (int i = 0; i < InventorySlots.Length; i++)
         {
             if (i == selectedEquippedSoup) InventorySlots[i].EquipSlot();
             else InventorySlots[i].UnequipSlot();
@@ -74,7 +77,7 @@ public class SoupInventoryUI : MonoBehaviour
         IsOpen = open;
         if (IMoveInventoryUI != null) StopCoroutine(IMoveInventoryUI);
         StartCoroutine(IMoveInventoryUI = MoveInventoryUI(open));
-        selectedSwapSlot = -1;
+        heldSlot = -2;
     }
 
     float openAnimTimeProgressed;
@@ -114,56 +117,120 @@ public class SoupInventoryUI : MonoBehaviour
         if (CookingScreen.Singleton.IsCooking) return; // cannot close while cooking
 
         MoveInventory(false);
-        foreach (var slot in InventorySlots)
-        {
-            EnableFlavorParticles(slot.bowlHeld, slot.gameObject);
-            slot.ExitInventoryScreen();
-        }
-        for (int i = 0; i < PlayerInventory.Singleton.maxEquippedSoups; i++)
+        for (int i = 0; i < InventorySlots.Length; i++)
         {
             if (i == selectedEquippedSoup) InventorySlots[i].EquipSlot();
             else InventorySlots[i].UnequipSlot();
         }
+        CursorManager.Singleton.ExitSoupInventory();
+        SoupBio.UnlockSlot();
+        SoupBio.CloseBio();
     }
 
-    int selectedSwapSlot = -1;
-    public void SetSelectedSoup(int slot)
+    int heldSlot = -2;
+    public void ClickOnSlot(int slot) // cooking slot is -1
     {
-        if (selectedSwapSlot == -1)
+        if (heldSlot == -2)
         {
-            selectedSwapSlot = slot;
-            InventorySlots[slot].SelectSlot();
-        }
-        else if (slot == selectedSwapSlot)
-        {
-            selectedSwapSlot = -1;
-            InventorySlots[slot].DeselectSlot();
-        }
-        else // Swap
-        {
-            InventorySlots[selectedSwapSlot].DeselectSlot();
-            PlayerInventory.Singleton.SwapTwoSlots(slot, selectedSwapSlot);
-            if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == slot) CookingScreen.Singleton.BowlCookingSlot.soupSlotReference = selectedSwapSlot;
-            else if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == selectedSwapSlot) CookingScreen.Singleton.BowlCookingSlot.soupSlotReference = slot;
-            InventorySlots[slot].SetSoup(PlayerInventory.Singleton.GetBowl(slot));
-            InventorySlots[selectedSwapSlot].SetSoup(PlayerInventory.Singleton.GetBowl(selectedSwapSlot));
-            selectedSwapSlot = -1;
+            heldSlot = slot;
         }
     }
-    public int AddBowlToCookingSlot()
+    public bool ReleaseOnSlot(int droppedOnSlot) // i could write this so much better but OOPS ALL EDGE CASES
     {
-        if (selectedSwapSlot < 0) return -1;
-        if (InventorySlots[selectedSwapSlot].bowlHeld is not SoupBase) return -2;
-        InventorySlots[selectedSwapSlot].AddBowlToCookingSlot();
-        InventorySlots[selectedEquippedSoup].DeselectSlot();
-        int slot = selectedSwapSlot;
-        selectedSwapSlot = -1;
-        return slot;
+        Debug.Log("release on " + droppedOnSlot + ", had " + heldSlot);
+
+        if (heldSlot < -1) return false;
+
+        void SwapSlots(int slot1, int slot2)
+        {
+            PlayerInventory.Singleton.SwapTwoSlots(slot1, slot2);
+            InventorySlots[slot1].SetSoup(PlayerInventory.Singleton.GetBowl(slot1));
+            InventorySlots[slot2].SetSoup(PlayerInventory.Singleton.GetBowl(slot2));
+        }
+
+        if (heldSlot == -1 && droppedOnSlot > -1) // drag from cooking bowl slot to inventory
+        {
+            if (InventorySlots[droppedOnSlot].bowlHeld is SoupBase)
+            {
+                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlot();
+                SwapSlots(droppedOnSlot, CookingScreen.Singleton.BowlCookingSlot.soupSlotReference);
+                CookingScreen.Singleton.DisplayBowlInSlot(droppedOnSlot);
+                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].SelectSlot();
+            }
+            else if (InventorySlots[droppedOnSlot].bowlHeld is not FinishedSoup) // empty
+            {
+                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlot();
+                InventorySlots[droppedOnSlot].DeselectSlot();
+                SwapSlots(droppedOnSlot, CookingScreen.Singleton.BowlCookingSlot.soupSlotReference);
+                CookingScreen.Singleton.DisplayNoBowl();
+            }
+            else // drop on finished soup, return false so cursor knows to return bowl back to cooking slot
+            {
+                heldSlot = -2;
+                return false;
+            }
+        }
+        else if (droppedOnSlot == -1 && heldSlot > -1) // drag from inventory to cooking slot
+        {
+            if (InventorySlots[heldSlot].bowlHeld is SoupBase)
+            {
+                if (CookingScreen.Singleton.BowlCookingSlot.soupBaseReference != null)
+                {
+                    InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlot();
+                }
+                CookingScreen.Singleton.DisplayBowlInSlot(heldSlot);
+                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].SelectSlot();
+            }
+        }
+        else if (droppedOnSlot > -1 && heldSlot > -1) // between two slots in inventory
+        {
+            SwapSlots(droppedOnSlot, heldSlot);
+
+            if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == droppedOnSlot)
+            {
+                CookingScreen.Singleton.BowlCookingSlot.soupSlotReference = heldSlot;
+                InventorySlots[droppedOnSlot].DeselectSlot();
+                InventorySlots[heldSlot].SelectSlot();
+            }
+            else if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == heldSlot)
+            {
+                CookingScreen.Singleton.BowlCookingSlot.soupSlotReference = droppedOnSlot;
+                InventorySlots[heldSlot].DeselectSlot();
+                InventorySlots[droppedOnSlot].SelectSlot();
+            }
+            else
+            {
+                InventorySlots[droppedOnSlot].DeselectSlot();
+                InventorySlots[heldSlot].DeselectSlot();
+            }
+        }
+        
+        heldSlot = -2;
+        return true;
     }
 
-    public void RemoveBowlCookingSlot(int slot)
+    public void TapSoupSlot(int slot)
     {
-        InventorySlots[slot].RemoveBowlFromCookingSlot();
+        if (CookingScreen.Singleton.BowlCookingSlot.soupBaseReference != null)
+        {
+            InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlot();
+        }
+        CookingScreen.Singleton.DisplayBowlInSlot(slot);
+        InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].SelectSlot();
+        heldSlot = -2;
+    }
+
+    public void ReturnBowlFromCookingSlot(int slot)
+    {
+        InventorySlots[slot].DeselectSlot();
+        CookingScreen.Singleton.DisplayNoBowl();
+        heldSlot = -2;
+    }
+
+    public void DeselectSlot(int slot)
+    {
+        InventorySlots[slot].DeselectSlot();
+        heldSlot = -2;
     }
 
     //Helper function to add soup image to icon in slot
@@ -177,37 +244,6 @@ public class SoupInventoryUI : MonoBehaviour
     public void ChangeUseCount()
     {
         InventorySlots[selectedEquippedSoup].UpdateUseCount();
-    }
-
-    public void OpenSoupTooltip(int index)
-    {
-        if (!IsOpen) return; //Only display when inventory is open
-
-        var bowl = PlayerInventory.Singleton.GetBowl(index);
-        switch (bowl)
-        {
-            case (FinishedSoup):
-                SoupTooltip.SetActive(true);
-                TooltipText.text = LocalizationManager.GetLocalizedString(((FinishedSoup)bowl).soupBase.baseName);
-                TooltipText.text += '\n' + LocalizationManager.GetLocalizedString("Abilities") + ": ";
-                foreach (var ability in ((FinishedSoup)bowl).soupAbilities.Keys)
-                {
-                    TooltipText.text += LocalizationManager.GetLocalizedString(ability._abilityName) + " ";
-                }
-                break;
-            case (null):
-                SoupTooltip.SetActive(false);
-                break;
-            default:
-                SoupTooltip.SetActive(true);
-                TooltipText.text = LocalizationManager.GetLocalizedString(((SoupBase)bowl).baseName);
-                break;
-        }
-    }
-    
-    public void CloseSoupTooltip(int index)
-    {
-        SoupTooltip.SetActive(false);
     }
 
     public void EnableFlavorParticles(ISoupBowl bowl, GameObject slot)
