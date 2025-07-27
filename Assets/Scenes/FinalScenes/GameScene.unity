@@ -1082,87 +1082,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1928317167
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1928317168}
-  - component: {fileID: 1928317170}
-  - component: {fileID: 1928317169}
-  m_Layer: 0
-  m_Name: NavMesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1928317168
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928317167}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1928317169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928317167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70bd44a44cd62c64fbfc1eea95b24880, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideByGrid: 0
-  m_UseMeshPrefab: {fileID: 0}
-  m_CompressBounds: 0
-  m_OverrideVector: {x: 1, y: 1, z: 1}
---- !u!114 &1928317170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928317167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e04976799df50f54ba128eff723155a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_BuildHeightMesh: 0
-  m_MinRegionArea: 0
-  m_HideEditorLogs: 1
-  m_NavMeshData: {fileID: 0}
---- !u!43 &2049426886
+--- !u!43 &1727333435
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1327,6 +1247,86 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1928317167
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1928317168}
+  - component: {fileID: 1928317170}
+  - component: {fileID: 1928317169}
+  m_Layer: 0
+  m_Name: NavMesh
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1928317168
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928317167}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1928317169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928317167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70bd44a44cd62c64fbfc1eea95b24880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideByGrid: 0
+  m_UseMeshPrefab: {fileID: 0}
+  m_CompressBounds: 0
+  m_OverrideVector: {x: 1, y: 1, z: 1}
+--- !u!114 &1928317170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928317167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e04976799df50f54ba128eff723155a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_BuildHeightMesh: 0
+  m_MinRegionArea: 0
+  m_HideEditorLogs: 1
+  m_NavMeshData: {fileID: 0}
 --- !u!224 &2126423338 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3101602815378269345, guid: 282868f0a87fe7647bfca035cdb6067e, type: 3}
@@ -1786,6 +1786,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 794011155513981364, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: isWildcard
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 794011155513981364, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: SLOT_COLOR.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 794011155513981364, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: SLOT_COLOR.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 794011155513981364, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: SLOT_COLOR.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 794011155513981364, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: SLOT_COLOR.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 794011155513981364, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: TOOLTIP_KEY_TYPE
+      value: WILDCARD SLOT PREVIEW
+      objectReference: {fileID: 0}
     - target: {fileID: 981482937953573853, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
       propertyPath: m_Name
       value: InGameScreen (Overlay)
@@ -1866,9 +1890,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: FlavorIconGroup (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2882451136774936638, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: SLOT_COLOR.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3514176849879788969, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
       propertyPath: m_Name
       value: FlavorIconGroup (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628139793048919922, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 259.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5190998430102478712, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5295843707808872975, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
       propertyPath: m_IsActive
@@ -1961,6 +1997,18 @@ PrefabInstance:
     - target: {fileID: 6932390878844463825, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7305567829337054789, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: m_Name
+      value: IngredientSlotPreview
+      objectReference: {fileID: 0}
+    - target: {fileID: 7643138742006660026, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: SLOT_COLOR.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7643138742006660026, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
+      propertyPath: TOOLTIP_KEY_TYPE
+      value: FLAVOR SLOT PREVIEW
       objectReference: {fileID: 0}
     - target: {fileID: 7837590686893839795, guid: 662c447381ea75c4b8b489d06ba8042d, type: 3}
       propertyPath: m_fontSize

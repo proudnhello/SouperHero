@@ -229,15 +229,14 @@ public class CookingScreen : MonoBehaviour
             }
             slot.OnCook();
         }
-        BowlCookingSlot.RemoveBowl();
 
         FinishedSoup soup = new(cookedIngredients, BowlCookingSlot.soupBaseReference);
         PlayerInventory.Singleton.BowlIsCooked(BowlCookingSlot.soupSlotReference, soup);
-
-        cookedIngredients.Clear();
-        cookingBioDisplay.ClearDisplay();
-
         CookSoup?.Invoke();
         MetricsTracker.Singleton.RecordSoupsCooked();
+
+        BowlCookingSlot.RemoveBowl();
+        cookedIngredients.Clear();
+        cookingBioDisplay.ClearDisplay();
     }
 }

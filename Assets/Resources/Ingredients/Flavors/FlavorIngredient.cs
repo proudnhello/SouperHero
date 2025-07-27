@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
+using static FlavorIngredient.InflictionFlavor;
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Ingredient/New Flavor Ingredient")]
 public class FlavorIngredient : Ingredient
@@ -53,6 +54,12 @@ public class FlavorIngredient : Ingredient
         }
         public BuffType buffType;
         public int amount;
+        public BuffFlavor(BuffFlavor other)
+        {
+            buffType = other.buffType;
+            amount = other.amount;
+        }
+        public BuffFlavor() { }
     }
     [Serializable]
     public class InflictionFlavor
