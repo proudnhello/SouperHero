@@ -231,7 +231,8 @@ public class CursorManager : MonoBehaviour
             validCollectablePlacement = false;
             foreach (var hit in hits)
             {
-                if (hit.collider.CompareTag("BowlSlot"))
+                if (hit.collider.CompareTag("BowlSlot") || 
+                    (hit.collider.CompareTag("CookingBowlSlot") && currentBowlReference is not FinishedSoup))
                 {
                     validCollectablePlacement = true;
                     break;

@@ -18,6 +18,7 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
     [SerializeField] TMP_Text usesText;
     [SerializeField] Image SlotContent;
     [SerializeField] Sprite EmptySoupSlotSprite;
+    [SerializeField] float HoverTimeToDisplay;
     internal ISoupBowl bowlHeld;
     bool HasBowl { get => bowlHeld is FinishedSoup || bowlHeld is SoupBase; }
     int slotIndex;
@@ -50,6 +51,19 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         SoupInventoryUI.Singleton.DisableFlavorParticles(this.gameObject);
         RenderSlotContents();
     }
+
+    public void SelectSlot()
+    {
+        SlotContent.transform.localScale = new Vector3(.8f, .8f, .8f);
+        isSelected = true;
+    }
+
+    public void DeselectSlot()
+    {
+        SlotContent.transform.localScale = Vector3.one;
+        isSelected = false;
+    }
+
 
     void RenderSlotContents()
     {
@@ -119,17 +133,6 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         DeselectSlot();
     }
 
-    public void SelectSlot()
-    {
-        SlotContent.transform.localScale = new Vector3(.8f, .8f, .8f);
-        isSelected = true;
-    }
-
-    public void DeselectSlot()
-    {
-        SlotContent.transform.localScale = Vector3.one;
-        isSelected = false;
-    }
 
     public void MouseUpOn()
     {

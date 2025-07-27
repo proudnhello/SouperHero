@@ -140,8 +140,6 @@ public class SoupInventoryUI : MonoBehaviour
     }
     public bool ReleaseOnSlot(int droppedOnSlot) // i could write this so much better but OOPS ALL EDGE CASES
     {
-        Debug.Log("release on " + droppedOnSlot + ", had " + heldSlot);
-
         if (heldSlot < -1) return false;
 
         void SwapSlots(int slot1, int slot2)
