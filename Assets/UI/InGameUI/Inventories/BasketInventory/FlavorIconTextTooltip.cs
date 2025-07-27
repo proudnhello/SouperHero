@@ -57,7 +57,7 @@ public class FlavorIconTextTooltip : MonoBehaviour, ITooltipSource
     public void OnHoverExit()
     {
         if (IFadeAnim != null) StopCoroutine(IFadeAnim);
-        StartCoroutine(IFadeAnim = FadeAnim(false));
+        if (gameObject.activeInHierarchy) StartCoroutine(IFadeAnim = FadeAnim(false));
     }
 
     float timeProgressed = 0;

@@ -18,7 +18,6 @@ public class CursorManager : MonoBehaviour
     [SerializeField] Color INVALID_PLACEMENT_COLOR;
     [SerializeField] float MOUSE_DISTANCE_FOR_TAP;
     [SerializeField] float TIME_FOR_TAP = .25f;
-    [SerializeField] float BOWL_COLLIDER_SIZE = 10f;
     [SerializeField] LayerMask BOWL_SLOT_LAYER;
 
     public bool IsHoldingSomething { get => currentCollectableReference != null || currentBowlReference != null; }
@@ -226,23 +225,18 @@ public class CursorManager : MonoBehaviour
 
     IEnumerator WhileDraggingBowl()
     {
-        static float ColliderSize(float multiplier)
-        {
-            return (Camera.main.orthographicSize * .065f - .1f) * multiplier; // by default for orthographic size of 10 = .55 radius
-        }
         while (currentBowlReference != null)
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, ColliderSize(BOWL_COLLIDER_SIZE), BOWL_SLOT_LAYER);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.zero, BOWL_SLOT_LAYER);
             validCollectablePlacement = false;
-            foreach (var collider in colliders)
+            foreach (var hit in hits)
             {
-                if (collider.CompareTag("BowlSlot"))
+                if (hit.collider.CompareTag("BowlSlot"))
                 {
                     validCollectablePlacement = true;
                     break;
                 }
             }
-            Debug.DrawLine(transform.position, transform.position + new Vector3(ColliderSize(BOWL_COLLIDER_SIZE), ColliderSize(BOWL_COLLIDER_SIZE), ColliderSize(BOWL_COLLIDER_SIZE)));
             _CursorImage.color = validCollectablePlacement ? VALID_PLACEMENT_COLOR : INVALID_PLACEMENT_COLOR;
             yield return null;
         }
@@ -252,7 +246,7 @@ public class CursorManager : MonoBehaviour
     {
         _CursorImage.sprite = sprite;
         _CursorImage.rectTransform.sizeDelta = new Vector2(sprite.rect.width, sprite.rect.height);
-        _CursorImage.rectTransform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
+        _CursorImage.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
     }
     #endregion
     void ChangeToCrosshairSprite()

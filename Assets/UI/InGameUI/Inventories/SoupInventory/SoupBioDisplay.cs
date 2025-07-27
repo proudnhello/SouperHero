@@ -4,13 +4,15 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 public class SoupBioDisplay : MonoBehaviour
 {
     [SerializeField] RectTransform BioHolder;
     [SerializeField] GameObject SoupBaseSection;
     [SerializeField] GameObject FinishedSoupSection;
-    [SerializeField] FlavorIconTextTooltip[] FlavorIconTooltips;
+    [SerializeField] FlavorIconTextTooltip[] TextFlavorIconTooltips;
     [SerializeField] string SPACING_TEXT_FOR_ICON;
 
     [Header("Positions")]
@@ -28,12 +30,21 @@ public class SoupBioDisplay : MonoBehaviour
     [SerializeField] Vector2 SlotSpriteHalfDimensions = new Vector2(25f, 27f);
     public Sprite[] IngredientSlotPreviewSprites;
 
+    [Header("Finished Soup")]
+    [SerializeField] AbilityIconTooltip[] AbilityIconObjects;
+    [SerializeField] float IconSeparator = 75f;
+    [SerializeField] FlavorBioTicks[] TickFlavorIcons;
+
 
     SoupInventoryUI ui;
     public void Init(SoupInventoryUI ui)
     {
         this.ui = ui;
         BioHolder.gameObject.SetActive(false);
+        foreach (var icon in TickFlavorIcons)
+        {
+            icon.Init();
+        }
     }
 
     private void OnDisable()
@@ -121,8 +132,8 @@ public class SoupBioDisplay : MonoBehaviour
         TitleText.text = LocalizationManager.GetLocalizedString(soup.baseName);
         TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.x);
 
-        ShowFlavorProfile(soup);
         SoupDescriptionText.transform.localPosition = new Vector2(SoupDescriptionText.transform.localPosition.x, SoupDescriptionTextPositions.x);
+        ShowFlavorProfile(soup);
 
         CooldownStat.SetStat(soup.cooldown, Color.white);
         CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.x);
@@ -171,17 +182,40 @@ public class SoupBioDisplay : MonoBehaviour
         TitleText.text = LocalizationManager.GetLocalizedString(soup.soupBase.finishedSoupName);
         TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y);
 
-        ShowFlavorProfile(soup.soupBase);
         SoupDescriptionText.transform.localPosition = new Vector2(SoupDescriptionText.transform.localPosition.x, SoupDescriptionTextPositions.y);
+        ShowFlavorProfile(soup.soupBase);
 
         Color cooldownColor = soup.cooldown < soup.soupBase.cooldown ? BioDatabase.Singleton.BuffFlavorIcons[FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed].COLOR : Color.white;
         CooldownStat.SetStat(soup.cooldown, cooldownColor);
         CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y);
+
+        int numSlots = soup.soupAbilities.Count;
+        float evenNumCentererThing = numSlots % 2 == 0 ? IconSeparator / 2 : 0; // if it's 2 or 4, then offset it back so it's centered
+        float startPos = Mathf.FloorToInt(numSlots / 2) * -IconSeparator + evenNumCentererThing;
+        for (int i = 0; i < numSlots; i++)
+        {
+            AbilityIconObjects[i].transform.localPosition = new Vector2(startPos + i * IconSeparator, 0);
+            AbilityIconObjects[i].SetupTooltip(soup.soupAbilities.Values.ToList()[i]);
+        }
+        for (int i = numSlots; i < AbilityIconObjects.Length; i++) AbilityIconObjects[i].gameObject.SetActive(false); // deactivate any remaining
+
+        foreach (var icon in TickFlavorIcons) icon.Clear();
+        int iconUsed = 0;
+        foreach (var buff in soup.soupBuffStats.Values)
+        {
+            TickFlavorIcons[iconUsed].Set(buff);
+            iconUsed++;
+        }
+        foreach (var inf in soup.soupInflictionStats.Values)
+        {
+            TickFlavorIcons[iconUsed].Set(inf);
+            iconUsed++;
+        }
     }
 
     void ShowFlavorProfile(SoupBase soup)
     {
-        foreach (var icon in FlavorIconTooltips) icon.ClearIcons();
+        foreach (var icon in TextFlavorIconTooltips) icon.ClearIcons();
 
         // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
         string localizedstr = LocalizationManager.GetLocalizedString(soup.finishedSoupName + " Profile");
@@ -226,17 +260,17 @@ public class SoupBioDisplay : MonoBehaviour
 
                 var p1Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].firstCharacterIndex];
                 var p2Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].lastCharacterIndex];
-                FlavorIconTooltips[iconToolTipTracker].SetBounds(
+                TextFlavorIconTooltips[iconToolTipTracker].SetBounds(
                     SoupDescriptionText.transform.TransformPoint(p1Char.bottomLeft),
                     SoupDescriptionText.transform.TransformPoint(p2Char.topRight)
                 );
 
-                FlavorIconTooltips[iconToolTipTracker].SetText(iconInfo);
+                TextFlavorIconTooltips[iconToolTipTracker].SetText(iconInfo);
                 for (int icon = 0; icon < iconCount; icon++)
                 {
                     var firstSpacingChar = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].firstCharacterIndex + icon * SPACING_TEXT_FOR_ICON.Length];
                     var spaceLocation = SoupDescriptionText.transform.TransformPoint((firstSpacingChar.topLeft + firstSpacingChar.bottomLeft) / 2f);
-                    FlavorIconTooltips[iconToolTipTracker].SetIcon(iconInfo, spaceLocation);
+                    TextFlavorIconTooltips[iconToolTipTracker].SetIcon(iconInfo, spaceLocation);
                 }
                 iconToolTipTracker++;
             }

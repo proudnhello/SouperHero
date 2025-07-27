@@ -37,6 +37,9 @@ public class SoupInventoryUI : MonoBehaviour
         CookingScreen.ExitCookingScreen += CloseInventoryScreen;
         PlayerInventory.ChangedEquippedSoup += ChangeEquippedSoup;
         PlayerInventory.UsedSoupAttack += ChangeUseCount;
+    }
+    private void Start()
+    {
         SoupBio.Init(this);
     }
 
