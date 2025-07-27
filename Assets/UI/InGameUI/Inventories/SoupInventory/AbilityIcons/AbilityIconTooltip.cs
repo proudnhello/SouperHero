@@ -1,49 +1,42 @@
+using DG.Tweening.Core.Easing;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using System.Collections;
+using static FinishedSoup;
+using UnityEngine.UI;
 
-public class CookingFlavorTooltip : MonoBehaviour
+public class AbilityIconTooltip : MonoBehaviour, ITooltipSource
 {
     [SerializeField] CanvasGroup Tooltip;
+    [SerializeField] Image Icon;
     [SerializeField] AnimationCurve FadeCurve;
     [SerializeField] float FadeAnimTime;
     [SerializeField] TMP_Text TooltipText;
+    [SerializeField] Vector3 TooltipOffset;
 
-    public void Init()
+    public void SetupTooltip(SoupAbility ability)
     {
         gameObject.SetActive(true);
-        Clear();
+        Tooltip.gameObject.SetActive(false);
+        Tooltip.transform.localPosition = TooltipOffset;
+        TooltipText.text = LocalizationManager.GetLocalizedString(ability.baseIngredient.IngredientName + " Profile");
+        Icon.sprite = BioDatabase.Singleton.AbilityIcons[ability.ability];
     }
-    public void SetText(string text)
+    public void OnHoverEnter()
     {
-        TooltipText.text = text;
-    }
-
-    public void StartAnim()
-    {
-        StopAllCoroutines();
+        if (IFadeAnim != null) StopCoroutine(IFadeAnim);
         StartCoroutine(IFadeAnim = FadeAnim(true));
     }
 
-    public void EndAnim()
+    public void OnHoverExit()
     {
-        StopAllCoroutines();
-        if (!Tooltip.gameObject.activeInHierarchy) return;
+        if (IFadeAnim != null) StopCoroutine(IFadeAnim);
         StartCoroutine(IFadeAnim = FadeAnim(false));
     }
 
-    public void Clear()
-    {
-        Tooltip.alpha = 0;
-        timeProgressed = 0;
-    }
-
-    public bool InProgress
-    {
-        get => IFadeAnim != null;
-    }
     float timeProgressed = 0;
-    internal IEnumerator IFadeAnim;
+    IEnumerator IFadeAnim;
     IEnumerator FadeAnim(bool fadeIn)
     {
         Tooltip.gameObject.SetActive(true);
@@ -59,11 +52,7 @@ public class CookingFlavorTooltip : MonoBehaviour
         }
 
         if (fadeIn) Tooltip.alpha = 1;
-        else
-        {
-            IFadeAnim = null;
-            Tooltip.gameObject.SetActive(false);
-        }
+        else Tooltip.gameObject.SetActive(false);
 
         timeProgressed = fadeIn ? FadeAnimTime : 0;
     }

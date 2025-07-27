@@ -1,33 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static FinishedSoup;
 using FlavorIconInfo = BioDatabase.FlavorIconInfo;
 
-public class CookingFlavorIcon : MonoBehaviour, ITooltipSource
+public class FlavorBioTicks : MonoBehaviour, ITooltipSource
 {
     [SerializeField] Image icon;
     [SerializeField] Image[] tickObjects;
-    [SerializeField] CookingFlavorTooltip tooltip;
     [SerializeField] BoxCollider2D boxCollider2D;
     [SerializeField] float colliderDistanceMultiplier;
     [SerializeField] AnimationCurve remainderTickSizeCurve;
     [SerializeField] Color CarryoverColor;
+
+    [Header("Tooltip")]
+    [SerializeField] CanvasGroup Tooltip;
+    [SerializeField] AnimationCurve FadeCurve;
+    [SerializeField] float FadeAnimTime;
+    [SerializeField] TMP_Text TooltipText;
+
     int[] randomTicks;
     FlavorIconInfo currIcon;
     public void Init()
     {
         randomTicks = new int[CookingScreen.Singleton.cookingBioDisplay.tickMarkSprites.Length-1];
-        gameObject.SetActive(false);
-        tooltip.Init();
-        tooltip.transform.SetParent(transform.parent);
+        Clear();
     }
-    public void Set(FinishedSoup.SoupBuffStat stat)
+
+    public void Clear()
+    {
+        gameObject.SetActive(false);
+        Tooltip.gameObject.SetActive(false);
+    }
+    public void Set(SoupBuffStat stat)
     {
         SetIcon(BioDatabase.Singleton.BuffFlavorIcons[stat.BuffType], stat.Amount);
     }
-    public void Set(FinishedSoup.SoupInflictionStat stat)
+    public void Set(SoupInflictionStat stat)
     {
         SetIcon(BioDatabase.Singleton.InflictionFlavorIcons[stat.InflictionType], stat.Amount);
     }
@@ -36,6 +48,7 @@ public class CookingFlavorIcon : MonoBehaviour, ITooltipSource
     {
         currIcon = flavorInfo;
         gameObject.SetActive(true);
+        TooltipText.text = LocalizationManager.GetLocalizedString(currIcon.KEY + " Tooltip");
         icon.sprite = flavorInfo.ICON;
         int seed = 0;
         foreach (var c in flavorInfo.KEY) seed += c;
@@ -75,21 +88,37 @@ public class CookingFlavorIcon : MonoBehaviour, ITooltipSource
         boxCollider2D.offset = new Vector2(colSizeX / 2, 0);
     }
 
-    public void Clear()
+    public void OnHoverEnter()
     {
-        tooltip.EndAnim();
-        gameObject.SetActive(false);
-    }
-
-    public async void OnHoverEnter()
-    {
-        while (tooltip.InProgress) await Task.Yield();
-        tooltip.StartAnim();
-        tooltip.SetText(LocalizationManager.GetLocalizedString(currIcon.KEY + " Tooltip"));
+        if (IFadeAnim != null) StopCoroutine(IFadeAnim);
+        StartCoroutine(IFadeAnim = FadeAnim(true));
     }
 
     public void OnHoverExit()
     {
-        tooltip.EndAnim();
+        if (IFadeAnim != null) StopCoroutine(IFadeAnim);
+        if (gameObject.activeInHierarchy) StartCoroutine(IFadeAnim = FadeAnim(false));
+    }
+
+    float timeProgressed = 0;
+    IEnumerator IFadeAnim;
+    IEnumerator FadeAnim(bool fadeIn)
+    {
+        Tooltip.gameObject.SetActive(true);
+
+        while (timeProgressed >= 0 && timeProgressed <= FadeAnimTime)
+        {
+            var percentCompleted = Mathf.Clamp01(timeProgressed / FadeAnimTime);
+            var curveAmount = FadeCurve.Evaluate(percentCompleted);
+            Tooltip.alpha = Mathf.Lerp(0, 1, curveAmount);
+
+            yield return null;
+            timeProgressed = fadeIn ? timeProgressed + Time.deltaTime : timeProgressed - Time.deltaTime;
+        }
+
+        if (fadeIn) Tooltip.alpha = 1;
+        else Tooltip.gameObject.SetActive(false);
+
+        timeProgressed = fadeIn ? FadeAnimTime : 0;
     }
 }

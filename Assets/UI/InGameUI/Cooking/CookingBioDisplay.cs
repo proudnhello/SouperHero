@@ -5,7 +5,7 @@ public class CookingBioDisplay : MonoBehaviour
 {
     CookingScreen cs;
     public Sprite[] tickMarkSprites;
-    [SerializeField] CookingFlavorIcon[] FlavorIcons;
+    [SerializeField] FlavorBioTicks[] FlavorIcons;
     [SerializeField] StatTooltip CooldownStat;
     [SerializeField] StatTooltip UsesStat;
     public void Init(CookingScreen cs)

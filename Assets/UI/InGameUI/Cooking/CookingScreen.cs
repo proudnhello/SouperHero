@@ -58,6 +58,7 @@ public class CookingScreen : MonoBehaviour
             c.Init();
             DisplayNoBowl();
         }
+        BowlCookingSlot.RemoveBowl();
 
         cookingBioDisplay.Init(this);
     }
@@ -71,6 +72,8 @@ public class CookingScreen : MonoBehaviour
 
         EnterCookingScreen?.Invoke();
         foreach (var slot in IngredientCookingSlots) slot.EnterCookingScreen();
+        BowlCookingSlot.EnterCookingScreen();
+
         if (IMoveCookingUI != null) StopCoroutine(IMoveCookingUI);
         StartCoroutine(IMoveCookingUI = MoveCookingUI(true));
     }
@@ -103,7 +106,6 @@ public class CookingScreen : MonoBehaviour
         if (!open) // has fully closed
         {
             CookingContent.gameObject.SetActive(false);
-            BowlCookingSlot.RemoveBowl();
             DisplayNoBowl();
         } else // has fully opened
         {
@@ -128,6 +130,7 @@ public class CookingScreen : MonoBehaviour
         AtCookingScreen = false;
         CookingScreenIsOut?.Invoke(AtCookingScreen);
         foreach (var slot in IngredientCookingSlots) slot.ExitCookingScreen();
+        BowlCookingSlot.ExitCookingScreen();
 
         if (IMoveCookingUI != null) StopCoroutine(IMoveCookingUI);
         StartCoroutine(IMoveCookingUI = MoveCookingUI(false));
@@ -175,8 +178,11 @@ public class CookingScreen : MonoBehaviour
         cookedIngredients.Clear();
     }
 
-    public void DisplayBowlInSlot(SoupBase bowl)
+    public void DisplayBowlInSlot(int fromSlot)
     {
+        SoupBase bowl = (SoupBase)PlayerInventory.Singleton.GetBowl(fromSlot);
+        BowlCookingSlot.AddBowlFromSlot(fromSlot);
+
         int slot = 0;
         for (int ing = 0; ing < bowl.maxAbilityIngredients && slot < IngredientCookingSlots.Length; ing++, slot++)
         {
@@ -194,7 +200,6 @@ public class CookingScreen : MonoBehaviour
             IngredientCookingSlots[slot].SetSlotType(SlotType.Wildcard);
         }
         cookingBioDisplay.DisplayBowl(bowl);
-
     }
 
     public void DisplayNoBowl()
@@ -202,10 +207,11 @@ public class CookingScreen : MonoBehaviour
         foreach (var slot in IngredientCookingSlots)
         {
             slot.gameObject.SetActive(false);
-            if (slot.ingredientReference != null) slot.ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
+            if (slot.ingredientReference != null) slot.ingredientReference.collectableUI.ReturnItemHereFromCursor();
             slot.RemoveIngredient();
             slot.ResetAbilityStatBio();
         }
+        BowlCookingSlot.RemoveBowl();
         cookingBioDisplay.ClearDisplay();
     }
 
@@ -226,12 +232,11 @@ public class CookingScreen : MonoBehaviour
 
         FinishedSoup soup = new(cookedIngredients, BowlCookingSlot.soupBaseReference);
         PlayerInventory.Singleton.BowlIsCooked(BowlCookingSlot.soupSlotReference, soup);
-
-        cookedIngredients.Clear();
-        BowlCookingSlot.RemoveBowl();
-        cookingBioDisplay.ClearDisplay();
-
         CookSoup?.Invoke();
         MetricsTracker.Singleton.RecordSoupsCooked();
+
+        BowlCookingSlot.RemoveBowl();
+        cookedIngredients.Clear();
+        cookingBioDisplay.ClearDisplay();
     }
 }

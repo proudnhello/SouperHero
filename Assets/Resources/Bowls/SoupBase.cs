@@ -8,6 +8,7 @@ using static FlavorIngredient;
 public class SoupBase : ScriptableObject, ISoupBowl
 {
     public string baseName;
+    public string finishedSoupName;
     public Sprite baseSprite;
     public Sprite finishedSprite;
     public int uuid;

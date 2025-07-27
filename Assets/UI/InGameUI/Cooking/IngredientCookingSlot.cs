@@ -65,7 +65,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
         }
     }
 
-    public void ReturnIngredientHereFromCursor()
+    public void ReturnItemHereFromCursor()
     {
         faceImage.color = Color.white;
     }
@@ -83,7 +83,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     {
         if (ingredientReference != null)
         {
-            ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
+            ingredientReference.collectableUI.ReturnItemHereFromCursor();
             CursorManager.Singleton.DropCollectable();
         }
     }
@@ -94,12 +94,12 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
             if (currentSlotType == SlotType.Wildcard || (CursorManager.Singleton.currentCollectableReference.ingredient is AbilityIngredient && currentSlotType == SlotType.Ability) ||
                 (CursorManager.Singleton.currentCollectableReference.ingredient is FlavorIngredient && currentSlotType == SlotType.Flavor))
             {
-                if (ingredientReference != null) ingredientReference.collectableUI.ReturnIngredientHereFromCursor();
+                if (ingredientReference != null) ingredientReference.collectableUI.ReturnItemHereFromCursor();
                 AddIngredient(CursorManager.Singleton.currentCollectableReference);
                 CursorManager.Singleton.DropCollectable();
             } else
             {
-                CursorManager.Singleton.ManuallyReturnIngredientFromCursor();
+                CursorManager.Singleton.ManuallyReturnItemFromCursor();
             }
         }
     }

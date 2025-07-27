@@ -6,10 +6,11 @@ using TMPro;
 using static FinishedSoup;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class SoupAbilitiesUI : MonoBehaviour
 {
-    [SerializeField] List<Image> soupAbilityIcons;
+    [SerializeField] List<AbilityIconTooltip> soupAbilityIcons;
 
     void Start()
     {
@@ -31,12 +32,9 @@ public class SoupAbilitiesUI : MonoBehaviour
 
         if (bowl is FinishedSoup soup)
         {
-            int i = 0;
-            foreach (var ab in soup.soupAbilities.Keys)
+            for (int i = 0; i < soup.soupAbilities.Count; i++)
             {
-                soupAbilityIcons[i].gameObject.SetActive(true);
-                soupAbilityIcons[i].sprite = BioDatabase.Singleton.AbilityIcons[ab];
-                i++;
+                soupAbilityIcons[i].SetupTooltip(soup.soupAbilities.Values.ToList()[i]);
             }
         }
     }

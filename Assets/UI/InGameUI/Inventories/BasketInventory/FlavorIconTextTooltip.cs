@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Icon = BioDatabase.FlavorIconInfo;
 using TMPro;
 
-public class BasketFlavorIconTooltip : MonoBehaviour, ITooltipSource
+public class FlavorIconTextTooltip : MonoBehaviour, ITooltipSource
 {
     [SerializeField] Image[] FlavorIcons;
     [SerializeField] CanvasGroup Tooltip;
@@ -15,6 +15,7 @@ public class BasketFlavorIconTooltip : MonoBehaviour, ITooltipSource
     [SerializeField] BoxCollider2D boxCollider2D;
     [SerializeField] Vector2 colliderDistMultiplier;
     [SerializeField] Vector3 TooltipOffset;
+    [SerializeField] bool TooltipOnRight = false;
  
     int usedIcons;
     public void ClearIcons()
@@ -25,7 +26,11 @@ public class BasketFlavorIconTooltip : MonoBehaviour, ITooltipSource
         }
         Tooltip.gameObject.SetActive(false);
         usedIcons = 0;
-
+        boxCollider2D.enabled = false;
+    }
+    public void SetText(Icon icon)
+    {
+        TooltipText.text = LocalizationManager.GetLocalizedString(icon.KEY + " Tooltip");       // get the localized version of the tooltip text using the key
     }
     public void SetIcon(Icon icon, Vector3 pos)
     {
@@ -33,12 +38,14 @@ public class BasketFlavorIconTooltip : MonoBehaviour, ITooltipSource
         FlavorIcons[usedIcons].transform.position = pos;
         FlavorIcons[usedIcons].gameObject.SetActive(true);
         usedIcons++;
-        TooltipText.text = LocalizationManager.GetLocalizedString(icon.KEY + " Tooltip");       // get the localized version of the tooltip text using the key
     }
+    Vector3 farRightTextPoint;
     public void SetBounds(Vector3 p1, Vector3 p2)
     {
         transform.position = (p1 + p2) / 2;
         boxCollider2D.size = new Vector2(Mathf.Abs(p2.x - p1.x), Mathf.Abs(p2.y - p1.y)) * colliderDistMultiplier;
+        farRightTextPoint = p2;
+        boxCollider2D.enabled = true;
     }
 
     public void OnHoverEnter()
@@ -50,7 +57,7 @@ public class BasketFlavorIconTooltip : MonoBehaviour, ITooltipSource
     public void OnHoverExit()
     {
         if (IFadeAnim != null) StopCoroutine(IFadeAnim);
-        StartCoroutine(IFadeAnim = FadeAnim(false));
+        if (gameObject.activeInHierarchy) StartCoroutine(IFadeAnim = FadeAnim(false));
     }
 
     float timeProgressed = 0;
@@ -58,7 +65,14 @@ public class BasketFlavorIconTooltip : MonoBehaviour, ITooltipSource
     IEnumerator FadeAnim(bool fadeIn)
     {
         Tooltip.gameObject.SetActive(true);
-        Tooltip.transform.localPosition = FlavorIcons[0].transform.localPosition + TooltipOffset;
+        if (TooltipOnRight)
+        {
+            Tooltip.transform.localPosition = farRightTextPoint + TooltipOffset;
+        }
+        else
+        {
+            Tooltip.transform.localPosition = FlavorIcons[0].transform.localPosition + TooltipOffset;
+        }
 
         while (timeProgressed >= 0 && timeProgressed <= FadeAnimTime)
         {

@@ -38,7 +38,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
         _Image.raycastTarget = false;
     }
 
-    public void ReturnIngredientHereFromCursor() 
+    public void ReturnItemHereFromCursor() 
     {
         _Image.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         _Image.raycastTarget = true;
@@ -75,7 +75,7 @@ public class CollectableUI : MonoBehaviour, ICursorInteractable
             }
             else
             {
-                ReturnIngredientHereFromCursor();
+                ReturnItemHereFromCursor();
             }
 
             CursorManager.Singleton.DropCollectable();

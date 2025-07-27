@@ -35,6 +35,11 @@ public class BioDatabase : MonoBehaviour
 
     private void Awake()
     {
+        Generate();
+    }
+
+    public void Generate()
+    {
         if (Singleton != null && Singleton != this)
         {
             Destroy(gameObject);
@@ -43,7 +48,8 @@ public class BioDatabase : MonoBehaviour
         {
             Singleton = this;
         }
-        foreach (var flavor in flavorInfo) {
+        foreach (var flavor in flavorInfo)
+        {
             FlavorIcons.Add(flavor.KEY, flavor);
             if (flavor.isBuffType) BuffFlavorIcons.Add(flavor.buffType, flavor);
             else InflictionFlavorIcons.Add(flavor.inflictionType, flavor);

@@ -73,10 +73,9 @@ public class FlavorCSVtoSO
                     {
                         InflictionFlavor inflictionFlavor = new()
                         {
-                            inflictionType = inflictionType
+                            inflictionType = inflictionType,
+                            amount = int.Parse(splitData[i + 1])
                         };
-
-                        inflictionFlavor.amount = int.Parse(splitData[i + 1]);
 
                         // add parsed infliction flavor
                         inherentInflictionFlavors.Add(inflictionFlavor);
@@ -84,11 +83,9 @@ public class FlavorCSVtoSO
                     {
                         BuffFlavor buffFlavor = new()
                         {
-                            buffType = buffType
+                            buffType = buffType,
+                            amount = int.Parse(splitData[i + 1])
                         };
-
-
-                        buffFlavor.amount = int.Parse(splitData[i + 1]);
 
                         // add parsed infliction flavor
                         inherentBuffFlavors.Add(buffFlavor);

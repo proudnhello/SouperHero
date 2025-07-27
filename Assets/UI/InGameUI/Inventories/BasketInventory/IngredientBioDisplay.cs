@@ -18,7 +18,7 @@ public class IngredientBioDisplay : MonoBehaviour
     [SerializeField] TMP_Text IngredientTypeHeader;
     [SerializeField] GameObject FlavorSection;
     [SerializeField] TMP_Text FlavorEntry;
-    [SerializeField] BasketFlavorIconTooltip[] FlavorIconTooltips;
+    [SerializeField] FlavorIconTextTooltip[] FlavorIconTooltips;
     [SerializeField] GameObject AbilitySection;
     [SerializeField] TMP_Text AbilityEntry;
     [SerializeField] Image AbilityIcon;
@@ -137,6 +137,7 @@ public class IngredientBioDisplay : MonoBehaviour
                         FlavorEntry.transform.TransformPoint(p2Char.topRight)
                     );
 
+                    FlavorIconTooltips[iconToolTipTracker].SetText(iconInfo);
                     for (int icon = 0; icon < iconCount; icon++)
                     {
                         var firstSpacingChar = FlavorEntry.textInfo.characterInfo[FlavorEntry.textInfo.wordInfo[i].firstCharacterIndex + icon * SPACING_TEXT_FOR_ICON.Length];
