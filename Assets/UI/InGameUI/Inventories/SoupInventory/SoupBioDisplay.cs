@@ -4,7 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 
 public class SoupBioDisplay : MonoBehaviour
@@ -35,6 +35,12 @@ public class SoupBioDisplay : MonoBehaviour
     [SerializeField] float IconSeparator = 75f;
     [SerializeField] FlavorBioTicks[] TickFlavorIcons;
 
+    [Header("Bio Anim")]
+    [SerializeField] BoxCollider2D HoverSpace;
+    [SerializeField] AnimationCurve FadeCurve;
+    [SerializeField] float FadeAnimTime;
+    [SerializeField] CanvasGroup BioFader;
+    [SerializeField] float LeaveHoverSpaceDelay;
 
     SoupInventoryUI ui;
     public void Init(SoupInventoryUI ui)
@@ -47,65 +53,107 @@ public class SoupBioDisplay : MonoBehaviour
         }
     }
 
-    private void OnDisable()
-    {
-        CursorManager.CursorClickOut -= UnlockSlot;
-    }
 
+    bool IsTouchingHoverSpace = false;
     private void Update()
     {
         if (BioHolder.gameObject.activeInHierarchy)
         {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool touching = HoverSpace.bounds.IntersectRay(ray);
+            if (IsTouchingHoverSpace && !touching && !isDragging) // exit out hover space
+            {
+                TriggerFadeAnim(false, LeaveHoverSpaceDelay);
+            }
+            else if (!IsTouchingHoverSpace && touching && !isDragging) // bio is fading out, but you reenter hover space
+            {
+                TriggerFadeAnim(true);
+            }
+            IsTouchingHoverSpace = touching;
             if (PlayerEntityManager.Singleton.playerMovement.IsMoving() && !SoupInventoryUI.Singleton.IsOpen)
             {
-                BioHolder.gameObject.SetActive(false);
+                TriggerFadeAnim(false);
             }
         }
     }
 
-    SoupBase currLockedSoup;
+    void TriggerFadeAnim(bool fadeIn, float delay = 0, ISoupBowl bowl = null)
+    {
+        if (BioIsFadingIn == fadeIn) return;
+        if (IFadeBio != null) StopCoroutine(IFadeBio);
+        StartCoroutine(IFadeBio = FadeBioAnim(fadeIn, delay, bowl));
+    }
+
+    IEnumerator IFadeBio;
+    float fadeTimeProgressed;
+    bool BioIsFadingIn = false;
+    IEnumerator FadeBioAnim(bool fadeIn, float delay = 0, ISoupBowl bowl = null)
+    {
+        BioIsFadingIn = fadeIn;
+
+        if (delay > 0) yield return new WaitForSeconds(delay);
+
+        BioHolder.gameObject.SetActive(true);
+        // fade out (if already faded in)
+        while (fadeTimeProgressed >= 0)
+        {
+            var percentCompleted = Mathf.Clamp01(fadeTimeProgressed / FadeAnimTime);
+            var curveAmount = FadeCurve.Evaluate(percentCompleted);
+            BioFader.alpha = Mathf.Lerp(0, 1, curveAmount);
+
+            yield return null;
+            fadeTimeProgressed -= Time.deltaTime;
+        }
+        // fade in (if chosen to)
+        if (fadeIn)
+        {
+            if (bowl != null) ShowBio(bowl);
+            while (fadeTimeProgressed <= FadeAnimTime)
+            {
+                var percentCompleted = Mathf.Clamp01(fadeTimeProgressed / FadeAnimTime);
+                var curveAmount = FadeCurve.Evaluate(percentCompleted);
+                BioFader.alpha = Mathf.Lerp(0, 1, curveAmount);
+
+                yield return null;
+                fadeTimeProgressed += Time.deltaTime;
+            }
+        }
+
+
+
+        if (fadeIn) BioFader.alpha = 1;
+        else
+        {
+            BioFader.gameObject.SetActive(false);
+            currSoup = null;
+        }
+
+        fadeTimeProgressed = fadeIn ? FadeAnimTime : 0;
+    }
+
+
+
     SoupBase currSoup;
     bool isDragging;
     public void DragBowl(ISoupBowl bowlInSlot)
     {
-        ShowBio(bowlInSlot);
+        TriggerFadeAnim(true, 0, bowlInSlot);
         isDragging = true;
     }
 
-    public void ReleaseDrag(ISoupBowl soupInReleasedSlot, bool tap)
+    public void ReleaseDrag()
     {
         isDragging = false;
-        if (tap)
-        {
-            SoupBase bowl = GetBase(soupInReleasedSlot);
-            if (bowl == currLockedSoup)
-            {
-                UnlockSlot();
-            }
-            else // Lock slot
-            {
-                currLockedSoup = bowl;
-                CursorManager.CursorClickOut += UnlockSlot;
-            }
-        }
     }
     public void TryDisplayHoverBio(ISoupBowl bowl)
     {
-        if (isDragging || currLockedSoup != null) return;
-        ShowBio(bowl);
+        if (isDragging) return;
+        TriggerFadeAnim(true, 0, bowl);
     }
     public void TryHideHoverBio(ISoupBowl bowl)
     {
-        if (isDragging || currLockedSoup != null || GetBase(bowl) != currSoup) return;
-        if (CookingScreen.Singleton.BowlCookingSlot.soupBaseReference != null)
-            ShowBio(CookingScreen.Singleton.BowlCookingSlot.soupBaseReference);
-        else CloseBio();
-    }
-    public void UnlockSlot()
-    {
-        isDragging = false;
-        currLockedSoup = null;
-        CursorManager.CursorClickOut -= UnlockSlot;
+        if (isDragging || GetBase(bowl) != currSoup || IsTouchingHoverSpace) return;
+        TriggerFadeAnim(false);
     }
     SoupBase GetBase(ISoupBowl bowl)
     {
@@ -126,7 +174,6 @@ public class SoupBioDisplay : MonoBehaviour
         if (currSoup == soup) return;
         currSoup = soup;
 
-        BioHolder.gameObject.SetActive(true);
         FinishedSoupSection.SetActive(false);
         SoupBaseSection.SetActive(true);
         TitleText.text = LocalizationManager.GetLocalizedString(soup.baseName);
@@ -176,7 +223,6 @@ public class SoupBioDisplay : MonoBehaviour
         if (currSoup == soup.soupBase && !overrideShow) return;
         currSoup = soup.soupBase;
 
-        BioHolder.gameObject.SetActive(true);
         FinishedSoupSection.SetActive(true);
         SoupBaseSection.SetActive(false);
         TitleText.text = LocalizationManager.GetLocalizedString(soup.soupBase.finishedSoupName);
@@ -280,12 +326,6 @@ public class SoupBioDisplay : MonoBehaviour
 
         SoupDescriptionText.text = display;
         SoupDescriptionText.ForceMeshUpdate();
-    }
-
-    public void CloseBio()
-    {
-        BioHolder.gameObject.SetActive(false);
-        currSoup = null;
     }
 
     public void OnCook(FinishedSoup newSoup)

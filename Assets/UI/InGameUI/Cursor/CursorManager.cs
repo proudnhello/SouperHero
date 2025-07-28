@@ -49,7 +49,6 @@ public class CursorManager : MonoBehaviour
     Vector2 mouseDownPosition;
     float mouseDownTime;
     ICursorInteractable lastCursorInteract;
-    public static event Action CursorClickOut;
     private void MouseDown(InputAction.CallbackContext ctx)
     {
         mouseDownPosition = Input.mousePosition;
@@ -67,7 +66,6 @@ public class CursorManager : MonoBehaviour
                 return;
             }
         }
-        CursorClickOut?.Invoke();
     }
     private void MouseUp(InputAction.CallbackContext ctx)
     {

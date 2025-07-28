@@ -12,7 +12,7 @@ public class SoupAbilitiesUI : MonoBehaviour
 {
     [SerializeField] List<AbilityIconTooltip> soupAbilityIcons;
 
-    void Start()
+    void Awake()
     {
         PlayerInventory.ChangedEquippedSoup += UpdateIcons;
         PlayerInventory.UsedSoupAttack += UpdateIcons;

@@ -126,8 +126,6 @@ public class SoupInventoryUI : MonoBehaviour
             else InventorySlots[i].UnequipSlot();
         }
         CursorManager.Singleton.ExitSoupInventory();
-        SoupBio.UnlockSlot();
-        SoupBio.CloseBio();
     }
 
     int heldSlot = -2;

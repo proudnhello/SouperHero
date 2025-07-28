@@ -19,6 +19,7 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
     [SerializeField] Image SlotContent;
     [SerializeField] Sprite EmptySoupSlotSprite;
     [SerializeField] float HoverTimeToDisplay;
+    [SerializeField] float UnhoverTimeToHide;
     internal ISoupBowl bowlHeld;
     bool HasBowl { get => bowlHeld is FinishedSoup || bowlHeld is SoupBase; }
     int slotIndex;
@@ -114,7 +115,6 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
                 if (isSelected) // return from bowl slot to here
                 {
                     SoupInventoryUI.Singleton.ReturnBowlFromCookingSlot(slotIndex);
-                    SoupInventoryUI.Singleton.SoupBio.UnlockSlot();
                 }
                 else
                 {
@@ -129,7 +129,8 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
 
     public void ReturnItemHereFromCursor()
     {
-        SoupInventoryUI.Singleton.SoupBio.ReleaseDrag(bowlHeld, false);
+        SoupInventoryUI.Singleton.SoupBio.ReleaseDrag();
+        if (bowlHeld != null) SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(bowlHeld);
         DeselectSlot();
     }
 
@@ -145,7 +146,7 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
                     CursorManager.Singleton.DropBowl();
                 }
             }
-            SoupInventoryUI.Singleton.SoupBio.ReleaseDrag(bowlHeld, false);
+            SoupInventoryUI.Singleton.SoupBio.ReleaseDrag();
         }
     }
     public void Tap()
@@ -156,19 +157,41 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
             {
                 SoupInventoryUI.Singleton.TapSoupSlot(slotIndex);
                 CursorManager.Singleton.DropBowl();
-                SoupInventoryUI.Singleton.SoupBio.UnlockSlot();
             }
-            else SoupInventoryUI.Singleton.SoupBio.ReleaseDrag(bowlHeld, true);    
+            SoupInventoryUI.Singleton.SoupBio.ReleaseDrag();    
         }
     }
 
     public void OnHoverEnter()
     {
-        if (HasBowl) SoupInventoryUI.Singleton.SoupBio.TryDisplayHoverBio(bowlHeld);
+        if (HasBowl)
+        {
+            if (IHoverTimer != null) StopCoroutine(IHoverTimer);
+            StartCoroutine(IHoverTimer = HoverTimer(true));
+        }
+    }
+
+    IEnumerator IHoverTimer;
+    IEnumerator HoverTimer(bool enter)
+    {
+        if (enter)
+        {
+            yield return new WaitForSeconds(HoverTimeToDisplay);
+            SoupInventoryUI.Singleton.SoupBio.TryDisplayHoverBio(bowlHeld);
+        }
+        else
+        {
+            yield return new WaitForSeconds(UnhoverTimeToHide);
+            SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(bowlHeld);
+        }
     }
 
     public void OnHoverExit()
     {
-        if (HasBowl) SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(bowlHeld);
+        if (HasBowl)
+        {
+            if (IHoverTimer != null) StopCoroutine(IHoverTimer);
+            StartCoroutine(IHoverTimer = HoverTimer(false));
+        }
     }
 }
