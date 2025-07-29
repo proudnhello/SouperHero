@@ -19,6 +19,7 @@ public class CursorManager : MonoBehaviour
     [SerializeField] float MOUSE_DISTANCE_FOR_TAP;
     [SerializeField] float TIME_FOR_TAP = .25f;
     [SerializeField] LayerMask BOWL_SLOT_LAYER;
+    public TooltipCursorTrigger TooltipTrigger;
 
     public bool IsHoldingSomething { get => currentCollectableReference != null || currentBowlReference != null; }
     internal Collectable currentCollectableReference;

@@ -3,15 +3,18 @@
  * https://github.com/djlouie/project-soup-chat-logs/blob/main/logs/log10.md
  */
 
+using DG.Tweening.Core.Easing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Image = UnityEngine.UI.Image;
+using Random = UnityEngine.Random;
 
 public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSource
 {
@@ -20,81 +23,102 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
     [SerializeField] Sprite EmptySoupSlotSprite;
     [SerializeField] float HoverTimeToDisplay;
     [SerializeField] float UnhoverTimeToHide;
+    [SerializeField] Collider2D TooltipCollider;
+
+    [Header("Anim")]
+    [SerializeField] AnimationCurve ScaleCurve;
+    [SerializeField] float ScaleAnimTime;
+    [SerializeField] Vector3 EquippedBowlScale = new Vector3(1.1f, 1.1f, 1.1f);
+    [SerializeField] Vector3 UnequippedBowlScale = new Vector3(.6f, .6f, .6f);
+    [SerializeField] Color UnequippedSlotColor = new Color(.5f, .5f, .5f, .5f);
+    [SerializeField] Vector3 HoveredBowlScale;
+    [SerializeField] Vector3 NoncookableBowlScale;
+    [SerializeField] Vector3 CookableBowlScale;
+    [SerializeField] float ResetBowlPositionAnimTime;
+    [SerializeField] AnimationCurve IdleMoveCurve;
+    [SerializeField] Vector2 IdleMoveTimeRange;
+    [SerializeField] Vector2 IdleMoveArcRange;
+    [SerializeField] Vector2 IdleMoveDistanceRange;
+
     internal ISoupBowl bowlHeld;
-    bool HasBowl { get => bowlHeld is FinishedSoup || bowlHeld is SoupBase; }
+    bool HasBowl { get => (bowlHeld is FinishedSoup || bowlHeld is SoupBase) && !isPickedUp && !isSelected; }
     int slotIndex;
     bool isSelected = false;
+    bool isPickedUp = false;
+
+    Vector3 DefaultPos;
 
     public void Init(int index, ISoupBowl bowl)
     {
         slotIndex = index;
         bowlHeld = bowl;
+        DefaultPos = SlotContent.transform.localPosition;
         RenderSlotContents();
     }
     public void SetSoup(ISoupBowl bowl)
     {
         bowlHeld = bowl;
-        RenderSlotContents();
     }
 
-    public void EquipSlot()
+    public void EquipSlot(bool immediately = false)
     {
-        SlotContent.color = Color.white;
-        SlotContent.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+        if (immediately)
+        {
+            SlotContent.color = Color.white;
+            SlotContent.transform.localScale = EquippedBowlScale;
+        }
+        else
+        {
+            if (IEquipAnim != null) StopCoroutine(IEquipAnim);
+            StartCoroutine(IEquipAnim = EquipAnim(true));
+        }
         SoupInventoryUI.Singleton.EnableFlavorParticles(bowlHeld, this.gameObject);
         RenderSlotContents();
     }
 
-    public void UnequipSlot()
+    public void UnequipSlot(bool immediately = false)
     {
-        SlotContent.color = new Color(.5f, .5f, .5f, .8f);
-        SlotContent.transform.localScale = new Vector3(.6f, .6f, .6f);
+        if (immediately)
+        {
+            SlotContent.color = UnequippedSlotColor;
+            SlotContent.transform.localScale = UnequippedBowlScale;
+        }
+        else
+        {
+            if (IEquipAnim != null) StopCoroutine(IEquipAnim);
+            StartCoroutine(IEquipAnim = EquipAnim(false));
+        }
         SoupInventoryUI.Singleton.DisableFlavorParticles(this.gameObject);
         RenderSlotContents();
     }
 
-    public void SelectSlot()
+    public void SelectSlotForCooking()
     {
-        SlotContent.transform.localScale = new Vector3(.8f, .8f, .8f);
         isSelected = true;
+        PlaceBowlInSlotAnim();
     }
 
-    public void DeselectSlot()
+    public void DeselectSlotForCooking()
     {
-        SlotContent.transform.localScale = Vector3.one;
         isSelected = false;
-    }
-
-
-    void RenderSlotContents()
-    {
-        SlotContent.enabled = true;
-        SlotContent.rectTransform.sizeDelta = new Vector2(123, 75);
-        usesText.text = "";
-        if (bowlHeld is FinishedSoup finishedSoup)
-        {
-            SlotContent.sprite = finishedSoup.soupBase.finishedSprite;
-            if (finishedSoup.uses < 0) usesText.text = "∞";
-            else usesText.text = finishedSoup.uses.ToString();
-        }
-        else if (bowlHeld is SoupBase soupBase)
-        {
-            SlotContent.sprite = soupBase.baseSprite;
-        }
-        else
-        {
-            SlotContent.rectTransform.sizeDelta = new Vector2(82, 50);
-            SlotContent.sprite = EmptySoupSlotSprite;
-            SlotContent.enabled = SoupInventoryUI.Singleton.IsOpen;
-        }
+        PlaceBowlInSlotAnim();
     }
 
     public void EnterInventoryScreen()
     {
-        SlotContent.color = Color.white;
-        if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == slotIndex) SelectSlot();
-        else DeselectSlot();
-        RenderSlotContents();
+        isSelected = CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == slotIndex;
+        PlaceBowlInSlotAnim(true);
+        SoupInventoryUI.Singleton.DisableFlavorParticles(this.gameObject);
+
+    }
+
+    public void ExitInventoryScreen()
+    {
+        if (SlotContent.transform.localPosition != DefaultPos)
+        {
+            if (IInventoryIdleAnim != null) StopCoroutine(IInventoryIdleAnim);
+            StartCoroutine(IInventoryIdleAnim = InventoryIdleAnim(false));
+        }    
     }
 
     public void UpdateUseCount()
@@ -112,17 +136,10 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         {
             if (SoupInventoryUI.Singleton.IsOpen)
             {
-                if (isSelected) // return from bowl slot to here
-                {
-                    SoupInventoryUI.Singleton.ReturnBowlFromCookingSlot(slotIndex);
-                }
-                else
-                {
-                    SoupInventoryUI.Singleton.ClickOnSlot(slotIndex);
-                    CursorManager.Singleton.PickupBowl(bowlHeld);
-                    SelectSlot();
-                    SoupInventoryUI.Singleton.SoupBio.DragBowl(bowlHeld);
-                }
+                SoupInventoryUI.Singleton.ClickOnSlot(slotIndex);
+                CursorManager.Singleton.PickupBowl(bowlHeld);
+                SoupInventoryUI.Singleton.SoupBio.DragBowl(bowlHeld);
+                PickUpBowlFromSlotAnim();
             }
         }
     }
@@ -130,8 +147,11 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
     public void ReturnItemHereFromCursor()
     {
         SoupInventoryUI.Singleton.SoupBio.ReleaseDrag();
-        if (bowlHeld != null) SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(bowlHeld);
-        DeselectSlot();
+        if (bowlHeld != null)
+        {
+            SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(bowlHeld);
+            PlaceBowlInSlotAnim();
+        }
     }
 
 
@@ -162,17 +182,21 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         }
     }
 
+    #region HOVERING
     public void OnHoverEnter()
     {
         if (HasBowl)
         {
-            if (IHoverTimer != null) StopCoroutine(IHoverTimer);
-            StartCoroutine(IHoverTimer = HoverTimer(true));
+            if (!SoupInventoryUI.Singleton.IsOpen && slotIndex >= PlayerInventory.Singleton.maxEquippedSoups) return;
+            if (IHoverTimerForBio != null) StopCoroutine(IHoverTimerForBio);
+            StartCoroutine(IHoverTimerForBio = HoverTimerForBio(true));
+            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+            StartCoroutine(IHoverScaler = HoverScaler(true));
         }
     }
 
-    IEnumerator IHoverTimer;
-    IEnumerator HoverTimer(bool enter)
+    IEnumerator IHoverTimerForBio;
+    IEnumerator HoverTimerForBio(bool enter)
     {
         if (enter)
         {
@@ -186,12 +210,204 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         }
     }
 
+
     public void OnHoverExit()
     {
         if (HasBowl)
         {
-            if (IHoverTimer != null) StopCoroutine(IHoverTimer);
-            StartCoroutine(IHoverTimer = HoverTimer(false));
+            if (!SoupInventoryUI.Singleton.IsOpen && slotIndex >= PlayerInventory.Singleton.maxEquippedSoups) return;
+            if (IHoverTimerForBio != null) StopCoroutine(IHoverTimerForBio);
+            StartCoroutine(IHoverTimerForBio = HoverTimerForBio(false));
+            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+            StartCoroutine(IHoverScaler = HoverScaler(false));
         }
     }
+    #endregion
+    #region ANIMATION
+
+    void PickUpBowlFromSlotAnim()
+    {
+        isPickedUp = true;
+        if (IInventoryIdleAnim != null) StopCoroutine(IInventoryIdleAnim);
+        if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+        if (IEquipAnim != null) StopCoroutine(IEquipAnim);
+        RenderSlotContents();
+    }
+
+    void PlaceBowlInSlotAnim(bool enteringInventory = false) // either from swapping or returning bowl to slot or entering menu
+    {
+        hoverScaleAnimTime = 0;
+        isPickedUp = false;
+        RenderSlotContents();
+        if (!HasBowl) return;
+
+        if (enteringInventory) // equip every slot to normal scale
+        {
+            if (IEquipAnim != null) StopCoroutine(IEquipAnim);
+            StartCoroutine(IEquipAnim = EquipAnim(true));
+        }
+        else
+        {
+            SlotContent.color = Color.white;
+            SlotContent.transform.localScale = CookingScreen.Singleton.IsCooking && bowlHeld is SoupBase ? CookableBowlScale : NoncookableBowlScale;
+        }
+
+        //if mouse is already over, then trigger on hover anim
+        if (CursorManager.Singleton.TooltipTrigger.IsCursorHoveringOnTooltip(TooltipCollider))
+        {
+            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+            StartCoroutine(IHoverScaler = HoverScaler(true));
+        }
+        // retrigger idle anim
+        if (!enteringInventory) SlotContent.transform.localPosition = DefaultPos;
+
+        if (bowlHeld is SoupBase)
+        {
+            if (IInventoryIdleAnim != null) StopCoroutine(IInventoryIdleAnim);
+            StartCoroutine(IInventoryIdleAnim = InventoryIdleAnim(true));
+        }
+    }
+    void RenderSlotContents()
+    {
+        SlotContent.enabled = true;
+        SlotContent.rectTransform.sizeDelta = new Vector2(123, 75);
+        usesText.text = "";
+        if (bowlHeld is FinishedSoup finishedSoup && !isPickedUp && !isSelected)
+        {
+            SlotContent.sprite = finishedSoup.soupBase.finishedSprite;
+            if (finishedSoup.uses < 0) usesText.text = "∞";
+            else usesText.text = finishedSoup.uses.ToString();
+        }
+        else if (bowlHeld is SoupBase soupBase && !isPickedUp && !isSelected)
+        {
+            SlotContent.sprite = soupBase.baseSprite;
+        }
+        else
+        {
+            SlotContent.rectTransform.sizeDelta = new Vector2(82, 50);
+            SlotContent.sprite = EmptySoupSlotSprite;
+            SlotContent.enabled = SoupInventoryUI.Singleton.IsOpen;
+            SlotContent.transform.localScale = Vector3.one;
+            SlotContent.transform.localPosition = DefaultPos;
+            SlotContent.color = Color.white;
+        }
+    }
+
+    IEnumerator IHoverScaler;
+    float hoverScaleAnimTime = 0;
+    IEnumerator HoverScaler(bool hover)
+    {
+        Vector3 baseScale = hover ? SlotContent.transform.localScale :
+            !SoupInventoryUI.Singleton.IsOpen && slotIndex == SoupInventoryUI.Singleton.selectedEquippedSoup ? EquippedBowlScale :
+            !SoupInventoryUI.Singleton.IsOpen && slotIndex != SoupInventoryUI.Singleton.selectedEquippedSoup ? UnequippedBowlScale :
+            CookingScreen.Singleton.IsCooking && bowlHeld is SoupBase ? CookableBowlScale : 
+            NoncookableBowlScale;         // holy shit quadruple ternary operator im fucking coding
+
+        Vector3 goalScale = hover ? HoveredBowlScale : SlotContent.transform.localScale;
+
+        while (hoverScaleAnimTime >= 0 && hoverScaleAnimTime <= ScaleAnimTime)
+        {
+            var percentCompleted = Mathf.Clamp01(hoverScaleAnimTime / ScaleAnimTime);
+            var curveAmount = ScaleCurve.Evaluate(percentCompleted);
+            SlotContent.transform.localScale = Vector3.Lerp(baseScale, goalScale, curveAmount);
+
+            yield return null;
+            hoverScaleAnimTime = hover ? hoverScaleAnimTime + Time.deltaTime : hoverScaleAnimTime - Time.deltaTime;
+        }
+
+        if (hover)
+        {
+            SlotContent.transform.localScale = HoveredBowlScale;
+            hoverScaleAnimTime = ScaleAnimTime;
+        }
+        else
+        {
+            SlotContent.transform.localScale = baseScale;
+            hoverScaleAnimTime = 0;
+        }
+        IHoverScaler = null;
+    }
+
+    IEnumerator IEquipAnim;
+    IEnumerator EquipAnim(bool equip)
+    {
+        if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+        IHoverScaler = null;
+        hoverScaleAnimTime = 0;
+
+        Vector3 baseScale = equip ? SlotContent.transform.localScale : UnequippedBowlScale;
+        Vector3 goalScale = !equip ? SlotContent.transform.localScale :
+            !SoupInventoryUI.Singleton.IsOpen ? EquippedBowlScale :
+            CookingScreen.Singleton.IsCooking && bowlHeld is SoupBase ? CookableBowlScale :
+            NoncookableBowlScale;
+
+        Color baseColor = equip ? SlotContent.color : UnequippedSlotColor;
+        Color goalColor = !equip ? SlotContent.color : Color.white;
+
+        float time = equip ? 0 : ScaleAnimTime;
+        while (time >= 0 && time <= ScaleAnimTime)
+        {
+            var percentCompleted = Mathf.Clamp01(time / ScaleAnimTime);
+            var curveAmount = ScaleCurve.Evaluate(percentCompleted);
+            // only handle scaling if hover scaling isn't already doing it
+            if (IHoverScaler == null) SlotContent.transform.localScale = Vector3.Lerp(baseScale, goalScale, curveAmount);
+            SlotContent.color = Color.Lerp(baseColor, goalColor, curveAmount);
+
+            yield return null;
+            time = equip ? time + Time.deltaTime : time - Time.deltaTime;
+        }
+
+        if (equip)
+        {
+            if (IHoverScaler == null) SlotContent.transform.localScale = goalScale;
+            SlotContent.color = goalColor;
+        }
+        else
+        {
+            if (IHoverScaler == null) SlotContent.transform.localScale = UnequippedBowlScale;
+            SlotContent.color = UnequippedSlotColor;
+        }
+    }
+
+    IEnumerator IInventoryIdleAnim;
+    IEnumerator InventoryIdleAnim(bool enter)
+    {
+        if (!enter) // return to normal position
+        {
+            float time = 0;
+            Vector3 basePosition = SlotContent.transform.localPosition;
+            while (time < ResetBowlPositionAnimTime)
+            {
+                SlotContent.transform.localPosition = Vector3.Lerp(basePosition, DefaultPos, Mathf.Clamp01(time / ResetBowlPositionAnimTime));
+                yield return null;
+                time += Time.deltaTime;
+            }
+            SlotContent.transform.localPosition = DefaultPos;
+        }
+        else
+        {
+            float angle = Random.Range(0, Mathf.PI * 2);
+            Vector3 goalPos = DefaultPos + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * Random.Range(IdleMoveDistanceRange.x, IdleMoveDistanceRange.y);
+            while (true)
+            {
+                float time = 0;
+                float animTime = Random.Range(IdleMoveTimeRange.x, IdleMoveTimeRange.y);
+                Vector3 basePos = SlotContent.transform.localPosition;
+                while (time < animTime)
+                {
+                    var percentCompleted = Mathf.Clamp01(time / animTime);
+                    var curveAmount = IdleMoveCurve.Evaluate(percentCompleted);
+                    SlotContent.transform.localPosition = Vector3.Lerp(basePos, goalPos, curveAmount);
+
+                    yield return null;
+                    time += Time.deltaTime;
+                }
+                float angleRange = Random.Range(IdleMoveArcRange.x, IdleMoveArcRange.y);
+                angle = (angle + Random.Range(Mathf.PI - angleRange, Mathf.PI + angleRange)) % (Mathf.PI * 2);
+                goalPos = DefaultPos + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * Random.Range(IdleMoveDistanceRange.x, IdleMoveDistanceRange.y);
+            }
+        }
+        yield return null;
+    }
+    #endregion
 }
