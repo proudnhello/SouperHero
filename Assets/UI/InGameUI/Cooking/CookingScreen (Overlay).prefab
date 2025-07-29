@@ -455,8 +455,37 @@ MonoBehaviour:
   SlotOutline: {fileID: 4498460574199313329}
   SlotContent: {fileID: 5434906884950129628}
   EmptySlotIcon: {fileID: 7056635337638120764}
-  HoverTimeToDisplay: 0.2
-  UnhoverTimeToHide: 0.15
+  HoverTimeToDisplay: 0.1
+  UnhoverTimeToHide: 0.25
+  TooltipCollider: {fileID: 7296228808663206466}
+  ScaleAnimTime: 0.5
+  UnhoveredBowlScale: {x: 0.8, y: 0.8, z: 0.8}
+  HoveredBowlScaleOne: {x: 1, y: 1, z: 1}
+  HoveredBowlScaleTwo: {x: 0.95, y: 0.95, z: 0.95}
+  HoverScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!61 &7296228808663206466
 BoxCollider2D:
   m_ObjectHideFlags: 0

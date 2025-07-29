@@ -12,6 +12,14 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
     [SerializeField] Image EmptySlotIcon;
     [SerializeField] float HoverTimeToDisplay;
     [SerializeField] float UnhoverTimeToHide;
+    [SerializeField] Collider2D TooltipCollider;
+
+    [Header("Anim")]
+    [SerializeField] float ScaleAnimTime;
+    [SerializeField] Vector3 UnhoveredBowlScale;
+    [SerializeField] Vector3 HoveredBowlScaleOne;
+    [SerializeField] Vector3 HoveredBowlScaleTwo;
+    [SerializeField] AnimationCurve HoverScaleCurve;
 
     internal int soupSlotReference = -1;
     internal SoupBase soupBaseReference = null;
@@ -22,7 +30,11 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
     }
     public void ExitCookingScreen()
     {
-        
+        if (soupBaseReference != null)
+        {
+            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+            StartCoroutine(IHoverScaler = HoverScaler(false));
+        }
     }
 
     public void MouseDownOn()
@@ -42,8 +54,8 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
         if (CursorManager.Singleton.currentBowlReference != null &&
             CursorManager.Singleton.currentBowlReference != (ISoupBowl)soupBaseReference)
         {
-            SoupInventoryUI.Singleton.ReleaseOnSlot(-1);
             SoupInventoryUI.Singleton.SoupBio.ReleaseDrag();
+            SoupInventoryUI.Singleton.ReleaseOnSlot(-1);
             CursorManager.Singleton.DropBowl();
         }
     }
@@ -67,18 +79,29 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
 
     public void RenderSlot(bool displayBowl)
     {
+        hoverScaleAnimTime = 0;
+
         if (soupBaseReference != null && displayBowl)
         {
             SlotOutline.gameObject.SetActive(false);
             SlotContent.gameObject.SetActive(true);
             SlotContent.sprite = soupBaseReference.baseSprite;
             EmptySlotIcon.gameObject.SetActive(false);
+            SlotContent.transform.localScale = UnhoveredBowlScale;
+            if (CursorManager.Singleton.TooltipTrigger.IsCursorHoveringOnTooltip(TooltipCollider))
+            {
+                SoupInventoryUI.Singleton.SoupBio.TryDisplayHoverBio(soupBaseReference);
+                if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+                StartCoroutine(IHoverScaler = HoverScaler(true));
+            }
         }
         else
         {
             SlotOutline.gameObject.SetActive(true);
             EmptySlotIcon.gameObject.SetActive(true);
             SlotContent.gameObject.SetActive(false);
+            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+            hoverScaleAnimTime = 0;
         }
     }
 
@@ -100,9 +123,10 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
     {
         if (soupBaseReference != null)
         {
-            Debug.Log("hover over bowl");
             if (IHoverTimer != null) StopCoroutine(IHoverTimer);
             StartCoroutine(IHoverTimer = HoverTimer(true));
+            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+            StartCoroutine(IHoverScaler = HoverScaler(true));
         }
     }
 
@@ -127,6 +151,55 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
         {
             if (IHoverTimer != null) StopCoroutine(IHoverTimer);
             StartCoroutine(IHoverTimer = HoverTimer(false));
+            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+            StartCoroutine(IHoverScaler = HoverScaler(false));
         }
+    }
+
+    IEnumerator IHoverScaler;
+    float hoverScaleAnimTime = 0;
+    bool hasReachedMaxHover = false;
+    IEnumerator HoverScaler(bool hover)
+    {
+        Vector3 baseScale = hover ? SlotContent.transform.localScale : UnhoveredBowlScale;  
+
+        Vector3 goalScale = hover ? HoveredBowlScaleOne : SlotContent.transform.localScale;
+
+        if (hasReachedMaxHover && hoverScaleAnimTime > 0) hoverScaleAnimTime = ScaleAnimTime;
+        hasReachedMaxHover = false;
+
+        bool dir = hover;
+        while (true)
+        {
+            while (hoverScaleAnimTime >= 0 && hoverScaleAnimTime <= ScaleAnimTime)
+            {
+                var percentCompleted = Mathf.Clamp01(hoverScaleAnimTime / ScaleAnimTime);
+                var curveAmount = HoverScaleCurve.Evaluate(percentCompleted);
+                SlotContent.transform.localScale = Vector3.Lerp(baseScale, goalScale, curveAmount);
+
+                yield return null;
+                hoverScaleAnimTime = dir ? hoverScaleAnimTime + Time.deltaTime : hoverScaleAnimTime - Time.deltaTime;
+            }
+            if (!hover) break; // only shrink once if unhovering
+            // otherwise flip back and forth
+            if (dir)
+            {
+                SlotContent.transform.localScale = HoveredBowlScaleOne;
+                hoverScaleAnimTime = ScaleAnimTime;
+            }
+            else
+            {
+                SlotContent.transform.localScale = baseScale;
+                hoverScaleAnimTime = 0;
+            }
+
+            dir = !dir;
+            baseScale = HoveredBowlScaleTwo;
+            hasReachedMaxHover = true;
+        }
+
+        SlotContent.transform.localScale = baseScale;
+        hoverScaleAnimTime = 0;
+        IHoverScaler = null;
     }
 }

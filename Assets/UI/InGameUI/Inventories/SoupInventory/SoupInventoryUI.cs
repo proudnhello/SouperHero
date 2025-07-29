@@ -150,7 +150,12 @@ public class SoupInventoryUI : MonoBehaviour
 
         if (heldSlot == -1 && droppedOnSlot > -1) // drag from cooking bowl slot to inventory
         {
-            if (InventorySlots[droppedOnSlot].bowlHeld is SoupBase)
+            if (droppedOnSlot == CookingScreen.Singleton.BowlCookingSlot.soupSlotReference)
+            {
+                InventorySlots[droppedOnSlot].DeselectSlotForCooking();
+                CookingScreen.Singleton.DisplayNoBowl();
+            }
+            else if (InventorySlots[droppedOnSlot].bowlHeld is SoupBase)
             {
                 SwapSlots(droppedOnSlot, CookingScreen.Singleton.BowlCookingSlot.soupSlotReference);
                 InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlotForCooking();

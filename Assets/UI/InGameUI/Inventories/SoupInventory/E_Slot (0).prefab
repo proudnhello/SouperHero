@@ -95,8 +95,8 @@ MonoBehaviour:
   usesText: {fileID: 265448772648248760}
   SlotContent: {fileID: 3771788281710107645}
   EmptySoupSlotSprite: {fileID: 21300000, guid: 5c072fbc991193e409f0c73210f3c6b4, type: 3}
-  HoverTimeToDisplay: 0.2
-  UnhoverTimeToHide: 0.15
+  HoverTimeToDisplay: 0.1
+  UnhoverTimeToHide: 0.25
   TooltipCollider: {fileID: 8686857682360254379}
   ScaleCurve:
     serializedVersion: 2
@@ -144,38 +144,33 @@ MonoBehaviour:
   EquippedBowlScale: {x: 1.1, y: 1.1, z: 1.1}
   UnequippedBowlScale: {x: 0.6, y: 0.6, z: 0.6}
   UnequippedSlotColor: {r: 0.31446534, g: 0.31446534, b: 0.31446534, a: 0.9411765}
-  HoveredBowlScale: {x: 1.5, y: 1.5, z: 1.5}
-  NoncookableBowlScale: {x: 0.78, y: 0.78, z: 0.78}
-  CookableBowlScale: {x: 1.1, y: 1.1, z: 1.1}
-  NoncookableColor: {r: 0.42138356, g: 0.42138356, b: 0.42138356, a: 0.9254902}
-  ResetBowlPositionAnimTime: 0.35
-  IdleMoveCurve:
+  UnhoveredBowlScale: {x: 1, y: 1, z: 1}
+  HoveredBowlScaleOne: {x: 1.4, y: 1.4, z: 1.4}
+  HoveredBowlScaleTwo: {x: 1.3, y: 1.3, z: 1.3}
+  HoverScaleCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.030949052
-      outSlope: 0.030949052
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.04105737
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0.29046962
-      outSlope: 0.29046962
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.03937006
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  IdleMoveTimeRange: {x: 1, y: 1.5}
-  IdleMoveArcRange: {x: 0.3, y: 0.5}
-  IdleMoveDistanceRange: {x: 4, y: 5}
 --- !u!199 &6907518952291209190
 ParticleSystemRenderer:
   serializedVersion: 6

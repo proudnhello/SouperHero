@@ -79,31 +79,47 @@ public class SoupBioDisplay : MonoBehaviour
 
     void TriggerFadeAnim(bool fadeIn, float delay = 0, ISoupBowl bowl = null)
     {
-        if (BioIsFadingIn == fadeIn) return;
+        // if fading out = null, if bowl is null = currSoup, if bowl is given = new bowl
+        bowlInQueue = !fadeIn ? null : GetBase(bowl) ?? currSoup;
+
+        // CONDITIONS
+        // if bio is empty and no replacement, don't display
+        if (bowl == null && currSoup == null) return;
+
+        // if bio is fading in and new request is to fade in same bowl, don't display
+        if (bowlInQueue != null && LastRequestWasFadeIn && fadeIn && currSoup == bowlInQueue) return;
+
+        LastRequestWasFadeIn = fadeIn;
         if (IFadeBio != null) StopCoroutine(IFadeBio);
         StartCoroutine(IFadeBio = FadeBioAnim(fadeIn, delay, bowl));
     }
 
     IEnumerator IFadeBio;
     float fadeTimeProgressed;
-    bool BioIsFadingIn = false;
+    bool LastRequestWasFadeIn = false;
+    SoupBase bowlInQueue;
     IEnumerator FadeBioAnim(bool fadeIn, float delay = 0, ISoupBowl bowl = null)
     {
-        BioIsFadingIn = fadeIn;
-
         if (delay > 0) yield return new WaitForSeconds(delay);
+
+        bool displayNewSoup = bowlInQueue != currSoup;
+        currSoup = bowlInQueue;
 
         BioHolder.gameObject.SetActive(true);
         // fade out (if already faded in)
-        while (fadeTimeProgressed >= 0)
+        if (displayNewSoup)
         {
-            var percentCompleted = Mathf.Clamp01(fadeTimeProgressed / FadeAnimTime);
-            var curveAmount = FadeCurve.Evaluate(percentCompleted);
-            BioFader.alpha = Mathf.Lerp(0, 1, curveAmount);
+            while (fadeTimeProgressed >= 0)
+            {
+                var percentCompleted = Mathf.Clamp01(fadeTimeProgressed / FadeAnimTime);
+                var curveAmount = FadeCurve.Evaluate(percentCompleted);
+                BioFader.alpha = Mathf.Lerp(0, 1, curveAmount);
 
-            yield return null;
-            fadeTimeProgressed -= Time.deltaTime;
+                yield return null;
+                fadeTimeProgressed -= Time.deltaTime;
+            }
         }
+        
         // fade in (if chosen to)
         if (fadeIn)
         {
@@ -158,7 +174,8 @@ public class SoupBioDisplay : MonoBehaviour
     SoupBase GetBase(ISoupBowl bowl)
     {
         if (bowl is SoupBase soupBase) return soupBase;
-        else return ((FinishedSoup)bowl).soupBase;
+        else if (bowl is FinishedSoup soup) return soup.soupBase;
+        return null;
     }
     void ShowBio(ISoupBowl bowl)
     {
@@ -171,9 +188,6 @@ public class SoupBioDisplay : MonoBehaviour
 
     void ShowBaseBio(SoupBase soup)
     {
-        if (currSoup == soup) return;
-        currSoup = soup;
-
         FinishedSoupSection.SetActive(false);
         SoupBaseSection.SetActive(true);
         TitleText.text = LocalizationManager.GetLocalizedString(soup.baseName);
@@ -218,11 +232,8 @@ public class SoupBioDisplay : MonoBehaviour
         IngSlotSetter(soup.maxWildcardIngredients, 2);
     }
 
-    void ShowFinishedSoupBio(FinishedSoup soup, bool overrideShow = false)
+    void ShowFinishedSoupBio(FinishedSoup soup)
     {
-        if (currSoup == soup.soupBase && !overrideShow) return;
-        currSoup = soup.soupBase;
-
         FinishedSoupSection.SetActive(true);
         SoupBaseSection.SetActive(false);
         TitleText.text = LocalizationManager.GetLocalizedString(soup.soupBase.finishedSoupName);
@@ -332,7 +343,7 @@ public class SoupBioDisplay : MonoBehaviour
     {
         if (currSoup == newSoup.soupBase)
         {
-            ShowFinishedSoupBio(newSoup, true);
+            TriggerFadeAnim(true, 0, newSoup);
         }
     }
 }
