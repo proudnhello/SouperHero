@@ -4,8 +4,9 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
 
 public class SoupBioDisplay : MonoBehaviour
 {
@@ -34,7 +35,16 @@ public class SoupBioDisplay : MonoBehaviour
     [SerializeField] AbilityIconTooltip[] AbilityIconObjects;
     [SerializeField] float IconSeparator = 75f;
     [SerializeField] FlavorBioTicks[] TickFlavorIcons;
+    [SerializeField] Vector2 ElementSpacerForTicks;
+    [SerializeField] Transform FlavorIconHolder;
+    [SerializeField] Vector2 FlavorIconHolderStartPos;
 
+    [Header("Bio Anim")]
+    [SerializeField] BoxCollider2D HoverSpace;
+    [SerializeField] AnimationCurve FadeCurve;
+    [SerializeField] float FadeAnimTime;
+    [SerializeField] CanvasGroup BioFader;
+    [SerializeField] float LeaveHoverSpaceDelay;
 
     SoupInventoryUI ui;
     public void Init(SoupInventoryUI ui)
@@ -47,70 +57,129 @@ public class SoupBioDisplay : MonoBehaviour
         }
     }
 
-    private void OnDisable()
-    {
-        CursorManager.CursorClickOut -= UnlockSlot;
-    }
 
+    bool IsTouchingHoverSpace = false;
     private void Update()
     {
         if (BioHolder.gameObject.activeInHierarchy)
         {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool touching = HoverSpace.bounds.IntersectRay(ray);
+            if (IsTouchingHoverSpace && !touching && !isDragging) // exit out hover space
+            {
+                TriggerFadeAnim(false, LeaveHoverSpaceDelay);
+            }
+            else if (!IsTouchingHoverSpace && touching && !isDragging) // bio is fading out, but you reenter hover space
+            {
+                TriggerFadeAnim(true);
+            }
+            IsTouchingHoverSpace = touching;
             if (PlayerEntityManager.Singleton.playerMovement.IsMoving() && !SoupInventoryUI.Singleton.IsOpen)
             {
-                BioHolder.gameObject.SetActive(false);
+                TriggerFadeAnim(false);
             }
         }
     }
 
-    SoupBase currLockedSoup;
+    void TriggerFadeAnim(bool fadeIn, float delay = 0, ISoupBowl bowl = null)
+    {
+        // if fading out = null, if bowl is null = currSoup, if bowl is given = new bowl
+        bowlInQueue = !fadeIn ? null : GetBase(bowl) ?? currSoup;
+
+        // CONDITIONS
+        // if bio is empty and no replacement, don't display
+        if (bowl == null && currSoup == null) return;
+
+        // if bio is fading in and new request is to fade in same bowl, don't display
+        if (bowlInQueue != null && LastRequestWasFadeIn && fadeIn && currSoup == bowlInQueue) return;
+
+        LastRequestWasFadeIn = fadeIn;
+        if (IFadeBio != null) StopCoroutine(IFadeBio);
+        StartCoroutine(IFadeBio = FadeBioAnim(fadeIn, delay, bowl));
+    }
+
+    IEnumerator IFadeBio;
+    float fadeTimeProgressed;
+    bool LastRequestWasFadeIn = false;
+    SoupBase bowlInQueue;
+    IEnumerator FadeBioAnim(bool fadeIn, float delay = 0, ISoupBowl bowl = null)
+    {
+        if (delay > 0) yield return new WaitForSeconds(delay);
+
+        bool displayNewSoup = bowlInQueue != currSoup;
+        currSoup = bowlInQueue;
+
+        BioHolder.gameObject.SetActive(true);
+        // fade out (if already faded in)
+        if (displayNewSoup)
+        {
+            while (fadeTimeProgressed >= 0)
+            {
+                var percentCompleted = Mathf.Clamp01(fadeTimeProgressed / FadeAnimTime);
+                var curveAmount = FadeCurve.Evaluate(percentCompleted);
+                BioFader.alpha = Mathf.Lerp(0, 1, curveAmount);
+
+                yield return null;
+                fadeTimeProgressed -= Time.deltaTime;
+            }
+        }
+        
+        // fade in (if chosen to)
+        if (fadeIn)
+        {
+            if (bowl != null) ShowBio(bowl);
+            while (fadeTimeProgressed <= FadeAnimTime)
+            {
+                var percentCompleted = Mathf.Clamp01(fadeTimeProgressed / FadeAnimTime);
+                var curveAmount = FadeCurve.Evaluate(percentCompleted);
+                BioFader.alpha = Mathf.Lerp(0, 1, curveAmount);
+
+                yield return null;
+                fadeTimeProgressed += Time.deltaTime;
+            }
+        }
+
+
+
+        if (fadeIn) BioFader.alpha = 1;
+        else
+        {
+            BioFader.gameObject.SetActive(false);
+            currSoup = null;
+        }
+
+        fadeTimeProgressed = fadeIn ? FadeAnimTime : 0;
+    }
+
+
+
     SoupBase currSoup;
     bool isDragging;
     public void DragBowl(ISoupBowl bowlInSlot)
     {
-        ShowBio(bowlInSlot);
+        TriggerFadeAnim(true, 0, bowlInSlot);
         isDragging = true;
     }
 
-    public void ReleaseDrag(ISoupBowl soupInReleasedSlot, bool tap)
+    public void ReleaseDrag()
     {
         isDragging = false;
-        if (tap)
-        {
-            SoupBase bowl = GetBase(soupInReleasedSlot);
-            if (bowl == currLockedSoup)
-            {
-                UnlockSlot();
-            }
-            else // Lock slot
-            {
-                currLockedSoup = bowl;
-                CursorManager.CursorClickOut += UnlockSlot;
-            }
-        }
     }
     public void TryDisplayHoverBio(ISoupBowl bowl)
     {
-        if (isDragging || currLockedSoup != null) return;
-        ShowBio(bowl);
+        if (isDragging) return;
+        TriggerFadeAnim(true, 0, bowl);
     }
     public void TryHideHoverBio(ISoupBowl bowl)
     {
-        if (isDragging || currLockedSoup != null || GetBase(bowl) != currSoup) return;
-        if (CookingScreen.Singleton.BowlCookingSlot.soupBaseReference != null)
-            ShowBio(CookingScreen.Singleton.BowlCookingSlot.soupBaseReference);
-        else CloseBio();
-    }
-    public void UnlockSlot()
-    {
-        isDragging = false;
-        currLockedSoup = null;
-        CursorManager.CursorClickOut -= UnlockSlot;
+        if (isDragging || GetBase(bowl) != currSoup || IsTouchingHoverSpace) return;
+        TriggerFadeAnim(false);
     }
     SoupBase GetBase(ISoupBowl bowl)
     {
         if (bowl is SoupBase soupBase) return soupBase;
-        else return ((FinishedSoup)bowl).soupBase;
+        else if (bowl is FinishedSoup soup) return soup.soupBase;
+        return null;
     }
     void ShowBio(ISoupBowl bowl)
     {
@@ -123,10 +192,6 @@ public class SoupBioDisplay : MonoBehaviour
 
     void ShowBaseBio(SoupBase soup)
     {
-        if (currSoup == soup) return;
-        currSoup = soup;
-
-        BioHolder.gameObject.SetActive(true);
         FinishedSoupSection.SetActive(false);
         SoupBaseSection.SetActive(true);
         TitleText.text = LocalizationManager.GetLocalizedString(soup.baseName);
@@ -171,23 +236,17 @@ public class SoupBioDisplay : MonoBehaviour
         IngSlotSetter(soup.maxWildcardIngredients, 2);
     }
 
-    void ShowFinishedSoupBio(FinishedSoup soup, bool overrideShow = false)
+    void ShowFinishedSoupBio(FinishedSoup soup)
     {
-        if (currSoup == soup.soupBase && !overrideShow) return;
-        currSoup = soup.soupBase;
-
-        BioHolder.gameObject.SetActive(true);
         FinishedSoupSection.SetActive(true);
         SoupBaseSection.SetActive(false);
         TitleText.text = LocalizationManager.GetLocalizedString(soup.soupBase.finishedSoupName);
-        TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y);
 
         SoupDescriptionText.transform.localPosition = new Vector2(SoupDescriptionText.transform.localPosition.x, SoupDescriptionTextPositions.y);
         ShowFlavorProfile(soup.soupBase);
 
         Color cooldownColor = soup.cooldown < soup.soupBase.cooldown ? BioDatabase.Singleton.BuffFlavorIcons[FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed].COLOR : Color.white;
         CooldownStat.SetStat(soup.cooldown, cooldownColor);
-        CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y);
 
         int numSlots = soup.soupAbilities.Count;
         float evenNumCentererThing = numSlots % 2 == 0 ? IconSeparator / 2 : 0; // if it's 2 or 4, then offset it back so it's centered
@@ -211,10 +270,54 @@ public class SoupBioDisplay : MonoBehaviour
             TickFlavorIcons[iconUsed].Set(inf);
             iconUsed++;
         }
+
+        // space elements based on amount of ticks
+        if (iconUsed > 6)
+        {
+            TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y + ElementSpacerForTicks.y);
+            CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y + ElementSpacerForTicks.y);
+            FlavorIconHolder.transform.localPosition = new Vector2(FlavorIconHolderStartPos.x, FlavorIconHolderStartPos.y + ElementSpacerForTicks.y);
+        }
+        else if (iconUsed > 2)
+        {
+            TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y + ElementSpacerForTicks.x);
+            CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y + ElementSpacerForTicks.x);
+            FlavorIconHolder.transform.localPosition = new Vector2(FlavorIconHolderStartPos.x, FlavorIconHolderStartPos.y + ElementSpacerForTicks.x);
+        }
+        else
+        {
+            TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y);
+            CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y);
+            FlavorIconHolder.transform.localPosition = FlavorIconHolderStartPos;
+        }
     }
 
     void ShowFlavorProfile(SoupBase soup)
     {
+        int IconCount(BioDatabase.FlavorIconInfo iconInfo)
+        {
+            if (iconInfo.isBuffType)
+            {
+                foreach (var buff in soup.inherentBuffFlavors)
+                {
+                    if (buff.buffType == iconInfo.buffType)
+                    {
+                        return Mathf.RoundToInt(buff.amount);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var infliction in soup.inherentInflictionFlavors)
+                {
+                    if (infliction.inflictionType == iconInfo.inflictionType)
+                    {
+                        return Mathf.RoundToInt(infliction.amount);
+                    }
+                }
+            }
+            return 0;
+        }
         foreach (var icon in TextFlavorIconTooltips) icon.ClearIcons();
 
         // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
@@ -223,76 +326,61 @@ public class SoupBioDisplay : MonoBehaviour
 
         string display = "";
         int iconToolTipTracker = 0;
+        List<int> flavorIconIndicies = new();
+        List<BioDatabase.FlavorIconInfo> flavorIconInfo = new();
+        // first create basic string to be added to TMP text
         for (int i = 0; i < words.Length; i++)
         {
             var word = words[i];
             if (BioDatabase.Singleton.FlavorIcons.TryGetValue(word, out var iconInfo))
             {
-                int iconCount = 0;
-                if (iconInfo.isBuffType)
-                {
-                    foreach (var buff in soup.inherentBuffFlavors)
-                    {
-                        if (buff.buffType == iconInfo.buffType)
-                        {
-                            iconCount = Mathf.RoundToInt(buff.amount);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var infliction in soup.inherentInflictionFlavors)
-                    {
-                        if (infliction.inflictionType == iconInfo.inflictionType)
-                        {
-                            iconCount = Mathf.RoundToInt(infliction.amount);
-                        }
-                    }
-                }
+                flavorIconIndicies.Add(i);
+                flavorIconInfo.Add(iconInfo);
+
+                int iconCount = IconCount(iconInfo);
                 display += "<alpha=#00>";
                 for (int icon = 0; icon < iconCount; icon++)
                 {
                     display += SPACING_TEXT_FOR_ICON;
                 }
-                display += "<alpha=#FF>" + "<color=#" + iconInfo.COLOR.ToHexString() + ">" + LocalizationManager.GetLocalizedString(word) + "<color=#FFFFFF>";
-                SoupDescriptionText.text = display;
-                SoupDescriptionText.ForceMeshUpdate();
-
-                var p1Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].firstCharacterIndex];
-                var p2Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].lastCharacterIndex];
-                TextFlavorIconTooltips[iconToolTipTracker].SetBounds(
-                    SoupDescriptionText.transform.TransformPoint(p1Char.bottomLeft),
-                    SoupDescriptionText.transform.TransformPoint(p2Char.topRight)
-                );
-
-                TextFlavorIconTooltips[iconToolTipTracker].SetText(iconInfo);
-                for (int icon = 0; icon < iconCount; icon++)
-                {
-                    var firstSpacingChar = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].firstCharacterIndex + icon * SPACING_TEXT_FOR_ICON.Length];
-                    var spaceLocation = SoupDescriptionText.transform.TransformPoint((firstSpacingChar.topLeft + firstSpacingChar.bottomLeft) / 2f);
-                    TextFlavorIconTooltips[iconToolTipTracker].SetIcon(iconInfo, spaceLocation);
-                }
-                iconToolTipTracker++;
-            }
+                display += "<alpha=#FF>" + "<color=#" + iconInfo.COLOR.ToHexString() + ">" + LocalizationManager.GetLocalizedString(word) + "<color=#FFFFFF>";            }
             else display += word;
             display += ' ';
         }
 
         SoupDescriptionText.text = display;
         SoupDescriptionText.ForceMeshUpdate();
-    }
 
-    public void CloseBio()
-    {
-        BioHolder.gameObject.SetActive(false);
-        currSoup = null;
+        // now set flavor icons at corresponding locations
+        for (int i = 0; i < flavorIconIndicies.Count; i++)
+        {
+            int wordIndex = flavorIconIndicies[i];
+            var iconInfo = flavorIconInfo[i];
+
+            int iconCount = IconCount(iconInfo);
+            var p1Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[wordIndex].firstCharacterIndex];
+            var p2Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[wordIndex].lastCharacterIndex];
+            TextFlavorIconTooltips[iconToolTipTracker].SetBounds(
+                SoupDescriptionText.transform.TransformPoint(p1Char.bottomLeft),
+                SoupDescriptionText.transform.TransformPoint(p2Char.topRight)
+            );
+
+            TextFlavorIconTooltips[iconToolTipTracker].SetText(iconInfo);
+            for (int icon = 0; icon < iconCount; icon++)
+            {
+                var firstSpacingChar = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[wordIndex].firstCharacterIndex + icon * SPACING_TEXT_FOR_ICON.Length];
+                var spaceLocation = SoupDescriptionText.transform.TransformPoint((firstSpacingChar.topLeft + firstSpacingChar.bottomLeft) / 2f);
+                TextFlavorIconTooltips[iconToolTipTracker].SetIcon(iconInfo, spaceLocation);
+            }
+            iconToolTipTracker++;
+        }
     }
 
     public void OnCook(FinishedSoup newSoup)
     {
         if (currSoup == newSoup.soupBase)
         {
-            ShowFinishedSoupBio(newSoup, true);
+            TriggerFadeAnim(true, 0, newSoup);
         }
     }
 }

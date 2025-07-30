@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using BuffType = FlavorIngredient.BuffFlavor.BuffType;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
-public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
+public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSource
 {
     [SerializeField] Image faceImage;
     [SerializeField] Image slotOutline;
@@ -17,6 +17,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     [SerializeField] StatTooltip DurationStat;
     [SerializeField] float ScaleAbilityBioAnimTime;
     [SerializeField] AnimationCurve ScaleAbilityBioAnimCurve;
+    [SerializeField] Collider2D SlotCollider;
 
     public enum SlotType
     {
@@ -61,13 +62,19 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
         {
             faceImage.color = new Color(1, 1, 1, .25f);
             CursorManager.Singleton.PickupCollectable(ingredientReference);
-            IngredientBioDisplay.Singleton.PullUpBio(ingredientReference.ingredient);
+            IngredientBioDisplay.Singleton.DragIngredient(ingredientReference.ingredient);
         }
     }
 
     public void ReturnItemHereFromCursor()
     {
         faceImage.color = Color.white;
+        if (ingredientReference == null) return;
+        IngredientBioDisplay.Singleton.ReleaseDrag();
+        if (!CursorManager.Singleton.TooltipTrigger.IsCursorHoveringOnTooltip(SlotCollider))
+        {
+            IngredientBioDisplay.Singleton.TryHideHoverBio(ingredientReference.ingredient);
+        }
     }
 
     public void RemoveIngredient()
@@ -83,6 +90,8 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     {
         if (ingredientReference != null)
         {
+            IngredientBioDisplay.Singleton.ReleaseDrag();
+            IngredientBioDisplay.Singleton.TryHideHoverBio(ingredientReference.ingredient);
             ingredientReference.collectableUI.ReturnItemHereFromCursor();
             CursorManager.Singleton.DropCollectable();
         }
@@ -91,6 +100,7 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
     {
         if (CursorManager.Singleton.currentCollectableReference != null)
         {
+            IngredientBioDisplay.Singleton.ReleaseDrag();
             if (currentSlotType == SlotType.Wildcard || (CursorManager.Singleton.currentCollectableReference.ingredient is AbilityIngredient && currentSlotType == SlotType.Ability) ||
                 (CursorManager.Singleton.currentCollectableReference.ingredient is FlavorIngredient && currentSlotType == SlotType.Flavor))
             {
@@ -188,4 +198,40 @@ public class IngredientCookingSlot : MonoBehaviour, ICursorInteractable
             ResetAbilityStatBio();
         }
     }
+
+    #region HOVERING
+    public void OnHoverEnter()
+    {
+        if (ingredientReference != null)
+        {
+            if (IHoverTimerForBio != null) StopCoroutine(IHoverTimerForBio);
+            StartCoroutine(IHoverTimerForBio = HoverTimerForBio(true));
+        }
+    }
+
+    IEnumerator IHoverTimerForBio;
+    IEnumerator HoverTimerForBio(bool enter)
+    {
+        if (enter)
+        {
+            yield return new WaitForSeconds(IngredientBioDisplay.Singleton.HoverTimeToDisplay);
+            IngredientBioDisplay.Singleton.TryDisplayHoverBio(ingredientReference.ingredient);
+        }
+        else
+        {
+            yield return new WaitForSeconds(IngredientBioDisplay.Singleton.HoverTimeToDisplay);
+            IngredientBioDisplay.Singleton.TryHideHoverBio(ingredientReference.ingredient);
+        }
+    }
+
+
+    public void OnHoverExit()
+    {
+        if (ingredientReference != null)
+        {
+            if (IHoverTimerForBio != null) StopCoroutine(IHoverTimerForBio);
+            StartCoroutine(IHoverTimerForBio = HoverTimerForBio(false));
+        }
+    }
+    #endregion
 }

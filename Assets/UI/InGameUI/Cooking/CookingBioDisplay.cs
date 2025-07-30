@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CookingBioDisplay : MonoBehaviour
@@ -8,6 +9,8 @@ public class CookingBioDisplay : MonoBehaviour
     [SerializeField] FlavorBioTicks[] FlavorIcons;
     [SerializeField] StatTooltip CooldownStat;
     [SerializeField] StatTooltip UsesStat;
+    [SerializeField] TMP_Text PlaceBowlText;
+    [SerializeField] string PlaceBowlKey;
     public void Init(CookingScreen cs)
     {
         this.cs = cs;
@@ -15,15 +18,17 @@ public class CookingBioDisplay : MonoBehaviour
         {
             icon.Init();
         }
+        PlaceBowlText.text = LocalizationManager.GetLocalizedString(PlaceBowlKey);
     }
 
     public void DisplayBowl(SoupBase bowl)
     {
-        ClearIngredients();
         CooldownStat.gameObject.SetActive(true);
         CooldownStat.SetStat(bowl.cooldown, Color.white);
         UsesStat.SetStat(0, Color.white);
         UsesStat.SetColliderSize(1);
+        DisplayIngredients(new());
+        PlaceBowlText.gameObject.SetActive(false);
     }
 
     public void ClearDisplay()
@@ -31,6 +36,7 @@ public class CookingBioDisplay : MonoBehaviour
         ClearIngredients();
         CooldownStat.gameObject.SetActive(false);
         UsesStat.Clear();
+        PlaceBowlText.gameObject.SetActive(true);
     }
 
     public void ClearIngredients()

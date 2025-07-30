@@ -19,6 +19,7 @@ public class CursorManager : MonoBehaviour
     [SerializeField] float MOUSE_DISTANCE_FOR_TAP;
     [SerializeField] float TIME_FOR_TAP = .25f;
     [SerializeField] LayerMask BOWL_SLOT_LAYER;
+    public TooltipCursorTrigger TooltipTrigger;
 
     public bool IsHoldingSomething { get => currentCollectableReference != null || currentBowlReference != null; }
     internal Collectable currentCollectableReference;
@@ -49,7 +50,6 @@ public class CursorManager : MonoBehaviour
     Vector2 mouseDownPosition;
     float mouseDownTime;
     ICursorInteractable lastCursorInteract;
-    public static event Action CursorClickOut;
     private void MouseDown(InputAction.CallbackContext ctx)
     {
         mouseDownPosition = Input.mousePosition;
@@ -67,7 +67,6 @@ public class CursorManager : MonoBehaviour
                 return;
             }
         }
-        CursorClickOut?.Invoke();
     }
     private void MouseUp(InputAction.CallbackContext ctx)
     {
@@ -160,6 +159,12 @@ public class CursorManager : MonoBehaviour
                         validCollectablePlacement = false;
                         break;
                     }
+                    if (slot.currentSlotType == IngredientCookingSlot.SlotType.Ability && currentCollectableReference.ingredient is FlavorIngredient ||
+                        slot.currentSlotType == IngredientCookingSlot.SlotType.Flavor && currentCollectableReference.ingredient is AbilityIngredient)
+                    {
+                        validCollectablePlacement = false;
+                        break;
+                    }
                 }
             }
             _CursorImage.color = validCollectablePlacement ? VALID_PLACEMENT_COLOR : INVALID_PLACEMENT_COLOR;
@@ -179,9 +184,14 @@ public class CursorManager : MonoBehaviour
         currentBowlReference = null;
     }
 
-    public void TryDropCollectable(Collectable collectable)
+    public bool TryDropCollectable(Collectable collectable)
     {
-        if (collectable == currentCollectableReference) DropCollectable();
+        if (collectable == currentCollectableReference)
+        {
+            DropCollectable();
+            return true;
+        }
+        return false;
     }
     void ChangeToCollectableSprite(Sprite sprite)
     {
@@ -231,7 +241,8 @@ public class CursorManager : MonoBehaviour
             validCollectablePlacement = false;
             foreach (var hit in hits)
             {
-                if (hit.collider.CompareTag("BowlSlot"))
+                if (hit.collider.CompareTag("BowlSlot") || 
+                    (hit.collider.CompareTag("CookingBowlSlot") && currentBowlReference is not FinishedSoup))
                 {
                     validCollectablePlacement = true;
                     break;

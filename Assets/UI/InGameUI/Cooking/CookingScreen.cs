@@ -56,8 +56,8 @@ public class CookingScreen : MonoBehaviour
         foreach (IngredientCookingSlot c in IngredientCookingSlots)
         {
             c.Init();
-            DisplayNoBowl();
         }
+        DisplayNoBowl();
         BowlCookingSlot.RemoveBowl();
 
         cookingBioDisplay.Init(this);
@@ -106,6 +106,7 @@ public class CookingScreen : MonoBehaviour
         if (!open) // has fully closed
         {
             CookingContent.gameObject.SetActive(false);
+            if (BowlCookingSlot.soupBaseReference != null) SoupInventoryUI.Singleton.ReturnBowlFromCookingSlot(BowlCookingSlot.soupSlotReference);
             DisplayNoBowl();
         } else // has fully opened
         {
@@ -180,6 +181,8 @@ public class CookingScreen : MonoBehaviour
 
     public void DisplayBowlInSlot(int fromSlot)
     {
+        DisplayNoBowl();
+
         SoupBase bowl = (SoupBase)PlayerInventory.Singleton.GetBowl(fromSlot);
         BowlCookingSlot.AddBowlFromSlot(fromSlot);
 

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6907518952291209190}
   - component: {fileID: 3936558369225099251}
   - component: {fileID: 8686857682360254379}
-  m_Layer: 13
+  m_Layer: 11
   m_Name: E_Slot (0)
   m_TagString: BowlSlot
   m_Icon: {fileID: 0}
@@ -95,6 +95,82 @@ MonoBehaviour:
   usesText: {fileID: 265448772648248760}
   SlotContent: {fileID: 3771788281710107645}
   EmptySoupSlotSprite: {fileID: 21300000, guid: 5c072fbc991193e409f0c73210f3c6b4, type: 3}
+  HoverTimeToDisplay: 0.1
+  UnhoverTimeToHide: 0.25
+  TooltipCollider: {fileID: 8686857682360254379}
+  ScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.009720519
+      value: -0.0001237467
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5655186
+      value: 0.84094816
+      inSlope: 1.0160707
+      outSlope: 1.0160707
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.23273344
+      outWeight: 0.26987895
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.036717985
+      outSlope: 0.036717985
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.22921214
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  ScaleAnimTime: 0.5
+  EquippedBowlScale: {x: 1.1, y: 1.1, z: 1.1}
+  UnequippedBowlScale: {x: 0.6, y: 0.6, z: 0.6}
+  UnequippedSlotColor: {r: 0.31446534, g: 0.31446534, b: 0.31446534, a: 0.9411765}
+  UnhoveredBowlScale: {x: 1, y: 1, z: 1}
+  HoveredBowlScaleOne: {x: 1.4, y: 1.4, z: 1.4}
+  HoveredBowlScaleTwo: {x: 1.3, y: 1.3, z: 1.3}
+  HoverScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!199 &6907518952291209190
 ParticleSystemRenderer:
   serializedVersion: 6

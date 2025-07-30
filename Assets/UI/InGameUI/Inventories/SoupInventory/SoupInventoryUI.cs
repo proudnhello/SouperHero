@@ -43,14 +43,14 @@ public class SoupInventoryUI : MonoBehaviour
         SoupBio.Init(this);
     }
 
-    int selectedEquippedSoup = 0;
+    internal int selectedEquippedSoup = 0;
     public void InitializeSlots(ISoupBowl[] bowls)
     {
         for (int i = 0; i < InventorySlots.Length; i++) InventorySlots[i].Init(i, bowls[i]);
         for (int i = 0; i < InventorySlots.Length; i++)
         {
-            if (i == selectedEquippedSoup) InventorySlots[i].EquipSlot();
-            else InventorySlots[i].UnequipSlot();
+            if (i == selectedEquippedSoup) InventorySlots[i].EquipSlot(true);
+            else InventorySlots[i].UnequipSlot(true);
         }
     }
 
@@ -120,14 +120,13 @@ public class SoupInventoryUI : MonoBehaviour
         if (CookingScreen.Singleton.IsCooking) return; // cannot close while cooking
 
         MoveInventory(false);
+        CursorManager.Singleton.ExitSoupInventory();
         for (int i = 0; i < InventorySlots.Length; i++)
         {
             if (i == selectedEquippedSoup) InventorySlots[i].EquipSlot();
             else InventorySlots[i].UnequipSlot();
+            InventorySlots[i].ExitInventoryScreen();
         }
-        CursorManager.Singleton.ExitSoupInventory();
-        SoupBio.UnlockSlot();
-        SoupBio.CloseBio();
     }
 
     int heldSlot = -2;
@@ -140,8 +139,6 @@ public class SoupInventoryUI : MonoBehaviour
     }
     public bool ReleaseOnSlot(int droppedOnSlot) // i could write this so much better but OOPS ALL EDGE CASES
     {
-        Debug.Log("release on " + droppedOnSlot + ", had " + heldSlot);
-
         if (heldSlot < -1) return false;
 
         void SwapSlots(int slot1, int slot2)
@@ -153,18 +150,23 @@ public class SoupInventoryUI : MonoBehaviour
 
         if (heldSlot == -1 && droppedOnSlot > -1) // drag from cooking bowl slot to inventory
         {
-            if (InventorySlots[droppedOnSlot].bowlHeld is SoupBase)
+            if (droppedOnSlot == CookingScreen.Singleton.BowlCookingSlot.soupSlotReference)
             {
-                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlot();
+                InventorySlots[droppedOnSlot].DeselectSlotForCooking();
+                CookingScreen.Singleton.DisplayNoBowl();
+            }
+            else if (InventorySlots[droppedOnSlot].bowlHeld is SoupBase)
+            {
                 SwapSlots(droppedOnSlot, CookingScreen.Singleton.BowlCookingSlot.soupSlotReference);
-                CookingScreen.Singleton.DisplayBowlInSlot(droppedOnSlot);
-                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].SelectSlot();
+                InventorySlots[droppedOnSlot].DeselectSlotForCooking();
+                CookingScreen.Singleton.DisplayBowlInSlot(CookingScreen.Singleton.BowlCookingSlot.soupSlotReference);
+                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].SelectSlotForCooking();
             }
             else if (InventorySlots[droppedOnSlot].bowlHeld is not FinishedSoup) // empty
             {
-                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlot();
-                InventorySlots[droppedOnSlot].DeselectSlot();
                 SwapSlots(droppedOnSlot, CookingScreen.Singleton.BowlCookingSlot.soupSlotReference);
+                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlotForCooking();
+                InventorySlots[droppedOnSlot].DeselectSlotForCooking();
                 CookingScreen.Singleton.DisplayNoBowl();
             }
             else // drop on finished soup, return false so cursor knows to return bowl back to cooking slot
@@ -179,10 +181,15 @@ public class SoupInventoryUI : MonoBehaviour
             {
                 if (CookingScreen.Singleton.BowlCookingSlot.soupBaseReference != null)
                 {
-                    InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlot();
+                    SwapSlots(heldSlot, CookingScreen.Singleton.BowlCookingSlot.soupSlotReference);
+                    InventorySlots[heldSlot].DeselectSlotForCooking();
+                    CookingScreen.Singleton.DisplayBowlInSlot(CookingScreen.Singleton.BowlCookingSlot.soupSlotReference);
                 }
-                CookingScreen.Singleton.DisplayBowlInSlot(heldSlot);
-                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].SelectSlot();
+                else
+                {
+                    CookingScreen.Singleton.DisplayBowlInSlot(heldSlot);
+                }
+                InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].SelectSlotForCooking();
             }
         }
         else if (droppedOnSlot > -1 && heldSlot > -1) // between two slots in inventory
@@ -192,19 +199,19 @@ public class SoupInventoryUI : MonoBehaviour
             if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == droppedOnSlot)
             {
                 CookingScreen.Singleton.BowlCookingSlot.soupSlotReference = heldSlot;
-                InventorySlots[droppedOnSlot].DeselectSlot();
-                InventorySlots[heldSlot].SelectSlot();
+                InventorySlots[droppedOnSlot].DeselectSlotForCooking();
+                InventorySlots[heldSlot].SelectSlotForCooking();
             }
             else if (CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == heldSlot)
             {
                 CookingScreen.Singleton.BowlCookingSlot.soupSlotReference = droppedOnSlot;
-                InventorySlots[heldSlot].DeselectSlot();
-                InventorySlots[droppedOnSlot].SelectSlot();
+                InventorySlots[heldSlot].DeselectSlotForCooking();
+                InventorySlots[droppedOnSlot].SelectSlotForCooking();
             }
             else
             {
-                InventorySlots[droppedOnSlot].DeselectSlot();
-                InventorySlots[heldSlot].DeselectSlot();
+                InventorySlots[heldSlot].DeselectSlotForCooking();
+                InventorySlots[droppedOnSlot].DeselectSlotForCooking();
             }
         }
         
@@ -214,25 +221,21 @@ public class SoupInventoryUI : MonoBehaviour
 
     public void TapSoupSlot(int slot)
     {
-        if (CookingScreen.Singleton.BowlCookingSlot.soupBaseReference != null)
-        {
-            InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].DeselectSlot();
-        }
-        CookingScreen.Singleton.DisplayBowlInSlot(slot);
-        InventorySlots[CookingScreen.Singleton.BowlCookingSlot.soupSlotReference].SelectSlot();
+        heldSlot = slot;
+        ReleaseOnSlot(-1);
         heldSlot = -2;
     }
 
     public void ReturnBowlFromCookingSlot(int slot)
     {
-        InventorySlots[slot].DeselectSlot();
+        InventorySlots[slot].DeselectSlotForCooking();
         CookingScreen.Singleton.DisplayNoBowl();
         heldSlot = -2;
     }
 
     public void DeselectSlot(int slot)
     {
-        InventorySlots[slot].DeselectSlot();
+        InventorySlots[slot].DeselectSlotForCooking();
         heldSlot = -2;
     }
 
