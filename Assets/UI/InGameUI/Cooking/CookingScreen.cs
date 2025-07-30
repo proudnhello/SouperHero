@@ -181,6 +181,8 @@ public class CookingScreen : MonoBehaviour
 
     public void DisplayBowlInSlot(int fromSlot)
     {
+        DisplayNoBowl();
+
         SoupBase bowl = (SoupBase)PlayerInventory.Singleton.GetBowl(fromSlot);
         BowlCookingSlot.AddBowlFromSlot(fromSlot);
 

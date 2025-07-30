@@ -314,7 +314,8 @@ GameObject:
   - component: {fileID: 1328831726588358376}
   - component: {fileID: 428277226504753674}
   - component: {fileID: 5544993150806598231}
-  m_Layer: 5
+  - component: {fileID: 6566398698039827621}
+  m_Layer: 11
   m_Name: CookingSlot
   m_TagString: CookingSlot
   m_Icon: {fileID: 0}
@@ -447,6 +448,52 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  SlotCollider: {fileID: 0}
+--- !u!61 &6566398698039827621
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7597336345886304427}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -3.18}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 119.57, y: 118.34}
+  m_EdgeRadius: 0
 --- !u!1001 &3029186491866372783
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -471,17 +518,25 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -1.6147003
       objectReference: {fileID: 0}
+    - target: {fileID: 1186575610694310713, guid: 506740bea54e7d542886da3f8e974793, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1749583809244437299, guid: 506740bea54e7d542886da3f8e974793, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.34722218
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1749583809244437299, guid: 506740bea54e7d542886da3f8e974793, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.34722218
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1749583809244437299, guid: 506740bea54e7d542886da3f8e974793, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.34722218
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1749583809244437299, guid: 506740bea54e7d542886da3f8e974793, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -29.9
       objectReference: {fileID: 0}
     - target: {fileID: 2136456492517116745, guid: 506740bea54e7d542886da3f8e974793, type: 3}
       propertyPath: m_Name
@@ -674,17 +729,25 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -1.4686241
       objectReference: {fileID: 0}
+    - target: {fileID: 1186575610694310713, guid: 506740bea54e7d542886da3f8e974793, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1749583809244437299, guid: 506740bea54e7d542886da3f8e974793, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.34722218
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1749583809244437299, guid: 506740bea54e7d542886da3f8e974793, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.34722218
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1749583809244437299, guid: 506740bea54e7d542886da3f8e974793, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.34722218
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1749583809244437299, guid: 506740bea54e7d542886da3f8e974793, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -20.1
       objectReference: {fileID: 0}
     - target: {fileID: 2136456492517116745, guid: 506740bea54e7d542886da3f8e974793, type: 3}
       propertyPath: m_Name

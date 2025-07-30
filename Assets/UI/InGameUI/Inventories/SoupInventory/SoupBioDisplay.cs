@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
 
 public class SoupBioDisplay : MonoBehaviour
 {
@@ -34,6 +35,9 @@ public class SoupBioDisplay : MonoBehaviour
     [SerializeField] AbilityIconTooltip[] AbilityIconObjects;
     [SerializeField] float IconSeparator = 75f;
     [SerializeField] FlavorBioTicks[] TickFlavorIcons;
+    [SerializeField] Vector2 ElementSpacerForTicks;
+    [SerializeField] Transform FlavorIconHolder;
+    [SerializeField] Vector2 FlavorIconHolderStartPos;
 
     [Header("Bio Anim")]
     [SerializeField] BoxCollider2D HoverSpace;
@@ -237,14 +241,12 @@ public class SoupBioDisplay : MonoBehaviour
         FinishedSoupSection.SetActive(true);
         SoupBaseSection.SetActive(false);
         TitleText.text = LocalizationManager.GetLocalizedString(soup.soupBase.finishedSoupName);
-        TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y);
 
         SoupDescriptionText.transform.localPosition = new Vector2(SoupDescriptionText.transform.localPosition.x, SoupDescriptionTextPositions.y);
         ShowFlavorProfile(soup.soupBase);
 
         Color cooldownColor = soup.cooldown < soup.soupBase.cooldown ? BioDatabase.Singleton.BuffFlavorIcons[FlavorIngredient.BuffFlavor.BuffType.SWEET_Speed].COLOR : Color.white;
         CooldownStat.SetStat(soup.cooldown, cooldownColor);
-        CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y);
 
         int numSlots = soup.soupAbilities.Count;
         float evenNumCentererThing = numSlots % 2 == 0 ? IconSeparator / 2 : 0; // if it's 2 or 4, then offset it back so it's centered
@@ -268,10 +270,54 @@ public class SoupBioDisplay : MonoBehaviour
             TickFlavorIcons[iconUsed].Set(inf);
             iconUsed++;
         }
+
+        // space elements based on amount of ticks
+        if (iconUsed > 6)
+        {
+            TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y + ElementSpacerForTicks.y);
+            CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y + ElementSpacerForTicks.y);
+            FlavorIconHolder.transform.localPosition = new Vector2(FlavorIconHolderStartPos.x, FlavorIconHolderStartPos.y + ElementSpacerForTicks.y);
+        }
+        else if (iconUsed > 2)
+        {
+            TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y + ElementSpacerForTicks.x);
+            CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y + ElementSpacerForTicks.x);
+            FlavorIconHolder.transform.localPosition = new Vector2(FlavorIconHolderStartPos.x, FlavorIconHolderStartPos.y + ElementSpacerForTicks.x);
+        }
+        else
+        {
+            TitleText.transform.localPosition = new Vector2(TitleText.transform.localPosition.x, TitleTextPositions.y);
+            CooldownStat.transform.localPosition = new Vector2(CooldownStat.transform.localPosition.x, CooldownStatPositions.y);
+            FlavorIconHolder.transform.localPosition = FlavorIconHolderStartPos;
+        }
     }
 
     void ShowFlavorProfile(SoupBase soup)
     {
+        int IconCount(BioDatabase.FlavorIconInfo iconInfo)
+        {
+            if (iconInfo.isBuffType)
+            {
+                foreach (var buff in soup.inherentBuffFlavors)
+                {
+                    if (buff.buffType == iconInfo.buffType)
+                    {
+                        return Mathf.RoundToInt(buff.amount);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var infliction in soup.inherentInflictionFlavors)
+                {
+                    if (infliction.inflictionType == iconInfo.inflictionType)
+                    {
+                        return Mathf.RoundToInt(infliction.amount);
+                    }
+                }
+            }
+            return 0;
+        }
         foreach (var icon in TextFlavorIconTooltips) icon.ClearIcons();
 
         // PARSE FLAVORS IN TEXT AND REPLACE WITH ICONS
@@ -280,63 +326,54 @@ public class SoupBioDisplay : MonoBehaviour
 
         string display = "";
         int iconToolTipTracker = 0;
+        List<int> flavorIconIndicies = new();
+        List<BioDatabase.FlavorIconInfo> flavorIconInfo = new();
+        // first create basic string to be added to TMP text
         for (int i = 0; i < words.Length; i++)
         {
             var word = words[i];
             if (BioDatabase.Singleton.FlavorIcons.TryGetValue(word, out var iconInfo))
             {
-                int iconCount = 0;
-                if (iconInfo.isBuffType)
-                {
-                    foreach (var buff in soup.inherentBuffFlavors)
-                    {
-                        if (buff.buffType == iconInfo.buffType)
-                        {
-                            iconCount = Mathf.RoundToInt(buff.amount);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var infliction in soup.inherentInflictionFlavors)
-                    {
-                        if (infliction.inflictionType == iconInfo.inflictionType)
-                        {
-                            iconCount = Mathf.RoundToInt(infliction.amount);
-                        }
-                    }
-                }
+                flavorIconIndicies.Add(i);
+                flavorIconInfo.Add(iconInfo);
+
+                int iconCount = IconCount(iconInfo);
                 display += "<alpha=#00>";
                 for (int icon = 0; icon < iconCount; icon++)
                 {
                     display += SPACING_TEXT_FOR_ICON;
                 }
-                display += "<alpha=#FF>" + "<color=#" + iconInfo.COLOR.ToHexString() + ">" + LocalizationManager.GetLocalizedString(word) + "<color=#FFFFFF>";
-                SoupDescriptionText.text = display;
-                SoupDescriptionText.ForceMeshUpdate();
-
-                var p1Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].firstCharacterIndex];
-                var p2Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].lastCharacterIndex];
-                TextFlavorIconTooltips[iconToolTipTracker].SetBounds(
-                    SoupDescriptionText.transform.TransformPoint(p1Char.bottomLeft),
-                    SoupDescriptionText.transform.TransformPoint(p2Char.topRight)
-                );
-
-                TextFlavorIconTooltips[iconToolTipTracker].SetText(iconInfo);
-                for (int icon = 0; icon < iconCount; icon++)
-                {
-                    var firstSpacingChar = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[i].firstCharacterIndex + icon * SPACING_TEXT_FOR_ICON.Length];
-                    var spaceLocation = SoupDescriptionText.transform.TransformPoint((firstSpacingChar.topLeft + firstSpacingChar.bottomLeft) / 2f);
-                    TextFlavorIconTooltips[iconToolTipTracker].SetIcon(iconInfo, spaceLocation);
-                }
-                iconToolTipTracker++;
-            }
+                display += "<alpha=#FF>" + "<color=#" + iconInfo.COLOR.ToHexString() + ">" + LocalizationManager.GetLocalizedString(word) + "<color=#FFFFFF>";            }
             else display += word;
             display += ' ';
         }
 
         SoupDescriptionText.text = display;
         SoupDescriptionText.ForceMeshUpdate();
+
+        // now set flavor icons at corresponding locations
+        for (int i = 0; i < flavorIconIndicies.Count; i++)
+        {
+            int wordIndex = flavorIconIndicies[i];
+            var iconInfo = flavorIconInfo[i];
+
+            int iconCount = IconCount(iconInfo);
+            var p1Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[wordIndex].firstCharacterIndex];
+            var p2Char = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[wordIndex].lastCharacterIndex];
+            TextFlavorIconTooltips[iconToolTipTracker].SetBounds(
+                SoupDescriptionText.transform.TransformPoint(p1Char.bottomLeft),
+                SoupDescriptionText.transform.TransformPoint(p2Char.topRight)
+            );
+
+            TextFlavorIconTooltips[iconToolTipTracker].SetText(iconInfo);
+            for (int icon = 0; icon < iconCount; icon++)
+            {
+                var firstSpacingChar = SoupDescriptionText.textInfo.characterInfo[SoupDescriptionText.textInfo.wordInfo[wordIndex].firstCharacterIndex + icon * SPACING_TEXT_FOR_ICON.Length];
+                var spaceLocation = SoupDescriptionText.transform.TransformPoint((firstSpacingChar.topLeft + firstSpacingChar.bottomLeft) / 2f);
+                TextFlavorIconTooltips[iconToolTipTracker].SetIcon(iconInfo, spaceLocation);
+            }
+            iconToolTipTracker++;
+        }
     }
 
     public void OnCook(FinishedSoup newSoup)

@@ -155,14 +155,11 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
     {
         if (CursorManager.Singleton.currentBowlReference != null)
         {
-            if (CursorManager.Singleton.currentBowlReference != bowlHeld)
-            {
-                if (SoupInventoryUI.Singleton.ReleaseOnSlot(slotIndex))
-                {
-                    CursorManager.Singleton.DropBowl();
-                }
-            }
             SoupInventoryUI.Singleton.SoupBio.ReleaseDrag();
+            if (SoupInventoryUI.Singleton.ReleaseOnSlot(slotIndex))
+            {
+                CursorManager.Singleton.DropBowl();
+            }
         }
     }
     public void Tap()
@@ -185,25 +182,30 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         if (HasBowl)
         {
             if (!SoupInventoryUI.Singleton.IsOpen && slotIndex >= PlayerInventory.Singleton.maxEquippedSoups) return;
-            if (IHoverTimerForBio != null) StopCoroutine(IHoverTimerForBio);
-            StartCoroutine(IHoverTimerForBio = HoverTimerForBio(true));
-            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
-            StartCoroutine(IHoverScaler = HoverScaler(true));
+
+            if (IHoverDelayer != null) StopCoroutine(IHoverDelayer);
+            StartCoroutine(IHoverDelayer = HoverDelayer(true));
+
         }
     }
 
-    IEnumerator IHoverTimerForBio;
-    IEnumerator HoverTimerForBio(bool enter)
+    IEnumerator IHoverDelayer;
+    IEnumerator HoverDelayer(bool enter)
     {
+        yield return new WaitUntil(() => CursorManager.Singleton.currentBowlReference == null);
+
+        if (IHoverScaler != null) StopCoroutine(IHoverScaler);
+        StartCoroutine(IHoverScaler = HoverScaler(enter));
+
         if (enter)
         {
             yield return new WaitForSeconds(HoverTimeToDisplay);
-            SoupInventoryUI.Singleton.SoupBio.TryDisplayHoverBio(bowlHeld);
+            if (CursorManager.Singleton.TooltipTrigger.IsCursorHoveringOnTooltip(TooltipCollider)) SoupInventoryUI.Singleton.SoupBio.TryDisplayHoverBio(bowlHeld);
         }
         else
         {
             yield return new WaitForSeconds(UnhoverTimeToHide);
-            SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(bowlHeld);
+            if (!CursorManager.Singleton.TooltipTrigger.IsCursorHoveringOnTooltip(TooltipCollider)) SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(bowlHeld);
         }
     }
 
@@ -213,10 +215,9 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         if (HasBowl)
         {
             if (!SoupInventoryUI.Singleton.IsOpen && slotIndex >= PlayerInventory.Singleton.maxEquippedSoups) return;
-            if (IHoverTimerForBio != null) StopCoroutine(IHoverTimerForBio);
-            StartCoroutine(IHoverTimerForBio = HoverTimerForBio(false));
-            if (IHoverScaler != null) StopCoroutine(IHoverScaler);
-            StartCoroutine(IHoverScaler = HoverScaler(false));
+
+            if (IHoverDelayer != null) StopCoroutine(IHoverDelayer);
+            StartCoroutine(IHoverDelayer = HoverDelayer(false));
         }
     }
     #endregion

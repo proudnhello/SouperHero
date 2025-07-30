@@ -45,6 +45,7 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
 
             SoupInventoryUI.Singleton.ClickOnSlot(-1);
             CursorManager.Singleton.PickupBowl(soupBaseReference);
+            SoupInventoryUI.Singleton.SoupBio.DragBowl(soupBaseReference);
             RenderSlot(false);
         }
     }
@@ -65,6 +66,7 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
         if (CursorManager.Singleton.currentBowlReference != null &&
             CursorManager.Singleton.currentBowlReference == (ISoupBowl)soupBaseReference)
         {
+            SoupInventoryUI.Singleton.SoupBio.ReleaseDrag();
             SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(soupBaseReference);
             SoupInventoryUI.Singleton.ReturnBowlFromCookingSlot(soupSlotReference);
             CursorManager.Singleton.DropBowl();
@@ -74,6 +76,13 @@ public class BowlCookingSlot : MonoBehaviour, ICursorInteractable, ITooltipSourc
     public void ReturnItemHereFromCursor()
     {
         SoupInventoryUI.Singleton.SoupBio.ReleaseDrag();
+        if (soupBaseReference != null)
+        {
+            if (!CursorManager.Singleton.TooltipTrigger.IsCursorHoveringOnTooltip(TooltipCollider))
+            {
+                SoupInventoryUI.Singleton.SoupBio.TryHideHoverBio(soupBaseReference);
+            }
+        }
         RenderSlot(soupBaseReference != null);
     }
 

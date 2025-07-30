@@ -7,13 +7,14 @@ using TMPro;
 
 using System;
 using Unity.VisualScripting;
+using DG.Tweening.Core.Easing;
 public class IngredientBioDisplay : MonoBehaviour
 {
 
     public static IngredientBioDisplay Singleton { get; private set; }
 
     [Header("Links")]
-    [SerializeField] GameObject ParentObject;
+    [SerializeField] CanvasGroup BioHolder;
     [SerializeField] TMP_Text Title;
     [SerializeField] TMP_Text IngredientTypeHeader;
     [SerializeField] GameObject FlavorSection;
@@ -30,41 +31,114 @@ public class IngredientBioDisplay : MonoBehaviour
     [SerializeField] Color FlavorHeaderColor;
     [SerializeField] Color AbilityHeaderColor;
 
+    [Header("Fade Anim")]
+    [SerializeField] BoxCollider2D HoverSpace;
+    [SerializeField] AnimationCurve FadeCurve;
+    [SerializeField] float FadeAnimTime;
+    [SerializeField] float LeaveHoverSpaceDelay;
+    public float HoverTimeToDisplay;
+    public float UnhoverTimeToHide;
+
 
     void Awake()
     {
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
 
-        ParentObject.SetActive(false);
+        BioHolder.gameObject.SetActive(false);
     }
 
+    bool IsTouchingHoverSpace = false;
     private void Update()
     {
-        if (ParentObject.activeInHierarchy)
+        if (BioHolder.gameObject.activeInHierarchy)
         {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool touching = HoverSpace.bounds.IntersectRay(ray);
+            if (IsTouchingHoverSpace && !touching && !isDragging) // exit out hover space
+            {
+                TriggerFadeAnim(false, LeaveHoverSpaceDelay);
+            }
+            else if (!IsTouchingHoverSpace && touching && !isDragging) // bio is fading out, but you reenter hover space
+            {
+                TriggerFadeAnim(true);
+            }
+            IsTouchingHoverSpace = touching;
             if (PlayerEntityManager.Singleton.playerMovement.IsMoving() && !CursorManager.Singleton.IsHoldingSomething)
             {
-                ParentObject.SetActive(false);
+                TriggerFadeAnim(false);
             }
         }
     }
 
-    public void Hide()
+    bool isDragging;
+    Ingredient currIngredient;
+    public void DragIngredient(Ingredient ing)
     {
-        ParentObject.SetActive(false);
+        TriggerFadeAnim(true, 0, ing);
+        isDragging = true;
     }
 
-    public void PullUpBio(Ingredient ing)
+    public void ReleaseDrag()
     {
-        /*
-        Note: Right now the localization table is storing the key to each string as whatever text is stored in the ingredient csv file.
-        This is fine for now, but if we want to change the key to be something more readable, we should do that, but we'll need
-        to change how the ingredient spreadsheets are organized so that they use keys instead of the raw text.
-        - Igor 
-        */
+        isDragging = false;
+    }
 
-        ParentObject.SetActive(true);
+    public void TryDisplayHoverBio(Ingredient ing)
+    {
+        if (isDragging || ing == null) return;
+        TriggerFadeAnim(true, 0, ing);
+    }
+    public void TryHideHoverBio(Ingredient ing)
+    {
+        if (isDragging || ing == null || ing != currIngredient || IsTouchingHoverSpace) return;
+        TriggerFadeAnim(false, 0, ing);
+    }
+
+    void TriggerFadeAnim(bool fadeIn, float delay = 0, Ingredient ing = null)
+    {
+        if (IFadeBio != null) StopCoroutine(IFadeBio);
+        StartCoroutine(IFadeBio = FadeBioAnim(fadeIn, delay, ing));
+    }
+
+    IEnumerator IFadeBio;
+    float fadeTimeProgressed = 0;
+    IEnumerator FadeBioAnim(bool fadeIn, float delay = 0, Ingredient ing = null)
+    {
+
+        if (delay > 0) yield return new WaitForSeconds(delay);
+
+        BioHolder.gameObject.SetActive(true);
+        if (ing != null)
+        {
+            currIngredient = ing;
+            PullUpBio(currIngredient);
+        }
+        // fade out (if already faded in)
+        while (fadeTimeProgressed >= 0 && fadeTimeProgressed <= FadeAnimTime)
+        {
+            var percentCompleted = Mathf.Clamp01(fadeTimeProgressed / FadeAnimTime);
+            var curveAmount = FadeCurve.Evaluate(percentCompleted);
+            BioHolder.alpha = Mathf.Lerp(0, 1, curveAmount);
+
+            yield return null;
+            fadeTimeProgressed = fadeIn ? fadeTimeProgressed + Time.deltaTime : fadeTimeProgressed - Time.deltaTime;
+        }
+
+
+        if (fadeIn) BioHolder.alpha = 1;
+        else
+        {
+            BioHolder.gameObject.SetActive(false);
+            currIngredient = null;
+        }
+
+        fadeTimeProgressed = fadeIn ? FadeAnimTime : 0;
+    }
+
+    void PullUpBio(Ingredient ing)
+    {
+
         Title.text = LocalizationManager.GetLocalizedString(ing.IngredientName);    // Localize ingredient name
 
         if (ing.GetType() == typeof(FlavorIngredient))
