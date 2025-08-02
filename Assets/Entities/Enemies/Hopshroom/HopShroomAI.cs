@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -176,7 +177,9 @@ public class HopShroomAI : EnemyBaseClass
                 do
                 {
                     Vector3 offset = (sm.transform.position - sm._playerTransform.position).normalized * sm.MidDistanceShootPoint;
-                    sm.agent.SetDestination(sm._playerTransform.position + offset);
+                    Vector3 targetPoint = sm._playerTransform.position + offset;
+                    targetPoint = sm.RotateUntilSafe(sm._playerTransform.position, offset);
+                    sm.agent.SetDestination(targetPoint);
                     sm._sprite.flipX = sm.agent.destination.x <= sm.transform.position.x;
                     lastPos = sm.agent.transform.position;
                     yield return new WaitForSeconds(sm.AttackDistanceCheckInterval);

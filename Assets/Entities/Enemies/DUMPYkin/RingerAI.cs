@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 using static Entity;
 
 //The ranged enemy follows player constantly until they are in range, at which point they freeze and fire bullets
@@ -113,7 +114,8 @@ public class RingerAI : EnemyBaseClass
                 Vector2 holder = ringer.transform.position;
                 Vector2 awayFromPlayer = holder - PlayerEntityManager.Singleton.GetPlayerPosition();
                 awayFromPlayer.Normalize();
-                ringer.agent.SetDestination(holder + (awayFromPlayer * 3));
+                Vector2 targetPoint = ringer.RotateUntilSafe(holder, awayFromPlayer * 3);
+                ringer.agent.SetDestination(targetPoint);
             }
             // If the player is in range, enter the shooting state
             else if (distance < ringer.shootingRadius && ringer.CanAttack())

@@ -6,21 +6,38 @@ using UnityEngine;
 public class StatTooltip : MonoBehaviour, ITooltipSource
 {
     [SerializeField] CanvasGroup Tooltip;
+    [SerializeField] BoxCollider2D boxCollider2D;
+    [SerializeField] float colliderSizeMultiplier;
     [SerializeField] TMP_Text StatText;
     [SerializeField] string StatSuffix;
     [SerializeField] AnimationCurve FadeCurve;
     [SerializeField] float FadeAnimTime;
     [SerializeField] TMP_Text TooltipText;
     [SerializeField] string TooltipLocalizationKEY;
+    [SerializeField] string AmountStringDisplay = "F1";
     private void Start()
     {
         TooltipText.text = LocalizationManager.GetLocalizedString(TooltipLocalizationKEY);
-        Tooltip.gameObject.SetActive(false);
     }
 
-    public void SetStat(float amount)
+    public void Clear()
     {
-        StatText.text = amount.ToString("F1") + StatSuffix;
+        StatText.text = "";
+        StatText.color = Color.white;
+    }
+
+    public void SetColliderSize(float amount)
+    {
+        amount *= colliderSizeMultiplier;
+        boxCollider2D.size = new Vector2(amount, boxCollider2D.size.y);
+    }
+
+    public void SetStat(float amount, Color col)
+    {
+        timeProgressed = 0;
+        Tooltip.gameObject.SetActive(false);
+        StatText.text = amount.ToString(AmountStringDisplay) + StatSuffix;
+        StatText.color = col;
     }
 
     public void OnHoverEnter()

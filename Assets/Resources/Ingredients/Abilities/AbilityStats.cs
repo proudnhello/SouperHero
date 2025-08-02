@@ -84,4 +84,18 @@ public struct AbilityStats
             }
         }
     }
+
+    public float GetStatByBuff(BuffType type, bool getBase = false)
+    {
+        switch (type)
+        {
+            case BuffType.TOUGH_Duration:
+                return getBase ? BaseDuration : ModifiedDuration;
+            case BuffType.HEAVY_Size:
+                return getBase ? BaseSize : ModifiedSize;
+            case BuffType.SWEET_Speed:
+                return getBase ? BaseSpeed : ModifiedSpeed;
+        }
+        return -1;
+    }
 }

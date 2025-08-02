@@ -5,29 +5,27 @@ using UnityEngine;
 public class minimapDetection : MonoBehaviour
 {
     public List<GameObject> minimapRendererList;
-
-    void Start()
-    {
-        updateRenderList();
-        turnOffAll();
-    }
+    private bool inStart = false;
 
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+
+        CircleCollider2D startCircleCollider = collision as CircleCollider2D;
+        if (startCircleCollider != null)
         {
-            turnOnAll();
+            inStart = true;
+        }
+
+
+      
+
+        if (inStart && collision.gameObject.CompareTag("Player"))
+        {
+            turnOffAll();
         }
     }
 
-    private void turnOnAll()
-    {
-        for (int i = 0; i < minimapRendererList.Count; i++)
-        {
-            minimapRendererList[i].SetActive(true);
-        }
-    }
 
     private void turnOffAll()
     {
@@ -37,18 +35,5 @@ public class minimapDetection : MonoBehaviour
         }
     }
 
-    private void updateRenderList()
-    {
-        List<GameObject> tempList = new List<GameObject>();
-        for (int i = 0; i < minimapRendererList.Count; i++)
-        {
-            if (minimapRendererList[i].activeSelf)
-            {
-                tempList.Add(minimapRendererList[i]);
-            }
-        }
-
-        minimapRendererList = tempList;
-    }
 
 }

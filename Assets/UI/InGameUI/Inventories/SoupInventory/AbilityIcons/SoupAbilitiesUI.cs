@@ -6,12 +6,13 @@ using TMPro;
 using static FinishedSoup;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class SoupAbilitiesUI : MonoBehaviour
 {
-    [SerializeField] List<Image> soupAbilityIcons;
+    [SerializeField] List<AbilityIconTooltip> soupAbilityIcons;
 
-    void Start()
+    void Awake()
     {
         PlayerInventory.ChangedEquippedSoup += UpdateIcons;
         PlayerInventory.UsedSoupAttack += UpdateIcons;
@@ -33,8 +34,7 @@ public class SoupAbilitiesUI : MonoBehaviour
         {
             for (int i = 0; i < soup.soupAbilities.Count; i++)
             {
-                soupAbilityIcons[i].gameObject.SetActive(true);
-                soupAbilityIcons[i].sprite = BioDatabase.Singleton.AbilityIcons[soup.soupAbilities[i].ability];
+                soupAbilityIcons[i].SetupTooltip(soup.soupAbilities.Values.ToList()[i]);
             }
         }
     }

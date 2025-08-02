@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b4f1c80784ec34468f00fb360b86cc3, type: 3}
   m_Name: Otherworldly Soup
   m_EditorClassIdentifier: 
-  baseName: Otherworldly Soup
+  baseName: Otherworldly Base
+  finishedSoupName: Otherworldly Soup
   baseSprite: {fileID: 21300000, guid: bc739391bf9cf844b882333a4a9372bb, type: 3}
   finishedSprite: {fileID: 21300000, guid: 603ccfea62c2c1b45a4b6ec12a7a7b7c, type: 3}
   uuid: 72782
@@ -20,7 +21,9 @@ MonoBehaviour:
   maxFlavorIngredients: 1
   maxAbilityIngredients: 1
   maxWildcardIngredients: 3
-  inherentInflictionFlavors: []
+  inherentInflictionFlavors:
+  - inflictionType: 2
+    amount: 2
   inherentBuffFlavors:
   - buffType: 2
     amount: 2

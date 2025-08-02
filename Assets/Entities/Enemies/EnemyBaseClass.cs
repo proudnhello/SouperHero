@@ -87,7 +87,8 @@ public abstract class EnemyBaseClass : Entity
             {
                 // Who the fuck at unity made *this* the way of checking if an animator has an animation?
                 // Not that it works, anyway
-                if (anim.HasState(anim.GetLayerIndex("Base Layer"), Animator.StringToHash("Walk"))){
+                if (anim.HasState(anim.GetLayerIndex("Base Layer"), Animator.StringToHash("Walk")))
+                {
                     anim.Play("Walk");
                 }
             }
@@ -148,7 +149,7 @@ public abstract class EnemyBaseClass : Entity
         // THIS IS BAD AND I SHOULD NOT DO IT
         // But stupid knockback keeps messing everything up and the enemy's about to die anyway so it's probably fine
         // I can't wait for us to add an enemy that doesn't die when it falls and this breaks everything
-        StopAllCoroutines(); 
+        StopAllCoroutines();
         GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         StartCoroutine(Fall(_respawnPoint, 0.05f));
     }
@@ -167,5 +168,70 @@ public abstract class EnemyBaseClass : Entity
         }
 
         Die(false);
+    }
+
+    // Returns true if the current destination has no hazards
+    public bool CheckPointSafety(Vector3 point)
+    {
+        if (agent == null || !agent.isOnNavMesh)
+            return false;
+
+        NavMeshHit hit;
+        // Sample the given point on the NavMesh
+        if (NavMesh.SamplePosition(point, out hit, 1.0f, NavMesh.AllAreas))
+        {
+            if (hit.mask != 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Vector2 RotateUntilSafe(Vector2 point, Vector2 offset)
+    {
+        float angleStep = 5f;
+        int direction = 1;
+        int attempts = 1;
+        bool foundSafe = false;
+        Vector2 targetPoint = point + offset;
+        if (CheckPointSafety(targetPoint))
+        {
+            return targetPoint; // If the initial point is safe, return it
+        }
+
+        while (!foundSafe && attempts <= 72) // 72 * 5 = 360 degrees
+        {
+            float angle = angleStep * attempts * direction;
+            float rad = angle * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(rad);
+            float sin = Mathf.Sin(rad);
+
+            Vector2 rotatedOffset = new Vector2(
+                offset.x * cos - offset.y * sin,
+                offset.x * sin + offset.y * cos
+            );
+
+            targetPoint = point + rotatedOffset;
+
+            if (CheckPointSafety(targetPoint))
+            {
+                foundSafe = true;
+                break;
+            }
+            direction *= -1; // alternate left/right
+            if (direction > 0) attempts++;
+        }
+
+        if (!foundSafe)
+        {
+            targetPoint = point + offset;
+        }
+
+        return targetPoint;
     }
 }

@@ -232,7 +232,7 @@ public class PlayerInventory : MonoBehaviour
     public void BowlIsCooked(int slot, FinishedSoup finishedSoup)
     {
         soupsHeld[slot] = finishedSoup;
-        SoupInventoryUI.Singleton.AddSoupInSlot(soupsHeld[slot], slot);      
+        SoupInventoryUI.Singleton.OnCook(finishedSoup, slot);
     }
 
     public void SwapTwoSlots(int slot1, int slot2)

@@ -111,7 +111,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 2024971425
-  m_SortingOrder: 30
+  m_SortingOrder: 33
   m_TargetDisplay: 0
 --- !u!1 &2136456492517116745
 GameObject:
@@ -140,7 +140,7 @@ RectTransform:
   m_GameObject: {fileID: 2136456492517116745}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.000010899136}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5034098049267611469}
@@ -166,6 +166,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Tooltip: {fileID: 4598026074497355881}
+  boxCollider2D: {fileID: 479057595677593404}
+  colliderSizeMultiplier: 1
   StatText: {fileID: 3062460600043177373}
   StatSuffix: s
   FadeCurve:
@@ -195,6 +197,7 @@ MonoBehaviour:
   FadeAnimTime: 0.2
   TooltipText: {fileID: 4046372496109081521}
   TooltipLocalizationKEY: Duration Stat Tooltip
+  AmountStringDisplay: F1
 --- !u!61 &479057595677593404
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -224,7 +227,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 8.282957, y: 4.294082}
@@ -517,7 +520,7 @@ MonoBehaviour:
   m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 34959b0eec7c2c24c808a0df066d28cb, type: 2}
-  m_sharedMaterial: {fileID: 4875940459521557033, guid: 34959b0eec7c2c24c808a0df066d28cb, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 781d75efc282a6a4b8bda5753f4e0f29, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -563,7 +566,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_enableExtraPadding: 0
+  m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
   m_parseCtrlCharacters: 1
