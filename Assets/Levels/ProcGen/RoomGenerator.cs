@@ -168,7 +168,7 @@ public class RoomGenerator : MonoBehaviour
 
     void Start()
     {
-        RunStateManager.Singleton.InitializeGameState(mapSeed);
+        RunStateManager.Singleton.InitializeGameState((uint)mapSeed);
 
         // Need to create a new map full of nulls, placeholders for the Blocks and to determine if there is/isnt a block at a position
         _map = new List<List<Block>>();

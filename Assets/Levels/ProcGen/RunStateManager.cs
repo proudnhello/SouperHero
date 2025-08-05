@@ -18,7 +18,7 @@ public class RunStateManager : MonoBehaviour
     {
         public List<byte> enemyStates;
         public List<byte> destroyableStates;
-        public int seed;
+        public uint seed;
         public Vector3 playerPos;
 
         public RunStateData(bool newData = false)
@@ -55,19 +55,19 @@ public class RunStateManager : MonoBehaviour
     int enemySpawnIndex, destroyableSpawnIndex;
     RunStateData runData;
 
-    public void InitializeGameState(int initialSeed = -1)
+    public void InitializeGameState(uint initialSeed)
     {
         runData = SaveManager.Singleton.LoadRunState();
         if (runData == null)
         {
             runData = new(true);
-            runData.seed = initialSeed < 0 ? UnityEngine.Random.Range(0, int.MaxValue) : initialSeed;
+            runData.seed = initialSeed;
         }
 
         enemySpawnIndex = 0;
         destroyableSpawnIndex = 0;
 
-        UnityEngine.Random.InitState(runData.seed);
+        UnityEngine.Random.InitState((int)runData.seed);
         Debug.Log("SEED: " + runData.seed);
     }
 

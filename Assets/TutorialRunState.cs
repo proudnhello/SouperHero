@@ -24,7 +24,7 @@ public class TutorialRunState : MonoBehaviour
 
         //helperScripts.GetComponent<RoomGenerator>().enabled = false; // Disable room generation for the tutorial
 
-        RunStateManager.Singleton.InitializeGameState(-1);  // -1 = no seed, use random
+        RunStateManager.Singleton.InitializeGameState(0);  // 0 = no seed, use random
 
         RunStateManager.Singleton.SaveRunState();
 
