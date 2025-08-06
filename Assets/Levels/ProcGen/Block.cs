@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,7 +27,15 @@ public class Block : MonoBehaviour
     public GameObject westDoor;
     public GameObject westDoorOpen;
 
-
+    [Flags]
+    public enum RoomType
+    {
+        START = 0,
+        INTERMEDIATE = 1,
+        CONNECTOR = 2,
+        ALL = START | INTERMEDIATE | CONNECTOR,
+        NOT_CONNECTOR = START | INTERMEDIATE
+    }
 
     public RoomType BlockType()
     {

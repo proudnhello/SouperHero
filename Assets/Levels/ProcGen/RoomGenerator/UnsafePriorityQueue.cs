@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using UnityEngine;
 
 // inspo from https://medium.com/@basilin/priority-queue-with-c-7089f4898c8d
 [BurstCompatible]

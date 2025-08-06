@@ -6,7 +6,7 @@ using NavMeshPlus.Components;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-
+using RoomType = Block.RoomType;
 // Coordinate struct to make row and column passing easier
 public struct Coordinate
 {
@@ -272,7 +272,7 @@ public class RoomGenerator : MonoBehaviour
     }
 
     // Check if block exists and the connections returned have viable connections
-    private bool CheckForBlock(Coordinate c, RoomType r, char dir)
+    private bool CheckForBlock(Coordinate c, Block.RoomType r, char dir)
     {
         if (!c.BlockExists(_map, out Block b))
         {

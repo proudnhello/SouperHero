@@ -6,6 +6,9 @@ using Unity.Jobs;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Mathematics;
+using static MapRoom;
+using Random = Unity.Mathematics.Random;
+using Unity.Collections.LowLevel.Unsafe;
 
 public class RoomGenerator2 : MonoBehaviour
 {
@@ -18,41 +21,51 @@ public class RoomGenerator2 : MonoBehaviour
     [Header("Layout")]
     [SerializeField] Vector2Int CAVEBIOMEBOUNDS_INCHUNKS;
     public uint MAP_SEED = 0;
+
+    [Header("Rooms")]
+    [SerializeField] MapRoom[] AllRoomsUnsorted;
 // ####################
 
 // LOCAL VARIABLES
-    // MAP CHUNKS LEGEND
-    // _0 = Empty
-    // _1 = Starting Cave
-    // _2 = Boss
-    // _3 = Alpha Path
-    // _4 = Beta Path
-    // 1_ = Cave
-    // 2_ = Desert
-    // 3_ = Forest
-    NativeArray<int> MapChunks;
+    public NativeArray<int> Grid;
+    NativeArray<Chunk> MapChunks;
+    RoomDatabase RoomDatabase;
+    Random RNG;
     private void Start()
     {
         MAP_SEED = (uint)UnityEngine.Random.Range(0, int.MaxValue);
         RunStateManager.Singleton.InitializeGameState(MAP_SEED);
 
-        MapChunks = new NativeArray<int>(MAPSIZE_INCHUNKS.x * MAPSIZE_INCHUNKS.y, Allocator.Persistent);
+        RoomDatabase = new();
+        RoomDatabase.Init(AllRoomsUnsorted, MAP_SEED);
+
+        RNG = new Random(MAP_SEED);
+        MapChunks = new NativeArray<Chunk>(MAPSIZE_INCHUNKS.x * MAPSIZE_INCHUNKS.y, Allocator.Persistent, NativeArrayOptions.ClearMemory);
 
         var generateChunkPathJob = new GenerateChunkPathJob
         {
             MAPSIZE_INCHUNKS = MAPSIZE_INCHUNKS,
             CAVEBIOMEBOUNDS_INCHUNKS = CAVEBIOMEBOUNDS_INCHUNKS,
-            MapChunks = MapChunks,
-            seed = MAP_SEED
+            RNG = RNG,
+            MapChunks = MapChunks
         };
         JobHandle GenerateChunkPathJobHandle = generateChunkPathJob.Schedule();
-        GenerateChunkPathJobHandle.Complete();
+
+        var placeInitialRoomsJob = new PlaceInitialRoomsJob
+        {
+            MapChunks = generateChunkPathJob.MapChunks,
+            RNG = RNG,
+            RoomDatabase = RoomDatabase
+        };
+        JobHandle PlaceInitialRoomsJobHandle = placeInitialRoomsJob.Schedule(MapChunks.Length, 64, GenerateChunkPathJobHandle);
+
+        PlaceInitialRoomsJobHandle.Complete();
 
         StartCoroutine(WaitForGameReady());
 
         IEnumerator WaitForGameReady()
         {
-            yield return new WaitUntil(() => GenerateChunkPathJobHandle.IsCompleted);
+            yield return new WaitUntil(() => PlaceInitialRoomsJobHandle.IsCompleted);
             RunStateManager.Singleton.SaveRunState();
             GameManager.Singleton.StartRun();
         }
@@ -85,22 +98,22 @@ public class RoomGenerator2 : MonoBehaviour
                                          size.y / 2 + points[0].y,
                                          0);
 
-            Color chunkType = (MapChunks[i] % 10) switch
+            Color chunkType = (MapChunks[i].ChunkType) switch
             {
-                1 => Color.gray,
-                2 => Color.red,
-                3 => Color.green,
-                4 => Color.blue,
+                Chunk.Type.Starting => Color.gray,
+                Chunk.Type.Boss => Color.red,
+                Chunk.Type.AlphaPath => Color.green,
+                Chunk.Type.BetaPath => Color.blue,
                 _ => Color.white
             };
             Gizmos.color = chunkType;
             Gizmos.DrawCube(center, size);
 
-            Color chunkBiome = (Mathf.FloorToInt(MapChunks[i] / 10)) switch
+            Color chunkBiome = MapChunks[i].Biome switch
             {
-                1 => Color.gray,
-                2 => Color.yellow,
-                3 => Color.green,
+                Biome.CAVE => Color.gray,
+                Biome.DESERT => Color.yellow,
+                Biome.FOREST => Color.green,
                 _ => Color.clear
             };
             Gizmos.color = new Color(chunkBiome.r, chunkBiome.g, chunkBiome.b, .25f);

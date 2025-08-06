@@ -3,27 +3,87 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
+using UnityEditor;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
-[Flags]
-public enum RoomType
-{
-    START = 0,
-    INTERMEDIATE = 1,
-    CONNECTOR = 2,
-    ALL = START | INTERMEDIATE | CONNECTOR,
-    NOT_CONNECTOR = START | INTERMEDIATE
-}
 
 public class MapRoom : MonoBehaviour
 {
+    public enum RoomType
+    {
+        START,
+        INTERMEDIATE,
+        CONNECTOR,
+        CAMPFIRE,
+        BOSS
+    }
+    public enum Biome
+    {
+        CAVE,
+        DESERT,
+        FOREST
+    }
+
+    [Serializable]
+    public struct GenerationInfo
+    {
+        internal int UUID;
+        public RoomType Type;
+        public Biome Biome;
+        public Vector2Int GridDimensions; // from bottom left
+        public UnsafeList<Vector2Int> NorthDoors;
+        public UnsafeList<Vector2Int> SouthDoors;
+        public UnsafeList<Vector2Int> EastDoors;
+        public UnsafeList<Vector2Int> WestDoors;
+
+        internal Vector2Int Location;
+
+        public GenerationInfo InitInfo(MapRoom room)
+        {
+            UUID = room.GetHashCode();
+            NorthDoors = new(0, Allocator.Persistent);
+            SouthDoors = new(0, Allocator.Persistent);
+            EastDoors = new(0, Allocator.Persistent);
+            WestDoors = new(0, Allocator.Persistent);
+            return this;
+        }
+    }
+    public GenerationInfo Info;
+    public Vector2Int[] NorthDoors;
+    public Vector2Int[] SouthDoors;
+    public Vector2Int[] EastDoors;
+    public Vector2Int[] WestDoors;
+
+    // ############ DELETE
     [SerializeField]
     private int _blockWidth;
     [SerializeField]
     private int _blockHeight;
 
+
     // ORDERED FROM BOTTOM LEFT TO TOP RIGHT
     public List<Block> blocks = new();
+    [Header("Room Content")]
+    [SerializeField] ContentRegion[] contentRegions;
+
+    public int BlockWidth()
+    {
+        return _blockWidth;
+    }
+
+    public int BlockHeight()
+    {
+        return _blockHeight;
+    }
+
+    public Block At(int row, int col)
+    {
+        return blocks[col * (_blockWidth) + row];
+    }
+    // ##############
 
     [Serializable]
     public class ContentRegion 
@@ -45,23 +105,7 @@ public class MapRoom : MonoBehaviour
         });
     }
 
-    [Header("Room Content")]
-    [SerializeField] ContentRegion[] contentRegions;
 
-    public int BlockWidth()
-    {
-        return _blockWidth;
-    }
-
-    public int BlockHeight()
-    {
-        return _blockHeight;
-    }
-
-    public Block At(int row, int col)
-    {
-        return blocks[col * (_blockWidth) + row];
-    }
 
     bool hasBeenInitialized = false;
     public virtual void InitializeContents(int difficultyPointBalance)
