@@ -10,7 +10,7 @@ public class PitHazard : Hazard
     
     public override void AddEntity(Entity entity)
     {
-        if (effectedEntities.Contains(entity))
+        if (effectedEntities.Contains(entity) || entity.flying)
         {
             return;
         }
