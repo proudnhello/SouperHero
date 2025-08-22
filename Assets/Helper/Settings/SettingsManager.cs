@@ -96,6 +96,7 @@ public class SettingsManager : MonoBehaviour
         set
         {
             settingsData.musicVolume = value;
+            AudioManager.UpdateMusicVolume();
         }
     }
 
@@ -105,6 +106,7 @@ public class SettingsManager : MonoBehaviour
         set
         {
             settingsData.sfxVolume = value;
+            AudioManager.UpdateSfxVolume();
         }
     }
 

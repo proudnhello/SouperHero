@@ -49,4 +49,14 @@ public class AudioManager : MonoBehaviour
         instance.getPlaybackState(out state);
         return state != PLAYBACK_STATE.STOPPED;
     }
+
+    public static void UpdateMusicVolume()
+    {
+        Singleton._MusicHandler.UpdateMusicVolume();
+    }
+
+    public static void UpdateSfxVolume()
+    {
+        Singleton.sfxAudio = SettingsManager.Singleton.SfxVolume;
+    }
 }
