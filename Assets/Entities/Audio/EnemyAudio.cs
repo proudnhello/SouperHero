@@ -34,6 +34,7 @@ public class EnemyAudio
 
         EventInstance instance = PlayDamage();
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(enemy.transform));
+        instance.setVolume(SettingsManager.Singleton.SfxVolume);
         instance.start();
     }
 }

@@ -19,7 +19,7 @@ public class AudioManager : MonoBehaviour
     [field: SerializeField] public List<EventReference> MUSIC { get; private set; }
 
     public EnemyAudio enemyAudio;
-    [SerializeField] float sfxAudio = 0.5f;
+    [SerializeField] float sfxAudio = SettingsManager.Singleton.SfxVolume;
     private List<EventInstance> allSFX = new List<EventInstance>();
     internal MusicHandler _MusicHandler;
 

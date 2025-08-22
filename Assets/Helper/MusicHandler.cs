@@ -90,6 +90,7 @@ public class MusicHandler
         }
         public override void OnEnter()
         {
+            MainMenuTheme.setVolume(SettingsManager.Singleton.MusicVolume);
             MainMenuTheme.start();
         }
         public override void OnExit()
@@ -114,6 +115,7 @@ public class MusicHandler
         public override void OnEnter()
         {
             HubTheme.start();
+            HubTheme.setVolume(SettingsManager.Singleton.MusicVolume);
             if (timelinePos >= 0) HubTheme.setTimelinePosition(timelinePos);
         }
         public override void OnExit()
@@ -146,6 +148,7 @@ public class MusicHandler
         public override void OnEnter()
         {
             InGameTheme.start();
+            InGameTheme.setVolume(SettingsManager.Singleton.MusicVolume);
             if (timelinePos >= 0) InGameTheme.setTimelinePosition(timelinePos);
             CheckState();
         }
