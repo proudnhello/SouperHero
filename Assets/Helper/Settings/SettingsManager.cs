@@ -13,6 +13,8 @@ public class SettingsData
     public int resolution = 0;
     public int fullScreen = 1;
     public int cursorMovement = 0;
+    public float musicVolume = 0.5f;
+    public float sfxVolume;
 }
 
 
@@ -85,6 +87,26 @@ public class SettingsManager : MonoBehaviour
         set
         {
             SetProperty(ref settingsData.cursorMovement, value ? 1 : 0);
+        }
+    }
+
+    public float MusicVolume
+    {
+        get => settingsData.musicVolume;
+        set
+        {
+            settingsData.musicVolume = value;
+            AudioManager.UpdateMusicVolume();
+        }
+    }
+
+    public float SfxVolume
+    {
+        get => settingsData.sfxVolume;
+        set
+        {
+            settingsData.sfxVolume = value;
+            AudioManager.UpdateSfxVolume();
         }
     }
 

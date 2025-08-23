@@ -8,9 +8,11 @@ public class MusicHandler
     public abstract class IGameState
     {
         protected MusicHandler handler;
+        protected EventInstance currentMusicInstance;
         public virtual void OnEnter() { }
         public virtual void OnExit() { }
         public virtual void Reset() { }
+        public void ChangeVolume(float newVolume) { currentMusicInstance.setVolume(newVolume); }
     }
 
     public enum MusicState
@@ -80,6 +82,11 @@ public class MusicHandler
         }
     }
 
+    public void UpdateMusicVolume()
+    {
+        if (currMusicState != null) currMusicState.ChangeVolume(SettingsManager.Singleton.MusicVolume);
+    }
+
     #region GAMESTATES
     public class MainMenu : IGameState
     {
@@ -90,6 +97,8 @@ public class MusicHandler
         }
         public override void OnEnter()
         {
+            currentMusicInstance = MainMenuTheme;
+            MainMenuTheme.setVolume(SettingsManager.Singleton.MusicVolume);
             MainMenuTheme.start();
         }
         public override void OnExit()
@@ -113,7 +122,9 @@ public class MusicHandler
         int timelinePos = -1;
         public override void OnEnter()
         {
+            currentMusicInstance = HubTheme;
             HubTheme.start();
+            HubTheme.setVolume(SettingsManager.Singleton.MusicVolume);
             if (timelinePos >= 0) HubTheme.setTimelinePosition(timelinePos);
         }
         public override void OnExit()
@@ -145,7 +156,9 @@ public class MusicHandler
         int timelinePos = -1;
         public override void OnEnter()
         {
+            currentMusicInstance = InGameTheme;
             InGameTheme.start();
+            InGameTheme.setVolume(SettingsManager.Singleton.MusicVolume);
             if (timelinePos >= 0) InGameTheme.setTimelinePosition(timelinePos);
             CheckState();
         }

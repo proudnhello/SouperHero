@@ -11,6 +11,8 @@ public class SettingsUI : MonoBehaviour
     public Toggle fullscreenToggle;
     public Toggle useGrayscale;
     public Toggle cursorMoveToggle;
+    public Slider musicVolumeSlider;
+    public Slider sfxVolumeSlider;
 
     [SerializeField] GameObject movementKeybindObject;
     [SerializeField] GameObject cursorMovementKeybindObject;
@@ -46,6 +48,9 @@ public class SettingsUI : MonoBehaviour
         fullscreenToggle.isOn = SettingsManager.Singleton.FullScreen;
         useGrayscale.isOn = SettingsManager.Singleton.UseGrayscale;
         cursorMoveToggle.isOn = SettingsManager.Singleton.CursorMovement;
+        musicVolumeSlider.value = SettingsManager.Singleton.MusicVolume;
+        sfxVolumeSlider.value = SettingsManager.Singleton.SfxVolume;
+
         CursorMove(cursorMoveToggle.isOn);
     }
 
@@ -83,5 +88,15 @@ public class SettingsUI : MonoBehaviour
             cursorMovementKeybindObject.SetActive(false);
         }
         SettingsManager.Singleton.CursorMovement = isOn;
+    }
+
+    public void ChangeMusicVolume(float volume)
+    {
+        SettingsManager.Singleton.MusicVolume = volume;
+    }
+
+    public void ChangeSfxVolume(float volume)
+    {
+        SettingsManager.Singleton.SfxVolume = volume;
     }
 }

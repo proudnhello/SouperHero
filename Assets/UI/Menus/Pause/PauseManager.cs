@@ -93,4 +93,10 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 1;
         SceneManager.LoadScene(1);
     }
+
+    public void SettingsMenu()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene(4);
+    }
 }

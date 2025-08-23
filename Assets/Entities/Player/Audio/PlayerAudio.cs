@@ -64,6 +64,7 @@ public class PlayerAudio
         }
 
         EventInstance instance = GetSwingSpoon();
+        instance.setVolume(SettingsManager.Singleton.SfxVolume);
         instance.start();
     }
 
@@ -85,6 +86,7 @@ public class PlayerAudio
         }
 
         EventInstance instance = GetDash();
+        instance.setVolume(SettingsManager.Singleton.SfxVolume);
         instance.start();
     }
 
@@ -107,6 +109,7 @@ public class PlayerAudio
 
         EventInstance instance = GetBreakBreakable();
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(location));
+        instance.setVolume(SettingsManager.Singleton.SfxVolume);
         instance.start();
     }
 
@@ -128,11 +131,13 @@ public class PlayerAudio
         }
 
         EventInstance instance = GetPickup();
+        instance.setVolume(SettingsManager.Singleton.SfxVolume);
         instance.start();
     }
 
     public void CookSoup()
     {
+        cookSoup.setVolume(SettingsManager.Singleton.SfxVolume);
         cookSoup.start();
     }
     

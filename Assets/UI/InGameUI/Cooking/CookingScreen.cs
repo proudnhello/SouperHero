@@ -51,7 +51,7 @@ public class CookingScreen : MonoBehaviour
         if (Singleton != null && Singleton != this) Destroy(gameObject);
         else Singleton = this;
         CookingContent.localPosition = new Vector2(CookingContent.localPosition.x, ClosedYPos);
-        CookingContent.gameObject.SetActive(false);
+        // CookingContent.gameObject.SetActive(false);
 
         foreach (IngredientCookingSlot c in IngredientCookingSlots)
         {

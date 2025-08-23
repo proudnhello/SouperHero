@@ -19,7 +19,7 @@ public class AudioManager : MonoBehaviour
     [field: SerializeField] public List<EventReference> MUSIC { get; private set; }
 
     public EnemyAudio enemyAudio;
-    [SerializeField] float sfxAudio = 0.5f;
+    [SerializeField] float sfxAudio = SettingsManager.Singleton.SfxVolume;
     private List<EventInstance> allSFX = new List<EventInstance>();
     internal MusicHandler _MusicHandler;
 
@@ -48,5 +48,15 @@ public class AudioManager : MonoBehaviour
         PLAYBACK_STATE state;
         instance.getPlaybackState(out state);
         return state != PLAYBACK_STATE.STOPPED;
+    }
+
+    public static void UpdateMusicVolume()
+    {
+        Singleton._MusicHandler.UpdateMusicVolume();
+    }
+
+    public static void UpdateSfxVolume()
+    {
+        Singleton.sfxAudio = SettingsManager.Singleton.SfxVolume;
     }
 }
