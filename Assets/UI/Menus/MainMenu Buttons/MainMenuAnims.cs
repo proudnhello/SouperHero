@@ -45,6 +45,7 @@ public class MainMenuAnims : MonoBehaviour
     [Header("Menus")]
     [SerializeField] private GameObject loadingScreen;
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject settingsMenu;
 
     [Header("Loading Bar")]
     [SerializeField] public Slider loadingSlider;
@@ -204,7 +205,7 @@ public class MainMenuAnims : MonoBehaviour
     }
     public void EnterOptionsScreen()
     {
-        SceneManager.LoadScene(4);
+        settingsMenu.SetActive(true);
     }
 
     public void ShowExitConfirmation()
