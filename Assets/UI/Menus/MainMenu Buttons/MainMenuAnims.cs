@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using static RunStateManager;
 
+// Who had the bright idea to put this script on the PLAYER in the main menu???? Why?
 public class MainMenuAnims : MonoBehaviour
 {
     //public static MainMenuAnims Singleton { get; private set; }
