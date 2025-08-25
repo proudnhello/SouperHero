@@ -203,9 +203,28 @@ public class MainMenuAnims : MonoBehaviour
     {
         StartCoroutine("backCoroutine");
     }
+    float initialX = 831.5f;
+
     public void EnterOptionsScreen()
     {
         settingsMenu.SetActive(true);
+        book.SetActive(false);
+        initialX = settingsMenu.transform.localPosition.x;
+        Sequence sweep = DOTween.Sequence();
+        sweep.Append(settingsMenu.transform.DOLocalMoveX(0, 0.75f).SetEase(Ease.InOutQuad));
+        sweep.Play();
+    }
+
+    public void ExitOptionsScreen()
+    {
+        Sequence sweep = DOTween.Sequence();
+        sweep.Append(settingsMenu.transform.DOLocalMoveX(initialX, 0.75f).SetEase(Ease.InOutQuad));
+        sweep.OnComplete(() =>
+        {
+            settingsMenu.SetActive(false);
+            book.SetActive(true);
+        });
+        sweep.Play();
     }
 
     public void ShowExitConfirmation()
