@@ -19,7 +19,7 @@ public class AudioManager : MonoBehaviour
     [field: SerializeField] public List<EventReference> MUSIC { get; private set; }
 
     public EnemyAudio enemyAudio;
-    [SerializeField] float sfxAudio = SettingsManager.Singleton.SfxVolume;
+    [SerializeField] float sfxAudio = 1;
     private List<EventInstance> allSFX = new List<EventInstance>();
     internal MusicHandler _MusicHandler;
 
@@ -29,6 +29,7 @@ public class AudioManager : MonoBehaviour
         else Singleton = this;
         enemyAudio = new();
         _MusicHandler = new(this);
+        sfxAudio = SettingsManager.Singleton.SfxVolume;
     }
 
     public void PlayOneShot(EventReference sound, Vector3 worldPos = default)

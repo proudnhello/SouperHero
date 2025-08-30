@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class SettingsTabs : MonoBehaviour
 {
     public List<GameObject> UI_List = new List<GameObject>();
+    public GameObject settingsMenu;
 
     private void Start()
     {
@@ -34,5 +35,11 @@ public class SettingsTabs : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(0);
+    }
+
+    public void CloseSettings()
+    {
+        ShowUI(0);
+        settingsMenu.SetActive(false);
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using static RunStateManager;
 
+// Who had the bright idea to put this script on the PLAYER in the main menu???? Why?
 public class MainMenuAnims : MonoBehaviour
 {
     //public static MainMenuAnims Singleton { get; private set; }
@@ -44,6 +45,7 @@ public class MainMenuAnims : MonoBehaviour
     [Header("Menus")]
     [SerializeField] private GameObject loadingScreen;
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject settingsMenu;
 
     [Header("Loading Bar")]
     [SerializeField] public Slider loadingSlider;
@@ -201,9 +203,28 @@ public class MainMenuAnims : MonoBehaviour
     {
         StartCoroutine("backCoroutine");
     }
+    float initialX = 831.5f;
+
     public void EnterOptionsScreen()
     {
-        SceneManager.LoadScene(4);
+        settingsMenu.SetActive(true);
+        book.SetActive(false);
+        initialX = settingsMenu.transform.localPosition.x;
+        Sequence sweep = DOTween.Sequence();
+        sweep.Append(settingsMenu.transform.DOLocalMoveX(0, 0.75f).SetEase(Ease.InOutQuad));
+        sweep.Play();
+    }
+
+    public void ExitOptionsScreen()
+    {
+        Sequence sweep = DOTween.Sequence();
+        sweep.Append(settingsMenu.transform.DOLocalMoveX(initialX, 0.75f).SetEase(Ease.InOutQuad));
+        sweep.OnComplete(() =>
+        {
+            settingsMenu.SetActive(false);
+            book.SetActive(true);
+        });
+        sweep.Play();
     }
 
     public void ShowExitConfirmation()

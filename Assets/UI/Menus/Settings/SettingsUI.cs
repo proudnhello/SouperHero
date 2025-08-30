@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 public class SettingsUI : MonoBehaviour
 {
@@ -13,10 +14,11 @@ public class SettingsUI : MonoBehaviour
     public Toggle cursorMoveToggle;
     public Slider musicVolumeSlider;
     public Slider sfxVolumeSlider;
+    float initialX;
 
     [SerializeField] GameObject movementKeybindObject;
     [SerializeField] GameObject cursorMovementKeybindObject;
-
+    [SerializeField] GameObject settingsMenu;
 
     List<Resolution> SelectedResolutionList = new List<Resolution>();
 
@@ -99,4 +101,5 @@ public class SettingsUI : MonoBehaviour
     {
         SettingsManager.Singleton.SfxVolume = volume;
     }
+
 }
