@@ -29,7 +29,14 @@ public class AudioManager : MonoBehaviour
         else Singleton = this;
         enemyAudio = new();
         _MusicHandler = new(this);
-        sfxAudio = SettingsManager.Singleton.SfxVolume;
+        if (SettingsManager.Singleton != null && SettingsManager.Singleton.SfxVolume != sfxAudio)
+        {
+            sfxAudio = SettingsManager.Singleton.SfxVolume;
+        }
+        else
+        {
+            sfxAudio = 0.5f;
+        }
     }
 
     public void PlayOneShot(EventReference sound, Vector3 worldPos = default)
