@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -50,6 +51,7 @@ public class HopShroomAI : EnemyBaseClass
     [SerializeField] private int ShotCount = 3;
     [SerializeField] private float ShotCooldown = 2.0f;
     [SerializeField] private float FinalShotCooldown = 0.3f;
+    [SerializeField] private float BreakAttackRange = 3f;
 
     protected Animator animator;
     internal List<IState> states;
@@ -189,9 +191,11 @@ public class HopShroomAI : EnemyBaseClass
                     {
                         sm.ChangeState(ChargerStates.IDLE); // disengage if too far
                     }
-                } while (((dist < sm.DistanceRangeToPlayerForShoot.x && 
-                            Vector2.Distance(lastPos, sm.agent.transform.position) > sm.AttackMoveCheckMinimumDistance)
-                            || dist > sm.DistanceRangeToPlayerForShoot.y) || !sm.CanAttack()) ;
+                    // Keep walking if
+                } while (
+                    (dist > sm.DistanceRangeToPlayerForShoot.y || dist < sm.DistanceRangeToPlayerForShoot.x) // player not in range
+                    || Vector2.Distance(lastPos, sm.agent.transform.position) > sm.AttackMoveCheckMinimumDistance // enemy is still moving                    
+                );
                 sm.agent.isStopped = true;
 
                 // EXPLODE
@@ -208,6 +212,11 @@ public class HopShroomAI : EnemyBaseClass
                     sm._sprite.flipX = temp.direction.x <= 0;
                     if (chargeNum < sm.ShotCount) yield return new WaitForSeconds(sm.ShotCooldown);
                     else yield return new WaitForSeconds(sm.FinalShotCooldown);
+                    dist = Vector2.Distance(sm.transform.position, sm._playerTransform.position);
+                    if (dist < sm.BreakAttackRange)
+                    {
+                        break; // disengage if too far
+                    }
                 }
             }       
         }

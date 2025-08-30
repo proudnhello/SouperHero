@@ -85,7 +85,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1677076209
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 2
   m_Sprite: {fileID: 1013733189, guid: bd2275a145c2d1b4f806cf13a7b75102, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -113,8 +113,8 @@ MonoBehaviour:
   submergeMask: {fileID: 5990472122243999699}
   needsBounds: 1
   baseStats:
-    maxHealth: 40
-    baseMoveSpeed: 5.81
+    maxHealth: 30
+    baseMoveSpeed: 10
     invincibility: 0.5
   currentStats:
     health: 0
@@ -139,16 +139,17 @@ MonoBehaviour:
   PlayerDetectionInterval: 0.5
   IdleSpeedMultiplier: 1
   AttackSpeedMultiplier: 1
-  MidDistanceShootPoint: 7
-  DistanceRangeToPlayerForShoot: {x: 5, y: 8}
+  MidDistanceShootPoint: 6
+  DistanceRangeToPlayerForShoot: {x: 3, y: 8}
   AttackDistanceCheckInterval: 0.3
-  AttackMoveCheckMinimumDistance: 0.35
+  AttackMoveCheckMinimumDistance: 0.3
   DistanceFromPlayerToDisengage: 10
   TimeToStartShooting: 0.5
   ShotAnimDelay: 0.3
   ShotCount: 3
   ShotCooldown: 0.6
   FinalShotCooldown: 1
+  BreakAttackRange: 3.5
 --- !u!50 &6920273806976612146
 Rigidbody2D:
   serializedVersion: 4
@@ -529,8 +530,8 @@ SpriteMask:
   m_MaskAlphaCutoff: 0.2
   m_FrontSortingLayerID: 1677076209
   m_BackSortingLayerID: 1677076209
-  m_FrontSortingLayer: 6
-  m_BackSortingLayer: 6
+  m_FrontSortingLayer: 7
+  m_BackSortingLayer: 7
   m_FrontSortingOrder: 2
   m_BackSortingOrder: 1
   m_IsCustomRangeActive: 1
