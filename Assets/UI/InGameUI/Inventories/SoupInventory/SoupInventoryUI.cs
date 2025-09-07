@@ -5,8 +5,10 @@ using System.Linq;
 using System.Reflection;
 using TMPro;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.ParticleSystem;
 using static UnityEngine.Rendering.VolumeComponent;
 
 public class SoupInventoryUI : MonoBehaviour
@@ -240,8 +242,6 @@ public class SoupInventoryUI : MonoBehaviour
     }
 
     //Helper function to add soup image to icon in slot
-    //Lo: This is temporary!
-    //TODO: Once art is complete, use whatever image is attached to the soup instead of temp
     public void AddSoupInSlot(ISoupBowl bowl, int index)
     {
         InventorySlots[index].SetSoup(bowl);
@@ -262,10 +262,16 @@ public class SoupInventoryUI : MonoBehaviour
     public void EnableFlavorParticles(ISoupBowl bowl, GameObject slot)
     {
         if (IsOpen || CookingScreen.Singleton.IsCooking) return; //Only display when inventory is closed and not cooking
-        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>(); //Lo: Possibly replace with index checking
+        ParticleSystem particleSystem = slot.transform.GetComponentInChildren<ParticleSystem>(); //Access child particle game object on UI layer
         if (particleSystem == null) return;
 
         List<Sprite> particles = new List<Sprite> ();
+
+        //Remove all particle icons from slot
+        for (int i = 0; i < particleSystem.textureSheetAnimation.spriteCount; i++)
+        {
+            particleSystem.textureSheetAnimation.RemoveSprite(i);
+        }
 
         //Add all ingredients' particle icon to list
         if (bowl is FinishedSoup soup)
@@ -287,7 +293,7 @@ public class SoupInventoryUI : MonoBehaviour
         }
 
         //If no particles, do not enable particle effects
-        if (particles.Count == 0) return;
+        if (particleSystem.textureSheetAnimation.mode == 0) return;
 
         //Add all particle icons and activate particle system for slot
         foreach (var particle in particles)
@@ -299,7 +305,7 @@ public class SoupInventoryUI : MonoBehaviour
 
     public void DisableFlavorParticles(GameObject slot)
     {
-        ParticleSystem particleSystem = slot.GetComponent<ParticleSystem>(); //Lo: Possibly replace with index checking
+        ParticleSystem particleSystem = slot.transform.GetComponentInChildren<ParticleSystem>(); //Access child particle game object on UI layer
         if (particleSystem == null) return;
 
         particleSystem.Stop();

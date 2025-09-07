@@ -8,7 +8,7 @@ public class PauseManager : MonoBehaviour
 {
     internal static bool isPaused = false;
     [SerializeField] GameObject pauseScreen;
-
+    [SerializeField] GameObject settingsMenu;
 
     private void Awake()
     {
@@ -96,7 +96,7 @@ public class PauseManager : MonoBehaviour
 
     public void SettingsMenu()
     {
-        Time.timeScale = 1;
-        SceneManager.LoadScene(4);
+        Time.timeScale = 0;
+        settingsMenu.SetActive(true);
     }
 }

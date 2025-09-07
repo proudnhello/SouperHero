@@ -14,7 +14,7 @@ public class SettingsData
     public int fullScreen = 1;
     public int cursorMovement = 0;
     public float musicVolume = 0.5f;
-    public float sfxVolume;
+    public float sfxVolume = 0.5f;
 }
 
 

@@ -22,6 +22,7 @@ public class RatishAI : EnemyBaseClass
     [SerializeField] private float hideTime = 2;
     [SerializeField] private float timeBetweenShots = 0.3f;
     [SerializeField] private int numberOfShots = 3;
+    [SerializeField] private float hideRange = 5f;
     private float detectionDelay = 0.3f;
     public Transform firingPoint;
     public StandardEnemyBullet bullet;
@@ -59,7 +60,8 @@ public class RatishAI : EnemyBaseClass
         public override void Update(RatishAI turret, float deltaT)
         {
             hideTimer -= deltaT;
-            if((turret.playerDetected || turret.alwaysAggro) && hideTimer <= 0)
+            float playerDistance = Vector2.Distance(turret.transform.position, PlayerEntityManager.Singleton.transform.position);
+            if ((turret.playerDetected || turret.alwaysAggro) && hideTimer <= 0 && playerDistance >= turret.hideRange)
             {
                 turret.animator.Play("Emerge");
                 turret.SwapState(turret.emerging);
