@@ -29,7 +29,7 @@ public class AudioManager : MonoBehaviour
         else Singleton = this;
         enemyAudio = new();
         _MusicHandler = new(this);
-        if (SettingsManager.Singleton != null && SettingsManager.Singleton.SfxVolume != sfxAudio)
+        if (SettingsManager.Singleton != null && SettingsManager.Singleton.settingsData != null && SettingsManager.Singleton.SfxVolume != sfxAudio)
         {
             sfxAudio = SettingsManager.Singleton.SfxVolume;
         }

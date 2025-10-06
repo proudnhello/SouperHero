@@ -69,6 +69,8 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
             if (IEquipAnim != null) StopCoroutine(IEquipAnim);
             StartCoroutine(IEquipAnim = EquipAnim(true));
         }
+
+        Debug.Log(bowlHeld, this.gameObject);
         SoupInventoryUI.Singleton.EnableFlavorParticles(bowlHeld, this.gameObject);
         RenderSlotContents();
     }
