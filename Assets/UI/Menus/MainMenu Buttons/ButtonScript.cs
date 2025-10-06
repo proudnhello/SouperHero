@@ -21,6 +21,7 @@ public class ButtonScript : MonoBehaviour, IPointerClickHandler
         _targetScale = _buttonBackground.transform.localScale;
         _buttonBackground.transform.localScale = Vector3.zero;
         _buttonBackgroundRectTransform = _buttonBackground.GetComponent<RectTransform>();
+        print(_buttonBackgroundRectTransform);
     }
 
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
