@@ -47,7 +47,8 @@ public class SettingsManager : MonoBehaviour
 
     public int Language
     {
-        get => settingsData.language;
+        //get => settingsData.language;
+        get => 0; // lock to English
         set
         {
             SetProperty(ref settingsData.language, value);
