@@ -67,11 +67,23 @@ public unsafe struct RoomDatabase
         }
     }
 
-    public readonly GenerationInfo GetRoom(RoomType room, Biome biome, int index = -1)
+    public readonly GenerationInfo GetRoom(RoomType room, Biome biome, Coord maxSize = default)
     {
         GenerationInfo Select(NativeList<GenerationInfo> rooms)
         {
-            if (index >= 0 && index < rooms.Length) return rooms[index];
+            if (maxSize.x > 0 && maxSize.y > 0)
+            {
+                for (int i = 0; i < rooms.Length; i++)
+                {
+                    var room = rooms[rng.NextInt(0, rooms.Length)];
+                    if (room.GridDimensions.x <= maxSize.x && room.GridDimensions.y <= maxSize.y)
+                        return room;
+                }
+                // otherwise just loop through list until you find the first one
+                foreach (var room in rooms) 
+                    if (room.GridDimensions.x <= maxSize.x && room.GridDimensions.y <= maxSize.y) 
+                        return room;
+            }
             return rooms[rng.NextInt(0, rooms.Length)];
         }
 

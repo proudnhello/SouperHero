@@ -83,7 +83,7 @@ public class RunStateManager : MonoBehaviour
         }
     }
 
-    public void SaveRunState()
+    public void SaveRunState(bool initialState = false)
     {
         runData.playerPos = PlayerEntityManager.Singleton.transform.position;
         SaveManager.Singleton.SaveRunState(runData);

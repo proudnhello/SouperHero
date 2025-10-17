@@ -26,28 +26,53 @@ public class MapRoom : MonoBehaviour
         DESERT,
         FOREST
     }
+    public enum ConnectorType
+    {
+        None,
+        Two_NS,
+        Two_EW,
+        Two_NE,
+        Two_SE,
+        Two_SW,
+        Two_NW,
+        Three_NSE,
+        Three_SEW,
+        Three_NSW,
+        Three_NEW,
+        Four
+    }
 
     [Serializable]
     public struct GenerationInfo
     {
         internal int UUID;
+        internal Coord RoomSpawn;
+
         public RoomType Type;
         public Biome Biome;
+        public ConnectorType ConnectorType;
         public Vector2Int GridDimensions; // from bottom left
+        public int GridPadding; // total space taken is GridDimensions + GridPadding * 2
+        internal Vector2Int TotalGridSpace
+        {
+            get => new(GridDimensions.x + GridPadding * 2, GridDimensions.y + GridPadding * 2);
+        }
         public UnsafeList<Vector2Int> NorthDoors;
         public UnsafeList<Vector2Int> SouthDoors;
         public UnsafeList<Vector2Int> EastDoors;
         public UnsafeList<Vector2Int> WestDoors;
 
-        internal Vector2Int Location;
-
         public GenerationInfo InitInfo(MapRoom room)
         {
             UUID = room.GetHashCode();
             NorthDoors = new(0, Allocator.Persistent);
+            foreach (var door in room.NorthDoors) NorthDoors.Add(door);
             SouthDoors = new(0, Allocator.Persistent);
+            foreach (var door in room.SouthDoors) SouthDoors.Add(door);
             EastDoors = new(0, Allocator.Persistent);
+            foreach (var door in room.EastDoors) EastDoors.Add(door);
             WestDoors = new(0, Allocator.Persistent);
+            foreach (var door in room.WestDoors) WestDoors.Add(door);
             return this;
         }
     }

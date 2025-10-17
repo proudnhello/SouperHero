@@ -1,25 +1,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using Unity.Jobs;
+using System.Linq;
 using Unity.Burst;
 using Unity.Collections;
-using Unity.Mathematics;
-using static MapRoom;
-using Random = Unity.Mathematics.Random;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Jobs;
+using Unity.Mathematics;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
+using UnityEngine;
+using static MapRoom;
+using static UnityEditor.Recorder.OutputPath;
+using Random = Unity.Mathematics.Random;
+
+[Serializable]
+public struct MapInfo
+{
+    public Vector2Int MAP_SIZE; // in chunks
+    public Vector2Int CHUNK_SIZE; // in grid units
+    public Vector2Int GRID_SIZE; // in unity world units/tiles
+    public Vector2Int CAVE_BIOME_BOUNDS; // in chunks
+    public Vector2Int CAMPFIRE_PLACEMENT_AREA_SIZE; // in grid units (larger, smaller)
+}
 
 public class RoomGenerator2 : MonoBehaviour
 {
-// INSPECTOR VARIABLES
-    [Header("Dimensions")]
-    [SerializeField] Vector2Int MAPSIZE_INCHUNKS;
-    [SerializeField] Vector2Int CHUNKSIZE_INGRIDUNITS;
-    [SerializeField] Vector2Int GRIDUNITSIZE_INTILES;
-
     [Header("Layout")]
-    [SerializeField] Vector2Int CAVEBIOMEBOUNDS_INCHUNKS;
+    public MapInfo MAP_INFO;
     public uint MAP_SEED = 0;
 
     [Header("Rooms")]
@@ -31,6 +38,7 @@ public class RoomGenerator2 : MonoBehaviour
     NativeArray<Chunk> MapChunks;
     RoomDatabase RoomDatabase;
     Random RNG;
+    Dictionary<int, MapRoom> UUIDtoRoom;
     private void Start()
     {
         MAP_SEED = (uint)UnityEngine.Random.Range(0, int.MaxValue);
@@ -38,14 +46,14 @@ public class RoomGenerator2 : MonoBehaviour
 
         RoomDatabase = new();
         RoomDatabase.Init(AllRoomsUnsorted, MAP_SEED);
+        UUIDtoRoom = AllRoomsUnsorted.ToDictionary(val => val.Info.UUID, val => val);
 
         RNG = new Random(MAP_SEED);
-        MapChunks = new NativeArray<Chunk>(MAPSIZE_INCHUNKS.x * MAPSIZE_INCHUNKS.y, Allocator.Persistent, NativeArrayOptions.ClearMemory);
+        MapChunks = new NativeArray<Chunk>(MAP_INFO.MAP_SIZE.x * MAP_INFO.MAP_SIZE.y, Allocator.Persistent, NativeArrayOptions.ClearMemory);
 
         var generateChunkPathJob = new GenerateChunkPathJob
         {
-            MAPSIZE_INCHUNKS = MAPSIZE_INCHUNKS,
-            CAVEBIOMEBOUNDS_INCHUNKS = CAVEBIOMEBOUNDS_INCHUNKS,
+            MAP_INFO = MAP_INFO,
             RNG = RNG,
             MapChunks = MapChunks
         };
@@ -55,9 +63,10 @@ public class RoomGenerator2 : MonoBehaviour
         {
             MapChunks = generateChunkPathJob.MapChunks,
             RNG = RNG,
-            RoomDatabase = RoomDatabase
+            RoomDatabase = RoomDatabase,
+            MAP_INFO = MAP_INFO,
         };
-        JobHandle PlaceInitialRoomsJobHandle = placeInitialRoomsJob.Schedule(MapChunks.Length, 64, GenerateChunkPathJobHandle);
+        JobHandle PlaceInitialRoomsJobHandle = placeInitialRoomsJob.Schedule(GenerateChunkPathJobHandle);
 
         PlaceInitialRoomsJobHandle.Complete();
 
@@ -66,25 +75,44 @@ public class RoomGenerator2 : MonoBehaviour
         IEnumerator WaitForGameReady()
         {
             yield return new WaitUntil(() => PlaceInitialRoomsJobHandle.IsCompleted);
+
+            Transform RoomHolder = new GameObject("RoomHolder").transform;
+
+            // spawn hub manually
+            var hubRoom = UUIDtoRoom[RoomDatabase.GetRoom(RoomType.START, Biome.CAVE).UUID].gameObject;
+            Vector2 hubSpawnPos = new Vector2(3, 3) * MAP_INFO.CHUNK_SIZE * MAP_INFO.GRID_SIZE - new Vector2(2, 2) * MAP_INFO.GRID_SIZE;
+            MapRoom spawnedHub = Instantiate(hubRoom, hubSpawnPos, Quaternion.identity, RoomHolder).GetComponent<MapRoom>();
+
+            PlayerSpawnLocation spawnLocation = spawnedHub.GetComponentInChildren<PlayerSpawnLocation>();
+            RunStateManager.Singleton.InitialPlacePlayer(spawnLocation);
+
+            foreach (var chunk in MapChunks)
+            {
+                if (chunk.ChunkType == Chunk.Type.Empty) continue;
+
+                foreach (var room in chunk.Rooms)
+                {
+                    Vector2 spawnPos = new Vector2(chunk.Coordinate.x, chunk.Coordinate.y) * MAP_INFO.CHUNK_SIZE * MAP_INFO.GRID_SIZE + // chunk bottom left
+                        new Vector2(room.RoomSpawn.x, room.RoomSpawn.y) * MAP_INFO.GRID_SIZE;
+                    Instantiate(UUIDtoRoom[room.UUID].gameObject, spawnPos, Quaternion.identity, RoomHolder);
+                }
+            }
+
+            
             RunStateManager.Singleton.SaveRunState();
             GameManager.Singleton.StartRun();
         }
-
     }
-
-
     private void OnDrawGizmos()
     {
         Vector2 ChunkPointToWorldPoint(int x, int y)
         {
-            x -= MAPSIZE_INCHUNKS.x / 2;
-            y -= MAPSIZE_INCHUNKS.y / 2;
-            return new Vector2(x * CHUNKSIZE_INGRIDUNITS.x * GRIDUNITSIZE_INTILES.x, y * CHUNKSIZE_INGRIDUNITS.y * GRIDUNITSIZE_INTILES.y);
+            return new Vector2(x * MAP_INFO.CHUNK_SIZE.x * MAP_INFO.GRID_SIZE.x, y * MAP_INFO.CHUNK_SIZE.y * MAP_INFO.GRID_SIZE.y);
         }
         for (int i = 0; i < MapChunks.Length; i++)
         {
-            int x = i % MAPSIZE_INCHUNKS.x;
-            int y = Mathf.FloorToInt(i / MAPSIZE_INCHUNKS.y);
+            int x = i % MAP_INFO.MAP_SIZE.x;
+            int y = Mathf.FloorToInt(i / MAP_INFO.MAP_SIZE.y);
             Vector3[] points = new Vector3[4]
             {
                 ChunkPointToWorldPoint(x, y),
@@ -106,6 +134,7 @@ public class RoomGenerator2 : MonoBehaviour
                 Chunk.Type.BetaPath => Color.blue,
                 _ => Color.white
             };
+            chunkType = new Color(chunkType.r, chunkType.g, chunkType.b, .25f);
             Gizmos.color = chunkType;
             Gizmos.DrawCube(center, size);
 
@@ -116,8 +145,22 @@ public class RoomGenerator2 : MonoBehaviour
                 Biome.FOREST => Color.green,
                 _ => Color.clear
             };
-            Gizmos.color = new Color(chunkBiome.r, chunkBiome.g, chunkBiome.b, .25f);
+            Gizmos.color = new Color(chunkBiome.r, chunkBiome.g, chunkBiome.b, 1f);
             Gizmos.DrawLineStrip(points, true);
+
+            Gizmos.color = Color.red;
+            foreach (var rect in MapChunks[i].FreeRectangles)
+            {
+                Vector2 bL = ChunkPointToWorldPoint(x, y);
+                Vector3[] rectPts = new Vector3[4]
+                {
+                    bL + rect.Coord.Vec * MAP_INFO.GRID_SIZE,
+                    bL + (rect.Coord.Vec + new Vector2(0, rect.Size.y))  * MAP_INFO.GRID_SIZE,
+                    bL + (rect.Coord.Vec + new Vector2(rect.Size.x, rect.Size.y)) * MAP_INFO.GRID_SIZE,
+                    bL + (rect.Coord.Vec + new Vector2(rect.Size.x, 0)) * MAP_INFO.GRID_SIZE
+                };
+                Gizmos.DrawLineStrip(rectPts, true);
+            }
 
         }
     }
