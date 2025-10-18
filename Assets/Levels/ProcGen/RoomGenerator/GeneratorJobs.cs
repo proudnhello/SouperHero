@@ -66,6 +66,10 @@ public struct FreeRectangle
         return bottom_x >= Coord.x && bottom_y >= Coord.y &&
             size_x + bottom_x <= Coord.x + Size.x && size_y + bottom_y <= Coord.y + Size.y;
     }
+    public override string ToString()
+    {
+        return $"Rect: = ({Coord.x},{Coord.y}) to ({Coord.x+Size.x},{Coord.y+Size.y})";
+    }
 }
 
 // CHUNK TYPE LEGEND
@@ -203,8 +207,7 @@ struct GenerateChunkPathJob : IJob
             SetPathChunk(coord.x, coord.y, Chunk.Type.BetaPath, next_cord.x, next_cord.y);
         }
 
-        SetChunk(BossChunk1.x, BossChunk1.y, Chunk.Type.Boss);
-
+        SetPathChunk(BossChunk1.x, BossChunk1.y, Chunk.Type.Boss, AlphaPath[0].x, AlphaPath[0].y); // set to hold previous chunk
 
 
         // repeat 2-5 for other side
@@ -241,7 +244,7 @@ struct GenerateChunkPathJob : IJob
             SetPathChunk(coord.x, coord.y, Chunk.Type.BetaPath, next_cord.x, next_cord.y);
         }
 
-        SetChunk(BossChunk2.x, BossChunk2.y, Chunk.Type.Boss);
+        SetPathChunk(BossChunk2.x, BossChunk2.y, Chunk.Type.Boss, AlphaPath[0].x, AlphaPath[0].y); // set to hold previous chunk
     }
     UnsafeList<Coord> FindAStarPath(Coord START, Coord GOAL)
     {
@@ -336,18 +339,19 @@ struct PlaceInitialRoomsJob : IJob
 
             if (currChunk.ChunkType == Chunk.Type.Starting) PlaceHub();
             if (currChunk.ChunkType == Chunk.Type.Starting || currChunk.ChunkType == Chunk.Type.AlphaPath) PlaceCampfireRoom();
+            if (currChunk.ChunkType == Chunk.Type.BetaPath) InitBetaPath();
             if (currChunk.ChunkType == Chunk.Type.Starting || currChunk.ChunkType == Chunk.Type.AlphaPath
                 || currChunk.ChunkType == Chunk.Type.BetaPath) PlaceIntermediateRooms();
-
+            if (currChunk.ChunkType == Chunk.Type.Boss) PlaceBossRoom();
             MapChunks[index] = currChunk;
 
-            if (currChunk.FreeRectangles.Length > 0)
-            {
-                foreach (var rect in currChunk.FreeRectangles)
-                {
-                    Debug.Log(currChunk.Coordinate.x + ", " + currChunk.Coordinate.y + " has (" + rect.Coord.x + "," + rect.Coord.y + ") size = " + rect.Size.x + "," + rect.Size.y);
-                }
-            }
+            //if (currChunk.FreeRectangles.Length > 0)
+            //{
+            //    foreach (var rect in currChunk.FreeRectangles)
+            //    {
+            //        Debug.Log(currChunk.Coordinate.x + ", " + currChunk.Coordinate.y + " has (" + rect.Coord.x + "," + rect.Coord.y + ") size = " + rect.Size.x + "," + rect.Size.y);
+            //    }
+            //}
         }
     }
 
@@ -383,7 +387,7 @@ struct PlaceInitialRoomsJob : IJob
             {
                 Coord = new(bottom_x, bottom_y + size_y),
                 Size = new(rect.Size.x - (bottom_x - rect.Coord.x), rect.Size.y + rect.Coord.y - (size_y + bottom_y)),
-                Recursions = rect.Recursions--
+                Recursions = rect.Recursions-1
             });
         }
         if (bottom_x + size_x < rect.Coord.x + rect.Size.x)
@@ -392,7 +396,7 @@ struct PlaceInitialRoomsJob : IJob
             {
                 Coord = new(bottom_x + size_x, rect.Coord.y),
                 Size = new(rect.Size.x + rect.Coord.x - (bottom_x + size_x), bottom_y - rect.Coord.y + size_y),
-                Recursions = rect.Recursions--
+                Recursions = rect.Recursions-1
             });
         }
         if (bottom_y > rect.Coord.y)
@@ -401,7 +405,7 @@ struct PlaceInitialRoomsJob : IJob
             {
                 Coord = rect.Coord,
                 Size = new(bottom_x - rect.Coord.x + size_x, bottom_y - rect.Coord.y),
-                Recursions = rect.Recursions--
+                Recursions = rect.Recursions-1
             });
         }
         if (bottom_x > rect.Coord.x)
@@ -409,8 +413,8 @@ struct PlaceInitialRoomsJob : IJob
             currChunk.FreeRectangles.Add(new()
             {
                 Coord = new(rect.Coord.x, bottom_y),
-                Size = new(bottom_x - rect.Coord.x, rect.Coord.y + rect.Size.y - (bottom_y - rect.Coord.y)),
-                Recursions = rect.Recursions--
+                Size = new(bottom_x - rect.Coord.x, rect.Size.y - (bottom_y - rect.Coord.y)),
+                Recursions = rect.Recursions-1
             });
         }
     }
@@ -424,29 +428,8 @@ struct PlaceInitialRoomsJob : IJob
         int startX = currChunk.Coordinate.x == MAP_INFO.CAVE_BIOME_BOUNDS.x ? (MAP_INFO.CHUNK_SIZE.x - hubRadius) : 0;
         int startY = currChunk.Coordinate.y == MAP_INFO.CAVE_BIOME_BOUNDS.x ? (MAP_INFO.CHUNK_SIZE.y - hubRadius) : 0;
 
-        //for (int i = 0; i < 4; i++)
-        //{
-        //    currChunk.FreeRectangles.Add(new()
-        //    {
-        //        Coord = new(i % 2 * MAP_INFO.CHUNK_SIZE.x / 2, Mathf.FloorToInt(i / 2) * MAP_INFO.CHUNK_SIZE.x / 2),
-        //        Size = new(MAP_INFO.CHUNK_SIZE.x / 2, MAP_INFO.CHUNK_SIZE.y / 2),
-        //        Recursions = 2
-        //    });
-        //}
-
         TryClaim(startX, startY, startX + hubRadius, startY + hubRadius, hubGenerationInfo.UUID, 0);
-        //hubGenerationInfo.RoomSpawn = new(startX, startY);
-        //currChunk.Rooms.Add(hubGenerationInfo);
-        //UnsafeList<FreeRectangle> OldRectangles = currChunk.FreeRectangles;
-        //for (int i = 0; i < OldRectangles.Length; i++)
-        //{
-        //    if (OldRectangles[i].IsIn(startX, startY, hubRadius, hubRadius))
-        //    {
-        //        FreeRectangle rect = OldRectangles[i];
-        //        currChunk.FreeRectangles.RemoveAt(i);
-        //        DivideFreeRectangle(rect, startX, startY, hubRadius, hubRadius);
-        //    }
-        //}
+
 
         FreeRectangle rect = new()
         {
@@ -455,19 +438,6 @@ struct PlaceInitialRoomsJob : IJob
             Recursions = 3
         };
         DivideFreeRectangle(rect, startX, startY, hubRadius, hubRadius);
-
-        //foreach (var rect in FreeRectangles)
-        //{
-        //    Debug.Log(startX + ", " + startY + " in (" + rect.Coord.x + "," + rect.Coord.y + ") size = " + rect.Size.x + "," + rect.Size.y);
-        //}
-
-        //Coord maxSize = new(MAP_INFO.CHUNK_SIZE.x/2 - hubRadius - 1, MAP_INFO.CHUNK_SIZE.y/2 - hubRadius - 1);
-        //GenerationInfo intermediate = RoomDatabase.GetRoom(RoomType.INTERMEDIATE, Biome.CAVE, maxSize);
-
-        // look into rectangle packing problem -- prob continously update a list of "free rectangles" and whenever you
-        // place a room within the rectangle randomly, divide the remainder of the rectangle into 4 new free rectangles around its perimeter
-        //
-        // each room should have a padding around it to guarantee space for connectors (padding could be represented as simply 1)
     }
 
     void PlaceCampfireRoom()
@@ -532,13 +502,104 @@ struct PlaceInitialRoomsJob : IJob
                 Recursions = 3
             };
             DivideFreeRectangle(rect, camp_x, camp_y, campfire.TotalGridSpace.x, campfire.TotalGridSpace.y);
-        }
+        }           
+    }
 
-            
+    void InitBetaPath()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            currChunk.FreeRectangles.Add(new()
+            {
+                Coord = new(i % 2 * MAP_INFO.CHUNK_SIZE.x / 2, Mathf.FloorToInt(i / 2) * MAP_INFO.CHUNK_SIZE.x / 2),
+                Size = new(MAP_INFO.CHUNK_SIZE.x / 2, MAP_INFO.CHUNK_SIZE.y / 2),
+                Recursions = 2
+            });
+        }
     }
 
     void PlaceIntermediateRooms()
     {
+        bool MoreRecursions;
+        do
+        {
+            MoreRecursions = false;
+            UnsafeList<FreeRectangle> OldRectangles = new(0, Allocator.Persistent);
+            foreach (var rect in currChunk.FreeRectangles) OldRectangles.Add(rect);
 
+            currChunk.FreeRectangles.Clear();
+            for (int i = 0; i < OldRectangles.Length; i++)
+            {
+                FreeRectangle rect = OldRectangles[i];
+                //Debug.Log($"{i} in {currChunk.Coordinate.x}, {currChunk.Coordinate.y} inspecting {rect}, recurs={rect.Recursions}");
+                if (rect.Recursions > 0)
+                {
+                    var intermediate = RoomDatabase.GetRoom(RoomType.INTERMEDIATE, currChunk.Biome, rect.Size);
+                    if (intermediate.UUID == -1) // none small enough that fit
+                    {
+                        rect.Recursions = 0;
+                        currChunk.FreeRectangles.Add(rect);
+                    } else
+                    {
+                        int int_x = RNG.NextInt(rect.Coord.x, rect.Coord.x + rect.Size.x - intermediate.TotalGridSpace.x);
+                        int int_y = RNG.NextInt(rect.Coord.y, rect.Coord.y + rect.Size.y - intermediate.TotalGridSpace.y);
+
+                        TryClaim(int_x, int_y, int_x + intermediate.TotalGridSpace.x, int_y + intermediate.TotalGridSpace.y, intermediate.UUID, intermediate.GridPadding);
+                        intermediate.RoomSpawn = new(int_x + intermediate.GridPadding, int_y + intermediate.GridPadding);
+                        currChunk.Rooms.Add(intermediate);
+                        DivideFreeRectangle(rect, int_x, int_y, intermediate.TotalGridSpace.x, intermediate.TotalGridSpace.y);
+
+                        MoreRecursions = rect.Recursions != 1;
+                    }
+                }
+                else
+                {
+                    currChunk.FreeRectangles.Add(rect);
+                }
+            }
+        }
+        while (MoreRecursions);
+    }
+
+    void PlaceBossRoom()
+    {
+        // for rectangle where boss can go (basically half of chunk)
+        int startX1 = currChunk.NextChunkInPath.x > currChunk.Coordinate.x ? MAP_INFO.CHUNK_SIZE.x / 2 : 0;
+        int startY1 = currChunk.NextChunkInPath.y > currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : 0;
+        int startX2 = currChunk.NextChunkInPath.x < currChunk.Coordinate.x ? MAP_INFO.CHUNK_SIZE.x / 2 : 0;
+        int startY2 = currChunk.NextChunkInPath.y < currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : 0;
+        int sizeX = currChunk.NextChunkInPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.x : MAP_INFO.CHUNK_SIZE.x / 2;
+        int sizeY = currChunk.NextChunkInPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : MAP_INFO.CHUNK_SIZE.y;
+
+        Debug.Log($"{currChunk.NextChunkInPath} -> {currChunk.Coordinate}");
+        Debug.Log($"({startX1}, {startY1}), ({startX2}, {startY2}), {sizeX}, {sizeY}");
+        GenerationInfo bossRoom = RoomDatabase.GetRoom(RoomType.BOSS, currChunk.Biome, new(sizeX, sizeY));
+
+        int boss_x = RNG.NextInt(startX2, startX2 + sizeX - bossRoom.TotalGridSpace.x);
+        int boss_y = RNG.NextInt(startY2, startY2 + sizeY - bossRoom.TotalGridSpace.y);
+
+        TryClaim(boss_x, boss_y, boss_x + bossRoom.TotalGridSpace.x, boss_y + bossRoom.TotalGridSpace.y, bossRoom.UUID, bossRoom.GridPadding);
+        bossRoom.RoomSpawn = new(boss_x + bossRoom.GridPadding, boss_y + bossRoom.GridPadding);
+        currChunk.Rooms.Add(bossRoom);
+
+
+        GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, Biome.CAVE, new(sizeX, sizeY));
+
+        int camp_x = RNG.NextInt(startX1, startX1 + sizeX - campfire.TotalGridSpace.x);
+        int camp_y = RNG.NextInt(startY1, startY1 + sizeY - campfire.TotalGridSpace.y);
+
+        TryClaim(camp_x, camp_y, camp_x + campfire.TotalGridSpace.x, camp_y + campfire.TotalGridSpace.y, campfire.UUID, campfire.GridPadding);
+        campfire.RoomSpawn = new(camp_x + campfire.GridPadding, camp_y + campfire.GridPadding);
+        currChunk.Rooms.Add(campfire);
+
+        FreeRectangle campfireRect = new()
+        {
+            Coord = new(startX1, startY1),
+            Size = new(sizeX, sizeY),
+            Recursions = 2
+        };
+        DivideFreeRectangle(campfireRect, camp_x, camp_y, campfire.TotalGridSpace.x, campfire.TotalGridSpace.y);
+
+        PlaceIntermediateRooms(); // in remainder of chunk wow cool i can use this this is accidentally good programming
     }
 }

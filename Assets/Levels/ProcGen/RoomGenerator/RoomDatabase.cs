@@ -76,13 +76,14 @@ public unsafe struct RoomDatabase
                 for (int i = 0; i < rooms.Length; i++)
                 {
                     var room = rooms[rng.NextInt(0, rooms.Length)];
-                    if (room.GridDimensions.x <= maxSize.x && room.GridDimensions.y <= maxSize.y)
+                    if (room.TotalGridSpace.x <= maxSize.x && room.TotalGridSpace.y <= maxSize.y)
                         return room;
                 }
                 // otherwise just loop through list until you find the first one
                 foreach (var room in rooms) 
-                    if (room.GridDimensions.x <= maxSize.x && room.GridDimensions.y <= maxSize.y) 
+                    if (room.TotalGridSpace.x <= maxSize.x && room.TotalGridSpace.y <= maxSize.y) 
                         return room;
+                return new GenerationInfo().Null();
             }
             return rooms[rng.NextInt(0, rooms.Length)];
         }

@@ -75,6 +75,12 @@ public class MapRoom : MonoBehaviour
             foreach (var door in room.WestDoors) WestDoors.Add(door);
             return this;
         }
+
+        public GenerationInfo Null()
+        {
+            UUID = -1;
+            return this;
+        }
     }
     public GenerationInfo Info;
     public Vector2Int[] NorthDoors;
