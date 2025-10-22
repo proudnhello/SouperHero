@@ -14,6 +14,12 @@ public class NPC : Interactable
     {
         base.Awake();
     }
+
+    public bool testSpeaking()
+    {
+        return isSpeaking;
+    }
+
     public override void Interact()
     {
 
@@ -42,8 +48,8 @@ public class NPC : Interactable
             {
                 Debug.LogWarning("DialogueTrigger is not assigned for NPC: " + gameObject.name);
             }
-            
-            if(!repeatable)
+
+            if (!repeatable)
             {
                 SetInteractable(false);
             }

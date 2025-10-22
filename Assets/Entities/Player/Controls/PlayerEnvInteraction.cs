@@ -7,6 +7,7 @@ public class PlayerEnvInteraction : MonoBehaviour
 {
     private Interactable currentInteractable = null;
     List<Interactable> withinRange;
+    Interactable lastInteractedWith = null;
 
     private void Start()
     {
@@ -106,11 +107,23 @@ public class PlayerEnvInteraction : MonoBehaviour
             // store last interaction frame so we aren't interacting multiple times in the same frame
             lastInteractionFrame = Time.frameCount;
             currentInteractable.Interact();
+            lastInteractedWith = currentInteractable;
             if (currentInteractable && !currentInteractable.CanInteract())
             {
                 withinRange.Remove(currentInteractable);
                 currentInteractable = null;
                 ChangeInteractableListContents();
+            }
+        }
+        else
+        {
+            if(lastInteractedWith.GetType() == typeof(NPC))
+            {
+                NPC npc = (NPC)lastInteractedWith;
+                if (npc.testSpeaking())
+                {
+                    DialogueManager.Singleton.DisplayNextSentence();
+                }
             }
         }
     }
