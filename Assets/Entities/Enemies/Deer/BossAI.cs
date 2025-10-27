@@ -15,28 +15,27 @@ public class BossAI : EnemyBaseClass
     }
 
     [Serializable]
-    public struct Wave
+    public struct Wave 
     {
         public string waveName; // Name of the wave (probably won't be used in-game, more for in editor) 
         public int maxEnemiesAtOnce; // Max number of enemies that can be alive at once from this wave 
-        public List<EnemyWaveCounter> enemies; // List of enemies and their counts to spawn in this wave
+        public List<EnemyWaveCounter> enemies; // List of enemies and their counts to spawn in this wave 
     }
-
-    [Header("Boss Details")] 
-    [SerializeField] float vunerableDuration = 5f;
+    
+    [Header("Boss Details")]
+    [SerializeField] float vunerableDuration = 5f; 
     private float vunerableTimer = 0f;
-    [SerializeField] float spawnDelay = 0.5f;
+    [SerializeField] float spawnDelay = 0.5f; 
     private float spawnTimer = 0f;
     [SerializeField] List<GameObject> spawnPoints;
 
     List<EnemyBaseClass> spawnedEnemies = new List<EnemyBaseClass>(); 
     Wave currentWave;
     List<int> enemiesToSpawn = new List<int>();
-    List<int> viableIndexes = new List<int>();
-
+    List<int> viableIndexes = new List<int>();  
+    bool inactive = false;
+    
     [SerializeField] List<Wave> possibleWaves;
- 
-    bool inactive = false; 
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +49,7 @@ public class BossAI : EnemyBaseClass
         invincible = true;
     }
 
+    /*
     override protected void UpdateAI()
     {
         // Boss is inactive until triggered
@@ -108,9 +108,11 @@ public class BossAI : EnemyBaseClass
         }
         spawnTimer = spawnDelay;
     }
+    */
 
     public void SpawnedEnemyDeath(EnemyBaseClass enemy)
     {
         spawnedEnemies.Remove(enemy);
     }
+    
 }

@@ -500,7 +500,6 @@ GameObject:
   - component: {fileID: 2606993171055361126}
   - component: {fileID: 9042681811078354178}
   - component: {fileID: 7494521385112032303}
-  - component: {fileID: 6582691862314657876}
   - component: {fileID: 3083385040458938104}
   m_Layer: 7
   m_Name: Deer
@@ -644,7 +643,7 @@ MonoBehaviour:
   - {x: 0.4752884, y: -0.61644745, z: 0}
   m_ShapePathHash: -2017387979
   m_Mesh: {fileID: 0}
-  m_InstanceId: 93480
+  m_InstanceId: 162602
   m_LocalBounds:
     m_Center: {x: 0.17588043, y: -0.5605545, z: 0}
     m_Extent: {x: 0.33350372, y: 0.059761047, z: 0}
@@ -719,39 +718,6 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
   m_CompositeGameObject: {fileID: 7144113149086317186}
---- !u!114 &6582691862314657876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7144113149086317186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da343097f3b6ba94696b9000b7406a72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  submergeMask: {fileID: 0}
-  needsBounds: 1
-  baseStats:
-    maxHealth: 100
-    baseMoveSpeed: 0
-    invincibility: 0
-  currentStats:
-    health: 0
-  falling: 0
-  flying: 0
-  hitmarker: {fileID: 594101713564386973, guid: 88876a640853de543b8ab5cacc641fba, type: 3}
-  collectable: {fileID: 0}
-  playerCollisionDamage: 10
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  _playerTransform: {fileID: 0}
-  enemyEmitter: {fileID: 0}
-  spawnedBy: {fileID: 0}
-  vunerableDuration: 5
-  possibleWaves: []
 --- !u!195 &3083385040458938104
 NavMeshAgent:
   m_ObjectHideFlags: 0
