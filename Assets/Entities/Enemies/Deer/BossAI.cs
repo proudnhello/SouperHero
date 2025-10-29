@@ -14,15 +14,16 @@ public class BossAI : EnemyBaseClass
         public int count; // Number of this enemy to spawn
     }
 
-    [Serializable]
+    [Serializable] 
     public struct Wave 
     {
         public string waveName; // Name of the wave (probably won't be used in-game, more for in editor) 
         public int maxEnemiesAtOnce; // Max number of enemies that can be alive at once from this wave 
         public List<EnemyWaveCounter> enemies; // List of enemies and their counts to spawn in this wave 
     }
-    
+
     [Header("Boss Details")]
+    [SerializeField] bool inactive = true;
     [SerializeField] float vunerableDuration = 5f; 
     private float vunerableTimer = 0f;
     [SerializeField] float spawnDelay = 0.5f; 
@@ -32,10 +33,8 @@ public class BossAI : EnemyBaseClass
     List<EnemyBaseClass> spawnedEnemies = new List<EnemyBaseClass>(); 
     Wave currentWave;
     List<int> enemiesToSpawn = new List<int>();
-    List<int> viableIndexes = new List<int>();  
-    bool inactive = false;
-    
-    [SerializeField] List<Wave> possibleWaves;
+    List<int> viableIndexes = new List<int>();      
+    [SerializeField] List<Wave> possibleWaves = new List<Wave>();
 
     // Start is called before the first frame update
     void Start()
@@ -46,15 +45,16 @@ public class BossAI : EnemyBaseClass
         agent.updateRotation = false;
 
         // The boss is immortal until a wave is defeated, so mark as [title card drop]
-        invincible = true;
+        invincible = false;
+        vunerable = true;
     }
 
-    /*
+    
     override protected void UpdateAI()
     {
         // Boss is inactive until triggered
         if (inactive)
-        {
+        { 
             return;
         }
 
@@ -62,6 +62,7 @@ public class BossAI : EnemyBaseClass
         if (vunerable)
         {
             vunerableTimer -= Time.deltaTime;
+            print("Vunerable for: " + vunerableTimer);
             if (vunerableTimer <= 0f)
             {
                 vunerable = false;
@@ -78,9 +79,11 @@ public class BossAI : EnemyBaseClass
         {
             int index = viableIndexes[UnityEngine.Random.Range(0, viableIndexes.Count)];
             EnemyBaseClass enemyInstance = Instantiate(currentWave.enemies[index].enemy, spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Count)].transform.position, Quaternion.identity);
+            enemyInstance.PissOff();
             enemyInstance.spawnedBy = this;
             spawnedEnemies.Add(enemyInstance);
             enemiesToSpawn[index]--;
+            print("Spawned enemy: " + currentWave.enemies[index].enemy.name + ". Remaining to spawn: " + enemiesToSpawn[index]);
             if (enemiesToSpawn[index] <= 0)
             {
                 viableIndexes.Remove(index);
@@ -101,6 +104,7 @@ public class BossAI : EnemyBaseClass
     {
         enemiesToSpawn.Clear();
         viableIndexes.Clear();
+        print("Starting wave: " + wave.waveName);
         for (int i = 0; i < wave.enemies.Count; i++)
         {
             enemiesToSpawn.Add(wave.enemies[i].count);
@@ -108,7 +112,7 @@ public class BossAI : EnemyBaseClass
         }
         spawnTimer = spawnDelay;
     }
-    */
+    
 
     public void SpawnedEnemyDeath(EnemyBaseClass enemy)
     {

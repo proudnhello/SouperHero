@@ -58,7 +58,20 @@ public abstract class EnemyBaseClass : Entity
     protected virtual void UpdateAI() { }
     protected virtual void Die()
     {
-        Die(true);
+        // If the enemy was spawned by the boss, don't drop loot
+        if (spawnedBy != null)
+        {
+            Die(false);
+        }
+        else
+        {
+            Die(true);
+        }
+    }
+
+    public void PissOff()
+    {
+        alwaysAggro = true;
     }
     protected virtual void Die(bool drop)
     {

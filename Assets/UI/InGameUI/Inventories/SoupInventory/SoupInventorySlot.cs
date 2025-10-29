@@ -70,7 +70,7 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
             StartCoroutine(IEquipAnim = EquipAnim(true));
         }
 
-        Debug.Log(bowlHeld, this.gameObject);
+        // Debug.Log(bowlHeld, this.gameObject);
         SoupInventoryUI.Singleton.EnableFlavorParticles(bowlHeld, this.gameObject);
         RenderSlotContents();
     }
