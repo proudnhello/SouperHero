@@ -7,6 +7,9 @@ public class BossAI : EnemyBaseClass
 {
     bool vunerable = false;
 
+    [SerializeField] Color immuneColor;
+    [SerializeField] Color normalColor;
+
     [Serializable]
     public struct EnemyWaveCounter
     {
@@ -47,6 +50,8 @@ public class BossAI : EnemyBaseClass
         // The boss is immortal until a wave is defeated, so mark as [title card drop]
         invincible = false;
         vunerable = true;
+
+        // BossHealthbarManager.Instance.StartBossFight(this); // TODO: Add a starting trigger before this
     }
 
     
@@ -54,10 +59,10 @@ public class BossAI : EnemyBaseClass
     {
         // Boss is inactive until triggered
         if (inactive)
-        { 
+        {
             return;
         }
-
+        
         // If vunerable, count down timer until no longer vunerable. Start new wave when that happens
         if (vunerable)
         {
@@ -69,6 +74,7 @@ public class BossAI : EnemyBaseClass
                 invincible = true;
                 currentWave = possibleWaves[UnityEngine.Random.Range(0, possibleWaves.Count)];
                 StartWave(currentWave);
+                GetComponent<SpriteRenderer>().color = immuneColor;
             }
             return;
         }
@@ -97,6 +103,7 @@ public class BossAI : EnemyBaseClass
             vunerable = true;
             invincible = false;
             vunerableTimer = vunerableDuration;
+            GetComponent<SpriteRenderer>().color = normalColor;
         }
     }
 
@@ -112,11 +119,17 @@ public class BossAI : EnemyBaseClass
         }
         spawnTimer = spawnDelay;
     }
-    
+
 
     public void SpawnedEnemyDeath(EnemyBaseClass enemy)
     {
         spawnedEnemies.Remove(enemy);
+    }
+    
+    override protected void Die()
+    {
+        BossHealthbarManager.Instance.EndBossFight();
+        base.Die();
     }
     
 }

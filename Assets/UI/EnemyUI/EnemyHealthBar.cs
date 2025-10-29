@@ -11,6 +11,7 @@ public class EnemyHealthBar : MonoBehaviour
     private CanvasGroup canvasGroup;
     [SerializeField] private EnemyBaseClass enemy;
     [SerializeField] private TMP_Text statusText;
+    [SerializeField] bool alwaysShow = false;
 
     private EnemyBaseClass enemyClass;
     // private float enemyHealth;
@@ -28,7 +29,7 @@ public class EnemyHealthBar : MonoBehaviour
         slider.value = healthRatio;
 
 
-        if (healthRatio < 1)
+        if (healthRatio < 1 || alwaysShow)
         {
             canvasGroup.alpha = 1f;
         }
@@ -47,10 +48,17 @@ public class EnemyHealthBar : MonoBehaviour
         }
 
         // deactivate if health is 0
-        if (enemy.GetHealth() == 0 || enemy.falling == true) {
+        if (enemy.GetHealth() == 0 || enemy.falling == true)
+        {
             gameObject.SetActive(false);
             statusText.enabled = false;
         }
+    }
+    
+    public void SetEnemy(EnemyBaseClass enemy)
+    {
+        this.enemy = enemy;
+        Start();
     }
 
 }
