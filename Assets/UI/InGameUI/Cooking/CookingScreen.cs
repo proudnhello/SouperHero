@@ -241,5 +241,8 @@ public class CookingScreen : MonoBehaviour
         BowlCookingSlot.RemoveBowl();
         cookedIngredients.Clear();
         cookingBioDisplay.ClearDisplay();
+
+        // heal player
+        PlayerEntityManager.Singleton.ModifyHealth(PlayerEntityManager.Singleton.GetBaseStats().maxHealth);
     }
 }
