@@ -1,5 +1,111 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &711565358549521728
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8468007500797343272}
+  - component: {fileID: 1589997526261428868}
+  - component: {fileID: 2791952720037760794}
+  m_Layer: 0
+  m_Name: Shield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &8468007500797343272
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711565358549521728}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.719, y: -0.038, z: 0}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7149021975341724869}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1589997526261428868
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711565358549521728}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -1626352531
+  m_SortingLayer: 9
+  m_SortingOrder: 0
+  m_Sprite: {fileID: -1819355130, guid: ac9ec15cad5e4724c96944c0970d4925, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6039216}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!95 &2791952720037760794
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711565358549521728}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8a212a9f96d9580449aab05993f24125, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2509777339949556694
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,6 +635,7 @@ Transform:
   - {fileID: 752918330324604770}
   - {fileID: 7880070577309911697}
   - {fileID: 7349849646273623541}
+  - {fileID: 8468007500797343272}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5169064956685397999
@@ -644,7 +751,7 @@ MonoBehaviour:
   - {x: 0.4752884, y: -0.61644745, z: 0}
   m_ShapePathHash: -2017387979
   m_Mesh: {fileID: 0}
-  m_InstanceId: 162602
+  m_InstanceId: 213502
   m_LocalBounds:
     m_Center: {x: 0.17588043, y: -0.5605545, z: 0}
     m_Extent: {x: 0.33350372, y: 0.059761047, z: 0}
@@ -687,34 +794,34 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 7929676217410183967}
     m_ColliderPaths:
-    - - X: 1091003
+    - - X: 1090927
         Y: 3537597
-      - X: -7434921
+      - X: -7434997
         Y: 3537597
-      - X: -7434921
+      - X: -7434997
         Y: -2266998
-      - X: 1091003
+      - X: 1090927
         Y: -2266998
   - m_Collider: {fileID: 3625902217000079527}
     m_ColliderPaths:
-    - - X: 10615921
+    - - X: 10615845
         Y: -998153
-      - X: -4600143
+      - X: -4600219
         Y: -998153
-      - X: -4600143
+      - X: -4600219
         Y: -8503494
-      - X: 10615921
+      - X: 10615845
         Y: -8503494
   m_CompositePaths:
     m_Paths:
-    - - {x: 1.0615628, y: -0.8503494}
-      - {x: 1.0615628, y: -0.0998153}
-      - {x: 0.109100305, y: -0.0997859}
-      - {x: 0.109071, y: 0.3537597}
-      - {x: -0.7434921, y: 0.3537304}
-      - {x: -0.7434628, y: -0.2266998}
-      - {x: -0.4600143, y: -0.2267292}
-      - {x: -0.45998502, y: -0.8503494}
+    - - {x: 1.0615553, y: -0.8503494}
+      - {x: 1.0615553, y: -0.0998153}
+      - {x: 0.109092705, y: -0.0997859}
+      - {x: 0.1090634, y: 0.3537597}
+      - {x: -0.7434997, y: 0.3537304}
+      - {x: -0.74347043, y: -0.2266998}
+      - {x: -0.4600219, y: -0.2267292}
+      - {x: -0.45999262, y: -0.8503494}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
@@ -774,7 +881,7 @@ MonoBehaviour:
   spawnedBy: {fileID: 0}
   immuneColor: {r: 0.5764706, g: 0.6627451, b: 0.99215686, a: 1}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  inactive: 0
+  inactive: 1
   vunerableDuration: 3
   spawnDelay: 0.5
   spawnPoints: []

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BossHealthbarManager : MonoBehaviour
 {
     [SerializeField] EnemyHealthBar bossHealthBar;
+    [SerializeField] float healthBarFillTime = 2f;
     public static BossHealthbarManager Instance { get; private set; }
 
     private void Awake()
@@ -23,9 +25,23 @@ public class BossHealthbarManager : MonoBehaviour
         if (Instance == this) Instance = null;
     }
 
-    public void StartBossFight(EnemyBaseClass boss)
+    public IEnumerator StartBossFight(EnemyBaseClass boss)
     {
         bossHealthBar.gameObject.SetActive(true);
+        bossHealthBar.GetComponent<EnemyHealthBar>().enabled = false;
+
+        float timer = 0f;
+        Slider slider = bossHealthBar.GetComponentInChildren<Slider>();
+        while (timer < healthBarFillTime)
+        {
+            timer += Time.deltaTime;
+            float fillRatio = timer / healthBarFillTime;
+            fillRatio = fillRatio * fillRatio * fillRatio * (fillRatio * (6f * fillRatio - 15f) + 10f); // smootherstep, because smoothstep wasn't really noticeable
+            slider.value = fillRatio;
+            yield return null;
+        }
+
+        bossHealthBar.GetComponent<EnemyHealthBar>().enabled = true;
         bossHealthBar.SetEnemy(boss);
     }
 
