@@ -25,7 +25,7 @@ public class BossHealthbarManager : MonoBehaviour
         if (Instance == this) Instance = null;
     }
 
-    public IEnumerator StartBossFight(EnemyBaseClass boss)
+    public IEnumerator StartBossFight(BossAI boss)
     {
         bossHealthBar.gameObject.SetActive(true);
         bossHealthBar.GetComponent<EnemyHealthBar>().enabled = false;
@@ -43,6 +43,7 @@ public class BossHealthbarManager : MonoBehaviour
 
         bossHealthBar.GetComponent<EnemyHealthBar>().enabled = true;
         bossHealthBar.SetEnemy(boss);
+        boss.holdSpawning = false;
     }
 
     public void EndBossFight()

@@ -7,9 +7,6 @@ public class BossAI : EnemyBaseClass
 {
     bool vunerable = false;
 
-    [SerializeField] Color immuneColor;
-    [SerializeField] Color normalColor;
-
     [Serializable]
     public struct EnemyWaveCounter
     {
@@ -36,8 +33,9 @@ public class BossAI : EnemyBaseClass
     List<EnemyBaseClass> spawnedEnemies = new List<EnemyBaseClass>(); 
     Wave currentWave;
     List<int> enemiesToSpawn = new List<int>();
-    List<int> viableIndexes = new List<int>();      
+    List<int> viableIndexes = new List<int>();
     [SerializeField] List<Wave> possibleWaves = new List<Wave>();
+    public bool holdSpawning = true;
 
     GameObject shield;
     // Start is called before the first frame update
@@ -61,7 +59,8 @@ public class BossAI : EnemyBaseClass
         {
             inactive = false;
             StartCoroutine(BossHealthbarManager.Instance.StartBossFight(this));
-            GetComponent<SpriteRenderer>().color = normalColor;
+            holdSpawning = true;
+            invincible = true;
             shield.SetActive(true);
         }
     }
@@ -69,7 +68,7 @@ public class BossAI : EnemyBaseClass
     override protected void UpdateAI()
     {
         // Boss is inactive until triggered
-        if (inactive)
+        if (inactive || holdSpawning)
         {
             return;
         }
@@ -86,7 +85,6 @@ public class BossAI : EnemyBaseClass
                 shield.SetActive(true);
                 currentWave = possibleWaves[UnityEngine.Random.Range(0, possibleWaves.Count)];
                 StartWave(currentWave);
-                GetComponent<SpriteRenderer>().color = immuneColor;
             }
             return;
         }
@@ -115,7 +113,6 @@ public class BossAI : EnemyBaseClass
             vunerable = true;
             invincible = false;
             vunerableTimer = vunerableDuration;
-            GetComponent<SpriteRenderer>().color = normalColor;
             shield.SetActive(false);
         }
     }
