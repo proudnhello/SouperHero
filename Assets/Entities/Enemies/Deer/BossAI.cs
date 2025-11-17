@@ -26,8 +26,10 @@ public class BossAI : EnemyBaseClass
     [SerializeField] bool inactive = true;
     [SerializeField] float vunerableDuration = 5f; 
     private float vunerableTimer = 0f;
-    [SerializeField] float spawnDelay = 0.5f; 
+    [SerializeField] float spawnDelay = 0.5f;
     private float spawnTimer = 0f;
+    [SerializeField] GameObject spawnEffectPrefab;
+
     [SerializeField] List<GameObject> spawnPoints;
 
     List<EnemyBaseClass> spawnedEnemies = new List<EnemyBaseClass>(); 
@@ -35,6 +37,7 @@ public class BossAI : EnemyBaseClass
     List<int> enemiesToSpawn = new List<int>();
     List<int> viableIndexes = new List<int>();
     [SerializeField] List<Wave> possibleWaves = new List<Wave>();
+
     public bool holdSpawning = true;
 
     GameObject shield;
@@ -99,6 +102,10 @@ public class BossAI : EnemyBaseClass
             enemyInstance.spawnedBy = this;
             spawnedEnemies.Add(enemyInstance);
             enemiesToSpawn[index]--;
+            if (spawnEffectPrefab != null)
+            {
+                Instantiate(spawnEffectPrefab, enemyInstance.transform.position, Quaternion.identity);
+            }
             print("Spawned enemy: " + currentWave.enemies[index].enemy.name + ". Remaining to spawn: " + enemiesToSpawn[index]);
             if (enemiesToSpawn[index] <= 0)
             {

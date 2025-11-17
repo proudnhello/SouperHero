@@ -879,8 +879,6 @@ MonoBehaviour:
   _playerTransform: {fileID: 0}
   enemyEmitter: {fileID: 0}
   spawnedBy: {fileID: 0}
-  immuneColor: {r: 0.5764706, g: 0.6627451, b: 0.99215686, a: 1}
-  normalColor: {r: 1, g: 1, b: 1, a: 1}
   inactive: 1
   vunerableDuration: 3
   spawnDelay: 0.5
@@ -896,6 +894,8 @@ MonoBehaviour:
     enemies:
     - enemy: {fileID: -5704359773098391079, guid: 5fc9b208a56e1464aa651d2bf05e80e6, type: 3}
       count: 4
+  spawnEffectPrefab: {fileID: 3766436349475669231, guid: 815da2c9d05157242ac85252bc063e6f, type: 3}
+  holdSpawning: 1
 --- !u!1 &9157654851053024221
 GameObject:
   m_ObjectHideFlags: 0
