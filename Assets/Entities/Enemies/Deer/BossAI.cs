@@ -7,6 +7,9 @@ public class BossAI : EnemyBaseClass
 {
     bool vunerable = false;
 
+    ParticleSystem shieldParticles;
+    [SerializeField] int shieldParticleCount = 20;
+
     [Serializable]
     public struct EnemyWaveCounter
     {
@@ -54,6 +57,7 @@ public class BossAI : EnemyBaseClass
         vunerable = true;
 
         shield = gameObject.transform.Find("Shield").gameObject;
+        shieldParticles = GetComponent<ParticleSystem>();
     }
 
     public void TriggerBossFight()
@@ -147,6 +151,26 @@ public class BossAI : EnemyBaseClass
     {
         BossHealthbarManager.Instance.EndBossFight();
         base.Die();
+    }
+
+    // Override to produce shield effect when hit while invincible
+    public override void ApplyInfliction(List<FinishedSoup.SoupInflictionStat> spoonInflictions, Transform source)
+    {
+        if (invincible)
+        {
+            // Rotate the shape of the particle system to face the opposite direction of the source of the infliction
+            // Find the direction vector pointing away from the player
+            Vector2 directionAway = (transform.position - source.position).normalized;
+            // Calculate the angle in degrees
+            float angle = Mathf.Atan2(directionAway.y, directionAway.x) * Mathf.Rad2Deg;
+            // Set the rotation of the particle system
+            var shape = shieldParticles.shape;
+            shape.rotation = new Vector3(-angle, 90, 0);
+
+            // Play shield effect
+            shieldParticles.Emit(shieldParticleCount);
+        }
+        base.ApplyInfliction(spoonInflictions, source);
     }
     
 }
