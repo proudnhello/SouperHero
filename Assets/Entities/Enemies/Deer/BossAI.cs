@@ -33,6 +33,12 @@ public class BossAI : EnemyBaseClass
     private float spawnTimer = 0f;
     [SerializeField] GameObject spawnEffectPrefab;
 
+    [Header("Boss Sound Effects")]
+    [SerializeField] FMODUnity.EventReference shieldDown;
+    [SerializeField] FMODUnity.EventReference shieldUp;
+
+    [Header("Wave Details")]
+
     [SerializeField] List<GameObject> spawnPoints;
 
     List<EnemyBaseClass> spawnedEnemies = new List<EnemyBaseClass>(); 
@@ -40,6 +46,9 @@ public class BossAI : EnemyBaseClass
     List<int> enemiesToSpawn = new List<int>();
     List<int> viableIndexes = new List<int>();
     [SerializeField] List<Wave> possibleWaves = new List<Wave>();
+
+    
+    
 
     public bool holdSpawning = true;
 
@@ -134,6 +143,8 @@ public class BossAI : EnemyBaseClass
         float timer = 0f;
         Renderer shieldRenderer = shield.GetComponent<Renderer>();
         Color initialColor = shieldRenderer.material.color;
+        // Play sound effect for shield down
+        FMODUnity.RuntimeManager.PlayOneShot(shieldDown, transform.position);
         while (timer < effectDuration)
         {
             timer += Time.deltaTime;
@@ -145,6 +156,7 @@ public class BossAI : EnemyBaseClass
         yield return new WaitForSeconds(vunerableDuration - effectDuration - effectDuration);
 
         timer = 0f;
+        FMODUnity.RuntimeManager.PlayOneShot(shieldUp, transform.position);
         while (timer < effectDuration)
         {
             timer += Time.deltaTime;

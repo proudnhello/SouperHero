@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8468007500797343272
 Transform:
   m_ObjectHideFlags: 0
@@ -753,7 +753,7 @@ MonoBehaviour:
   - {x: 0.4752884, y: -0.61644745, z: 0}
   m_ShapePathHash: -2017387979
   m_Mesh: {fileID: 0}
-  m_InstanceId: 190254
+  m_InstanceId: 117476
   m_LocalBounds:
     m_Center: {x: 0.17588043, y: -0.5605545, z: 0}
     m_Extent: {x: 0.33350372, y: 0.059761047, z: 0}
@@ -886,6 +886,20 @@ MonoBehaviour:
   vunerableDuration: 3
   spawnDelay: 0.5
   spawnEffectPrefab: {fileID: 3766436349475669231, guid: 815da2c9d05157242ac85252bc063e6f, type: 3}
+  shieldDown:
+    Guid:
+      Data1: 1445002734
+      Data2: 1287582502
+      Data3: 1932704929
+      Data4: 1086908998
+    Path: event:/InGame/BOSS_SHIELD_DOWN
+  shieldUp:
+    Guid:
+      Data1: 1179591486
+      Data2: 1287270168
+      Data3: -66253418
+      Data4: 104135166
+    Path: event:/InGame/BOSS_SHIELD_UP
   spawnPoints: []
   possibleWaves:
   - waveName: Woe, taterhops be upon ye
