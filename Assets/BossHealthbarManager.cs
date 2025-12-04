@@ -9,6 +9,8 @@ public class BossHealthbarManager : MonoBehaviour
     [SerializeField] float healthBarFillTime = 2f;
     public static BossHealthbarManager Instance { get; private set; }
 
+    [SerializeField] FMODUnity.EventReference healthBarAppearSFX;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -32,6 +34,7 @@ public class BossHealthbarManager : MonoBehaviour
 
         float timer = 0f;
         Slider slider = bossHealthBar.GetComponentInChildren<Slider>();
+        FMODUnity.RuntimeManager.PlayOneShot(healthBarAppearSFX, boss.transform.position);
         while (timer < healthBarFillTime)
         {
             timer += Time.deltaTime;
