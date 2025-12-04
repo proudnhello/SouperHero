@@ -110,7 +110,7 @@ public class BossAI : EnemyBaseClass
             {
                 Instantiate(spawnEffectPrefab, enemyInstance.transform.position, Quaternion.identity);
             }
-            print("Spawned enemy: " + currentWave.enemies[index].enemy.name + ". Remaining to spawn: " + enemiesToSpawn[index]);
+            //print("Spawned enemy: " + currentWave.enemies[index].enemy.name + ". Remaining to spawn: " + enemiesToSpawn[index]);
             if (enemiesToSpawn[index] <= 0)
             {
                 viableIndexes.Remove(index);
@@ -124,15 +124,43 @@ public class BossAI : EnemyBaseClass
             vunerable = true;
             invincible = false;
             vunerableTimer = vunerableDuration;
-            shield.SetActive(false);
+            StartCoroutine(ShieldPowerDownEffect());
         }
+    }
+
+    IEnumerator ShieldPowerDownEffect()
+    {
+        float effectDuration = Math.Min(vunerableDuration/3, 1f);
+        float timer = 0f;
+        Renderer shieldRenderer = shield.GetComponent<Renderer>();
+        Color initialColor = shieldRenderer.material.color;
+        while (timer < effectDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / effectDuration;
+            Color newColor = Color.Lerp(initialColor, Color.clear, t);
+            shieldRenderer.material.color = newColor;
+            yield return null;
+        }
+        yield return new WaitForSeconds(vunerableDuration - effectDuration - effectDuration);
+
+        timer = 0f;
+        while (timer < effectDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / effectDuration;
+            Color newColor = Color.Lerp(Color.clear, initialColor, t);
+            shieldRenderer.material.color = newColor;
+            yield return null;
+        }
+        shieldRenderer.material.color = initialColor;
     }
 
     private void StartWave(Wave wave)
     {
         enemiesToSpawn.Clear();
         viableIndexes.Clear();
-        print("Starting wave: " + wave.waveName);
+        //("Starting wave: " + wave.waveName);
         for (int i = 0; i < wave.enemies.Count; i++)
         {
             enemiesToSpawn.Add(wave.enemies[i].count);
