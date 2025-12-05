@@ -36,6 +36,7 @@ public class BossAI : EnemyBaseClass
     [Header("Boss Sound Effects")]
     [SerializeField] FMODUnity.EventReference shieldDown;
     [SerializeField] FMODUnity.EventReference shieldUp;
+    [SerializeField] FMODUnity.EventReference bossShieldHit;
 
     [Header("Wave Details")]
 
@@ -144,7 +145,7 @@ public class BossAI : EnemyBaseClass
         Renderer shieldRenderer = shield.GetComponent<Renderer>();
         Color initialColor = shieldRenderer.material.color;
         // Play sound effect for shield down
-        FMODUnity.RuntimeManager.PlayOneShot(shieldDown, transform.position);
+        AudioManager.Singleton.PlayOneShot(shieldDown, transform.position);
         while (timer < effectDuration)
         {
             timer += Time.deltaTime;
@@ -156,7 +157,7 @@ public class BossAI : EnemyBaseClass
         yield return new WaitForSeconds(vunerableDuration - effectDuration - effectDuration);
 
         timer = 0f;
-        FMODUnity.RuntimeManager.PlayOneShot(shieldUp, transform.position);
+        AudioManager.Singleton.PlayOneShot(shieldUp, transform.position);
         while (timer < effectDuration)
         {
             timer += Time.deltaTime;
@@ -209,6 +210,8 @@ public class BossAI : EnemyBaseClass
 
             // Play shield effect
             shieldParticles.Emit(shieldParticleCount);
+            // Play shield hit sound effect
+            AudioManager.Singleton.PlayOneShot(bossShieldHit, transform.position);
         }
         base.ApplyInfliction(spoonInflictions, source);
     }

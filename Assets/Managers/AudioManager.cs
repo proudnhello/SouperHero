@@ -41,7 +41,10 @@ public class AudioManager : MonoBehaviour
 
     public void PlayOneShot(EventReference sound, Vector3 worldPos = default)
     {
-        RuntimeManager.PlayOneShot(sound, worldPos);
+        EventInstance instance = CreateInstance(sound);
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(worldPos));
+        instance.start();
+        instance.release();
     }
 
     public EventInstance CreateInstance(EventReference sound)

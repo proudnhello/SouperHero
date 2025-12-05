@@ -34,13 +34,19 @@ public class BossHealthbarManager : MonoBehaviour
 
         float timer = 0f;
         Slider slider = bossHealthBar.GetComponentInChildren<Slider>();
-        FMODUnity.RuntimeManager.PlayOneShot(healthBarAppearSFX, boss.transform.position);
+        AudioManager.Singleton.PlayOneShot(healthBarAppearSFX, boss.transform.position);
+        bool playedSFX = false;
         while (timer < healthBarFillTime)
         {
             timer += Time.deltaTime;
             float fillRatio = timer / healthBarFillTime;
             fillRatio = fillRatio * fillRatio * fillRatio * (fillRatio * (6f * fillRatio - 15f) + 10f); // smootherstep, because smoothstep wasn't really noticeable
             slider.value = fillRatio;
+            if (timer >= healthBarFillTime*3/4 && !playedSFX)
+            {
+                AudioManager.Singleton.PlayOneShot(healthBarAppearSFX, boss.transform.position);
+                playedSFX = true;
+            }
             yield return null;
         }
 
