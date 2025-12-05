@@ -7,7 +7,7 @@ public class BossAI : EnemyBaseClass
 {
     bool vunerable = false;
 
-    ParticleSystem shieldParticles;
+    public ParticleSystem shieldParticles; // Should not be public, but needed for shield hit effect on death, so whatever
     [SerializeField] int shieldParticleCount = 20;
 
     [Serializable]
@@ -61,6 +61,8 @@ public class BossAI : EnemyBaseClass
         // The boss stands still, so mark these as false
         agent.updatePosition = false;
         agent.updateRotation = false;
+
+        entityRenderer = new BossRenderer(this);
 
         // The boss is immortal until a wave is defeated, so mark as [title card drop]
         invincible = false;
