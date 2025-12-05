@@ -145,7 +145,7 @@ public class BossAI : EnemyBaseClass
         Renderer shieldRenderer = shield.GetComponent<Renderer>();
         Color initialColor = shieldRenderer.material.color;
         // Play sound effect for shield down
-        AudioManager.Singleton.PlayOneShot(shieldDown, transform.position);
+        AudioManager.Singleton.PlayOneShot(AudioManager.SoundType.BossSFX, (int)AudioManager.BossSFXIndex.ShieldDown, transform.position);
         while (timer < effectDuration)
         {
             timer += Time.deltaTime;
@@ -157,7 +157,7 @@ public class BossAI : EnemyBaseClass
         yield return new WaitForSeconds(vunerableDuration - effectDuration - effectDuration);
 
         timer = 0f;
-        AudioManager.Singleton.PlayOneShot(shieldUp, transform.position);
+        AudioManager.Singleton.PlayOneShot(AudioManager.SoundType.BossSFX, (int)AudioManager.BossSFXIndex.ShieldUp, transform.position);
         while (timer < effectDuration)
         {
             timer += Time.deltaTime;
@@ -211,7 +211,7 @@ public class BossAI : EnemyBaseClass
             // Play shield effect
             shieldParticles.Emit(shieldParticleCount);
             // Play shield hit sound effect
-            AudioManager.Singleton.PlayOneShot(bossShieldHit, transform.position);
+            AudioManager.Singleton.PlayOneShot(AudioManager.SoundType.BossSFX, (int)AudioManager.BossSFXIndex.ShieldHit, transform.position);
         }
         base.ApplyInfliction(spoonInflictions, source);
     }
