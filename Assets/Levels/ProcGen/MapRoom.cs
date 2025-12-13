@@ -57,22 +57,13 @@ public class MapRoom : MonoBehaviour
         {
             get => new(GridDimensions.x + GridPadding * 2, GridDimensions.y + GridPadding * 2);
         }
-        public UnsafeList<Vector2Int> NorthDoors;
-        public UnsafeList<Vector2Int> SouthDoors;
-        public UnsafeList<Vector2Int> EastDoors;
-        public UnsafeList<Vector2Int> WestDoors;
+        public UnsafeList<(Coord coord, Door.Direction dir)> Doors;
 
         public GenerationInfo InitInfo(MapRoom room)
         {
-            UUID = room.GetHashCode();
-            NorthDoors = new(0, Allocator.Persistent);
-            foreach (var door in room.NorthDoors) NorthDoors.Add(door);
-            SouthDoors = new(0, Allocator.Persistent);
-            foreach (var door in room.SouthDoors) SouthDoors.Add(door);
-            EastDoors = new(0, Allocator.Persistent);
-            foreach (var door in room.EastDoors) EastDoors.Add(door);
-            WestDoors = new(0, Allocator.Persistent);
-            foreach (var door in room.WestDoors) WestDoors.Add(door);
+            UUID = room.GetHashCode() + 32; // +32 since we need the first 5 bits for assigning connectors to grid
+            Doors = new(0, Allocator.Persistent);
+            foreach (var door in room.Doors) Doors.Add((new(door.Pos), door.dir));
             return this;
         }
 
@@ -83,10 +74,7 @@ public class MapRoom : MonoBehaviour
         }
     }
     public GenerationInfo Info;
-    public Vector2Int[] NorthDoors;
-    public Vector2Int[] SouthDoors;
-    public Vector2Int[] EastDoors;
-    public Vector2Int[] WestDoors;
+    public Door[] Doors;
 
     // ############ DELETE
     [SerializeField]
@@ -127,6 +115,22 @@ public class MapRoom : MonoBehaviour
     {
         public GameObject contentHolder;
         public int difficultyPointsRequired;
+    }
+    [Serializable]
+    public class Door
+    {
+        public GameObject On;
+        public GameObject Off;
+        public Vector2Int Pos;
+        [Serializable]
+        public enum Direction
+        {
+            North,
+            South,
+            East,
+            West
+        }
+        public Direction dir;
     }
 
     private void Start()

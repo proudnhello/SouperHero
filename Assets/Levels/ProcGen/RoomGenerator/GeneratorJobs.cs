@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Unity.Burst;
 using Unity.Collections;
@@ -23,6 +24,11 @@ public struct Coord : IEquatable<Coord>
     {
         this.x = x;
         this.y = y;
+    }
+    public Coord(Vector2Int coord)
+    {
+        this.x = coord.x;
+        this.y = coord.y;
     }
 
     public bool Equals(Coord other)
@@ -99,13 +105,42 @@ public unsafe struct Chunk
     public Coord NextChunkInPath;
     public Coord Coordinate;
 
+    // connector placement stuff
+    public struct DoorSpot
+    {
+        public Coord coord;
+        public Door.Direction dir;
+        public DoorSpot(Coord coord_, Door.Direction dir_) { coord = coord_ ; dir = dir_; }
+
+        public static implicit operator DoorSpot((Coord coord, Door.Direction dir) value)
+        {
+            DoorSpot ret = new DoorSpot();
+            ret.coord = value.coord;
+            ret.dir = value.dir;
+            return ret;
+        }
+    }
+    public UnsafeList<DoorSpot> Doors;
+    public UnsafeList<int> DoorStates; // 1 = on, 0 = taken, -1 = extrema
+    public UnsafeList<int> DoorRoomIDs; // doors of same room will have same id
+    public int DoorRoomIDTracker;
+    public int ValidDoorsLeft;
+
+    public DoorSpot HubDoorSpot;
+    public DoorSpot CampfireDoorSpot;
+    public DoorSpot PreviousChunkCampfireSpot;
+
     public void InitGrid(int size)
     {
         Grid = new(size, Allocator.Persistent);
         Rooms = new(0, Allocator.Persistent);
         for (int i = 0; i < size; i++) Grid.Add(0);
         FreeRectangles = new(0, Allocator.Persistent);
+        Doors = new(0, Allocator.Persistent);
+        DoorStates = new(0, Allocator.Persistent);
+        DoorRoomIDs = new(0, Allocator.Persistent);
     }
+
 }
 
 [BurstCompile]
@@ -142,7 +177,7 @@ struct GenerateChunkPathJob : IJob
         chunk.ChunkType = type;
         chunk.NextChunkInPath = new(next_x, next_y);
         MapChunks[x + y * MAP_INFO.MAP_SIZE.y] = chunk;
-        Debug.Log(type + " " + chunk.Coordinate + " next is " + chunk.NextChunkInPath);
+        //Debug.Log(type + " " + chunk.Coordinate + " next is " + chunk.NextChunkInPath);
     }
     public void Execute()
     {
@@ -343,15 +378,8 @@ struct PlaceInitialRoomsJob : IJob
             if (currChunk.ChunkType == Chunk.Type.Starting || currChunk.ChunkType == Chunk.Type.AlphaPath
                 || currChunk.ChunkType == Chunk.Type.BetaPath) PlaceIntermediateRooms();
             if (currChunk.ChunkType == Chunk.Type.Boss) PlaceBossRoom();
-            MapChunks[index] = currChunk;
 
-            //if (currChunk.FreeRectangles.Length > 0)
-            //{
-            //    foreach (var rect in currChunk.FreeRectangles)
-            //    {
-            //        Debug.Log(currChunk.Coordinate.x + ", " + currChunk.Coordinate.y + " has (" + rect.Coord.x + "," + rect.Coord.y + ") size = " + rect.Size.x + "," + rect.Size.y);
-            //    }
-            //}
+            MapChunks[index] = currChunk;
         }
     }
 
@@ -361,21 +389,42 @@ struct PlaceInitialRoomsJob : IJob
 
         for (int y = start_y; y < end_y; y++)
         {
-            for (int x = start_x; x < end_y; x++)
+            for (int x = start_x; x < end_x; x++)
             {
-                if (currChunk.Grid[y * MAP_INFO.MAP_SIZE.y + x] != 0) return false;
+                if (currChunk.Grid[y * MAP_INFO.CHUNK_SIZE.y + x] > 1) return false;
             }
         }
 
+        //if (currChunk.ChunkType == Chunk.Type.Starting)
+        //{
+        //    string s = "BEFORE";
+        //    for (int i = 0; i < currChunk.Grid.Length; i++)
+        //    {
+        //        if (i % MAP_INFO.CHUNK_SIZE.x == 0) s += "\n";
+        //        s += currChunk.Grid[i] + "\t";
+        //    }
+        //    Debug.Log(s);
+        //}
         for (int y = start_y; y < end_y; y++)
         {
-            for (int x = start_x; x < end_y; x++)
+            for (int x = start_x; x < end_x; x++)
             {
                 // if within padding region, set to 1, else set to room's UUID
-                currChunk.Grid[y * MAP_INFO.MAP_SIZE.y + x] = x < start_x + padding || y < start_y + padding ||
+                currChunk.Grid[y * MAP_INFO.CHUNK_SIZE.y + x] = x < start_x + padding || y < start_y + padding ||
                     x >= end_x - padding || y >= end_y - padding ? 1 : value;
             }
         }
+        //if (currChunk.ChunkType == Chunk.Type.Starting)
+        //{
+        //    string s = "AFTER\n";
+        //    for (int i = 0; i < currChunk.Grid.Length; i++)
+        //    {
+        //        if (i % MAP_INFO.CHUNK_SIZE.x == 0) s += "\n";
+        //        s += currChunk.Grid[i] + "\t";
+        //    }
+        //    Debug.Log(s);
+        //}
+
         return true;
     }
 
@@ -425,11 +474,33 @@ struct PlaceInitialRoomsJob : IJob
         var hubGenerationInfo = RoomDatabase.GetRoom(RoomType.START, Biome.CAVE);
         int hubRadius = hubGenerationInfo.TotalGridSpace.x / 2;
 
-        int startX = currChunk.Coordinate.x == MAP_INFO.CAVE_BIOME_BOUNDS.x ? (MAP_INFO.CHUNK_SIZE.x - hubRadius) : 0;
-        int startY = currChunk.Coordinate.y == MAP_INFO.CAVE_BIOME_BOUNDS.x ? (MAP_INFO.CHUNK_SIZE.y - hubRadius) : 0;
+        bool left = currChunk.Coordinate.x == MAP_INFO.CAVE_BIOME_BOUNDS.x;
+        bool bottom = currChunk.Coordinate.y == MAP_INFO.CAVE_BIOME_BOUNDS.x;
+
+        int startX = left ? (MAP_INFO.CHUNK_SIZE.x - hubRadius) : 0;
+        int startY = bottom ? (MAP_INFO.CHUNK_SIZE.y - hubRadius) : 0;
+
+        TryClaim(startX, startY, startX + hubRadius, startY + hubRadius, 1, 0);
+
+        hubRadius = hubGenerationInfo.GridDimensions.x / 2;
+        startX = left ? (MAP_INFO.CHUNK_SIZE.x - hubRadius) : 0;
+        startY = bottom ? (MAP_INFO.CHUNK_SIZE.y - hubRadius) : 0;
 
         TryClaim(startX, startY, startX + hubRadius, startY + hubRadius, hubGenerationInfo.UUID, 0);
+        // sadly, claiming door pos gotta be manual oops. order is = (bottom-left, bottom-right, top-left, top-right)
 
+        currChunk.HubDoorSpot = left && bottom ? hubGenerationInfo.Doors[0] :
+                               !left && bottom ? hubGenerationInfo.Doors[1] :
+                               left && !bottom ?hubGenerationInfo.Doors[2] :
+                              hubGenerationInfo.Doors[3];
+
+
+
+
+        currChunk.HubDoorSpot.coord = left && bottom ? new Coord(startX + hubGenerationInfo.Doors[0].coord.x, startY + hubGenerationInfo.Doors[0].coord.y) :
+                                      !left && bottom ? new Coord(-hubRadius + hubGenerationInfo.Doors[1].coord.x, startY + hubGenerationInfo.Doors[1].coord.y) :
+                                      left && !bottom ? new Coord(startX + hubGenerationInfo.Doors[2].coord.x, -hubRadius + hubGenerationInfo.Doors[2].coord.y) :
+                                       new Coord(-hubRadius + hubGenerationInfo.Doors[3].coord.x, -hubRadius + hubGenerationInfo.Doors[3].coord.y);
 
         FreeRectangle rect = new()
         {
@@ -445,29 +516,35 @@ struct PlaceInitialRoomsJob : IJob
         // for rectangle where campfire can go
         int startX = 0, startY = 0, sizeX = 0, sizeY = 0;
 
+        int exitDoor = 0; // N = 0, S = 1, E = 2, W = 3
+
         if (currChunk.NextChunkInPath.x < currChunk.Coordinate.x)
         {
             sizeX = MAP_INFO.CAMPFIRE_PLACEMENT_AREA_SIZE.y; sizeY = MAP_INFO.CAMPFIRE_PLACEMENT_AREA_SIZE.x;
             startX = 0;
             startY = MAP_INFO.CHUNK_SIZE.y / 2 - sizeY / 2;
+            exitDoor = 3;
         }
         else if (currChunk.NextChunkInPath.x > currChunk.Coordinate.x)
         {
             sizeX = MAP_INFO.CAMPFIRE_PLACEMENT_AREA_SIZE.y; sizeY = MAP_INFO.CAMPFIRE_PLACEMENT_AREA_SIZE.x;
             startX = MAP_INFO.CHUNK_SIZE.x - sizeX;
             startY = MAP_INFO.CHUNK_SIZE.y / 2 - sizeY / 2;
+            exitDoor = 2;
         }
         else if (currChunk.NextChunkInPath.y < currChunk.Coordinate.y)
         {
             sizeX = MAP_INFO.CAMPFIRE_PLACEMENT_AREA_SIZE.x; sizeY = MAP_INFO.CAMPFIRE_PLACEMENT_AREA_SIZE.y;
             startX = MAP_INFO.CHUNK_SIZE.x / 2 - sizeX / 2;
             startY = 0;
+            exitDoor = 1;
         }
         else if (currChunk.NextChunkInPath.y > currChunk.Coordinate.y )
         {
             sizeX = MAP_INFO.CAMPFIRE_PLACEMENT_AREA_SIZE.x; sizeY = MAP_INFO.CAMPFIRE_PLACEMENT_AREA_SIZE.y;
             startX = MAP_INFO.CHUNK_SIZE.x / 2 - sizeX / 2;
             startY = MAP_INFO.CHUNK_SIZE.y - sizeY;
+            exitDoor = 0;
         }
 
         GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, Biome.CAVE, new(sizeX,sizeY));
@@ -478,6 +555,25 @@ struct PlaceInitialRoomsJob : IJob
         TryClaim(camp_x, camp_y, camp_x + campfire.TotalGridSpace.x, camp_y + campfire.TotalGridSpace.y, campfire.UUID, campfire.GridPadding);
         campfire.RoomSpawn = new(camp_x+campfire.GridPadding, camp_y+campfire.GridPadding);
         currChunk.Rooms.Add(campfire);
+
+        currChunk.CampfireDoorSpot = campfire.Doors[exitDoor];
+        currChunk.CampfireDoorSpot.coord = new Coord(camp_x + campfire.GridPadding + currChunk.CampfireDoorSpot.coord.x, camp_y + campfire.GridPadding + currChunk.CampfireDoorSpot.coord.y);
+
+        for (int i = 0; i < campfire.Doors.Length; i++)
+        {
+            currChunk.Doors.Add(new(new Coord(camp_x + campfire.GridPadding + campfire.Doors[i].coord.x, camp_y + campfire.GridPadding + campfire.Doors[i].coord.y), campfire.Doors[i].dir));
+            currChunk.DoorRoomIDs.Add(currChunk.DoorRoomIDTracker);
+
+            if (i != exitDoor)
+            {
+                currChunk.DoorStates.Add(1);
+            }
+            else
+            {
+                currChunk.DoorStates.Add(-1);
+            }
+        }
+        currChunk.DoorRoomIDTracker++;
 
         if (currChunk.FreeRectangles.Length > 0) // if in start chunk where hub room is already added
         {
@@ -547,6 +643,15 @@ struct PlaceInitialRoomsJob : IJob
                         TryClaim(int_x, int_y, int_x + intermediate.TotalGridSpace.x, int_y + intermediate.TotalGridSpace.y, intermediate.UUID, intermediate.GridPadding);
                         intermediate.RoomSpawn = new(int_x + intermediate.GridPadding, int_y + intermediate.GridPadding);
                         currChunk.Rooms.Add(intermediate);
+
+                        for (int d = 0; d < intermediate.Doors.Length; d++)
+                        {
+                            currChunk.Doors.Add(new(new Coord(intermediate.RoomSpawn.x + intermediate.Doors[d].coord.x, intermediate.RoomSpawn.y + intermediate.Doors[d].coord.y), intermediate.Doors[d].dir));
+                            currChunk.DoorStates.Add(1);
+                            currChunk.DoorRoomIDs.Add(currChunk.DoorRoomIDTracker);
+                        }
+                        currChunk.DoorRoomIDTracker++;
+
                         DivideFreeRectangle(rect, int_x, int_y, intermediate.TotalGridSpace.x, intermediate.TotalGridSpace.y);
 
                         MoreRecursions = rect.Recursions != 1;
@@ -571,8 +676,8 @@ struct PlaceInitialRoomsJob : IJob
         int sizeX = currChunk.NextChunkInPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.x : MAP_INFO.CHUNK_SIZE.x / 2;
         int sizeY = currChunk.NextChunkInPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : MAP_INFO.CHUNK_SIZE.y;
 
-        Debug.Log($"{currChunk.NextChunkInPath} -> {currChunk.Coordinate}");
-        Debug.Log($"({startX1}, {startY1}), ({startX2}, {startY2}), {sizeX}, {sizeY}");
+        //Debug.Log($"{currChunk.NextChunkInPath} -> {currChunk.Coordinate}");
+        //Debug.Log($"({startX1}, {startY1}), ({startX2}, {startY2}), {sizeX}, {sizeY}");
         GenerationInfo bossRoom = RoomDatabase.GetRoom(RoomType.BOSS, currChunk.Biome, new(sizeX, sizeY));
 
         int boss_x = RNG.NextInt(startX2, startX2 + sizeX - bossRoom.TotalGridSpace.x);
@@ -602,4 +707,294 @@ struct PlaceInitialRoomsJob : IJob
 
         PlaceIntermediateRooms(); // in remainder of chunk wow cool i can use this this is accidentally good programming
     }
+
+}
+
+[BurstCompile]
+struct PlaceConnectorsJob : IJob
+{
+    public NativeArray<Chunk> MapChunks;
+    public RoomDatabase RoomDatabase;
+    public MapInfo MAP_INFO;
+    public Random RNG;
+
+    Chunk currChunk;
+    public void Execute()
+    {
+
+        for (int index = 0; index < MapChunks.Length; index++)
+        {
+            currChunk = MapChunks[index];
+
+            if (currChunk.ChunkType == Chunk.Type.Empty) continue;
+
+
+
+            if (currChunk.ChunkType == Chunk.Type.Starting) FillHub();
+
+            // set extrema as invalid
+            int x_max = 0;
+            int x_min = int.MaxValue;
+            int y_max = 0;
+            int y_min = int.MaxValue;
+            for (int d = 0; d < currChunk.Doors.Length; d++)
+            {
+                x_max = Mathf.Max(x_max, currChunk.Doors[d].coord.x);
+                x_min = Mathf.Min(x_min, currChunk.Doors[d].coord.x);
+                y_max = Mathf.Max(y_max, currChunk.Doors[d].coord.y);
+                y_min = Mathf.Min(y_min, currChunk.Doors[d].coord.y);
+            }
+            for (int d = 0; d < currChunk.Doors.Length; d++)
+            {
+                if (currChunk.Doors[d].coord.x == x_max) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.x == x_min) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.y == y_max) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.y == y_min) currChunk.DoorStates[d] = -1;
+            }
+
+            if (currChunk.ChunkType == Chunk.Type.Starting) FillPath();
+                // loop through grid and place appropriate connector rooms in currChunk.Rooms
+            for (int i = 0; i < currChunk.Grid.Length; i++)
+            {
+                int cell = currChunk.Grid[i];
+                // is < byte 00011111
+                if (cell < 32 && cell > 1)
+                {
+                    GenerationInfo connector = RoomDatabase.GetConnector(currChunk.Biome, (byte)cell);
+                    connector.RoomSpawn = new(i % MAP_INFO.CHUNK_SIZE.x, Mathf.FloorToInt(i / MAP_INFO.CHUNK_SIZE.x));
+                    //Debug.Log($"CONNECTOR {currChunk.Coordinate.x}, {currChunk.Coordinate.y} of {connector.ConnectorType}, Place room " + connector.Type + " " + connector.UUID + " at " + connector.RoomSpawn);
+                    currChunk.Rooms.Add(connector);
+                }
+            }
+
+            MapChunks[index] = currChunk;
+
+        }
+
+
+    }
+
+    void FillHub()
+    {
+        (Chunk.DoorSpot ClosestDoorSpot, int closestDoorIndex) = FindNearestDoors(currChunk.HubDoorSpot.coord, -1, true);
+        PlaceConnectors(currChunk.HubDoorSpot, ClosestDoorSpot);
+        currChunk.DoorStates[closestDoorIndex] = 0;
+
+    }
+
+    void FillPath()
+    {
+        int doorsLeft = 0;
+        foreach (var door in currChunk.DoorStates) if (door == 1) doorsLeft++;
+
+
+        while (doorsLeft > 1)
+        {
+            int startDoorIndex = RNG.NextInt(0, currChunk.DoorStates.Length);
+            while (currChunk.DoorStates[startDoorIndex] != 1) startDoorIndex = (startDoorIndex + 1) % currChunk.DoorStates.Length;
+
+            (Chunk.DoorSpot ClosestDoorSpot, int closestDoorIndex) = FindNearestDoors(currChunk.Doors[startDoorIndex].coord, currChunk.DoorRoomIDs[startDoorIndex], false);
+            PlaceConnectors(currChunk.Doors[startDoorIndex], ClosestDoorSpot);
+            currChunk.DoorStates[startDoorIndex] = 0;
+            currChunk.DoorStates[closestDoorIndex] = 0;
+
+            doorsLeft -= 2;
+        }
+    }
+
+
+
+    void FillBoss()
+    {
+
+    }
+
+    void ConnectBetaAlpha()
+    {
+
+    }
+
+    (Chunk.DoorSpot, int) FindNearestDoors(Coord StartPos, int ID, bool FirstChoice = false)
+    {
+        Chunk.DoorSpot closestDoor1 = new();
+        float dist1 = Mathf.Infinity;
+        int door1Index = -1;
+        Chunk.DoorSpot closestDoor2 = new();
+        float dist2 = Mathf.Infinity;
+        int door2Index = -1;
+        for (int d = 0; d < currChunk.Doors.Length; d++)
+        {
+            //Debug.Log(d + " checking: " + currChunk.Doors[d].coord + " ID: " + ID + " " + currChunk.DoorRoomIDs[d] + " .. state: " + currChunk.DoorStates[d]);
+            if (currChunk.DoorRoomIDs[d] == ID || currChunk.DoorStates[d] != 1) continue;
+            Chunk.DoorSpot nDoor = currChunk.Doors[d];
+            // take manhattan distance
+            float dist = Math.Abs(StartPos.x - nDoor.coord.x) + Math.Abs(StartPos.y - nDoor.coord.y);
+
+            if (dist < dist1)
+            {
+                dist2 = dist1;
+                closestDoor2 = closestDoor1;
+                door2Index = door1Index;
+                dist1 = dist;
+                closestDoor1 = nDoor;
+                door1Index = d;
+            }
+            else if (dist < dist2)
+            {
+                dist2 = dist;
+                closestDoor2 = nDoor;
+                door2Index = d;
+            }
+        }
+
+        if (!FirstChoice)
+        {
+            if (RNG.NextBool()) return (closestDoor1, door1Index);
+            else return (closestDoor2, door2Index);
+        }
+        else
+        {
+            return (closestDoor1, door1Index);
+        }
+    }
+
+    /// <summary>
+    /// Connector Dirs represented as byte: 11110 (West, East, South, North, Padding) in currChunk.Grid
+    /// </summary>
+    void PlaceConnectors(Chunk.DoorSpot StartPos, Chunk.DoorSpot EndPos)
+    {
+        int GetGridCell(PlaceConnectorsJob job, int x, int y)
+        {
+            if (x < 0 || x >= job.MAP_INFO.CHUNK_SIZE.x || y < 0 || y >= job.MAP_INFO.CHUNK_SIZE.y) return int.MaxValue;
+            //Debug.Log("curr grid check = " + job.currChunk.Grid[x + y * job.MAP_INFO.CHUNK_SIZE.y]);
+            return job.currChunk.Grid[x + y * job.MAP_INFO.CHUNK_SIZE.y];
+        }
+
+        void SetGridCell(PlaceConnectorsJob job, Coord c, byte value)
+        {
+            if (c.x < 0 || c.x >= job.MAP_INFO.CHUNK_SIZE.x || c.y < 0 || c.y >= job.MAP_INFO.CHUNK_SIZE.y) return;
+            int currVal = job.currChunk.Grid[c.x + c.y * job.MAP_INFO.CHUNK_SIZE.y];
+            job.currChunk.Grid[c.x + c.y * job.MAP_INFO.CHUNK_SIZE.y] = job.currChunk.Grid[c.x + c.y * job.MAP_INFO.CHUNK_SIZE.y] | value;
+            //Debug.Log("Changing to value " + currVal + " to " + job.currChunk.Grid[c.x + c.y * job.MAP_INFO.CHUNK_SIZE.y]);
+        }
+
+        UnsafeList<Coord> FindAStarPath(PlaceConnectorsJob job, Coord START, Coord GOAL)
+        {
+
+            static float heuristicDist(Coord a, Coord b)
+            {
+                int dx = Mathf.Abs(a.x - b.x);
+                int dy = Mathf.Abs(a.y - b.y);
+                return dx + dy;
+            }
+
+            Coord NONE = new(-1, -1);
+            // ## PATHFINDING VARIABLES ##
+            UnsafePriorityQueue frontier = new()
+            {
+                Entries = new(0, Allocator.Persistent)
+            };
+            frontier.Enqueue(START, 0f);
+            UnsafeHashMap<Coord, Coord> came_from = new(0, Allocator.Persistent)
+            {
+                { START, NONE}
+            };
+                UnsafeHashMap<Coord, int> cost_so_far = new(0, Allocator.Persistent)
+            {
+                { START, 0}
+            };
+            Coord current = NONE;
+
+            while (frontier.Count > 0)
+            {
+                current = frontier.Dequeue();
+                if (current == GOAL)
+                {
+                    //Debug.Log("Found goal");
+                    break;
+                }
+
+                UnsafeList<Coord> neighbors = new(0, Allocator.Persistent);
+
+                if (GetGridCell(job, current.x, current.y - 1) < 32) neighbors.Add(new(current.x, current.y - 1));
+                if (GetGridCell(job, current.x - 1, current.y) < 32) neighbors.Add(new(current.x - 1, current.y));
+                if (GetGridCell(job, current.x + 1, current.y) < 32) neighbors.Add(new(current.x + 1, current.y));
+                if (GetGridCell(job, current.x, current.y + 1) < 32) neighbors.Add(new(current.x, current.y + 1));
+                for (int n = 0; n < neighbors.Length; n++)
+                {
+                    Coord next = neighbors[n];
+                    int new_cost = cost_so_far[current];
+                    if (!cost_so_far.ContainsKey(next) || new_cost < cost_so_far[next])
+                    {
+                        cost_so_far[next] = new_cost;
+                        float priority = new_cost + heuristicDist(GOAL, next);
+                        frontier.Enqueue(next, priority);
+                        if (!came_from.TryAdd(next, current)) came_from[next] = current;
+                    }
+                }
+
+                neighbors.Dispose();
+            }
+
+
+            UnsafeList<Coord> path = new(0, Allocator.Persistent);
+            // from GOAL to START
+            //Debug.Log("frontier = " + frontier.Count);
+            //Debug.Log("PATH is " + current + " " + GetGridCell(job, current.x, current.y));
+            while (current != NONE)
+            {
+                path.Add(current);
+                current = came_from[current];
+                //Debug.Log("PATH is " + current + " " + GetGridCell(job, current.x, current.y));
+            }
+
+            return path;
+        }
+
+        UnsafeList<Coord> path = FindAStarPath(this, StartPos.coord, EndPos.coord);
+
+        //Debug.Log("Path length = " + path.Length);
+        for (int coord = 0, next_coord = 1; next_coord < path.Length; coord++, next_coord++)
+        {
+            //Debug.Log(path[next_coord] + " " + path[coord]);
+            if (path[next_coord].y > path[coord].y) // north
+            {
+                SetGridCell(this, path[coord], 2);
+                SetGridCell(this, path[next_coord], 4);
+            }
+            else if (path[next_coord].y < path[coord].y) // south
+            {
+                SetGridCell(this, path[coord], 4);
+                SetGridCell(this, path[next_coord], 2);
+            }
+            else if (path[next_coord].x > path[coord].x) // east
+            {
+                SetGridCell(this, path[coord], 8);
+                SetGridCell(this, path[next_coord], 16);
+            }
+            else if (path[next_coord].x < path[coord].x) // west
+            {
+                SetGridCell(this, path[coord], 16);
+                SetGridCell(this, path[next_coord], 8);
+            }
+        }
+
+        SetGridCell(this, StartPos.coord, StartPos.dir switch
+        {
+            Door.Direction.North => 4,
+            Door.Direction.South => 2,
+            Door.Direction.East => 16,
+            Door.Direction.West => 8,
+            _ => 0
+        });
+        SetGridCell(this, EndPos.coord, EndPos.dir switch
+        {
+            Door.Direction.North => 4,
+            Door.Direction.South => 2,
+            Door.Direction.East => 16,
+            Door.Direction.West => 8,
+            _ => 0
+        });
+    }
+
 }

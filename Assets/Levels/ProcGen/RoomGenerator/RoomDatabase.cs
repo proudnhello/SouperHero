@@ -97,11 +97,6 @@ public unsafe struct RoomDatabase
                 else if (biome == Biome.DESERT) return Select(DESERT_INTERMEDIATES);
                 else if (biome == Biome.FOREST) return Select(FOREST_INTERMEDIATES);
                 break;
-            case RoomType.CONNECTOR:
-                if (biome == Biome.CAVE) return Select(CAVE_CONNECTORS);
-                else if (biome == Biome.DESERT) Select(DESERT_CONNECTORS);
-                else if (biome == Biome.FOREST) Select(FOREST_CONNECTORS);
-                break;
             case RoomType.CAMPFIRE:
                 if (biome == Biome.CAVE) return Select(CAVE_CAMPFIRES);
                 else if (biome == Biome.DESERT) return Select(DESERT_CAMPFIRES);
@@ -112,6 +107,42 @@ public unsafe struct RoomDatabase
                 else if (biome == Biome.FOREST) return FOREST_BOSS;
                 break;
         }
+        return START_ROOM;
+    }
+
+    public readonly GenerationInfo GetConnector(Biome biome, byte value)
+    {
+        GenerationInfo Select(NativeList<GenerationInfo> rooms)
+        {
+            value >>= 1; // just want last 4 values
+            // value bits correspond to = WESN
+            ConnectorType type = value switch
+            {
+                3 => ConnectorType.Two_NS,
+                12 => ConnectorType.Two_EW,
+                5 => ConnectorType.Two_NE,
+                6 => ConnectorType.Two_SE,
+                10 => ConnectorType.Two_SW,
+                9 => ConnectorType.Two_NW,
+                7 => ConnectorType.Three_NSE,
+                14 => ConnectorType.Three_SEW,
+                11 => ConnectorType.Three_NSW,
+                13 => ConnectorType.Three_NEW,
+                15 => ConnectorType.Four,
+                _ => ConnectorType.None
+            };
+            foreach (var room in rooms)
+            {
+                if (room.ConnectorType == type) return room;
+            }
+            return rooms[0];
+        }
+
+        if (biome == Biome.CAVE) return Select(CAVE_CONNECTORS);
+        else if (biome == Biome.DESERT) return Select(DESERT_CONNECTORS);
+        else if (biome == Biome.FOREST) return Select(FOREST_CONNECTORS);
+
+        Debug.Log("here");
         return START_ROOM;
     }
 }

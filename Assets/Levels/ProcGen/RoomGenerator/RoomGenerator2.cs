@@ -68,13 +68,22 @@ public class RoomGenerator2 : MonoBehaviour
         };
         JobHandle PlaceInitialRoomsJobHandle = placeInitialRoomsJob.Schedule(GenerateChunkPathJobHandle);
 
-        PlaceInitialRoomsJobHandle.Complete();
+        var placeConnectorsJob = new PlaceConnectorsJob
+        {
+            MapChunks = generateChunkPathJob.MapChunks,
+            RNG = RNG,
+            RoomDatabase = RoomDatabase,
+            MAP_INFO = MAP_INFO,
+        };
+        JobHandle PlaceConnectorsJobHandle = placeConnectorsJob.Schedule(PlaceInitialRoomsJobHandle);
+
+        PlaceConnectorsJobHandle.Complete();
 
         StartCoroutine(WaitForGameReady());
 
         IEnumerator WaitForGameReady()
         {
-            yield return new WaitUntil(() => PlaceInitialRoomsJobHandle.IsCompleted);
+            yield return new WaitUntil(() => PlaceConnectorsJobHandle.IsCompleted);
 
             Transform RoomHolder = new GameObject("RoomHolder").transform;
 
@@ -92,8 +101,10 @@ public class RoomGenerator2 : MonoBehaviour
 
                 foreach (var room in chunk.Rooms)
                 {
+
                     Vector2 spawnPos = new Vector2(chunk.Coordinate.x, chunk.Coordinate.y) * MAP_INFO.CHUNK_SIZE * MAP_INFO.GRID_SIZE + // chunk bottom left
                         new Vector2(room.RoomSpawn.x, room.RoomSpawn.y) * MAP_INFO.GRID_SIZE;
+                    //Debug.Log($"In {chunk.Coordinate.x}, {chunk.Coordinate.y}, Place room " + room.Type + " " + room.UUID + " at " + room.RoomSpawn);
                     Instantiate(UUIDtoRoom[room.UUID].gameObject, spawnPos, Quaternion.identity, RoomHolder);
                 }
             }
