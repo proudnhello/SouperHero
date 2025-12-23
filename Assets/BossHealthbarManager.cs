@@ -34,7 +34,7 @@ public class BossHealthbarManager : MonoBehaviour
 
         float timer = 0f;
         Slider slider = bossHealthBar.GetComponentInChildren<Slider>();
-        AudioManager.Singleton.PlayOneShot(AudioManager.SoundType.BossSFX, (int)AudioManager.BossSFXIndex.HealthBarAppear, boss.transform.position);
+        AudioManager.Singleton.PlayOneShot(AudioManager.SoundType.BossSFX, (int)AudioManager.BossSFXIndex.Roar, boss.transform.position);
         bool playedSFX = false;
         while (timer < healthBarFillTime)
         {

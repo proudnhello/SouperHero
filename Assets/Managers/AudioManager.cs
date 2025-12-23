@@ -30,7 +30,8 @@ public class AudioManager : MonoBehaviour
         HealthBarAppear = 0,
         ShieldDown = 1,
         ShieldUp = 2,
-        ShieldHit = 3
+        ShieldHit = 3,
+        Roar = 4
     }
 
     List<List<EventReference>> eventPools = new List<List<EventReference>>();
