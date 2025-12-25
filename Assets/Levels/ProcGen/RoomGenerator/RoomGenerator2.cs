@@ -98,7 +98,7 @@ public class RoomGenerator2 : MonoBehaviour
             foreach (var chunk in MapChunks)
             {
                 if (chunk.ChunkType == Chunk.Type.Empty) continue;
-
+                //if (chunk.ChunkType != Chunk.Type.Starting) continue;
                 foreach (var room in chunk.Rooms)
                 {
 
