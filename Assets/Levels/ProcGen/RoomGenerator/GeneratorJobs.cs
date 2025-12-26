@@ -106,6 +106,7 @@ public unsafe struct Chunk
     public Biome Biome;
     public Coord NextChunkInAlphaPath;
     public Coord NextChunkInBetaPath;
+    public bool HasBetaConnection;
     public Coord Coordinate;
 
     // connector placement stuff
@@ -136,6 +137,8 @@ public unsafe struct Chunk
     public DoorSpot PreviousChunkPath1;
     public bool hasPreviousChunkPath2;
     public DoorSpot PreviousChunkPath2;
+
+    public DoorSpot BossDoorSpot;
 
     public void InitGrid(int size)
     {
@@ -184,6 +187,7 @@ struct GenerateChunkPathJob : IJob
         chunk.ChunkType = type;
         chunk.NextChunkInAlphaPath = new(next_x, next_y);
         chunk.NextChunkInBetaPath = new(next_x2, next_y2);
+        chunk.HasBetaConnection = true;
         MapChunks[x + y * MAP_INFO.MAP_SIZE.y] = chunk;
     }
 
@@ -201,6 +205,7 @@ struct GenerateChunkPathJob : IJob
     {
         Chunk chunk = MapChunks[x + y * MAP_INFO.MAP_SIZE.y];
         chunk.NextChunkInBetaPath = new(next_x, next_y);
+        chunk.HasBetaConnection = true;
         MapChunks[x + y * MAP_INFO.MAP_SIZE.y] = chunk;
     }
 
@@ -726,6 +731,13 @@ struct PlaceInitialRoomsJob : IJob
     void PlaceBossRoom()
     {
         // for rectangle where boss can go (basically half of chunk)
+        int bossDoor = 0; // N = 0, S = 1, E = 2, W = 3
+        if (currChunk.NextChunkInAlphaPath.y > currChunk.Coordinate.y) bossDoor = 0;
+        else if (currChunk.NextChunkInAlphaPath.y < currChunk.Coordinate.y) bossDoor = 1;
+        else if (currChunk.NextChunkInAlphaPath.x > currChunk.Coordinate.x) bossDoor = 2;
+        else if (currChunk.NextChunkInAlphaPath.x < currChunk.Coordinate.x) bossDoor = 3;
+
+
         int startX1 = currChunk.NextChunkInAlphaPath.x > currChunk.Coordinate.x ? MAP_INFO.CHUNK_SIZE.x / 2 : 0;
         int startY1 = currChunk.NextChunkInAlphaPath.y > currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : 0;
         int startX2 = currChunk.NextChunkInAlphaPath.x < currChunk.Coordinate.x ? MAP_INFO.CHUNK_SIZE.x / 2 : 0;
@@ -744,6 +756,8 @@ struct PlaceInitialRoomsJob : IJob
         bossRoom.RoomSpawn = new(boss_x + bossRoom.GridPadding, boss_y + bossRoom.GridPadding);
         currChunk.Rooms.Add(bossRoom);
 
+        currChunk.BossDoorSpot = bossRoom.Doors[bossDoor];
+        currChunk.BossDoorSpot.coord = new Coord(boss_x + bossRoom.GridPadding + currChunk.BossDoorSpot.coord.x, boss_y + bossRoom.GridPadding + currChunk.BossDoorSpot.coord.y);
 
         GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, Biome.CAVE, new(sizeX, sizeY));
 
@@ -753,6 +767,16 @@ struct PlaceInitialRoomsJob : IJob
         TryClaim(camp_x, camp_y, camp_x + campfire.TotalGridSpace.x, camp_y + campfire.TotalGridSpace.y, campfire.UUID, campfire.GridPadding);
         campfire.RoomSpawn = new(camp_x + campfire.GridPadding, camp_y + campfire.GridPadding);
         currChunk.Rooms.Add(campfire);
+
+
+        for (int i = 0; i < campfire.Doors.Length; i++)
+        {
+            currChunk.Doors.Add(new(new Coord(camp_x + campfire.GridPadding + campfire.Doors[i].coord.x, camp_y + campfire.GridPadding + campfire.Doors[i].coord.y), campfire.Doors[i].dir));
+            currChunk.DoorRoomIDs.Add(currChunk.DoorRoomIDTracker);
+            currChunk.DoorStates.Add(1);
+        }
+        currChunk.CampfireDoorID = currChunk.DoorRoomIDTracker;
+        currChunk.DoorRoomIDTracker++;
 
         FreeRectangle campfireRect = new()
         {
@@ -785,7 +809,7 @@ struct PlaceConnectorsJob : IJob
             if (currChunk.ChunkType == Chunk.Type.Empty) continue;
 
             if (currChunk.ChunkType != Chunk.Type.Boss) ExtendCampfirePath();
-            if (currChunk.ChunkType == Chunk.Type.Starting || currChunk.ChunkType == Chunk.Type.AlphaPath) ExtendToBetaPath();
+            if (currChunk.HasBetaConnection) ExtendToBetaPath();
 
             MapChunks[index] = currChunk;
         }
@@ -819,7 +843,7 @@ struct PlaceConnectorsJob : IJob
                 if (currChunk.Doors[d].coord.y == y_min) currChunk.DoorStates[d] = -1;
             }
 
-            //FillRemainingPath();
+            FillRemainingPath();
 
             // loop through grid and place appropriate connector rooms in currChunk.Rooms
             for (int i = 0; i < currChunk.Grid.Length; i++)
@@ -916,6 +940,23 @@ struct PlaceConnectorsJob : IJob
 
     void FillBoss()
     {
+        (Chunk.DoorSpot ClosestCampfireDoor, int closestCampfireDoorIndex) = FindNearestDoors(currChunk.BossDoorSpot.coord, currChunk.CampfireDoorID, true, true);
+        FindAndPlaceConnectorPath(currChunk.BossDoorSpot, ClosestCampfireDoor);
+        currChunk.DoorStates[closestCampfireDoorIndex] = 0;
+
+        if (currChunk.hasPreviousChunkPath1)
+        {
+            (ClosestCampfireDoor, closestCampfireDoorIndex) = FindNearestDoors(currChunk.PreviousChunkPath1.coord, currChunk.CampfireDoorID, true, true);
+            FindAndPlaceConnectorPath(currChunk.PreviousChunkPath1, ClosestCampfireDoor);
+            currChunk.DoorStates[closestCampfireDoorIndex] = 0;
+        }
+
+        if (currChunk.hasPreviousChunkPath2)
+        {
+            (ClosestCampfireDoor, closestCampfireDoorIndex) = FindNearestDoors(currChunk.PreviousChunkPath2.coord, currChunk.CampfireDoorID, true, true);
+            FindAndPlaceConnectorPath(currChunk.PreviousChunkPath2, ClosestCampfireDoor);
+            currChunk.DoorStates[closestCampfireDoorIndex] = 0;
+        }
 
     }
 
@@ -983,8 +1024,18 @@ struct PlaceConnectorsJob : IJob
 
         int c = currChunk.NextChunkInAlphaPath.x + currChunk.NextChunkInAlphaPath.y * MAP_INFO.MAP_SIZE.y;
         Chunk nextChunk = MapChunks[c];
-        nextChunk.PreviousChunkPath1 = new Chunk.DoorSpot(currCoord, lastCoordDoorDirection);
-        nextChunk.hasPreviousChunkPath1 = true;
+
+        if (nextChunk.hasPreviousChunkPath1) // like the boss room where two paths converge
+        {
+            nextChunk.PreviousChunkPath2 = new Chunk.DoorSpot(currCoord, lastCoordDoorDirection);
+            nextChunk.hasPreviousChunkPath2 = true;
+        } 
+        else
+        {
+            nextChunk.PreviousChunkPath1 = new Chunk.DoorSpot(currCoord, lastCoordDoorDirection);
+            nextChunk.hasPreviousChunkPath1 = true;
+        }
+
         MapChunks[c] = nextChunk;
     }
 
@@ -1074,7 +1125,7 @@ struct PlaceConnectorsJob : IJob
 
     }
 
-    (Chunk.DoorSpot, int) FindNearestDoors(Coord StartPos, int ID, bool FirstChoice = false)
+    (Chunk.DoorSpot, int) FindNearestDoors(Coord StartPos, int ID, bool FirstChoice = false, bool ChooseID = false)
     {
         Chunk.DoorSpot closestDoor1 = new();
         float dist1 = Mathf.Infinity;
@@ -1085,7 +1136,8 @@ struct PlaceConnectorsJob : IJob
         for (int d = 0; d < currChunk.Doors.Length; d++)
         {
             //Debug.Log(d + " checking: " + currChunk.Doors[d].coord + " ID: " + ID + " " + currChunk.DoorRoomIDs[d] + " .. state: " + currChunk.DoorStates[d]);
-            if (currChunk.DoorRoomIDs[d] == ID || currChunk.DoorStates[d] != 1) continue;
+            if (currChunk.DoorStates[d] != 1) continue;
+            if (currChunk.DoorRoomIDs[d] == ID && !ChooseID || currChunk.DoorRoomIDs[d] != ID && ChooseID) continue;
             Chunk.DoorSpot nDoor = currChunk.Doors[d];
             // take manhattan distance
             float dist = Math.Abs(StartPos.x - nDoor.coord.x) + Math.Abs(StartPos.y - nDoor.coord.y);
