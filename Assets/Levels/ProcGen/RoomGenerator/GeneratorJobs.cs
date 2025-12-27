@@ -124,7 +124,7 @@ public unsafe struct Chunk
             return ret;
         }
     }
-    public UnsafeList<DoorSpot> Doors;
+    public UnsafeList<DoorSpot> Doors; // for every room in Rooms, its doors will be in the same order in Doors
     public UnsafeList<int> DoorStates; // 1 = on, 0 = taken, -1 = extrema
     public UnsafeList<int> DoorRoomIDs; // doors of same room will have same id
     public int DoorRoomIDTracker;
@@ -435,7 +435,7 @@ struct PlaceInitialRoomsJob : IJob
             if (currChunk.ChunkType == Chunk.Type.Starting) PlaceHub();
             if (currChunk.ChunkType == Chunk.Type.Starting || currChunk.ChunkType == Chunk.Type.AlphaPath
                 || currChunk.ChunkType == Chunk.Type.BetaPath) PlaceCampfireRoom();
-           // if (currChunk.ChunkType == Chunk.Type.BetaPath) InitBetaPath();
+            //if (currChunk.ChunkType == Chunk.Type.BetaPath) InitBetaPath();
             if (currChunk.ChunkType == Chunk.Type.Starting || currChunk.ChunkType == Chunk.Type.AlphaPath
                 || currChunk.ChunkType == Chunk.Type.BetaPath) PlaceIntermediateRooms();
             if (currChunk.ChunkType == Chunk.Type.Boss) PlaceBossRoom();
@@ -550,11 +550,11 @@ struct PlaceInitialRoomsJob : IJob
         TryClaim(startX, startY, startX + hubRadius, startY + hubRadius, hubGenerationInfo.UUID, 0);
         // sadly, claiming door pos gotta be manual oops. order is = (bottom-left, bottom-right, top-left, top-right)
 
-        currChunk.HubDoorSpot = left && bottom ? hubGenerationInfo.Doors[0] :
-                               !left && bottom ? hubGenerationInfo.Doors[1] :
-                               left && !bottom ?hubGenerationInfo.Doors[2] :
-                              hubGenerationInfo.Doors[3];
-
+        int doorIndex = left && bottom ?  0:
+                               !left && bottom ? 1 :
+                               left && !bottom ? 2 :
+                               3;
+        currChunk.HubDoorSpot = hubGenerationInfo.Doors[doorIndex];
 
 
 
@@ -562,6 +562,15 @@ struct PlaceInitialRoomsJob : IJob
                                       !left && bottom ? new Coord(-hubRadius + hubGenerationInfo.Doors[1].coord.x, startY + hubGenerationInfo.Doors[1].coord.y) :
                                       left && !bottom ? new Coord(startX + hubGenerationInfo.Doors[2].coord.x, -hubRadius + hubGenerationInfo.Doors[2].coord.y) :
                                        new Coord(-hubRadius + hubGenerationInfo.Doors[3].coord.x, -hubRadius + hubGenerationInfo.Doors[3].coord.y);
+        currChunk.Rooms.Add(hubGenerationInfo);
+        for (int i = 0; i < hubGenerationInfo.Doors.Length; i++)
+        {
+            currChunk.Doors.Add(default);
+            currChunk.DoorRoomIDs.Add(currChunk.DoorRoomIDTracker);
+            if (i == doorIndex) currChunk.DoorStates.Add(0);
+            else currChunk.DoorStates.Add(-1);
+        }
+        currChunk.DoorRoomIDTracker++;
 
         FreeRectangle rect = new()
         {
@@ -759,6 +768,14 @@ struct PlaceInitialRoomsJob : IJob
         currChunk.BossDoorSpot = bossRoom.Doors[bossDoor];
         currChunk.BossDoorSpot.coord = new Coord(boss_x + bossRoom.GridPadding + currChunk.BossDoorSpot.coord.x, boss_y + bossRoom.GridPadding + currChunk.BossDoorSpot.coord.y);
 
+        for (int i = 0; i < bossRoom.Doors.Length; i++)
+        {
+            currChunk.Doors.Add(default);
+            currChunk.DoorRoomIDs.Add(currChunk.DoorRoomIDTracker);
+            currChunk.DoorStates.Add(-1);
+        }
+        currChunk.DoorRoomIDTracker++;
+
         GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, Biome.CAVE, new(sizeX, sizeY));
 
         int camp_x = RNG.NextInt(startX1, startX1 + sizeX - campfire.TotalGridSpace.x);
@@ -802,7 +819,6 @@ struct PlaceConnectorsJob : IJob
     Chunk currChunk;
     public void Execute()
     {
-
         for (int index = 0; index < MapChunks.Length; index++)
         {
             currChunk = MapChunks[index];
@@ -813,7 +829,6 @@ struct PlaceConnectorsJob : IJob
 
             MapChunks[index] = currChunk;
         }
-
         for (int index = 0; index < MapChunks.Length; index++)
         {
             currChunk = MapChunks[index];
@@ -830,6 +845,7 @@ struct PlaceConnectorsJob : IJob
             int y_min = int.MaxValue;
             for (int d = 0; d < currChunk.Doors.Length; d++)
             {
+                if (currChunk.DoorStates[d] != 1) continue;
                 x_max = Mathf.Max(x_max, currChunk.Doors[d].coord.x);
                 x_min = Mathf.Min(x_min, currChunk.Doors[d].coord.x);
                 y_max = Mathf.Max(y_max, currChunk.Doors[d].coord.y);
@@ -838,12 +854,12 @@ struct PlaceConnectorsJob : IJob
             for (int d = 0; d < currChunk.Doors.Length; d++)
             {
                 if (currChunk.Doors[d].coord.x == x_max) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.x == x_min) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.y == y_max) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.y == y_min) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.x == x_min && currChunk.DoorStates[d] == 1) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.y == y_max && currChunk.DoorStates[d] == 1) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.y == y_min && currChunk.DoorStates[d] == 1) currChunk.DoorStates[d] = -1;
             }
 
-            FillRemainingPath();
+            //FillRemainingPath();
 
             // loop through grid and place appropriate connector rooms in currChunk.Rooms
             for (int i = 0; i < currChunk.Grid.Length; i++)
@@ -887,7 +903,6 @@ struct PlaceConnectorsJob : IJob
         FindAndPlaceConnectorPath(unusedInterDoor, unusedCampfireDoor);
         currChunk.DoorStates[i] = 0;
         currChunk.DoorStates[j] = 0;
-
     }
 
     void FillIntermediate()
@@ -960,7 +975,7 @@ struct PlaceConnectorsJob : IJob
 
     }
 
-    void FillRemainingPath()
+    void FillRemainingPath() // connect all remaining doors
     {
         int doorsLeft = 0;
         foreach (var door in currChunk.DoorStates) if (door == 1) doorsLeft++;
@@ -980,7 +995,7 @@ struct PlaceConnectorsJob : IJob
         }
     }
 
-    void ExtendCampfirePath()
+    void ExtendCampfirePath() // get campfire door facing next chunk and extend path
     {
         Vector2Int dirToNextChunk = Vector2Int.zero;
         Door.Direction lastCoordDoorDirection = Door.Direction.North;
@@ -1025,21 +1040,30 @@ struct PlaceConnectorsJob : IJob
         int c = currChunk.NextChunkInAlphaPath.x + currChunk.NextChunkInAlphaPath.y * MAP_INFO.MAP_SIZE.y;
         Chunk nextChunk = MapChunks[c];
 
+        Door.Direction oppositeDir = lastCoordDoorDirection switch
+        {
+            Door.Direction.North => Door.Direction.South,
+            Door.Direction.South => Door.Direction.North,
+            Door.Direction.East => Door.Direction.West,
+            Door.Direction.West => Door.Direction.East,
+            _ => Door.Direction.North
+        };
+
         if (nextChunk.hasPreviousChunkPath1) // like the boss room where two paths converge
         {
-            nextChunk.PreviousChunkPath2 = new Chunk.DoorSpot(currCoord, lastCoordDoorDirection);
+            nextChunk.PreviousChunkPath2 = new Chunk.DoorSpot(currCoord, oppositeDir);
             nextChunk.hasPreviousChunkPath2 = true;
         } 
         else
         {
-            nextChunk.PreviousChunkPath1 = new Chunk.DoorSpot(currCoord, lastCoordDoorDirection);
+            nextChunk.PreviousChunkPath1 = new Chunk.DoorSpot(currCoord, oppositeDir);
             nextChunk.hasPreviousChunkPath1 = true;
         }
 
         MapChunks[c] = nextChunk;
     }
 
-    void ExtendToBetaPath()
+    void ExtendToBetaPath() // get extrema door and extend towards beta path chunk
     {
         int StartDoorIdx = 0;
         Vector2Int dirToNextChunk = Vector2Int.zero;
@@ -1049,7 +1073,11 @@ struct PlaceConnectorsJob : IJob
         {
             int x_min = int.MaxValue;
             for (int d = 0; d < currChunk.Doors.Length; d++)
+            {
+                if (currChunk.DoorStates[d] != 1) continue;
                 x_min = Mathf.Min(x_min, currChunk.Doors[d].coord.x);
+            }
+
             for (int d = 0; d < currChunk.Doors.Length; d++)
                 if (currChunk.Doors[d].coord.x == x_min) { StartDoorIdx = d; break; }
 
@@ -1060,7 +1088,10 @@ struct PlaceConnectorsJob : IJob
         {
             int x_max = 0;
             for (int d = 0; d < currChunk.Doors.Length; d++)
+            {
+                if (currChunk.DoorStates[d] != 1) continue;
                 x_max = Mathf.Max(x_max, currChunk.Doors[d].coord.x);
+            }
             for (int d = 0; d < currChunk.Doors.Length; d++)
                 if (currChunk.Doors[d].coord.x == x_max) { StartDoorIdx = d; break; }
             dirToNextChunk = new Vector2Int(1, 0);
@@ -1070,7 +1101,10 @@ struct PlaceConnectorsJob : IJob
         {
             int y_min = int.MaxValue;
             for (int d = 0; d < currChunk.Doors.Length; d++)
+            {
+                if (currChunk.DoorStates[d] != 1) continue;
                 y_min = Mathf.Min(y_min, currChunk.Doors[d].coord.y);
+            }
             for (int d = 0; d < currChunk.Doors.Length; d++)
                 if (currChunk.Doors[d].coord.y == y_min) { StartDoorIdx = d; break; }
             dirToNextChunk = new Vector2Int(0, -1);
@@ -1080,7 +1114,10 @@ struct PlaceConnectorsJob : IJob
         {
             int y_max = 0;
             for (int d = 0; d < currChunk.Doors.Length; d++)
+            {
+                if (currChunk.DoorStates[d] != 1) continue;
                 y_max = Mathf.Max(y_max, currChunk.Doors[d].coord.y);
+            }
             for (int d = 0; d < currChunk.Doors.Length; d++)
                 if (currChunk.Doors[d].coord.y == y_max) { StartDoorIdx = d; break; }
             dirToNextChunk = new Vector2Int(0, 1);
@@ -1104,7 +1141,15 @@ struct PlaceConnectorsJob : IJob
 
         if (nextChunk.hasPreviousChunkPath2) return; // already connected to another chunk, don't interfere
 
-        nextChunk.PreviousChunkPath2 = new Chunk.DoorSpot(currCoord, lastCoordDoorDirection);
+        Door.Direction oppositeDir = lastCoordDoorDirection switch
+        {
+            Door.Direction.North => Door.Direction.South,
+            Door.Direction.South => Door.Direction.North,
+            Door.Direction.East => Door.Direction.West,
+            Door.Direction.West => Door.Direction.East,
+            _ => Door.Direction.North
+        };
+        nextChunk.PreviousChunkPath2 = new Chunk.DoorSpot(currCoord, oppositeDir);
         nextChunk.hasPreviousChunkPath2 = true;
         MapChunks[c] = nextChunk;
 
@@ -1112,16 +1157,6 @@ struct PlaceConnectorsJob : IJob
         SetDoorGridCell(currChunk.Doors[StartDoorIdx]);
         SetDoorGridCell(new Chunk.DoorSpot(lastCoord, lastCoordDoorDirection));
         currChunk.DoorStates[StartDoorIdx] = 0;
-
-    }
-
-    void CompleteCampfirePath()
-    {
-
-    }
-
-    void ConnectBetaAlpha()
-    {
 
     }
 

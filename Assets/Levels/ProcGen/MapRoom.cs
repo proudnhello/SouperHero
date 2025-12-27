@@ -119,8 +119,8 @@ public class MapRoom : MonoBehaviour
     [Serializable]
     public class Door
     {
-        public GameObject On;
-        public GameObject Off;
+        public GameObject Open;
+        public GameObject Closed;
         public Vector2Int Pos;
         [Serializable]
         public enum Direction
@@ -131,22 +131,39 @@ public class MapRoom : MonoBehaviour
             West
         }
         public Direction dir;
+        internal bool isOpen;
     }
 
     private void Start()
     {
-        Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
-            if (x.gameObject.activeInHierarchy) x.RefreshRenderTilemap();
-        });
+        //Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
+        //    if (x.gameObject.activeInHierarchy) x.RefreshRenderTilemap();
+        //});
     }
-
 
 
     bool hasBeenInitialized = false;
     public virtual void InitializeContents(int difficultyPointBalance)
     {
+        foreach (var door in Doors) // above the hasBeenInitialized check since HUB will be called twice (since its in two chunks)
+        {
+            if (door.Open == null) continue;
+
+            if (door.isOpen) { door.Open.SetActive(true); door.Closed.SetActive(false); }
+            else { door.Open.SetActive(false); door.Closed.SetActive(true); }
+        }
+
         if (hasBeenInitialized) return;
+
+
+
+        Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
+            if (x.gameObject.activeInHierarchy) x.RefreshRenderTilemap();
+        });
+
         hasBeenInitialized = true;
+
+        return;
 
         int region = UnityEngine.Random.Range(0, contentRegions.Length);
         // loop through each region, choose an option, subtract difficulty points required, until all regions are chosen

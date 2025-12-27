@@ -9,6 +9,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using static MapRoom;
 using static UnityEditor.Recorder.OutputPath;
 using Random = Unity.Mathematics.Random;
@@ -90,25 +91,38 @@ public class RoomGenerator2 : MonoBehaviour
             // spawn hub manually
             var hubRoom = UUIDtoRoom[RoomDatabase.GetRoom(RoomType.START, Biome.CAVE).UUID].gameObject;
             Vector2 hubSpawnPos = new Vector2(3, 3) * MAP_INFO.CHUNK_SIZE * MAP_INFO.GRID_SIZE - new Vector2(2, 2) * MAP_INFO.GRID_SIZE;
-            MapRoom spawnedHub = Instantiate(hubRoom, hubSpawnPos, Quaternion.identity, RoomHolder).GetComponent<MapRoom>();
+            MapRoom spawnRoom = Instantiate(hubRoom, hubSpawnPos, Quaternion.identity, RoomHolder).GetComponent<MapRoom>();
 
-            PlayerSpawnLocation spawnLocation = spawnedHub.GetComponentInChildren<PlayerSpawnLocation>();
+            PlayerSpawnLocation spawnLocation = spawnRoom.GetComponentInChildren<PlayerSpawnLocation>();
             RunStateManager.Singleton.InitialPlacePlayer(spawnLocation);
 
             foreach (var chunk in MapChunks)
             {
                 if (chunk.ChunkType == Chunk.Type.Empty) continue;
-                //if (chunk.ChunkType != Chunk.Type.Starting) continue;
+                if (chunk.ChunkType != Chunk.Type.Starting) continue;
+                int door = 0;
                 foreach (var room in chunk.Rooms)
                 {
-
-                    Vector2 spawnPos = new Vector2(chunk.Coordinate.x, chunk.Coordinate.y) * MAP_INFO.CHUNK_SIZE * MAP_INFO.GRID_SIZE + // chunk bottom left
-                        new Vector2(room.RoomSpawn.x, room.RoomSpawn.y) * MAP_INFO.GRID_SIZE;
-                    //Debug.Log($"In {chunk.Coordinate.x}, {chunk.Coordinate.y}, Place room " + room.Type + " " + room.UUID + " at " + room.RoomSpawn);
-                    Instantiate(UUIDtoRoom[room.UUID].gameObject, spawnPos, Quaternion.identity, RoomHolder);
+                    MapRoom mRoom;
+                    if (room.Type == RoomType.START)
+                    {
+                        mRoom = spawnRoom;
+                    }
+                    else
+                    {
+                        Vector2 spawnPos = new Vector2(chunk.Coordinate.x, chunk.Coordinate.y) * MAP_INFO.CHUNK_SIZE * MAP_INFO.GRID_SIZE + // chunk bottom left
+                            new Vector2(room.RoomSpawn.x, room.RoomSpawn.y) * MAP_INFO.GRID_SIZE;
+                        //Debug.Log($"In {chunk.Coordinate.x}, {chunk.Coordinate.y}, Place room " + room.Type + " " + room.UUID + " at " + room.RoomSpawn);
+                        mRoom = Instantiate(UUIDtoRoom[room.UUID].gameObject, spawnPos, Quaternion.identity, RoomHolder).GetComponent<MapRoom>();
+                    }
+                    foreach (var d in mRoom.Doors)
+                    {
+                        if (chunk.DoorStates[door] == 0) d.isOpen = true;
+                        door++;
+                    }
+                    mRoom.InitializeContents(0);
                 }
             }
-
             
             RunStateManager.Singleton.SaveRunState();
             GameManager.Singleton.StartRun();
