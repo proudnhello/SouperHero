@@ -1,11 +1,13 @@
 // portions of this file were generated using GitHub Copilot
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using static EntityInflictionEffectHandler;
-using Unity.VisualScripting;
-using System;
+using static FlavorIngredient;
+using static UnityEngine.ParticleSystem;
 using Infliction = FinishedSoup.SoupInflictionStat;
 using InflictionType = FlavorIngredient.InflictionFlavor.InflictionType;
 
@@ -133,8 +135,33 @@ public abstract class Entity : MonoBehaviour
     public void DisplayHitmarker(InflictionType type, float amount)
     {
         GameObject hitmarkerInstance = Instantiate(hitmarker, transform.position, Quaternion.identity);
-        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = amount + " " + FlavorIngredient.GetFlavorHitmarkerText(type);
-        hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = FlavorIngredient.GetFlavorHitmarkerColor(type);
+        ParticleSystem particleSystem = hitmarkerInstance.transform.GetComponentInChildren<ParticleSystem>(); //Access child particle game object on UI layer
+        List<Sprite> particles = new List<Sprite>();
+
+        for (int i = 0; i < particleSystem.textureSheetAnimation.spriteCount; i++)
+        {
+            particleSystem.textureSheetAnimation.RemoveSprite(i);
+        }
+
+        particles.Add(BioDatabase.Singleton.InflictionFlavorIcons[type].ICON);
+
+
+        //If no particles, do not enable particle effects
+        if (particleSystem.textureSheetAnimation.mode == 0) return;
+
+        //Add all particle icons and activate particle system for slot
+        foreach (var particle in particles)
+        {
+            if (particle == null) return; // If there is a null particle, do not enable particle effects
+            particleSystem.textureSheetAnimation.AddSprite(particle);
+        }
+        if (particles.Count == 0) return; //If no particles, do not enable particle effects
+        particleSystem.Play();
+
+        Debug.Log(type + " displayed");
+
+        //hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = amount + " " + FlavorIngredient.GetFlavorHitmarkerText(type);
+        //hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = FlavorIngredient.GetFlavorHitmarkerColor(type);
     }
 
     public BaseStats GetBaseStats()
