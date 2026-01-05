@@ -136,29 +136,32 @@ public abstract class Entity : MonoBehaviour
     {
         GameObject hitmarkerInstance = Instantiate(hitmarker, transform.position, Quaternion.identity);
         ParticleSystem particleSystem = hitmarkerInstance.transform.GetComponentInChildren<ParticleSystem>(); //Access child particle game object on UI layer
-        List<Sprite> particles = new List<Sprite>();
+        //List<Sprite> particles = new List<Sprite>();
+        Sprite particle;
 
         for (int i = 0; i < particleSystem.textureSheetAnimation.spriteCount; i++)
         {
             particleSystem.textureSheetAnimation.RemoveSprite(i);
         }
 
-        particles.Add(BioDatabase.Singleton.InflictionFlavorIcons[type].ICON);
-
-
-        //If no particles, do not enable particle effects
-        if (particleSystem.textureSheetAnimation.mode == 0) return;
-
-        //Add all particle icons and activate particle system for slot
-        foreach (var particle in particles)
+        if (type == InflictionFlavor.InflictionType.SPIKY_Damage)
         {
-            if (particle == null) return; // If there is a null particle, do not enable particle effects
-            particleSystem.textureSheetAnimation.AddSprite(particle);
+            hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = " - " + amount;
+            hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = FlavorIngredient.GetFlavorHitmarkerColor(type);
         }
-        if (particles.Count == 0) return; //If no particles, do not enable particle effects
-        particleSystem.Play();
+        if (type == InflictionFlavor.InflictionType._Health)
+        {
+            hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = " + " + amount;
+            hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = FlavorIngredient.GetFlavorHitmarkerColor(type);
+        }
+        if (type != InflictionFlavor.InflictionType.SPIKY_Damage && type != InflictionFlavor.InflictionType._Health)
+        {
+            particle = BioDatabase.Singleton.InflictionFlavorIcons[type].ICON;
+            particleSystem.textureSheetAnimation.AddSprite(particle);
+            if (particleSystem.textureSheetAnimation.mode == 0) return;
 
-        Debug.Log(type + " displayed");
+            particleSystem.Play();
+        }
 
         //hitmarkerInstance.GetComponentInChildren<TextMeshPro>().text = amount + " " + FlavorIngredient.GetFlavorHitmarkerText(type);
         //hitmarkerInstance.GetComponentInChildren<TextMeshPro>().color = FlavorIngredient.GetFlavorHitmarkerColor(type);

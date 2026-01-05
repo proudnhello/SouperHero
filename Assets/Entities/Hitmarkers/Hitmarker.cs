@@ -7,7 +7,7 @@ using UnityEngine;
 public class Hitmarker : MonoBehaviour
 {
     public float speed;
-    public float lifetime = 2f;
+    private float lifetime = 2f;
     float timeLeft;
     // Shoot out in a random direction
     void Start()
