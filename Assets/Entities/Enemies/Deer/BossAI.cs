@@ -78,6 +78,7 @@ public class BossAI : EnemyBaseClass
         {
             inactive = false;
             StartCoroutine(BossHealthbarManager.Instance.StartBossFight(this));
+            CameraMover.Singleton.ScreenShake(5f, 0.01f, 1.5f);
             holdSpawning = true;
             invincible = true;
             shield.SetActive(true);
@@ -148,6 +149,7 @@ public class BossAI : EnemyBaseClass
         Color initialColor = shieldRenderer.material.color;
         // Play sound effect for shield down
         AudioManager.Singleton.PlayOneShot(AudioManager.SoundType.BossSFX, (int)AudioManager.BossSFXIndex.ShieldDown, transform.position);
+        CameraMover.Singleton.ScreenShake(3f, 0.01f, effectDuration);
         while (timer < effectDuration)
         {
             timer += Time.deltaTime;

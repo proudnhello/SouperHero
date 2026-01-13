@@ -10,6 +10,18 @@ using UnityEngine.InputSystem;
 
 public class CameraMover : MonoBehaviour
 {
+    // Singleton instance, probably a bad idea, but whatever
+    public static CameraMover Singleton { get; private set; }
+
+    private void Awake()
+    {
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Singleton = this;
+    }
 
     // Controls how much the camera follows the player and how much it follows the mouse
     [SerializeField] CinemachineVirtualCamera _cam;
@@ -60,6 +72,7 @@ public class CameraMover : MonoBehaviour
     IEnumerator IZoomAnim;
     bool zoomInProgress;
     Vector2 GoalPos;
+    Vector3 ShakeOffset = Vector3.zero;
     IEnumerator ZoomAnim(bool zoomIn)
     {
         zoomInProgress = true;
@@ -105,8 +118,27 @@ public class CameraMover : MonoBehaviour
         CalculateTargetPos();
         if (!zoomInProgress)
         {
-            transform.position = TargetPos;
+            transform.position = TargetPos + ShakeOffset;
         }
+    }
+
+    public void ScreenShake(float intensity, float shakeLength, float totalLength)
+    {
+        StartCoroutine(ScreenShakeCoroutine(intensity, shakeLength, totalLength));
+    }
+
+    private IEnumerator ScreenShakeCoroutine(float intensity, float shakeLength, float totalLength)
+    {
+        float timer = 0f;
+        while (timer < totalLength)
+        {
+            float offsetX = UnityEngine.Random.Range(-intensity, intensity);
+            float offsetY = UnityEngine.Random.Range(-intensity, intensity);
+            ShakeOffset = new Vector3(offsetX, offsetY, 0);
+            yield return new WaitForSeconds(shakeLength);
+            timer += shakeLength;
+        }
+        ShakeOffset = Vector3.zero;
     }
 
     Vector3 TargetPos;
