@@ -41,11 +41,11 @@ public class BossAI : EnemyBaseClass
     [Header("Wave Details")]
 
     [SerializeField] List<GameObject> spawnPoints;
-
     List<EnemyBaseClass> spawnedEnemies = new List<EnemyBaseClass>(); 
     Wave currentWave;
     List<int> enemiesToSpawn = new List<int>();
     List<int> viableIndexes = new List<int>();
+    [SerializeField] int waveOverrideIndex = -1; // If set to a valid index, will always spawn that wave instead of random waves
     [SerializeField] List<Wave> possibleWaves = new List<Wave>();
 
     
@@ -104,6 +104,10 @@ public class BossAI : EnemyBaseClass
                 invincible = true;
                 shield.SetActive(true);
                 currentWave = possibleWaves[UnityEngine.Random.Range(0, possibleWaves.Count)];
+                if (waveOverrideIndex >= 0 && waveOverrideIndex < possibleWaves.Count)
+                {
+                    currentWave = possibleWaves[waveOverrideIndex];
+                }
                 StartWave(currentWave);
             }
             return;
