@@ -35,10 +35,10 @@ RectTransform:
   - {fileID: 6403416487792819175}
   m_Father: {fileID: 5597549833575179878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -46.38}
+  m_SizeDelta: {x: 100, y: 96.81219}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4222138765470902078
 MonoBehaviour:
@@ -147,10 +147,10 @@ RectTransform:
   - {fileID: 3565169506244181059}
   m_Father: {fileID: 5597549833575179878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -74.27333}
+  m_SizeDelta: {x: 100, y: 96.81219}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7888592891162488146
 MonoBehaviour:
@@ -879,7 +879,7 @@ GameObject:
   - component: {fileID: 2946894901070572474}
   - component: {fileID: 2643729751253421764}
   m_Layer: 5
-  m_Name: RestartText
+  m_Name: ResumeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -932,7 +932,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Restart
+  m_text: Resume
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: da4c29e57fded714ab4e8f79db95782c, type: 2}
   m_sharedMaterial: {fileID: -32919929912700861, guid: da4c29e57fded714ab4e8f79db95782c, type: 2}
@@ -1111,10 +1111,10 @@ RectTransform:
   - {fileID: 362300595076811443}
   m_Father: {fileID: 5597549833575179878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -18.486666}
+  m_SizeDelta: {x: 100, y: 96.81219}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3419754447803556123
 MonoBehaviour:
@@ -1411,6 +1411,10 @@ PrefabInstance:
     - target: {fileID: 2363102531992375874, guid: 062ebf6ddad43c645be5ac70a713913a, type: 3}
       propertyPath: m_AnchorMin.x
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2426269204319516988, guid: 062ebf6ddad43c645be5ac70a713913a, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2688717152742297239, guid: 062ebf6ddad43c645be5ac70a713913a, type: 3}
       propertyPath: m_AnchorMax.x
