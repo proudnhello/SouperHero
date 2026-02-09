@@ -9,6 +9,8 @@ public class PauseManager : MonoBehaviour
     internal static bool isPaused = false;
     [SerializeField] GameObject pauseScreen;
     [SerializeField] GameObject settingsMenu;
+    [SerializeField] GameObject minimap;
+    [SerializeField] GameObject playerMinimapIcon;
 
     private void Awake()
     {
@@ -72,6 +74,11 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 0;
         pauseScreen.SetActive(true);
         PlayerEntityManager.Singleton.input.Disable();
+        isPaused = true;
+
+        disableMiniMap();
+        increasePlayerMinimapIcon();
+        
     }
 
     public void ResumeGame()
@@ -79,6 +86,11 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
         PlayerEntityManager.Singleton.input.Enable();
+        isPaused = false;
+
+        enableMiniMap();
+        decreasePlayerMinimapIcon();
+        
     }
 
     public void MainMenu()
@@ -99,4 +111,32 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 0;
         settingsMenu.SetActive(true);
     }
+
+    public void enableMiniMap()
+    {
+        minimap.SetActive(true);
+    }
+
+   
+
+    public void disableMiniMap()
+    {
+        minimap.SetActive(false);
+    }
+
+    public void increasePlayerMinimapIcon()
+    {
+        playerMinimapIcon.transform.localScale = new Vector3(7f, 7f, 1f);
+    }
+
+    public void decreasePlayerMinimapIcon()
+    {
+        playerMinimapIcon.transform.localScale = new Vector3(2f, 2f, 1f);
+
+    }
+
+   
+
+
+
 }
