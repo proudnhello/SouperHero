@@ -131,6 +131,7 @@ public unsafe struct Chunk
     public int ValidDoorsLeft;
 
     public DoorSpot HubDoorSpot;
+    public int HubDoorID;
     public DoorSpot CampfireDoorSpot;
     public int CampfireDoorID;
     public bool hasPreviousChunkPath1;
@@ -641,7 +642,7 @@ struct PlaceInitialRoomsJob : IJob
             }
             else
             {
-                currChunk.DoorStates.Add(-1);
+                currChunk.DoorStates.Add(0);
             }
         }
         currChunk.DoorRoomIDTracker++;
@@ -853,13 +854,15 @@ struct PlaceConnectorsJob : IJob
             }
             for (int d = 0; d < currChunk.Doors.Length; d++)
             {
+                if (currChunk.DoorStates[d] != 1) continue;
+
                 if (currChunk.Doors[d].coord.x == x_max) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.x == x_min && currChunk.DoorStates[d] == 1) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.y == y_max && currChunk.DoorStates[d] == 1) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.y == y_min && currChunk.DoorStates[d] == 1) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.x == x_min) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.y == y_max) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.y == y_min) currChunk.DoorStates[d] = -1;
             }
 
-            //FillRemainingPath();
+            FillRemainingPath();
 
             // loop through grid and place appropriate connector rooms in currChunk.Rooms
             for (int i = 0; i < currChunk.Grid.Length; i++)
@@ -985,7 +988,7 @@ struct PlaceConnectorsJob : IJob
             int startDoorIndex = RNG.NextInt(0, currChunk.DoorStates.Length);
             while (currChunk.DoorStates[startDoorIndex] != 1) startDoorIndex = (startDoorIndex + 1) % currChunk.DoorStates.Length;
 
-            (Chunk.DoorSpot ClosestDoorSpot, int closestDoorIndex) = FindNearestDoors(currChunk.Doors[startDoorIndex].coord, currChunk.DoorRoomIDs[startDoorIndex], false);
+            (Chunk.DoorSpot ClosestDoorSpot, int closestDoorIndex) = FindNearestDoors(currChunk.Doors[startDoorIndex].coord, currChunk.DoorRoomIDs[startDoorIndex], false, false);
             if (closestDoorIndex < 0) return;
             FindAndPlaceConnectorPath(currChunk.Doors[startDoorIndex], ClosestDoorSpot);
             currChunk.DoorStates[startDoorIndex] = 0;
@@ -1160,7 +1163,7 @@ struct PlaceConnectorsJob : IJob
 
     }
 
-    (Chunk.DoorSpot, int) FindNearestDoors(Coord StartPos, int ID, bool FirstChoice = false, bool ChooseID = false)
+    (Chunk.DoorSpot, int) FindNearestDoors(Coord StartPos, int ID, bool FirstChoice = false, bool ChooseID = false, bool includeExtreme = true)
     {
         Chunk.DoorSpot closestDoor1 = new();
         float dist1 = Mathf.Infinity;
@@ -1171,7 +1174,7 @@ struct PlaceConnectorsJob : IJob
         for (int d = 0; d < currChunk.Doors.Length; d++)
         {
             //Debug.Log(d + " checking: " + currChunk.Doors[d].coord + " ID: " + ID + " " + currChunk.DoorRoomIDs[d] + " .. state: " + currChunk.DoorStates[d]);
-            if (currChunk.DoorStates[d] != 1) continue;
+            if (currChunk.DoorStates[d] == 0 || currChunk.DoorRoomIDs[d] == -1 && !includeExtreme) continue;
             if (currChunk.DoorRoomIDs[d] == ID && !ChooseID || currChunk.DoorRoomIDs[d] != ID && ChooseID) continue;
             Chunk.DoorSpot nDoor = currChunk.Doors[d];
             // take manhattan distance

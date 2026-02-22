@@ -99,7 +99,7 @@ public class RoomGenerator2 : MonoBehaviour
             foreach (var chunk in MapChunks)
             {
                 if (chunk.ChunkType == Chunk.Type.Empty) continue;
-                if (chunk.ChunkType != Chunk.Type.Starting) continue;
+                //if (chunk.ChunkType != Chunk.Type.Starting) continue;
                 int door = 0;
                 foreach (var room in chunk.Rooms)
                 {
@@ -117,6 +117,7 @@ public class RoomGenerator2 : MonoBehaviour
                     }
                     foreach (var d in mRoom.Doors)
                     {
+                        Debug.Log(mRoom.Info.Type + " " + chunk.DoorStates[door]);
                         if (chunk.DoorStates[door] == 0) d.isOpen = true;
                         door++;
                     }
