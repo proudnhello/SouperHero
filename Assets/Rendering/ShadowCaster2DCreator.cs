@@ -6,7 +6,6 @@ using UnityEngine.Rendering.Universal;
 
 // from https://www.youtube.com/watch?v=n3tgimClTrI
 
-[RequireComponent(typeof(CompositeCollider2D))]
 public class ShadowCaster2DCreator : MonoBehaviour
 {
     [SerializeField]

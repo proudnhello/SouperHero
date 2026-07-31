@@ -31,6 +31,11 @@ public struct Coord : IEquatable<Coord>
         this.x = coord.x;
         this.y = coord.y;
     }
+    public Coord(Vector2 coord)
+    {
+        this.x = Mathf.FloorToInt(coord.x);
+        this.y = Mathf.FloorToInt(coord.y);
+    }
 
     public bool Equals(Coord other)
     {
@@ -571,6 +576,7 @@ struct PlaceInitialRoomsJob : IJob
             if (i == doorIndex) currChunk.DoorStates.Add(0);
             else currChunk.DoorStates.Add(-1);
         }
+        currChunk.HubDoorID = currChunk.DoorRoomIDTracker;
         currChunk.DoorRoomIDTracker++;
 
         FreeRectangle rect = new()
@@ -885,24 +891,30 @@ struct PlaceConnectorsJob : IJob
 
     void FillHub()
     {
-        (Chunk.DoorSpot ClosestDoorSpot, int closestDoorIndex) = FindNearestDoors(currChunk.HubDoorSpot.coord, -1, true);
+        // connect from hub to closest intermediate
+        (Chunk.DoorSpot ClosestDoorSpot, int closestDoorIndex) = FindNearestDoors(currChunk.HubDoorSpot.coord, currChunk.HubDoorID, true, false);
         FindAndPlaceConnectorPath(currChunk.HubDoorSpot, ClosestDoorSpot);
         currChunk.DoorStates[closestDoorIndex] = 0;
 
-        // connect from first intermediate to final campfire room
+        // connect from same intermediate (different door) to final campfire room
         int i = 0;
-        for (;i < currChunk.Doors.Length; i++)
+        for (; i < currChunk.Doors.Length; i++)
         {
             if (currChunk.DoorRoomIDs[i] == currChunk.CampfireDoorID && currChunk.DoorStates[i] == 1) break;
         }
         Chunk.DoorSpot unusedCampfireDoor = currChunk.Doors[i];
 
-        int j = Mathf.Max(0, closestDoorIndex-8); // rather than starting at 0 always, be smart, choose start index thats close?
+        int j = 0;
+        Debug.Log("goal id is " + currChunk.DoorRoomIDs[closestDoorIndex]);
         for (; j < currChunk.Doors.Length; j++)
         {
-            if (currChunk.DoorRoomIDs[j] == currChunk.DoorRoomIDs[closestDoorIndex] && currChunk.DoorStates[j] == 1) break;
+            if (currChunk.DoorRoomIDs[j] == currChunk.DoorRoomIDs[closestDoorIndex] && currChunk.DoorStates[j] == 1)
+            {
+                Debug.Log("DOOR IS GOOD");
+                break;
+            }
         }
-        Chunk.DoorSpot unusedInterDoor = currChunk.Doors[j];
+        Chunk.DoorSpot unusedInterDoor = currChunk.Doors[j]; // um this errored where j reached currChunk.Doors.Length so was out of bounds, why?
         FindAndPlaceConnectorPath(unusedInterDoor, unusedCampfireDoor);
         currChunk.DoorStates[i] = 0;
         currChunk.DoorStates[j] = 0;

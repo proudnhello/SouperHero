@@ -146,4 +146,17 @@ public unsafe struct RoomDatabase
         Debug.Log("here");
         return START_ROOM;
     }
+
+    public void Dispose()
+    {
+        CAVE_INTERMEDIATES.Dispose();
+        CAVE_CONNECTORS.Dispose();
+        CAVE_CAMPFIRES.Dispose();
+        DESERT_INTERMEDIATES.Dispose();
+        DESERT_CONNECTORS.Dispose();
+        DESERT_CAMPFIRES.Dispose();
+        FOREST_INTERMEDIATES.Dispose();
+        FOREST_CONNECTORS.Dispose();
+        FOREST_CAMPFIRES.Dispose();
+    }
 }

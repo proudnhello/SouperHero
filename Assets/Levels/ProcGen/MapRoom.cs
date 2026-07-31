@@ -8,6 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using UnityEditor;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 
 public class MapRoom : MonoBehaviour
@@ -87,6 +88,7 @@ public class MapRoom : MonoBehaviour
     public List<Block> blocks = new();
     [Header("Room Content")]
     [SerializeField] ContentRegion[] contentRegions;
+    public GameObject entities;
 
     public int BlockWidth()
     {
@@ -141,9 +143,19 @@ public class MapRoom : MonoBehaviour
         //});
     }
 
+    //private void OnGUI()
+    //{
+    //    if (GUILayout.Button("Refresh Tilemaps"))
+    //    {
+    //        Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
+    //            if (x.gameObject.activeInHierarchy) x.RefreshRenderTilemap();
+    //        });
+    //    }
+    //}
+
 
     bool hasBeenInitialized = false;
-    public virtual void InitializeContents(int difficultyPointBalance)
+    public virtual Tilemap InitializeContents(int difficultyPointBalance)
     {
         foreach (var door in Doors) // above the hasBeenInitialized check since HUB will be called twice (since its in two chunks)
         {
@@ -153,17 +165,25 @@ public class MapRoom : MonoBehaviour
             else { door.Open.SetActive(false); door.Closed.SetActive(true); }
         }
 
-        if (hasBeenInitialized) return;
-
-
+        if (hasBeenInitialized) return null;
 
         Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
-            if (x.gameObject.activeInHierarchy) x.RefreshRenderTilemap();
+            if (x.gameObject.activeInHierarchy) { 
+                x.transform.GetChild(0).parent = transform.parent; 
+                x.gameObject.SetActive(false); 
+            }
         });
 
         hasBeenInitialized = true;
 
-        return;
+        Array.ForEach(GetComponentsInChildren<CompositeCollider2D>(), (x) => {
+            Destroy(x);
+        });
+        Array.ForEach(GetComponentsInChildren<Rigidbody2D>(), (x) => {
+            Destroy(x);
+        });
+
+        return null;
 
         int region = UnityEngine.Random.Range(0, contentRegions.Length);
         // loop through each region, choose an option, subtract difficulty points required, until all regions are chosen
