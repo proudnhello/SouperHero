@@ -1080,7 +1080,7 @@ public class RoomGenerator : MonoBehaviour
                 {
                     MapRoom m = _map[i][j].gameObject.GetComponentInParent<MapRoom>();
                     int difficulty = (int)Mathf.Sqrt(new Coordinate(i, j).SquaredDistanceTo(startCoordinate) * difficultyMultiplier);
-                    if (m != null) m.InitializeContents(difficulty);
+                    if (m != null) m.InitializeTiles(difficulty);
                 }
             }
         }

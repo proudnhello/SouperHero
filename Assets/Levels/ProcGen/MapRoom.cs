@@ -88,7 +88,7 @@ public class MapRoom : MonoBehaviour
     public List<Block> blocks = new();
     [Header("Room Content")]
     [SerializeField] ContentRegion[] contentRegions;
-    public GameObject entities;
+    public Transform entities;
 
     public int BlockWidth()
     {
@@ -143,6 +143,11 @@ public class MapRoom : MonoBehaviour
         //});
     }
 
+    private void OnDisable()
+    {
+        RoomGenerator2.SpawnEntities -= InitializeContent;
+    }
+
     //private void OnGUI()
     //{
     //    if (GUILayout.Button("Refresh Tilemaps"))
@@ -155,8 +160,10 @@ public class MapRoom : MonoBehaviour
 
 
     bool hasBeenInitialized = false;
-    public virtual Tilemap InitializeContents(int difficultyPointBalance)
+    public virtual Tilemap InitializeTiles(int difficultyPointBalance)
     {
+        if (hasBeenInitialized) return null;
+
         foreach (var door in Doors) // above the hasBeenInitialized check since HUB will be called twice (since its in two chunks)
         {
             if (door.Open == null) continue;
@@ -165,7 +172,6 @@ public class MapRoom : MonoBehaviour
             else { door.Open.SetActive(false); door.Closed.SetActive(true); }
         }
 
-        if (hasBeenInitialized) return null;
 
         Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
             if (x.gameObject.activeInHierarchy) { 
@@ -174,6 +180,14 @@ public class MapRoom : MonoBehaviour
             }
         });
 
+        RoomGenerator2.SpawnEntities += InitializeContent;
+
+        return null;
+    }
+
+    public virtual void InitializeContent()
+    {
+        if (hasBeenInitialized) return;
         hasBeenInitialized = true;
 
         Array.ForEach(GetComponentsInChildren<CompositeCollider2D>(), (x) => {
@@ -183,8 +197,7 @@ public class MapRoom : MonoBehaviour
             Destroy(x);
         });
 
-        return null;
-
+        int difficultyPointBalance = 0;
         int region = UnityEngine.Random.Range(0, contentRegions.Length);
         // loop through each region, choose an option, subtract difficulty points required, until all regions are chosen
         // EASY REGION = 0, so even with 0 points left, a region will always be chosen
@@ -214,7 +227,7 @@ public class MapRoom : MonoBehaviour
         {
             if (!spawn.gameObject.activeInHierarchy) continue;
 
-            spawn.SpawnEnemy();
+            spawn.SpawnEnemy(entities);
         }
 
         DestroyableSpawnLocation[] destroyableSpawnLocations = GetComponentsInChildren<DestroyableSpawnLocation>();
@@ -222,7 +235,9 @@ public class MapRoom : MonoBehaviour
         {
             if (!spawn.gameObject.activeInHierarchy) continue;
 
-            spawn.SpawnDestroyable();
+            spawn.SpawnDestroyable(entities);
         }
+
+        return;
     }
 }

@@ -12,6 +12,7 @@ using UnityEngine;
 using Utils;
 using static MapRoom;
 using static PlaceInitialRoomsJob;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.InputManagerEntry;
 using Random = Unity.Mathematics.Random;
 
@@ -235,7 +236,8 @@ struct GenerateChunkPathJob : IJob
                 }
                 else
                 {
-                    SetBiomeChunk(x, y, Biome.FOREST);
+                    //SetBiomeChunk(x, y, Biome.FOREST);
+                    SetBiomeChunk(x, y, Biome.CAVE);
                 }
             }
         }
@@ -438,7 +440,7 @@ struct PlaceInitialRoomsJob : IJob
 
             currChunk.InitGrid(MAP_INFO.CHUNK_SIZE.x * MAP_INFO.CHUNK_SIZE.y);
 
-            if (currChunk.ChunkType == Chunk.Type.Starting) PlaceHub();
+            if (currChunk.Coordinate.x >= 2 && currChunk.Coordinate.x <= 3 && currChunk.Coordinate.y >= 2 && currChunk.Coordinate.y <= 3) PlaceHub();
             if (currChunk.ChunkType == Chunk.Type.Starting || currChunk.ChunkType == Chunk.Type.AlphaPath
                 || currChunk.ChunkType == Chunk.Type.BetaPath) PlaceCampfireRoom();
             //if (currChunk.ChunkType == Chunk.Type.BetaPath) InitBetaPath();
@@ -556,6 +558,16 @@ struct PlaceInitialRoomsJob : IJob
         TryClaim(startX, startY, startX + hubRadius, startY + hubRadius, hubGenerationInfo.UUID, 0);
         // sadly, claiming door pos gotta be manual oops. order is = (bottom-left, bottom-right, top-left, top-right)
 
+        FreeRectangle rect = new()
+        {
+            Coord = new(0, 0),
+            Size = new(MAP_INFO.CHUNK_SIZE.x, MAP_INFO.CHUNK_SIZE.y),
+            Recursions = 3
+        };
+        DivideFreeRectangle(rect, startX, startY, hubRadius, hubRadius);
+
+        if (currChunk.ChunkType != Chunk.Type.Starting) return;
+
         int doorIndex = left && bottom ?  0:
                                !left && bottom ? 1 :
                                left && !bottom ? 2 :
@@ -574,18 +586,11 @@ struct PlaceInitialRoomsJob : IJob
             currChunk.Doors.Add(default);
             currChunk.DoorRoomIDs.Add(currChunk.DoorRoomIDTracker);
             if (i == doorIndex) currChunk.DoorStates.Add(0);
-            else currChunk.DoorStates.Add(-1);
+            else currChunk.DoorStates.Add(-2);
         }
         currChunk.HubDoorID = currChunk.DoorRoomIDTracker;
         currChunk.DoorRoomIDTracker++;
 
-        FreeRectangle rect = new()
-        {
-            Coord = new(0, 0),
-            Size = new(MAP_INFO.CHUNK_SIZE.x, MAP_INFO.CHUNK_SIZE.y),
-            Recursions = 3
-        };
-        DivideFreeRectangle(rect, startX, startY, hubRadius, hubRadius);
     }
 
     void PlaceCampfireRoom()
@@ -826,6 +831,7 @@ struct PlaceConnectorsJob : IJob
     Chunk currChunk;
     public void Execute()
     {
+
         for (int index = 0; index < MapChunks.Length; index++)
         {
             currChunk = MapChunks[index];
@@ -838,13 +844,13 @@ struct PlaceConnectorsJob : IJob
         }
         for (int index = 0; index < MapChunks.Length; index++)
         {
+            
             currChunk = MapChunks[index];
             if (currChunk.ChunkType == Chunk.Type.Empty) continue;
 
             if (currChunk.ChunkType == Chunk.Type.Starting) FillHub();
             else if (currChunk.ChunkType == Chunk.Type.AlphaPath || currChunk.ChunkType == Chunk.Type.BetaPath) FillIntermediate();
             else if (currChunk.ChunkType == Chunk.Type.Boss) FillBoss();
-
             // set extrema as invalid
             int x_max = 0;
             int x_min = int.MaxValue;
@@ -897,6 +903,10 @@ struct PlaceConnectorsJob : IJob
         currChunk.DoorStates[closestDoorIndex] = 0;
 
         // connect from same intermediate (different door) to final campfire room
+
+        // if closest room is already campfire room, stop
+        if (currChunk.DoorRoomIDs[closestDoorIndex] == currChunk.CampfireDoorID) return;
+
         int i = 0;
         for (; i < currChunk.Doors.Length; i++)
         {
@@ -905,12 +915,12 @@ struct PlaceConnectorsJob : IJob
         Chunk.DoorSpot unusedCampfireDoor = currChunk.Doors[i];
 
         int j = 0;
-        Debug.Log("goal id is " + currChunk.DoorRoomIDs[closestDoorIndex]);
+        //Debug.Log("goal id is " + currChunk.DoorRoomIDs[closestDoorIndex]);
         for (; j < currChunk.Doors.Length; j++)
         {
             if (currChunk.DoorRoomIDs[j] == currChunk.DoorRoomIDs[closestDoorIndex] && currChunk.DoorStates[j] == 1)
             {
-                Debug.Log("DOOR IS GOOD");
+                //Debug.Log("DOOR IS GOOD");
                 break;
             }
         }
@@ -1080,7 +1090,7 @@ struct PlaceConnectorsJob : IJob
 
     void ExtendToBetaPath() // get extrema door and extend towards beta path chunk
     {
-        int StartDoorIdx = 0;
+        int StartDoorIdx = -1;
         Vector2Int dirToNextChunk = Vector2Int.zero;
         Door.Direction lastCoordDoorDirection = Door.Direction.North;
 
@@ -1090,11 +1100,8 @@ struct PlaceConnectorsJob : IJob
             for (int d = 0; d < currChunk.Doors.Length; d++)
             {
                 if (currChunk.DoorStates[d] != 1) continue;
-                x_min = Mathf.Min(x_min, currChunk.Doors[d].coord.x);
+                if (currChunk.Doors[d].coord.x < x_min) { x_min = currChunk.Doors[d].coord.x; StartDoorIdx = d; }
             }
-
-            for (int d = 0; d < currChunk.Doors.Length; d++)
-                if (currChunk.Doors[d].coord.x == x_min) { StartDoorIdx = d; break; }
 
             dirToNextChunk = new Vector2Int(-1, 0);
             lastCoordDoorDirection = Door.Direction.East; // face opposite way since imagine a door at the end, it'd be facing opposite you are huh
@@ -1105,10 +1112,9 @@ struct PlaceConnectorsJob : IJob
             for (int d = 0; d < currChunk.Doors.Length; d++)
             {
                 if (currChunk.DoorStates[d] != 1) continue;
-                x_max = Mathf.Max(x_max, currChunk.Doors[d].coord.x);
+                if (currChunk.Doors[d].coord.x > x_max) { x_max = currChunk.Doors[d].coord.x; StartDoorIdx = d; }
             }
-            for (int d = 0; d < currChunk.Doors.Length; d++)
-                if (currChunk.Doors[d].coord.x == x_max) { StartDoorIdx = d; break; }
+
             dirToNextChunk = new Vector2Int(1, 0);
             lastCoordDoorDirection = Door.Direction.West;
         }
@@ -1118,10 +1124,9 @@ struct PlaceConnectorsJob : IJob
             for (int d = 0; d < currChunk.Doors.Length; d++)
             {
                 if (currChunk.DoorStates[d] != 1) continue;
-                y_min = Mathf.Min(y_min, currChunk.Doors[d].coord.y);
+                if (currChunk.Doors[d].coord.y < y_min) { y_min = currChunk.Doors[d].coord.y; StartDoorIdx = d; }
             }
-            for (int d = 0; d < currChunk.Doors.Length; d++)
-                if (currChunk.Doors[d].coord.y == y_min) { StartDoorIdx = d; break; }
+
             dirToNextChunk = new Vector2Int(0, -1);
             lastCoordDoorDirection = Door.Direction.North;
         }
@@ -1131,10 +1136,9 @@ struct PlaceConnectorsJob : IJob
             for (int d = 0; d < currChunk.Doors.Length; d++)
             {
                 if (currChunk.DoorStates[d] != 1) continue;
-                y_max = Mathf.Max(y_max, currChunk.Doors[d].coord.y);
+                if (currChunk.Doors[d].coord.y > y_max) { y_max = currChunk.Doors[d].coord.y; StartDoorIdx = d; }
             }
-            for (int d = 0; d < currChunk.Doors.Length; d++)
-                if (currChunk.Doors[d].coord.y == y_max) { StartDoorIdx = d; break; }
+
             dirToNextChunk = new Vector2Int(0, 1);
             lastCoordDoorDirection = Door.Direction.South;
         }
@@ -1186,7 +1190,8 @@ struct PlaceConnectorsJob : IJob
         for (int d = 0; d < currChunk.Doors.Length; d++)
         {
             //Debug.Log(d + " checking: " + currChunk.Doors[d].coord + " ID: " + ID + " " + currChunk.DoorRoomIDs[d] + " .. state: " + currChunk.DoorStates[d]);
-            if (currChunk.DoorStates[d] == 0 || currChunk.DoorRoomIDs[d] == -1 && !includeExtreme) continue;
+            if (currChunk.DoorStates[d] == 0 || currChunk.DoorRoomIDs[d] == -1 && !includeExtreme ||
+                currChunk.DoorStates[d] == -2) continue;
             if (currChunk.DoorRoomIDs[d] == ID && !ChooseID || currChunk.DoorRoomIDs[d] != ID && ChooseID) continue;
             Chunk.DoorSpot nDoor = currChunk.Doors[d];
             // take manhattan distance

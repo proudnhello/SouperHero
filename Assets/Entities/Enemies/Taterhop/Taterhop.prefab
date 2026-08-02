@@ -241,7 +241,7 @@ SpriteMask:
   m_MaskAlphaCutoff: 0.2
   m_FrontSortingLayerID: 1677076209
   m_BackSortingLayerID: 0
-  m_FrontSortingLayer: 6
+  m_FrontSortingLayer: 7
   m_BackSortingLayer: 0
   m_FrontSortingOrder: 3
   m_BackSortingOrder: 2
@@ -262,7 +262,6 @@ GameObject:
   - component: {fileID: 6857497994059370591}
   - component: {fileID: 443627030062101057}
   - component: {fileID: 2093811017660686194}
-  - component: {fileID: 8322816779300415102}
   m_Layer: 7
   m_Name: Taterhop
   m_TagString: Enemy
@@ -331,7 +330,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1677076209
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 3
   m_Sprite: {fileID: -255279486, guid: 0e519f27535a3ab4ebf202b8871a21be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -499,44 +498,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.12, y: -0.1}
   m_Size: {x: 0.6, y: 0.9}
   m_Direction: 0
---- !u!114 &8322816779300415102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249368151804887405}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShadowGroup: 0
-  m_ComponentVersion: 1
-  m_HasRenderer: 1
-  m_UseRendererSilhouette: 0
-  m_CastsShadows: 1
-  m_SelfShadows: 0
-  m_ApplyToSortingLayers: 00000000dd9d7a5c6dd40f9fa19cb278
-  m_ShapePath:
-  - {x: -0.36959028, y: -0.51365286, z: 0}
-  - {x: -0.36571598, y: -0.47604436, z: 0}
-  - {x: -0.40093613, y: -0.4784466, z: -0.000000011175871}
-  - {x: -0.39903116, y: -0.42892575, z: -0.000000011175871}
-  - {x: -0.36474752, y: -0.42797345, z: -0.000000011175871}
-  - {x: -0.36760473, y: -0.39559448, z: -0.000000011175871}
-  - {x: 0.24569893, y: -0.3941313, z: 0}
-  - {x: 0.24616766, y: -0.42606884, z: 0.000000018626451}
-  - {x: 0.27854633, y: -0.42606884, z: 0.000000018626451}
-  - {x: 0.2775941, y: -0.4793989, z: 0.000000018626451}
-  - {x: 0.24045372, y: -0.48035127, z: 0.000000018626451}
-  - {x: 0.24445295, y: -0.5097902, z: 0}
-  m_ShapePathHash: -40836439
-  m_Mesh: {fileID: 0}
-  m_InstanceId: 86144
-  m_LocalBounds:
-    m_Center: {x: -0.061194897, y: -0.45389208, z: 0}
-    m_Extent: {x: 0.33974123, y: 0.05976078, z: 0}
 --- !u!1 &7303957099529862624
 GameObject:
   m_ObjectHideFlags: 0

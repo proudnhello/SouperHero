@@ -34,14 +34,14 @@ public class DestroyableSpawnLocation : MonoBehaviour
         return selectedDestroyable;
     }
 
-    public void SpawnDestroyable()
+    public void SpawnDestroyable(Transform parent)
     {
         PossibleDestroyable destroyableToSpawn = GetDestroyable();
         if (destroyableToSpawn.destroyableChoice == null) return;
         index = RunStateManager.Singleton.GetNewDestroyableIndex();
         if (RunStateManager.Singleton.HasDestroyableBeenBroken(index))
         {
-            GameObject destroyable = Instantiate(destroyableToSpawn.destroyableChoice, transform.position, Quaternion.identity, transform);
+            GameObject destroyable = Instantiate(destroyableToSpawn.destroyableChoice, transform.position, Quaternion.identity, parent);
             destroyable.GetComponent<Destroyables>().TrackSpawn(index, possibleRandomDrops);
         }
     }

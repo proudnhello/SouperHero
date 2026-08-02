@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 1528581696672608084}
   - component: {fileID: 8622917554991129961}
   - component: {fileID: 4279221317604222189}
+  - component: {fileID: 6589157965413053600}
   m_Layer: 9
   m_Name: Golden Chantrelle
   m_TagString: Untagged
@@ -154,7 +155,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1626352531
-  m_SortingLayer: 5
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_Sprite: {fileID: -323426732, guid: d4ef0867365152345bb68b8bf3644fd7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -182,6 +183,8 @@ MonoBehaviour:
   randDrop: 0
   singleCollectable: {fileID: 165481585712337600, guid: 9f0b0e02d09d58c41abcd2e748217b5c, type: 3}
   multipleCollectables: []
+  oddsForSomething: 0.5
+  DestroyedOnDamage: 1
 --- !u!95 &-2271839371715764953
 Animator:
   serializedVersion: 5
@@ -346,3 +349,33 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
   m_CompositeGameObject: {fileID: 6066935060175311365}
+--- !u!114 &6589157965413053600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6066935060175311365}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000dd9d7a5cf7c9c1a06dd40f9f
+  m_ShapePath:
+  - {x: -0.15180016, y: -0.10529274, z: 0}
+  - {x: -0.20952225, y: 0.02475655, z: 0}
+  - {x: 0.21586418, y: 0.014443755, z: 0}
+  - {x: 0.14623547, y: -0.10008007, z: 0}
+  m_ShapePathHash: -41164459
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 234630
+  m_LocalBounds:
+    m_Center: {x: 0.003170967, y: -0.040268093, z: 0}
+    m_Extent: {x: 0.21269321, y: 0.065024644, z: 0}

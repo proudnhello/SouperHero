@@ -33,14 +33,14 @@ public class EnemySpawnLocation : MonoBehaviour
         return selectedEnemy;
     }
 
-    public void SpawnEnemy()
+    public void SpawnEnemy(Transform parent)
     {
         PossibleEnemy enemyToSpawn = GetEnemy();
         if (enemyToSpawn.enemyChoice == null) return;
         index = RunStateManager.Singleton.GetNewEnemyIndex();
         if (RunStateManager.Singleton.IsEnemyAlive(index))
         {
-            GameObject enemy = Instantiate(enemyToSpawn.enemyChoice, transform.position, Quaternion.identity, transform);
+            GameObject enemy = Instantiate(enemyToSpawn.enemyChoice, transform.position, Quaternion.identity, parent);
             enemy.GetComponent<EnemyBaseClass>().SetIndex(index);
         }
     }

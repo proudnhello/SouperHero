@@ -138,12 +138,11 @@ public unsafe struct RoomDatabase
             return rooms[0];
         }
 
-        return Select(CAVE_CONNECTORS);
-        //if (biome == Biome.CAVE) return Select(CAVE_CONNECTORS);
-        //else if (biome == Biome.DESERT) return Select(DESERT_CONNECTORS);
-        //else if (biome == Biome.FOREST) return Select(FOREST_CONNECTORS);
+        //return Select(CAVE_CONNECTORS);
+        if (biome == Biome.CAVE) return Select(CAVE_CONNECTORS);
+        else if (biome == Biome.DESERT) return Select(DESERT_CONNECTORS);
+        else if (biome == Biome.FOREST) return Select(CAVE_CONNECTORS);
 
-        Debug.Log("here");
         return START_ROOM;
     }
 

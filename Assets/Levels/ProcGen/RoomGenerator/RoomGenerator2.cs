@@ -1,19 +1,13 @@
+using NavMeshPlus.Components;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Burst;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
-using Unity.Mathematics;
 using Unity.VisualScripting;
-using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.Tilemaps;
 using static MapRoom;
-using static UnityEditor.Recorder.OutputPath;
 using Random = Unity.Mathematics.Random;
 
 [Serializable]
@@ -28,15 +22,20 @@ public struct MapInfo
 
 public class RoomGenerator2 : MonoBehaviour
 {
+    public static event Action SpawnEntities;
+
     [Header("Layout")]
     public MapInfo MAP_INFO;
     public uint MAP_SEED = 0;
 
     [Header("Rooms")]
     [SerializeField] MapRoom[] AllRoomsUnsorted;
-// ####################
 
-// LOCAL VARIABLES
+    [Header("NavMesh")]
+    public NavMeshSurface _NavMeshSurface;
+    // ####################
+
+    // LOCAL VARIABLES
     public NativeArray<int> Grid;
     NativeArray<Chunk> MapChunks;
     RoomDatabase RoomDatabase;
@@ -44,8 +43,8 @@ public class RoomGenerator2 : MonoBehaviour
     Dictionary<int, MapRoom> UUIDtoRoom;
     private void Start()
     {
-        MAP_SEED = (uint)UnityEngine.Random.Range(0, int.MaxValue);
-        RunStateManager.Singleton.InitializeGameState(MAP_SEED);
+
+        MAP_SEED = RunStateManager.Singleton.InitializeGameState(MAP_SEED);
 
         RoomDatabase = new();
         RoomDatabase.Init(AllRoomsUnsorted, MAP_SEED);
@@ -93,10 +92,12 @@ public class RoomGenerator2 : MonoBehaviour
             var hubRoom = UUIDtoRoom[RoomDatabase.GetRoom(RoomType.START, Biome.CAVE).UUID].gameObject;
             yield return StartCoroutine(chunkSpawner.SpawnInitialChunks(MapChunks, UUIDtoRoom, MAP_INFO, hubRoom));
 
+            _NavMeshSurface.BuildNavMesh();
+
+            SpawnEntities?.Invoke();
+
             RunStateManager.Singleton.SaveRunState();
             GameManager.Singleton.StartRun();
-
-
         }
     }
 
@@ -151,19 +152,19 @@ public class RoomGenerator2 : MonoBehaviour
             Gizmos.color = new Color(chunkBiome.r, chunkBiome.g, chunkBiome.b, 1f);
             Gizmos.DrawLineStrip(points, true);
 
-            Gizmos.color = Color.red;
-            foreach (var rect in MapChunks[i].FreeRectangles)
-            {
-                Vector2 bL = ChunkPointToWorldPoint(x, y);
-                Vector3[] rectPts = new Vector3[4]
-                {
-                    bL + rect.Coord.Vec * MAP_INFO.GRID_SIZE,
-                    bL + (rect.Coord.Vec + new Vector2(0, rect.Size.y))  * MAP_INFO.GRID_SIZE,
-                    bL + (rect.Coord.Vec + new Vector2(rect.Size.x, rect.Size.y)) * MAP_INFO.GRID_SIZE,
-                    bL + (rect.Coord.Vec + new Vector2(rect.Size.x, 0)) * MAP_INFO.GRID_SIZE
-                };
-                Gizmos.DrawLineStrip(rectPts, true);
-            }
+            //Gizmos.color = Color.red;
+            //foreach (var rect in MapChunks[i].FreeRectangles)
+            //{
+            //    Vector2 bL = ChunkPointToWorldPoint(x, y);
+            //    Vector3[] rectPts = new Vector3[4]
+            //    {
+            //        bL + rect.Coord.Vec * MAP_INFO.GRID_SIZE,
+            //        bL + (rect.Coord.Vec + new Vector2(0, rect.Size.y))  * MAP_INFO.GRID_SIZE,
+            //        bL + (rect.Coord.Vec + new Vector2(rect.Size.x, rect.Size.y)) * MAP_INFO.GRID_SIZE,
+            //        bL + (rect.Coord.Vec + new Vector2(rect.Size.x, 0)) * MAP_INFO.GRID_SIZE
+            //    };
+            //    Gizmos.DrawLineStrip(rectPts, true);
+            //}
 
         }
     }

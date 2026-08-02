@@ -55,20 +55,22 @@ public class RunStateManager : MonoBehaviour
     int enemySpawnIndex, destroyableSpawnIndex;
     RunStateData runData;
 
-    public void InitializeGameState(uint initialSeed)
+    public uint InitializeGameState(uint initialSeed)
     {
         runData = SaveManager.Singleton.LoadRunState();
         if (runData == null)
         {
             runData = new(true);
-            runData.seed = initialSeed;
+            runData.seed = (uint)UnityEngine.Random.Range(0, int.MaxValue);
         }
+
 
         enemySpawnIndex = 0;
         destroyableSpawnIndex = 0;
 
         UnityEngine.Random.InitState((int)runData.seed);
         Debug.Log("SEED: " + runData.seed);
+        return runData.seed;
     }
 
     public void InitialPlacePlayer(PlayerSpawnLocation startSpawn)

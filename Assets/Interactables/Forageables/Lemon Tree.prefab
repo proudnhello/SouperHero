@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -6575118301210200657}
   - component: {fileID: -2271839371715764953}
   - component: {fileID: 4656094099270520851}
+  - component: {fileID: 5589910482314735423}
   m_Layer: 9
   m_Name: Lemon Tree
   m_TagString: Untagged
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1626352531
-  m_SortingLayer: 5
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_Sprite: {fileID: -618444289, guid: bad44c5c8b7d98f458c29a6dc45703b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -102,6 +103,8 @@ MonoBehaviour:
   randDrop: 0
   singleCollectable: {fileID: 165481585712337600, guid: e7d0eb2e3c145f44b8ae39c54ade42ee, type: 3}
   multipleCollectables: []
+  oddsForSomething: 0.5
+  DestroyedOnDamage: 1
 --- !u!95 &-2271839371715764953
 Animator:
   serializedVersion: 5
@@ -158,3 +161,35 @@ CapsuleCollider2D:
   m_Offset: {x: 0.04, y: 0.18}
   m_Size: {x: 1.1503505, y: 1.883173}
   m_Direction: 0
+--- !u!114 &5589910482314735423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6066935060175311365}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000dd9d7a5cf7c9c1a06dd40f9f
+  m_ShapePath:
+  - {x: -0.2645762, y: -0.17138603, z: 0}
+  - {x: -0.37154442, y: 0.07019124, z: 0}
+  - {x: 0.48557034, y: 0.044446282, z: 0}
+  - {x: 0.2603276, y: -0.07918146, z: 0}
+  - {x: 0.21096408, y: -0.21808745, z: 0}
+  - {x: -0.05095038, y: -0.15739997, z: 0}
+  m_ShapePathHash: 1040550981
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 232980
+  m_LocalBounds:
+    m_Center: {x: 0.057012975, y: -0.0739481, z: 0}
+    m_Extent: {x: 0.4285574, y: 0.14413935, z: 0}

@@ -62,15 +62,15 @@ public class ChunkSpawner : MonoBehaviour
                 var room = chunk.Rooms[j];
 
                 Vector2 spawnPos = chunkSpawnInfos[i].ChunkBottomLeft + // chunk bottom left
-                        new Vector2(room.RoomSpawn.x, room.RoomSpawn.y) * MAP_INFO.GRID_SIZE;
+                        (new Vector2Int(room.RoomSpawn.x, room.RoomSpawn.y) * MAP_INFO.GRID_SIZE);
 
 #if UNITY_EDITOR
                 if ((chunk.Coordinate.x == 2 || chunk.Coordinate.x == 3) && (chunk.Coordinate.y == 2 || chunk.Coordinate.y == 3)) {
 #endif
-                    chunkSpawnInfos[i].hasBeenInitialized = true;
+                  chunkSpawnInfos[i].hasBeenInitialized = true;
 
                     MapRoom mRoom = room.Type == RoomType.START ? spawnRoom :
-                        Instantiate(UUIDtoRoom[room.UUID].gameObject, spawnPos, Quaternion.identity, ChunkHolder).GetComponent<MapRoom>();
+                        Instantiate(UUIDtoRoom[room.UUID].gameObject, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity, ChunkHolder).GetComponent<MapRoom>();
     
                     foreach (var d in mRoom.Doors)
                     {
@@ -84,7 +84,7 @@ public class ChunkSpawner : MonoBehaviour
                         mRoom.entities.transform.parent = transform;
                     }
 
-                    mRoom.InitializeContents(0);
+                    mRoom.InitializeTiles(0);
 
                     if (room.Type == RoomType.START) mRoom.transform.parent = ChunkHolder;
 #if UNITY_EDITOR
@@ -168,7 +168,7 @@ public class ChunkSpawner : MonoBehaviour
                 if (info.ChunkInfo.DoorStates[door] == 0) d.isOpen = true;
                 door++;
             }
-            mRoom.InitializeContents(0);
+            mRoom.InitializeTiles(0);
             if (door >= info.ChunkInfo.DoorStates.Length) info.ChunkInfo.DoorStates.Dispose();
         }
 
