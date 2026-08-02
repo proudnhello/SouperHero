@@ -815,7 +815,7 @@ struct PlaceInitialRoomsJob : IJob
         };
         DivideFreeRectangle(campfireRect, camp_x, camp_y, campfire.TotalGridSpace.x, campfire.TotalGridSpace.y);
 
-        PlaceIntermediateRooms(); // in remainder of chunk wow cool i can use this this is accidentally good programming
+        //PlaceIntermediateRooms(); // in remainder of chunk wow cool i can use this this is accidentally good programming
     }
 
 }
@@ -831,7 +831,6 @@ struct PlaceConnectorsJob : IJob
     Chunk currChunk;
     public void Execute()
     {
-
         for (int index = 0; index < MapChunks.Length; index++)
         {
             currChunk = MapChunks[index];
@@ -842,6 +841,7 @@ struct PlaceConnectorsJob : IJob
 
             MapChunks[index] = currChunk;
         }
+
         for (int index = 0; index < MapChunks.Length; index++)
         {
             
@@ -874,7 +874,7 @@ struct PlaceConnectorsJob : IJob
                 if (currChunk.Doors[d].coord.y == y_min) currChunk.DoorStates[d] = -1;
             }
 
-            FillRemainingPath();
+            if (currChunk.ChunkType != Chunk.Type.Boss) FillRemainingPath();
 
             // loop through grid and place appropriate connector rooms in currChunk.Rooms
             for (int i = 0; i < currChunk.Grid.Length; i++)

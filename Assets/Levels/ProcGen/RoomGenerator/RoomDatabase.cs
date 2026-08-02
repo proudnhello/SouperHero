@@ -95,17 +95,16 @@ public unsafe struct RoomDatabase
             case RoomType.INTERMEDIATE:
                 if (biome == Biome.CAVE) return Select(CAVE_INTERMEDIATES);
                 else if (biome == Biome.DESERT) return Select(DESERT_INTERMEDIATES);
-                else if (biome == Biome.FOREST) return Select(FOREST_INTERMEDIATES);
+                else if (biome == Biome.FOREST) return Select(CAVE_INTERMEDIATES);
                 break;
             case RoomType.CAMPFIRE:
                 if (biome == Biome.CAVE) return Select(CAVE_CAMPFIRES);
                 else if (biome == Biome.DESERT) return Select(DESERT_CAMPFIRES);
-                else if (biome == Biome.FOREST) return Select(FOREST_CAMPFIRES);
+                else if (biome == Biome.FOREST) return Select(CAVE_CAMPFIRES);
                 break;
             case RoomType.BOSS:
                 if (biome == Biome.DESERT) return DESERT_BOSS;
-                else if (biome == Biome.FOREST) return FOREST_BOSS;
-                break;
+                else return FOREST_BOSS;
         }
         return START_ROOM;
     }

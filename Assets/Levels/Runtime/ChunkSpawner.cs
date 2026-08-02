@@ -64,10 +64,11 @@ public class ChunkSpawner : MonoBehaviour
                 Vector2 spawnPos = chunkSpawnInfos[i].ChunkBottomLeft + // chunk bottom left
                         (new Vector2Int(room.RoomSpawn.x, room.RoomSpawn.y) * MAP_INFO.GRID_SIZE);
 
-#if UNITY_EDITOR
-                if ((chunk.Coordinate.x == 2 || chunk.Coordinate.x == 3) && (chunk.Coordinate.y == 2 || chunk.Coordinate.y == 3)) {
-#endif
-                  chunkSpawnInfos[i].hasBeenInitialized = true;
+//#if UNITY_EDITOR
+//                if ((chunk.Coordinate.x == 2 || chunk.Coordinate.x == 3) && (chunk.Coordinate.y == 2 || chunk.Coordinate.y == 3))
+//                {
+//#endif
+                    chunkSpawnInfos[i].hasBeenInitialized = true;
 
                     MapRoom mRoom = room.Type == RoomType.START ? spawnRoom :
                         Instantiate(UUIDtoRoom[room.UUID].gameObject, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity, ChunkHolder).GetComponent<MapRoom>();
@@ -87,9 +88,9 @@ public class ChunkSpawner : MonoBehaviour
                     mRoom.InitializeTiles(0);
 
                     if (room.Type == RoomType.START) mRoom.transform.parent = ChunkHolder;
-#if UNITY_EDITOR
-                }
-#endif
+//#if UNITY_EDITOR
+//                }
+//#endif
             }
 
             StaticBatchingUtility.Combine(ChunkHolder.gameObject);
