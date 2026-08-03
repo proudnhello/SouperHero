@@ -20,8 +20,10 @@ public class PlayerMovement : MonoBehaviour
 
     private bool canDash = true;
     private bool isDashing = false;
+    float currPostDashHoldSpeedMult = 1;
     [SerializeField] private float dashDuration = 0.3f;
     [SerializeField] public float dashSpeed = 15f;
+    [SerializeField] public float postDashHoldSpeedMult = 1.5f;
     [SerializeField] public float dashCooldown = 1f;
 
     public static event Action dash;
@@ -113,7 +115,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (PlayerEntityManager.Singleton.GetMoveSpeed() >= 1)
                 {
-                    rb.velocity = inputDir * PlayerEntityManager.Singleton.GetMoveSpeed();
+                    rb.velocity = inputDir * PlayerEntityManager.Singleton.GetMoveSpeed() * currPostDashHoldSpeedMult;
                 }
                 else
                 {
@@ -124,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (PlayerEntityManager.Singleton.GetMoveSpeed() >= 1)
                 {
-                    rb.velocity = currentDirection * PlayerEntityManager.Singleton.GetMoveSpeed();
+                    rb.velocity = currentDirection * PlayerEntityManager.Singleton.GetMoveSpeed() * currPostDashHoldSpeedMult;
                 }
                 else
                 {
@@ -169,31 +171,37 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    float lastDashTime = 0;
     public IEnumerator Dashing()
     {
-        if (canDash)
+        if (Time.time - lastDashTime < (dashDuration + dashCooldown)) yield break;
+        lastDashTime = Time.time;
+
+        isDashing = true;
+
+        if (!isCursorMovement)
         {
-            canDash = false;
-            isDashing = true;
+            rb.velocity = inputDir * dashSpeed;
+        }
+        else
+        {
+            rb.velocity = currentDirection * dashSpeed;
+        }
+        dash?.Invoke();
 
-            if (!isCursorMovement)
-            {
-                rb.velocity = inputDir * dashSpeed;
-            }
-            else
-            {
-                rb.velocity = currentDirection * dashSpeed;
-            }
-            dash?.Invoke();
+        yield return new WaitForSeconds(dashDuration);
+        isDashing = false;
 
-            yield return new WaitForSeconds(dashDuration);
-            isDashing = false;
-            if (isCursorMovement)
-            {
-                rb.velocity = Vector2.zero;
-            }
-            yield return new WaitForSeconds(dashCooldown);
-            canDash = true;
+        currPostDashHoldSpeedMult = postDashHoldSpeedMult;
+        while (PlayerKeybinds.Singleton.dash.action.inProgress)
+        {
+            yield return null;
+        }
+        currPostDashHoldSpeedMult = 1;
+
+        if (isCursorMovement)
+        {
+            rb.velocity = Vector2.zero;
         }
     }
 
