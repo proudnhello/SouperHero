@@ -784,7 +784,7 @@ struct PlaceInitialRoomsJob : IJob
         {
             currChunk.Doors.Add(default);
             currChunk.DoorRoomIDs.Add(currChunk.DoorRoomIDTracker);
-            currChunk.DoorStates.Add(-1);
+            currChunk.DoorStates.Add(i == bossDoor ? 0 : -1);
         }
         currChunk.DoorRoomIDTracker++;
 
@@ -831,6 +831,7 @@ struct PlaceConnectorsJob : IJob
     Chunk currChunk;
     public void Execute()
     {
+
         for (int index = 0; index < MapChunks.Length; index++)
         {
             currChunk = MapChunks[index];
