@@ -17,7 +17,24 @@ public class AudioManager : MonoBehaviour
     [field: SerializeField] public List<EventReference> PLAYER_SFX { get; private set; }
     [field: SerializeField] public List<EventReference> ENEMY_SFX { get; private set; }
     [field: SerializeField] public List<EventReference> MUSIC { get; private set; }
+    [field: SerializeField] public List<EventReference> BOSS { get; private set; }
+    public enum SoundType
+    {
+        PlayerSFX = 0,
+        EnemySFX = 1,
+        Music = 2,
+        BossSFX = 3
+    }
+    public enum BossSFXIndex
+    {
+        HealthBarAppear = 0,
+        ShieldDown = 1,
+        ShieldUp = 2,
+        ShieldHit = 3,
+        Roar = 4
+    }
 
+    List<List<EventReference>> eventPools = new List<List<EventReference>>();
     public EnemyAudio enemyAudio;
     [SerializeField] float sfxAudio = 1;
     private List<EventInstance> allSFX = new List<EventInstance>();
@@ -29,7 +46,7 @@ public class AudioManager : MonoBehaviour
         else Singleton = this;
         enemyAudio = new();
         _MusicHandler = new(this);
-        if (SettingsManager.Singleton != null && SettingsManager.Singleton.SfxVolume != sfxAudio)
+        if (SettingsManager.Singleton != null && SettingsManager.Singleton.settingsData != null && SettingsManager.Singleton.SfxVolume != sfxAudio)
         {
             sfxAudio = SettingsManager.Singleton.SfxVolume;
         }
@@ -37,11 +54,24 @@ public class AudioManager : MonoBehaviour
         {
             sfxAudio = 0.5f;
         }
+        eventPools.Add(PLAYER_SFX);
+        eventPools.Add(ENEMY_SFX);
+        eventPools.Add(MUSIC);
+        eventPools.Add(BOSS);
     }
 
     public void PlayOneShot(EventReference sound, Vector3 worldPos = default)
     {
-        RuntimeManager.PlayOneShot(sound, worldPos);
+        EventInstance instance = CreateInstance(sound);
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(worldPos));
+        instance.start();
+        instance.release();
+    }
+
+    public void PlayOneShot(SoundType type, int index, Vector3 worldPos = default)
+    {
+        EventReference sound = eventPools[(int)type][index];
+        PlayOneShot(sound, worldPos);
     }
 
     public EventInstance CreateInstance(EventReference sound)

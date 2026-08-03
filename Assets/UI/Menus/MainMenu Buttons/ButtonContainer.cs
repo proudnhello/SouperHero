@@ -69,6 +69,10 @@ public class ButtonContainer : MonoBehaviour
                 }
                 else
                 {
+                    if (button._buttonBackgroundRectTransform == null)
+                    {
+                        button._buttonBackgroundRectTransform = button._buttonBackground.GetComponent<RectTransform>();
+                    }
                     button._buttonBackgroundRectTransform.DOKill();
                     button._buttonBackgroundRectTransform.transform.localScale = Vector3.zero;
 

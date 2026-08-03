@@ -34,6 +34,7 @@ public abstract class EnemyBaseClass : Entity
     protected NavMeshAgent agent;
     protected EnemyAudio enemyAudio;
     public StudioEventEmitter enemyEmitter;
+    public BossAI spawnedBy = null;
 
     // Used for boss fights to make the enemy always attack and never idle
     protected bool alwaysAggro = false;
@@ -57,7 +58,20 @@ public abstract class EnemyBaseClass : Entity
     protected virtual void UpdateAI() { }
     protected virtual void Die()
     {
-        Die(true);
+        // If the enemy was spawned by the boss, don't drop loot
+        if (spawnedBy != null)
+        {
+            Die(false);
+        }
+        else
+        {
+            Die(true);
+        }
+    }
+
+    public void PissOff()
+    {
+        alwaysAggro = true;
     }
     protected virtual void Die(bool drop)
     {
@@ -66,12 +80,16 @@ public abstract class EnemyBaseClass : Entity
         _collider.enabled = false;
         _rigidbody.velocity = Vector2.zero;
         agent.updatePosition = false;
-        if (drop)
+        if (drop && collectable != null)
         {
             Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
         }
         entityRenderer.EnemyDeath();
         RunStateManager.Singleton.TrackEnemyDeath(enemyIndex);
+        if (spawnedBy != null)
+        {
+            spawnedBy.SpawnedEnemyDeath(this);
+        }
     }
 
     public override void ApplyInfliction(List<FinishedSoup.SoupInflictionStat> spoonInflictions, Transform source)

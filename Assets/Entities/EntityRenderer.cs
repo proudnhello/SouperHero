@@ -3,6 +3,11 @@ using System.Collections;
 
 public class EntityRenderer
 {
+    // Who the hell made the entity renderer work like this????
+    // Why do we need an entirely seperate class to handles some sub functions of the entity???
+    // Why is it not a component of the entity itself???
+    // I come along trying to override the death animation for a boss and have to make an entirely new class just to do that??? Why???
+    // Maybe there's some genious reason for this that I'm not seeing, but it seems like an unnecessary abstraction layer to me
     protected Entity Entity;
     protected SpriteRenderer spriteRenderer;
     public EntityRenderer(Entity entity)
@@ -41,8 +46,8 @@ public class EntityRenderer
         Entity.StartCoroutine(IEnemyDeathAnimation = EnemyDeathAnimation());
     }
 
-    float deathAnimTime = 1.0f;
-    IEnumerator EnemyDeathAnimation()
+    protected float deathAnimTime = 1.0f;
+    protected virtual IEnumerator EnemyDeathAnimation()
     {
         float timeProgressed = deathAnimTime;
         Color normalColor = Color.white;

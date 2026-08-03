@@ -298,8 +298,10 @@ public class SoupInventoryUI : MonoBehaviour
         //Add all particle icons and activate particle system for slot
         foreach (var particle in particles)
         {
+            if (particle == null) return; // If there is a null particle, do not enable particle effects
             particleSystem.textureSheetAnimation.AddSprite(particle);
         }
+        if (particles.Count == 0) return; //If no particles, do not enable particle effects
         particleSystem.Play();
     }
 

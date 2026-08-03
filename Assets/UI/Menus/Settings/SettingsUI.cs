@@ -8,7 +8,6 @@ using DG.Tweening;
 public class SettingsUI : MonoBehaviour
 {
     public TMP_Dropdown resolutionDropdown;
-    public TMP_Dropdown languageDropdown;
     public Toggle fullscreenToggle;
     public Toggle useGrayscale;
     public Toggle cursorMoveToggle;
@@ -46,7 +45,6 @@ public class SettingsUI : MonoBehaviour
     private void Start()
     {
         resolutionDropdown.value = SettingsManager.Singleton.Resolution;
-        languageDropdown.value = SettingsManager.Singleton.Language;
         fullscreenToggle.isOn = SettingsManager.Singleton.FullScreen;
         useGrayscale.isOn = SettingsManager.Singleton.UseGrayscale;
         cursorMoveToggle.isOn = SettingsManager.Singleton.CursorMovement;

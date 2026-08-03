@@ -109,7 +109,8 @@ public abstract class Entity : MonoBehaviour
         }
     }
 
-    public virtual bool IsInvincible() => false;
+    protected bool invincible = false;
+    public virtual bool IsInvincible() => invincible;
 
     public void ResetStats()
     {
