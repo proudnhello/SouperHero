@@ -241,8 +241,8 @@ SpriteMask:
   m_MaskAlphaCutoff: 0.2
   m_FrontSortingLayerID: 1677076209
   m_BackSortingLayerID: 1677076209
-  m_FrontSortingLayer: 6
-  m_BackSortingLayer: 6
+  m_FrontSortingLayer: 7
+  m_BackSortingLayer: 7
   m_FrontSortingOrder: 1
   m_BackSortingOrder: 0
   m_IsCustomRangeActive: 1
@@ -411,7 +411,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1677076209
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 1
   m_Sprite: {fileID: -1522402420, guid: 9fc2b30b0bb274a04ac4fe5cb2b8b6a8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -454,6 +454,7 @@ MonoBehaviour:
     m_Bits: 256
   _playerTransform: {fileID: 0}
   enemyEmitter: {fileID: 0}
+  spawnedBy: {fileID: 0}
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -591,7 +592,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6001375706453813211}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
   m_Name: 

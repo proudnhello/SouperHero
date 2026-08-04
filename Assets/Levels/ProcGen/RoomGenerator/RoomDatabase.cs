@@ -17,10 +17,10 @@ public unsafe struct RoomDatabase
     [NoAlias][ReadOnly] NativeList<GenerationInfo> DESERT_CONNECTORS;
     [NoAlias][ReadOnly] NativeList<GenerationInfo> DESERT_CAMPFIRES;
     GenerationInfo DESERT_BOSS;
-    [NoAlias][ReadOnly] NativeList<GenerationInfo> FOREST_INTERMEDIATES;
-    [NoAlias][ReadOnly] NativeList<GenerationInfo> FOREST_CONNECTORS;
-    [NoAlias][ReadOnly] NativeList<GenerationInfo> FOREST_CAMPFIRES;
-    GenerationInfo FOREST_BOSS;
+    //[NoAlias][ReadOnly] NativeList<GenerationInfo> FOREST_INTERMEDIATES;
+    //[NoAlias][ReadOnly] NativeList<GenerationInfo> FOREST_CONNECTORS;
+    //[NoAlias][ReadOnly] NativeList<GenerationInfo> FOREST_CAMPFIRES;
+    GenerationInfo CAVE_BOSS;
     static Random rng;
 
     public void Init(MapRoom[] rooms, uint seed)
@@ -33,9 +33,9 @@ public unsafe struct RoomDatabase
         DESERT_INTERMEDIATES = new(0, Allocator.Persistent);
         DESERT_CONNECTORS = new(0, Allocator.Persistent);
         DESERT_CAMPFIRES = new(0, Allocator.Persistent);
-        FOREST_INTERMEDIATES = new(0, Allocator.Persistent);
-        FOREST_CONNECTORS = new(0, Allocator.Persistent);
-        FOREST_CAMPFIRES = new(0, Allocator.Persistent);
+        //FOREST_INTERMEDIATES = new(0, Allocator.Persistent);
+        //FOREST_CONNECTORS = new(0, Allocator.Persistent);
+        //FOREST_CAMPFIRES = new(0, Allocator.Persistent);
         foreach (var room in rooms)
         {
             var info = room.Info.InitInfo(room);
@@ -47,21 +47,21 @@ public unsafe struct RoomDatabase
                 case RoomType.INTERMEDIATE:
                     if (info.Biome == Biome.CAVE) CAVE_INTERMEDIATES.Add(info);
                     else if (info.Biome == Biome.DESERT) DESERT_INTERMEDIATES.Add(info);
-                    else if (info.Biome == Biome.FOREST) FOREST_INTERMEDIATES.Add(info);
+                    //else if (info.Biome == Biome.FOREST) FOREST_INTERMEDIATES.Add(info);
                     break;
                 case RoomType.CONNECTOR:
                     if (info.Biome == Biome.CAVE) CAVE_CONNECTORS.Add(info);
                     else if (info.Biome == Biome.DESERT) DESERT_CONNECTORS.Add(info);
-                    else if (info.Biome == Biome.FOREST) FOREST_CONNECTORS.Add(info);
+                    //else if (info.Biome == Biome.FOREST) FOREST_CONNECTORS.Add(info);
                     break;
                 case RoomType.CAMPFIRE:
                     if (info.Biome == Biome.CAVE) CAVE_CAMPFIRES.Add(info);
                     else if (info.Biome == Biome.DESERT) DESERT_CAMPFIRES.Add(info);
-                    else if (info.Biome == Biome.FOREST) FOREST_CAMPFIRES.Add(info);
+                    //else if (info.Biome == Biome.FOREST) FOREST_CAMPFIRES.Add(info);
                     break;
                 case RoomType.BOSS:
                     if (info.Biome == Biome.DESERT) DESERT_BOSS = info;
-                    else if (info.Biome == Biome.FOREST) FOREST_BOSS = info;
+                    else if (info.Biome == Biome.CAVE) CAVE_BOSS = info;
                     break;
             }
         }
@@ -95,16 +95,16 @@ public unsafe struct RoomDatabase
             case RoomType.INTERMEDIATE:
                 if (biome == Biome.CAVE) return Select(CAVE_INTERMEDIATES);
                 else if (biome == Biome.DESERT) return Select(DESERT_INTERMEDIATES);
-                else if (biome == Biome.FOREST) return Select(CAVE_INTERMEDIATES);
+                //else if (biome == Biome.FOREST) return Select(CAVE_INTERMEDIATES);
                 break;
             case RoomType.CAMPFIRE:
                 if (biome == Biome.CAVE) return Select(CAVE_CAMPFIRES);
                 else if (biome == Biome.DESERT) return Select(DESERT_CAMPFIRES);
-                else if (biome == Biome.FOREST) return Select(CAVE_CAMPFIRES);
+                //else if (biome == Biome.FOREST) return Select(CAVE_CAMPFIRES);
                 break;
             case RoomType.BOSS:
                 if (biome == Biome.DESERT) return DESERT_BOSS;
-                else return FOREST_BOSS;
+                else return CAVE_BOSS;
         }
         return START_ROOM;
     }
@@ -140,7 +140,7 @@ public unsafe struct RoomDatabase
         //return Select(CAVE_CONNECTORS);
         if (biome == Biome.CAVE) return Select(CAVE_CONNECTORS);
         else if (biome == Biome.DESERT) return Select(DESERT_CONNECTORS);
-        else if (biome == Biome.FOREST) return Select(CAVE_CONNECTORS);
+        //else if (biome == Biome.FOREST) return Select(CAVE_CONNECTORS);
 
         return START_ROOM;
     }
@@ -153,8 +153,8 @@ public unsafe struct RoomDatabase
         DESERT_INTERMEDIATES.Dispose();
         DESERT_CONNECTORS.Dispose();
         DESERT_CAMPFIRES.Dispose();
-        FOREST_INTERMEDIATES.Dispose();
-        FOREST_CONNECTORS.Dispose();
-        FOREST_CAMPFIRES.Dispose();
+        //FOREST_INTERMEDIATES.Dispose();
+        //FOREST_CONNECTORS.Dispose();
+        //FOREST_CAMPFIRES.Dispose();
     }
 }
