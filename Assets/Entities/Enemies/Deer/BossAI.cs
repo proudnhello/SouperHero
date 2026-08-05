@@ -70,6 +70,7 @@ public class BossAI : EnemyBaseClass
 
         shield = gameObject.transform.Find("Shield").gameObject;
         shieldParticles = GetComponent<ParticleSystem>();
+        Debug.Log(_rigidbody);
     }
 
     public void TriggerBossFight()
@@ -78,7 +79,7 @@ public class BossAI : EnemyBaseClass
         {
             inactive = false;
             StartCoroutine(BossHealthbarManager.Instance.StartBossFight(this));
-            CameraMover.Singleton.ScreenShake(5f, 0.01f, 1.5f);
+            CameraMover.Singleton.ScreenShake(0.8f, 0.03f, 1f);
             holdSpawning = true;
             invincible = true;
             shield.SetActive(true);
@@ -88,7 +89,7 @@ public class BossAI : EnemyBaseClass
     override protected void UpdateAI()
     {
         // Boss is inactive until triggered
-        if (inactive || holdSpawning)
+        if (inactive || holdSpawning || GetHealth() <= 0)
         {
             return;
         }
@@ -153,7 +154,7 @@ public class BossAI : EnemyBaseClass
         Color initialColor = shieldRenderer.material.color;
         // Play sound effect for shield down
         AudioManager.Singleton.PlayOneShot(AudioManager.SoundType.BossSFX, (int)AudioManager.BossSFXIndex.ShieldDown, transform.position);
-        CameraMover.Singleton.ScreenShake(3f, 0.01f, effectDuration);
+        CameraMover.Singleton.ScreenShake(0.8f, 0.03f, effectDuration);
         while (timer < effectDuration)
         {
             timer += Time.deltaTime;
@@ -196,6 +197,7 @@ public class BossAI : EnemyBaseClass
         spawnedEnemies.Remove(enemy);
     }
     
+
     override protected void Die()
     {
         BossHealthbarManager.Instance.EndBossFight();
@@ -205,6 +207,8 @@ public class BossAI : EnemyBaseClass
     // Override to produce shield effect when hit while invincible
     public override void ApplyInfliction(List<FinishedSoup.SoupInflictionStat> spoonInflictions, Transform source)
     {
+        if (GetHealth() <= 0) return;
+
         if (invincible)
         {
             // Rotate the shape of the particle system to face the opposite direction of the source of the infliction
@@ -222,6 +226,12 @@ public class BossAI : EnemyBaseClass
             AudioManager.Singleton.PlayOneShot(AudioManager.SoundType.BossSFX, (int)AudioManager.BossSFXIndex.ShieldHit, transform.position);
         }
         base.ApplyInfliction(spoonInflictions, source);
+    }
+
+    public override void DealDamage(int damage)
+    {
+        if (invincible || GetHealth() <= 0) return;
+        base.DealDamage(damage);
     }
     
 }

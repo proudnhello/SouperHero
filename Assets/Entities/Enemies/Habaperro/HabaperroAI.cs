@@ -88,6 +88,10 @@ public class HabaperroAI : EnemyBaseClass
         currentState.OnExit();
         agent.updatePosition = false;
         SetHealth(0);
+        if (spawnedBy != null)
+        {
+            spawnedBy.SpawnedEnemyDeath(this);
+        }
         Destroy(gameObject);
     }
 

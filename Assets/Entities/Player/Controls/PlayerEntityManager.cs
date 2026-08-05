@@ -22,6 +22,7 @@ public class PlayerEntityManager : Entity
     private bool shielded = false;
     private GameObject shieldObject;
     private List<Infliction> shieldInflictions;
+    [SerializeField] bool DEBUG_INVINCIBLE;
     private void Awake()
     {
         if (Singleton == null) Singleton = this;
@@ -45,6 +46,10 @@ public class PlayerEntityManager : Entity
     }
     public override void ModifyHealth(int amount)
     {
+#if UNITY_EDITOR
+        if (DEBUG_INVINCIBLE) return;
+#endif
+
         base.ModifyHealth(amount);
         if (amount < 0)
         {

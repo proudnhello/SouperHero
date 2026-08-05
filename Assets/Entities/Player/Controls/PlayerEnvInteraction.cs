@@ -100,20 +100,21 @@ public class PlayerEnvInteraction : MonoBehaviour
 
             Throwable.dropItem(PlayerInventory.Singleton.objectHolding.gameObject);
         }
-
+        Debug.Log(currentInteractable);
         if (currentInteractable != null && 
         Time.frameCount != lastInteractionFrame)
         {
             // store last interaction frame so we aren't interacting multiple times in the same frame
             lastInteractionFrame = Time.frameCount;
-            currentInteractable.Interact();
-            if (typeof(NPC) == currentInteractable.GetType())
+            Interactable interactable = currentInteractable;
+            interactable.Interact();
+            if (typeof(NPC) == interactable.GetType())
             {
-                lastInteractedWith = (NPC)currentInteractable;
+                lastInteractedWith = (NPC)interactable;
             }
-            if (currentInteractable && !currentInteractable.CanInteract())
+            if (interactable && !interactable.CanInteract())
             {
-                withinRange.Remove(currentInteractable);
+                withinRange.Remove(interactable);
                 currentInteractable = null;
                 ChangeInteractableListContents();
             }

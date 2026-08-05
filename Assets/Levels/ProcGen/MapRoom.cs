@@ -174,10 +174,11 @@ public class MapRoom : MonoBehaviour
 
 
         Array.ForEach(GetComponentsInChildren<DualGridTilemapModule>(), (x) => {
-            if (x.gameObject.activeInHierarchy) { 
-                x.transform.GetChild(0).parent = transform.parent; 
-                x.gameObject.SetActive(false); 
-            }
+            //if (x.gameObject.activeInHierarchy) { 
+            //    x.transform.GetChild(0).parent = transform.parent; 
+            //    x.gameObject.SetActive(false); 
+            //}
+            if (x.gameObject.activeInHierarchy) x.RefreshRenderTilemap();
         });
 
         RoomGenerator2.SpawnEntities += InitializeContent;
@@ -191,10 +192,10 @@ public class MapRoom : MonoBehaviour
         hasBeenInitialized = true;
 
         Array.ForEach(GetComponentsInChildren<CompositeCollider2D>(), (x) => {
-            Destroy(x);
+            if (CollisionLayers.Singleton.InEnvironmentLayer(x.gameObject)) Destroy(x);
         });
         Array.ForEach(GetComponentsInChildren<Rigidbody2D>(), (x) => {
-            Destroy(x);
+            if (CollisionLayers.Singleton.InEnvironmentLayer(x.gameObject)) Destroy(x);
         });
 
         int difficultyPointBalance = 0;

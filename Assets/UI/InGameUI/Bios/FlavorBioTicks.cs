@@ -52,7 +52,6 @@ public class FlavorBioTicks : MonoBehaviour, ITooltipSource
         icon.sprite = flavorInfo.ICON;
         int seed = 0;
         foreach (var c in flavorInfo.KEY) seed += c;
-        Debug.Log("why am i here");
         Random.InitState(seed);
 
         foreach (var tick in tickObjects) tick.gameObject.SetActive(false);

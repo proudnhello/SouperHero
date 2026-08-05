@@ -14,10 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IngredientName: Lettuce Ear
   uuid: 1421
-  abilityType: {fileID: 11400000, guid: 69ae0ed6b0e7c924089136ac535fb500, type: 2}
+  abilityType: {fileID: 11400000, guid: 7669e1591ef98e3488d1ea147fcd49af, type: 2}
   baseStats:
-    BaseDuration: 5
-    BaseSize: 0
-    BaseSpeed: 0
-  inherentInflictionFlavors: []
-  uses: 10
+    BaseDuration: 0.5
+    BaseSize: 2
+    BaseSpeed: 10
+  inherentInflictionFlavors:
+  - inflictionType: 2
+    amount: 15
+  - inflictionType: 3
+    amount: 8
+  uses: 15

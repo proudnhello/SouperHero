@@ -17,6 +17,7 @@ public class BossRenderer : EntityRenderer
         float timeProgressed = deathAnimTime;
         float particleTimeProgressed = particleTimer;
         Color normalColor = Color.white;
+        CameraMover.Singleton.ScreenShake(1.3f, 0.03f, deathAnimTime);
 
 
         var shape = entity.shieldParticles.shape;
@@ -37,7 +38,10 @@ public class BossRenderer : EntityRenderer
             }
             yield return null;
         }
+        entity.enabled = false;
 
-        GameObject.Destroy(entity.gameObject);
+        yield return new WaitForSeconds(2f);
+
+        GameManager.Singleton.EndRun(true);
     }
 }
