@@ -41,7 +41,10 @@ public class EnemySpawnLocation : MonoBehaviour
         if (RunStateManager.Singleton.IsEnemyAlive(index))
         {
             GameObject enemy = Instantiate(enemyToSpawn.enemyChoice, transform.position, Quaternion.identity, parent);
-            enemy.GetComponent<EnemyBaseClass>().SetIndex(index);
+            if (enemy.TryGetComponent<EnemyBaseClass>(out var enemyData))
+            {
+                enemyData.SetIndex(index);
+            }
         }
     }
 

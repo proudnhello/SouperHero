@@ -100,7 +100,6 @@ public class PlayerEnvInteraction : MonoBehaviour
 
             Throwable.dropItem(PlayerInventory.Singleton.objectHolding.gameObject);
         }
-        Debug.Log(currentInteractable);
         if (currentInteractable != null && 
         Time.frameCount != lastInteractionFrame)
         {

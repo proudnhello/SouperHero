@@ -70,7 +70,6 @@ public class BossAI : EnemyBaseClass
 
         shield = gameObject.transform.Find("Shield").gameObject;
         shieldParticles = GetComponent<ParticleSystem>();
-        Debug.Log(_rigidbody);
     }
 
     public void TriggerBossFight()

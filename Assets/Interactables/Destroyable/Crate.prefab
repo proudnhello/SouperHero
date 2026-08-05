@@ -75,7 +75,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 326946545
-  m_SortingLayer: 3
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 40ebadf1d9149a5418b10b37fa2c45b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -160,7 +160,7 @@ MonoBehaviour:
   - {fileID: 165481585712337600, guid: 68c470e8adabe4f46bb1f01d7f4c3806, type: 3}
   - {fileID: 165481585712337600, guid: c1442435e41d43f4e90b9b6e511c8907, type: 3}
   - {fileID: 165481585712337600, guid: 60d8cef6f94a91f4bb989422f0400fe6, type: 3}
-  oddsForSomething: 0.5
+  oddsForSomething: 0.2
   DestroyedOnDamage: 1
 --- !u!114 &5827697160182941612
 MonoBehaviour:
@@ -179,10 +179,8 @@ MonoBehaviour:
   InflictionFlavorsOnThrowContact:
   - inflictionType: 3
     amount: 15
-    statusEffectDuration: 0
   - inflictionType: 4
     amount: 5
-    statusEffectDuration: 0
 --- !u!50 &8800225070022031423
 Rigidbody2D:
   serializedVersion: 4

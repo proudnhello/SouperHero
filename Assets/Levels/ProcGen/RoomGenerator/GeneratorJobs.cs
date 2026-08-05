@@ -562,7 +562,7 @@ struct PlaceInitialRoomsJob : IJob
         {
             Coord = new(0, 0),
             Size = new(MAP_INFO.CHUNK_SIZE.x, MAP_INFO.CHUNK_SIZE.y),
-            Recursions = 3
+            Recursions = 4
         };
         DivideFreeRectangle(rect, startX, startY, hubRadius, hubRadius);
 
@@ -678,7 +678,7 @@ struct PlaceInitialRoomsJob : IJob
             {
                 Coord = new(0, 0),
                 Size = new(MAP_INFO.CHUNK_SIZE.x, MAP_INFO.CHUNK_SIZE.y),
-                Recursions = 3
+                Recursions = 4
             };
             DivideFreeRectangle(rect, camp_x, camp_y, campfire.TotalGridSpace.x, campfire.TotalGridSpace.y);
         }           
@@ -759,19 +759,23 @@ struct PlaceInitialRoomsJob : IJob
         else if (currChunk.NextChunkInAlphaPath.x < currChunk.Coordinate.x) bossDoor = 3;
 
 
-        int startX1 = currChunk.NextChunkInAlphaPath.x > currChunk.Coordinate.x ? MAP_INFO.CHUNK_SIZE.x / 2 : 0;
-        int startY1 = currChunk.NextChunkInAlphaPath.y > currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : 0;
-        int startX2 = currChunk.NextChunkInAlphaPath.x < currChunk.Coordinate.x ? MAP_INFO.CHUNK_SIZE.x / 2 : 0;
-        int startY2 = currChunk.NextChunkInAlphaPath.y < currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : 0;
-        int sizeX = currChunk.NextChunkInAlphaPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.x : MAP_INFO.CHUNK_SIZE.x / 2;
-        int sizeY = currChunk.NextChunkInAlphaPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : MAP_INFO.CHUNK_SIZE.y;
+        int campStartX = currChunk.NextChunkInAlphaPath.x > currChunk.Coordinate.x ? MAP_INFO.CHUNK_SIZE.x / 2 : 0;
+        int campStartY = currChunk.NextChunkInAlphaPath.y > currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : 0;
+        int campSizeX = currChunk.NextChunkInAlphaPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.x - 2 : MAP_INFO.CHUNK_SIZE.x / 2;
+        int campSizeY = currChunk.NextChunkInAlphaPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : MAP_INFO.CHUNK_SIZE.y - 2;
+
+        int bossStartX = currChunk.NextChunkInAlphaPath.x < currChunk.Coordinate.x ? MAP_INFO.CHUNK_SIZE.x / 2 : 1;
+        int bossStartY = currChunk.NextChunkInAlphaPath.y < currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.y / 2 : 1;
+        int bossSizeX = currChunk.NextChunkInAlphaPath.y != currChunk.Coordinate.y ? MAP_INFO.CHUNK_SIZE.x : (MAP_INFO.CHUNK_SIZE.x / 2)-1;
+        int bossSizeY = currChunk.NextChunkInAlphaPath.y != currChunk.Coordinate.y ? (MAP_INFO.CHUNK_SIZE.y / 2)-1 : MAP_INFO.CHUNK_SIZE.y;
+
 
         //Debug.Log($"{currChunk.NextChunkInPath} -> {currChunk.Coordinate}");
         //Debug.Log($"({startX1}, {startY1}), ({startX2}, {startY2}), {sizeX}, {sizeY}");
-        GenerationInfo bossRoom = RoomDatabase.GetRoom(RoomType.BOSS, currChunk.Biome, new(sizeX, sizeY));
+        GenerationInfo bossRoom = RoomDatabase.GetRoom(RoomType.BOSS, currChunk.Biome, new(bossSizeX, bossSizeY));
 
-        int boss_x = RNG.NextInt(startX2, startX2 + sizeX - bossRoom.TotalGridSpace.x);
-        int boss_y = RNG.NextInt(startY2, startY2 + sizeY - bossRoom.TotalGridSpace.y);
+        int boss_x = RNG.NextInt(bossStartX, bossStartX + bossSizeX - bossRoom.TotalGridSpace.x);
+        int boss_y = RNG.NextInt(bossStartY, bossStartY + bossSizeY - bossRoom.TotalGridSpace.y);
 
         TryClaim(boss_x, boss_y, boss_x + bossRoom.TotalGridSpace.x, boss_y + bossRoom.TotalGridSpace.y, bossRoom.UUID, bossRoom.GridPadding);
         bossRoom.RoomSpawn = new(boss_x + bossRoom.GridPadding, boss_y + bossRoom.GridPadding);
@@ -788,10 +792,10 @@ struct PlaceInitialRoomsJob : IJob
         }
         currChunk.DoorRoomIDTracker++;
 
-        GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, Biome.CAVE, new(sizeX, sizeY));
+        GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, Biome.CAVE, new(campSizeX, campSizeY));
 
-        int camp_x = RNG.NextInt(startX1, startX1 + sizeX - campfire.TotalGridSpace.x);
-        int camp_y = RNG.NextInt(startY1, startY1 + sizeY - campfire.TotalGridSpace.y);
+        int camp_x = RNG.NextInt(campStartX, campStartX + campSizeX - campfire.TotalGridSpace.x);
+        int camp_y = RNG.NextInt(campStartY, campStartY + campSizeY - campfire.TotalGridSpace.y);
 
         TryClaim(camp_x, camp_y, camp_x + campfire.TotalGridSpace.x, camp_y + campfire.TotalGridSpace.y, campfire.UUID, campfire.GridPadding);
         campfire.RoomSpawn = new(camp_x + campfire.GridPadding, camp_y + campfire.GridPadding);
@@ -809,8 +813,8 @@ struct PlaceInitialRoomsJob : IJob
 
         FreeRectangle campfireRect = new()
         {
-            Coord = new(startX1, startY1),
-            Size = new(sizeX, sizeY),
+            Coord = new(campStartX, campStartY),
+            Size = new(campSizeX, campSizeY),
             Recursions = 2
         };
         DivideFreeRectangle(campfireRect, camp_x, camp_y, campfire.TotalGridSpace.x, campfire.TotalGridSpace.y);
@@ -818,6 +822,21 @@ struct PlaceInitialRoomsJob : IJob
         //PlaceIntermediateRooms(); // in remainder of chunk wow cool i can use this this is accidentally good programming
     }
 
+    //void RemoveInvalidDoors()
+    //{
+    //    for (int d = 0; d < currChunk.Doors.Length; d++)
+    //    {
+    //        Chunk.DoorSpot door = currChunk.Doors[d];
+    //        if (door.coord.x < 0 || door.coord.x >= MAP_INFO.CHUNK_SIZE.x || door.coord.y < 0 || door.coord.y >= MAP_INFO.CHUNK_SIZE.y) continue;
+
+    //        var cell = currChunk.Grid[door.coord.x + door.coord.y * MAP_INFO.CHUNK_SIZE.y];
+    //        if (cell >= 32)
+    //        {
+    //            Debug.Log("invalid door at " + currChunk.Coordinate + ": " + door.coord);
+    //            currChunk.DoorStates[d] = -2;
+    //        }
+    //    }
+    //}
 }
 
 [BurstCompile]
@@ -935,47 +954,55 @@ struct PlaceConnectorsJob : IJob
     {
         if (currChunk.hasPreviousChunkPath1)
         {
+            // connect from previous chunk to nearest intermediate
             (Chunk.DoorSpot ClosestDoorSpot, int closestDoorIndex) = FindNearestDoors(currChunk.PreviousChunkPath1.coord, -1, true);
             FindAndPlaceConnectorPath(currChunk.PreviousChunkPath1, ClosestDoorSpot);
             currChunk.DoorStates[closestDoorIndex] = 0;
 
-            // connect from first intermediate to final campfire room
-            int i = 0;
-            for (; i < currChunk.Doors.Length; i++)
+            // connect from that intermediate to final campfire room unless intermediate == campfire room
+            if (currChunk.DoorRoomIDs[closestDoorIndex] != currChunk.CampfireDoorID)
             {
-                if (currChunk.DoorRoomIDs[i] == currChunk.CampfireDoorID && currChunk.DoorStates[i] == 1) break;
-            }
-            Chunk.DoorSpot unusedCampfireDoor = currChunk.Doors[i];
+                int i = 0;
+                for (; i < currChunk.Doors.Length; i++)
+                {
+                    if (currChunk.DoorRoomIDs[i] == currChunk.CampfireDoorID && currChunk.DoorStates[i] == 1) break;
+                }
+                Chunk.DoorSpot unusedCampfireDoor = currChunk.Doors[i];
 
-            int j = Mathf.Max(0, closestDoorIndex - 8); // rather than starting at 0 always, be smart, choose start index thats close?
-            for (; j < currChunk.Doors.Length; j++)
-            {
-                if (currChunk.DoorRoomIDs[j] == currChunk.DoorRoomIDs[closestDoorIndex] && currChunk.DoorStates[j] == 1) break;
+                int j = Mathf.Max(0, closestDoorIndex - 8); // rather than starting at 0 always, be smart, choose start index thats close?
+                for (; j < currChunk.Doors.Length; j++)
+                {
+                    if (currChunk.DoorRoomIDs[j] == currChunk.DoorRoomIDs[closestDoorIndex] && currChunk.DoorStates[j] == 1) break;
+                }
+                Chunk.DoorSpot unusedInterDoor = currChunk.Doors[j];
+                FindAndPlaceConnectorPath(unusedInterDoor, unusedCampfireDoor);
+                currChunk.DoorStates[i] = 0;
+                currChunk.DoorStates[j] = 0;
             }
-            Chunk.DoorSpot unusedInterDoor = currChunk.Doors[j];
-            FindAndPlaceConnectorPath(unusedInterDoor, unusedCampfireDoor);
-            currChunk.DoorStates[i] = 0;
-            currChunk.DoorStates[j] = 0;
         }
 
         if (currChunk.hasPreviousChunkPath2)
         {
+            // connect from previous chunk to nearest intermediate
             (Chunk.DoorSpot ClosestDoorSpot, int closestDoorIndex) = FindNearestDoors(currChunk.PreviousChunkPath2.coord, -1, true);
             FindAndPlaceConnectorPath(currChunk.PreviousChunkPath2, ClosestDoorSpot);
             currChunk.DoorStates[closestDoorIndex] = 0;
 
             if (currChunk.hasPreviousChunkPath1) return;
             // for first beta path chunk
-            // connect from first intermediate to final campfire room
-            int i = 0;
-            for (; i < currChunk.Doors.Length; i++)
+            // connect from that intermediate to final campfire room unless intermediate == campfire room
+            if (currChunk.DoorRoomIDs[closestDoorIndex] != currChunk.CampfireDoorID)
             {
-                if (currChunk.DoorRoomIDs[i] == currChunk.CampfireDoorID && currChunk.DoorStates[i] == 1) break;
-            }
-            Chunk.DoorSpot unusedCampfireDoor = currChunk.Doors[i];
+                int i = 0;
+                for (; i < currChunk.Doors.Length; i++)
+                {
+                    if (currChunk.DoorRoomIDs[i] == currChunk.CampfireDoorID && currChunk.DoorStates[i] == 1) break;
+                }
+                Chunk.DoorSpot unusedCampfireDoor = currChunk.Doors[i];
 
-            FindAndPlaceConnectorPath(ClosestDoorSpot, unusedCampfireDoor);
-            currChunk.DoorStates[i] = 0;
+                FindAndPlaceConnectorPath(ClosestDoorSpot, unusedCampfireDoor);
+                currChunk.DoorStates[i] = 0;
+            }
         }
     }
 
