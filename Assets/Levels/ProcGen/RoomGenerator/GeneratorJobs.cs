@@ -629,7 +629,7 @@ struct PlaceInitialRoomsJob : IJob
             exitDoor = 0;
         }
 
-        GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, Biome.CAVE, new(sizeX,sizeY));
+        GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, currChunk.Biome, new(sizeX,sizeY));
 
         int camp_x = RNG.NextInt(startX, startX + sizeX - campfire.TotalGridSpace.x);
         int camp_y = RNG.NextInt(startY, startY + sizeY - campfire.TotalGridSpace.y);
@@ -792,7 +792,7 @@ struct PlaceInitialRoomsJob : IJob
         }
         currChunk.DoorRoomIDTracker++;
 
-        GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, Biome.CAVE, new(campSizeX, campSizeY));
+        GenerationInfo campfire = RoomDatabase.GetRoom(RoomType.CAMPFIRE, currChunk.Biome, new(campSizeX, campSizeY));
 
         int camp_x = RNG.NextInt(campStartX, campStartX + campSizeX - campfire.TotalGridSpace.x);
         int camp_y = RNG.NextInt(campStartY, campStartY + campSizeY - campfire.TotalGridSpace.y);
@@ -871,7 +871,7 @@ struct PlaceConnectorsJob : IJob
             if (currChunk.ChunkType == Chunk.Type.Starting) FillHub();
             else if (currChunk.ChunkType == Chunk.Type.AlphaPath || currChunk.ChunkType == Chunk.Type.BetaPath) FillIntermediate();
             else if (currChunk.ChunkType == Chunk.Type.Boss) FillBoss();
-            // set extrema as invalid
+            // set 2 extrema as invalid
             int x_max = 0;
             int x_min = int.MaxValue;
             int y_max = 0;
@@ -884,14 +884,15 @@ struct PlaceConnectorsJob : IJob
                 y_max = Mathf.Max(y_max, currChunk.Doors[d].coord.y);
                 y_min = Mathf.Min(y_min, currChunk.Doors[d].coord.y);
             }
-            for (int d = 0; d < currChunk.Doors.Length; d++)
+            int hasRemovedCount = 0;
+            for (int d = 0; d < currChunk.Doors.Length && hasRemovedCount < 2; d++)
             {
                 if (currChunk.DoorStates[d] != 1) continue;
 
-                if (currChunk.Doors[d].coord.x == x_max) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.x == x_min) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.y == y_max) currChunk.DoorStates[d] = -1;
-                if (currChunk.Doors[d].coord.y == y_min) currChunk.DoorStates[d] = -1;
+                if (currChunk.Doors[d].coord.x == x_max) { currChunk.DoorStates[d] = -1; hasRemovedCount++; }
+                else if (currChunk.Doors[d].coord.x == x_min) { currChunk.DoorStates[d] = -1; hasRemovedCount++; }
+                else if (currChunk.Doors[d].coord.y == y_max) { currChunk.DoorStates[d] = -1; hasRemovedCount++; }
+                else if (currChunk.Doors[d].coord.y == y_min) { currChunk.DoorStates[d] = -1; hasRemovedCount++; }
             }
 
             if (currChunk.ChunkType != Chunk.Type.Boss) FillRemainingPath();
@@ -1218,7 +1219,7 @@ struct PlaceConnectorsJob : IJob
         for (int d = 0; d < currChunk.Doors.Length; d++)
         {
             //Debug.Log(d + " checking: " + currChunk.Doors[d].coord + " ID: " + ID + " " + currChunk.DoorRoomIDs[d] + " .. state: " + currChunk.DoorStates[d]);
-            if (currChunk.DoorStates[d] == 0 || currChunk.DoorRoomIDs[d] == -1 && !includeExtreme ||
+            if (currChunk.DoorStates[d] == 0 || currChunk.DoorStates[d] == -1 && !includeExtreme ||
                 currChunk.DoorStates[d] == -2) continue;
             if (currChunk.DoorRoomIDs[d] == ID && !ChooseID || currChunk.DoorRoomIDs[d] != ID && ChooseID) continue;
             Chunk.DoorSpot nDoor = currChunk.Doors[d];
@@ -1242,7 +1243,7 @@ struct PlaceConnectorsJob : IJob
             }
         }
 
-        if (!FirstChoice)
+        if (!FirstChoice && door2Index >= 0)
         {
             if (RNG.NextBool()) return (closestDoor1, door1Index);
             else return (closestDoor2, door2Index);

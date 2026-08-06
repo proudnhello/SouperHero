@@ -130,10 +130,12 @@ public unsafe struct RoomDatabase
                 15 => ConnectorType.Four,
                 _ => ConnectorType.None
             };
+            NativeList<GenerationInfo> validConnectors = new(0, Allocator.Temp);
             foreach (var room in rooms)
             {
-                if (room.ConnectorType == type) return room;
+                if (room.ConnectorType == type) validConnectors.Add(room);
             }
+            if (validConnectors.Length > 0) return validConnectors[rng.NextInt(0, validConnectors.Length)];
             return rooms[0];
         }
 
