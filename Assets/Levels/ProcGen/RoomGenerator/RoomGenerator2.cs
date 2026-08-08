@@ -6,6 +6,7 @@ using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.VisualScripting;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using static MapRoom;
 using Random = Unity.Mathematics.Random;
@@ -43,8 +44,11 @@ public class RoomGenerator2 : MonoBehaviour
     Dictionary<int, MapRoom> UUIDtoRoom;
     private void Start()
     {
-
+#if UNITY_EDITOR
         MAP_SEED = RunStateManager.Singleton.InitializeGameState(MAP_SEED);
+#else
+        MAP_SEED = RunStateManager.Singleton.InitializeGameState();
+#endif
 
         RoomDatabase = new();
         RoomDatabase.Init(AllRoomsUnsorted, MAP_SEED);

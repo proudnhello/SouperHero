@@ -55,13 +55,13 @@ public class RunStateManager : MonoBehaviour
     int enemySpawnIndex, destroyableSpawnIndex;
     RunStateData runData;
 
-    public uint InitializeGameState(uint initialSeed)
+    public uint InitializeGameState(uint initialSeed = 0)
     {
         runData = SaveManager.Singleton.LoadRunState();
         if (runData == null)
         {
             runData = new(true);
-            runData.seed = (uint)UnityEngine.Random.Range(0, int.MaxValue);
+            runData.seed = initialSeed > 0 ? initialSeed : (uint)UnityEngine.Random.Range(0, int.MaxValue);
         }
 
 
