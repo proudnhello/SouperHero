@@ -71,7 +71,7 @@ public class CameraMover : MonoBehaviour
     float zoomTimeProgressed;
     IEnumerator IZoomAnim;
     bool zoomInProgress;
-    Vector2 GoalPos;
+    Vector3 GoalPos;
     Vector3 ShakeOffset = Vector3.zero;
     IEnumerator ZoomAnim(bool zoomIn)
     {
@@ -82,7 +82,7 @@ public class CameraMover : MonoBehaviour
         {
             ReturnPos = transform.position;
             Vector3 t = CookingScreen.Singleton.CurrentCampfire.transform.position + CookingScreen.Singleton.CurrentCampfire.CameraOffset;
-            GoalPos = new Vector3(t.x, t.y, -20);
+            GoalPos = new Vector3(t.x, t.y, transform.position.z);
         }
         else
         {
@@ -100,7 +100,7 @@ public class CameraMover : MonoBehaviour
             var newPosition = Vector3.Lerp(ReturnPos, GoalPos, scaledPercentaged);
 
             _cam.m_Lens.OrthographicSize = newOrthoSize;
-            transform.position = newPosition;
+            transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
             yield return null;
 
             zoomTimeProgressed = zoomIn ? zoomTimeProgressed + Time.deltaTime : zoomTimeProgressed - Time.deltaTime;
@@ -138,6 +138,7 @@ public class CameraMover : MonoBehaviour
             yield return new WaitForSeconds(shakeLength);
             timer += shakeLength;
         }
+
         ShakeOffset = Vector3.zero;
     }
 
