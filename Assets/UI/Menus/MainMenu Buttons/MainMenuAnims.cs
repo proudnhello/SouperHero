@@ -43,17 +43,10 @@ public class MainMenuAnims : MonoBehaviour
     private bool isLoading = false;
 
     [Header("Menus")]
-    [SerializeField] private GameObject loadingScreen;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject settingsMenu;
 
-    [Header("Loading Bar")]
-    [SerializeField] public Slider loadingSlider;
 
-    [Header("Words")]
-    [SerializeField] private GameObject find;
-    [SerializeField] private GameObject the;
-    [SerializeField] private GameObject exit;
 
     private Sequence s;
     private Sequence moveInSecondarySequence;
@@ -166,8 +159,8 @@ public class MainMenuAnims : MonoBehaviour
     {
         if (isLoading) return;
         isLoading = true;
-
-        LoadScreen(false);
+        mainMenu.SetActive(false);
+        GameManager.Singleton.NewGame();
     }
 
     public void ContinueFromLoad()
@@ -175,28 +168,8 @@ public class MainMenuAnims : MonoBehaviour
         if (isLoading) return;
         isLoading = true;
 
-        LoadScreen(true);
-    }
-
-    //If there is save data (continueGame is true), load the save. If not, load a new game
-    private void LoadScreen(bool continueGame)
-    {
         mainMenu.SetActive(false);
-        loadingScreen.SetActive(true);
-
-        AudioManager.Singleton._MusicHandler.ChangeState(MusicHandler.MusicState.LOADING);
-
-        Sequence loadSequence = DOTween.Sequence();
-        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
-        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
-        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
-        loadSequence.AppendInterval(2f);
-        loadSequence.OnComplete(() =>
-        {
-            if (continueGame) GameManager.Singleton.LoadSave();
-            else GameManager.Singleton.NewGame();
-            isLoading = false;
-        });
+        GameManager.Singleton.LoadSave();
     }
 
     public void BackButton()

@@ -23,6 +23,7 @@ public struct MapInfo
 
 public class RoomGenerator2 : MonoBehaviour
 {
+    public static RoomGenerator2 Instance { get; private set; }
     public static event Action SpawnEntities;
 
     [Header("Layout")]
@@ -42,6 +43,14 @@ public class RoomGenerator2 : MonoBehaviour
     RoomDatabase RoomDatabase;
     Random RNG;
     Dictionary<int, MapRoom> UUIDtoRoom;
+
+    internal ChunkSpawner chunkSpawner; // for loading screen tracking
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this) Destroy(this);
+        else Instance = this;
+    }
     private void Start()
     {
 #if UNITY_EDITOR
@@ -92,9 +101,10 @@ public class RoomGenerator2 : MonoBehaviour
             yield return new WaitUntil(() => PlaceConnectorsJobHandle.IsCompleted);
 
             Transform RoomHolder = new GameObject("RoomHolder").transform;
-            ChunkSpawner chunkSpawner = RoomHolder.AddComponent<ChunkSpawner>();
+            chunkSpawner = RoomHolder.AddComponent<ChunkSpawner>();
             var hubRoom = UUIDtoRoom[RoomDatabase.GetRoom(RoomType.START, Biome.CAVE).UUID].gameObject;
-            yield return StartCoroutine(chunkSpawner.SpawnInitialChunks(MapChunks, UUIDtoRoom, MAP_INFO, hubRoom));
+            chunkSpawner.TriggerChunkSpawn(MapChunks, UUIDtoRoom, MAP_INFO, hubRoom);
+            yield return StartCoroutine(chunkSpawner.HandleSpawnCheck());
 
             _NavMeshSurface.BuildNavMesh();
 
@@ -110,6 +120,7 @@ public class RoomGenerator2 : MonoBehaviour
         Grid.Dispose();
         MapChunks.Dispose();
         RoomDatabase.Dispose();
+        Instance = null;
     }
     private void OnDrawGizmos()
     {

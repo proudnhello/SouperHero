@@ -30,7 +30,7 @@ public class PlayerInChunkTracker
                 currChunkCorner = GetCurrentChunkCorner(PlayerEntityManager.Singleton.transform.position);
                 if (lastChunkCorner != currChunkCorner)
                 {
-                    _ChunkSpawner.DisplayChunk(GetCurrentChunk(PlayerEntityManager.Singleton.transform.position), currChunkCorner);
+                    //_ChunkSpawner.DisplayChunk(GetCurrentChunk(PlayerEntityManager.Singleton.transform.position), currChunkCorner);
                     lastChunkCorner = currChunkCorner;
                 }
             }

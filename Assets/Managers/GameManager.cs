@@ -20,7 +20,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Singleton { get; private set; }
 
-    private float loadingProgressBuffer = 0;
 
     private void Awake()
     {
@@ -45,23 +44,20 @@ public class GameManager : MonoBehaviour
         UnityEditor.AssetDatabase.Refresh();
 #endif
 
-        StartCoroutine(LoadScene());
+        StartCoroutine(LoadLoadingScene());
     }
 
     public void LoadSave()
     {
         IsCurrentRunFromSave = true;
-
-        StartCoroutine(LoadScene());
+        StartCoroutine(LoadLoadingScene());
     }
 
-    IEnumerator LoadScene() // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
+    IEnumerator LoadLoadingScene() // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
     {
-        AsyncOperation async = SceneManager.LoadSceneAsync(1);
-        GameObject loadingBar = GameObject.Find("/LoadingCanvas/LoadingScreen/LoadingBar");
+        AsyncOperation async = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
 
         //Display loading bar
-        StartCoroutine(LoadingBar(async, loadingBar));
 
         // Don't let the scene start until all Studio Banks have finished loading
         async.allowSceneActivation = false;
@@ -91,19 +87,6 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => async.isDone);
     }
 
-    IEnumerator LoadingBar(AsyncOperation async, GameObject loadingBar)
-    {
-        float value = 0f;
-        //while (!async.isDone && loadingBar)
-        while (value < 1f && loadingBar)
-        {
-            float loadingProgressVal = async.progress;
-            value = Mathf.Clamp01(((loadingProgressVal/0.9f) / 2f) + ((loadingProgressBuffer/0.9f) / 2f));
-            loadingBar.GetComponent<Slider>().value = value;
-            loadingProgressBuffer += 0.1f;
-            yield return null;
-        }
-    }
 
     public static event Action OnStartRun;
     public void StartRun()
@@ -120,8 +103,8 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         OnEndRun?.Invoke();
 
-        if (successfulRun) SceneManager.LoadScene(3);
-        else SceneManager.LoadScene(2);
+        if (successfulRun) SceneManager.LoadScene(4);
+        else SceneManager.LoadScene(3);
     }
 
 }

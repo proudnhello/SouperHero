@@ -952,6 +952,8 @@ struct PlaceConnectorsJob : IJob
                 break;
             }
         }
+
+        // THIS KEESP ERRORINGNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
         Chunk.DoorSpot unusedInterDoor = currChunk.Doors[j]; // um this errored where j reached currChunk.Doors.Length so was out of bounds, why?
         FindAndPlaceConnectorPath(unusedInterDoor, unusedCampfireDoor);
         currChunk.DoorStates[i] = 0;
