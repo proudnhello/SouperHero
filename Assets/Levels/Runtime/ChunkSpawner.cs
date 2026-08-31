@@ -83,6 +83,8 @@ public class ChunkSpawner : MonoBehaviour
 
     internal float totalRooms;
     internal float roomsSpawned = 0;
+    internal float totalChunks;
+    internal float chunksSpawned = 0;
     public IEnumerator HandleSpawnCheck()
     {
         roomsSpawned = 0;
@@ -97,7 +99,14 @@ public class ChunkSpawner : MonoBehaviour
             }
         }
 
-        foreach (var info in chunkSpawnInfos) if (info != null) yield return StartCoroutine(SpawnInChunk(info));
+
+        totalChunks = chunkSpawnInfos.Length; // just reusing these variables whatever
+        chunksSpawned = 0;
+        foreach (var info in chunkSpawnInfos)
+        {
+            if (info != null) yield return StartCoroutine(SpawnInChunk(info));
+            chunksSpawned++;
+        }
     }
 
     IEnumerator SpawnInChunk(ChunkSpawnInfo info)

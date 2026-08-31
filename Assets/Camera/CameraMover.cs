@@ -37,7 +37,6 @@ public class CameraMover : MonoBehaviour
     float ZoomedOutSize;
     float ZoomedInSize;
 
-
     // This method is called when the script instance is being loaded
     private void Start()
     {
@@ -47,6 +46,7 @@ public class CameraMover : MonoBehaviour
         Camera.main.transform.position = transform.position;
         ZoomedOutSize = _cam.m_Lens.OrthographicSize = 0.5f * UNITS_PER_PIXEL * Screen.height;
         ZoomedInSize = ZoomedOutSize / 2;
+        _cam.m_Lens.OrthographicSize = ZoomedInSize;
         CookingScreen.EnterCookingScreen += ZoomIn;
         CookingScreen.ExitCookingScreen += ZoomOut;
     }
@@ -111,6 +111,44 @@ public class CameraMover : MonoBehaviour
         transform.position = zoomIn ? GoalPos : ReturnPos;
         IZoomAnim = null;
         if (!zoomIn) zoomInProgress = false;
+    }
+
+    public IEnumerator ZoomAnimIntro(float holdTime, float zoomOutTime)
+    {
+        zoomInProgress = true;
+        Vector3 StartMoverPos = Vector3.zero;
+
+        float time = 0;
+        while (time < holdTime)
+        {
+            StartMoverPos = new Vector3(_player.position.x, _player.position.y, transform.position.z);
+            transform.position = StartMoverPos;
+            Camera.main.transform.position = StartMoverPos;
+
+            yield return null;
+            time += Time.deltaTime;
+        }
+
+        zoomTimeProgressed = 0;
+        while (zoomTimeProgressed <= zoomOutTime)
+        {
+            var percentCompleted = Mathf.Clamp01(zoomTimeProgressed / zoomOutTime);
+            var scaledPercentaged = ZoomAnimationCurve.Evaluate(percentCompleted);
+
+            var newOrthoSize = Mathf.Lerp(ZoomedInSize, ZoomedOutSize, scaledPercentaged);
+
+            var newPosition = Vector3.Lerp(StartMoverPos, TargetPos, scaledPercentaged);
+
+            transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
+            _cam.m_Lens.OrthographicSize = newOrthoSize;
+            yield return null;
+
+            zoomTimeProgressed += Time.deltaTime;
+        }
+
+        zoomTimeProgressed = 0;
+        _cam.m_Lens.OrthographicSize = ZoomedOutSize;
+        zoomInProgress = false;
     }
 
     private void Update()

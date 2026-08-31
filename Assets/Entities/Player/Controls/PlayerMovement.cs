@@ -84,10 +84,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isDashing)
-        {
-            return;
-        }
+        if (isDashing || !GameManager.Singleton.GameRunning) return;
+
         // This code is duplicated in CameraFollower.cs. We should consolidate the two into a singleton.
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -104,10 +102,8 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(isDashing)
-        {
-            return;
-        }
+        if (isDashing || !GameManager.Singleton.GameRunning) return;
+
         // If the player is charging, don't allow movement, but still allow the player to rotate
         if (!charging)
         {

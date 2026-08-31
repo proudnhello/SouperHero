@@ -89,10 +89,12 @@ public class GameManager : MonoBehaviour
 
 
     public static event Action OnStartRun;
+    internal bool GameRunning;
+    internal bool GameReady;
     public void StartRun()
     {
-        MetricsTracker.Singleton.StartRun();
         OnStartRun?.Invoke();
+        GameReady = true;
     }
 
     // Goes to Win or Death Scene
@@ -102,6 +104,8 @@ public class GameManager : MonoBehaviour
         MetricsTracker.Singleton.EndRun(successfulRun);
         Cursor.visible = true;
         OnEndRun?.Invoke();
+        GameRunning = false;
+        GameReady = false;
 
         if (successfulRun) SceneManager.LoadScene(4);
         else SceneManager.LoadScene(3);
