@@ -24,45 +24,19 @@ public class Collectable : MonoBehaviour
             }
         }
 
-        GeneratePromptText();
-
         collectableObj.Init(this);
-        collectableUI.Init(this);
+        collectableUI?.Init(this);
         collectableObj.Drop(spawnPoint);
     }
 
     public void SpawnInUI(Vector2 spawnPoint, float rotation)
     {
-        GeneratePromptText();
         collectableObj.Init(this);
         collectableUI.Init(this);
         collectableObj.gameObject.SetActive(false);
         collectableUI.gameObject.SetActive(true);
         collectableUI.PickUp();
         BasketUI.Singleton.SpawnIngredient(this, spawnPoint, rotation);
-    }
-
-    void GeneratePromptText()
-    {
-        promptText = ingredient.name + "\n";
-
-        if (ingredient.GetType() == typeof(AbilityIngredient))
-        {
-            AbilityIngredient ability = (AbilityIngredient)ingredient;
-            promptText += ability.abilityType._abilityName;
-        }
-        else if (ingredient.GetType() == typeof(FlavorIngredient))
-        {
-            FlavorIngredient stat = (FlavorIngredient)ingredient;
-            foreach (var flavor in stat.buffFlavors)
-            {
-                promptText += flavor.buffType.ToString() + "\n";
-            }
-            foreach (var flavor in stat.inflictionFlavors)
-            {
-                promptText += flavor.inflictionType.ToString() + "\n";
-            }
-        }
     }
 
     public void Drop()
@@ -84,7 +58,7 @@ public class Collectable : MonoBehaviour
         PlayerInventory.Singleton.RemoveIngredientCollectable(this, false);
     }
 
-    public void Collect()
+    public virtual void Collect()
     {
         collectableObj.gameObject.SetActive(false);
         collectableUI.gameObject.SetActive(true);

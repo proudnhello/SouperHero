@@ -60,6 +60,7 @@ public class ChunkSpawner : MonoBehaviour
             chunkSpawnInfos[i].ChunkBottomLeft = new Vector2(chunk.Coordinate.x, chunk.Coordinate.y) * MAP_INFO.CHUNK_SIZE * MAP_INFO.GRID_SIZE;
             chunkSpawnInfos[i].ChunkInfo = chunk;
             chunkSpawnInfos[i].asyncInstantiateOperations = new();
+            totalChunks++;
 
             for (int j = 0; j < chunk.Rooms.Length; j++)
             {
@@ -100,12 +101,14 @@ public class ChunkSpawner : MonoBehaviour
         }
 
 
-        totalChunks = chunkSpawnInfos.Length; // just reusing these variables whatever
         chunksSpawned = 0;
         foreach (var info in chunkSpawnInfos)
         {
-            if (info != null) yield return StartCoroutine(SpawnInChunk(info));
-            chunksSpawned++;
+            if (info != null)
+            {
+                yield return StartCoroutine(SpawnInChunk(info));
+                chunksSpawned++;
+            }
         }
     }
 
@@ -148,6 +151,12 @@ public class ChunkSpawner : MonoBehaviour
         info.ChunkInfo.Doors.Dispose();
         info.ChunkInfo.DoorRoomIDs.Dispose();
         info.ChunkInfo.Rooms.Dispose();
+
+        // use one chest per chunk
+        Chest[] chests = info.ChunkHolder.GetComponentsInChildren<Chest>();
+        int usingChest = UnityEngine.Random.Range(0, chests.Length);
+        for (int i = 0; i < chests.Length; i++) if (i != usingChest) Destroy(chests[i].gameObject);
+
 
         yield return null;
     }

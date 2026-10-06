@@ -259,6 +259,11 @@ public class SoupInventoryUI : MonoBehaviour
         SoupBio.OnCook(newSoup);
     }
 
+    public void CollectNewBowl(int index)
+    {
+        InventorySlots[index].CollectNewBowl(IsOpen);
+    }
+
     public void EnableFlavorParticles(ISoupBowl bowl, GameObject slot)
     {
         if (IsOpen || CookingScreen.Singleton.IsCooking) return; //Only display when inventory is closed and not cooking

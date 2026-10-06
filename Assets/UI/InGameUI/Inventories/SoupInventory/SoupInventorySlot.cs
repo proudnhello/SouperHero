@@ -108,7 +108,6 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         isSelected = CookingScreen.Singleton.BowlCookingSlot.soupSlotReference == slotIndex;
         PlaceBowlInSlotAnim(true);
         SoupInventoryUI.Singleton.DisableFlavorParticles(this.gameObject);
-
     }
 
     public void ExitInventoryScreen()
@@ -231,6 +230,15 @@ public class SoupInventorySlot : MonoBehaviour, ICursorInteractable, ITooltipSou
         if (IHoverScaler != null) StopCoroutine(IHoverScaler);
         if (IEquipAnim != null) StopCoroutine(IEquipAnim);
         RenderSlotContents();
+    }
+
+    public void CollectNewBowl(bool inventoryOpen)
+    {
+        if (inventoryOpen)
+        {
+            UnequipSlot(true); EquipSlot();
+        }
+        else UnequipSlot();
     }
 
     void PlaceBowlInSlotAnim(bool enteringInventory = false) // either from swapping or returning bowl to slot or entering menu

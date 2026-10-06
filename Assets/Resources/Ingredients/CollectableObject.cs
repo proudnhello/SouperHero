@@ -15,6 +15,7 @@ public class CollectableObject : Interactable
     public static event System.Action Collected;
     protected const float dropLifetime = 30f; //How long object will last once dropped
 
+
     public void Init(Collectable col)
     {
         _Collectable = col;

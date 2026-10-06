@@ -221,6 +221,7 @@ public class PlayerInventory : MonoBehaviour
         int slot = FindNextAvailableSlot();
         soupsHeld[slot] = bowl;
         SoupInventoryUI.Singleton.AddSoupInSlot(bowl, slot);
+        SoupInventoryUI.Singleton.CollectNewBowl(slot);
     }
 
     void BowlIsEmptied(int slot)

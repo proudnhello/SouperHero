@@ -28,7 +28,7 @@ public class LoadingScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SceneManager.UnloadSceneAsync(0);
+        if (SceneManager.GetSceneByBuildIndex(0).IsValid()) SceneManager.UnloadSceneAsync(0);
         AudioManager.Singleton._MusicHandler.ChangeState(MusicHandler.MusicState.LOADING);
         LoadText.text = "";
         Sequence loadSequence = DOTween.Sequence();

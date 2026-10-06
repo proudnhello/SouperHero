@@ -6,16 +6,17 @@ public class Chest : Interactable
 {
     [Header("Chest")]
     //[SerializeField] private FlavorIngredient ingredient;
-    [SerializeField] protected List<Collectable> items;
+    public Collectable item;
+    [SerializeField] Vector3 spawnOffset;
 
+    bool isOpen;
     public override void Interact()
     { 
-        if(CanInteract())
+        if(CanInteract() && !isOpen)
         {
-            Vector3 offset = new Vector3(0, -0.75f, 0);
+            isOpen = true;
 
-            Collectable collectable = items[Random.Range(0, items.Count)];  // choose a random item from the list
-            Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position + offset); //Spawn collectable when chest is opened
+            Instantiate(item.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position + spawnOffset); //Spawn collectable when chest is opened
 
             // set the interactable to false so the chest can't be opened multiple times
             SetInteractable(false);
