@@ -26,6 +26,7 @@ public class ChunkSpawner : MonoBehaviour
 
     internal ChunkSpawnInfo[] chunkSpawnInfos;
     MapRoom spawnRoom;
+    int westBetaChunks, eastBetaChunks;
     public void TriggerChunkSpawn(NativeArray<Chunk> _MapChunks, Dictionary<int, MapRoom> _UUIDtoRoom, MapInfo _MAP_INFO, GameObject hubRoomObject)
     {
         MapChunks = _MapChunks;
@@ -62,6 +63,13 @@ public class ChunkSpawner : MonoBehaviour
             chunkSpawnInfos[i].asyncInstantiateOperations = new();
             totalChunks++;
 
+            // get stats for treasure placement later
+            if (chunk.ChunkType == Chunk.Type.BetaPath)
+            {
+                if (chunk.Coordinate.x < 3) westBetaChunks++;
+                else eastBetaChunks++;
+            }
+
             for (int j = 0; j < chunk.Rooms.Length; j++)
             {
                 var room = chunk.Rooms[j];
@@ -86,6 +94,7 @@ public class ChunkSpawner : MonoBehaviour
     internal float roomsSpawned = 0;
     internal float totalChunks;
     internal float chunksSpawned = 0;
+    internal float chunksFilledWithTreasure = 0;
     public IEnumerator HandleSpawnCheck()
     {
         roomsSpawned = 0;
@@ -108,6 +117,74 @@ public class ChunkSpawner : MonoBehaviour
             {
                 yield return StartCoroutine(SpawnInChunk(info));
                 chunksSpawned++;
+            }
+        }
+
+        chunksFilledWithTreasure = 0;
+        // i hate all these variables whatever
+        int indexWestHighChest = UnityEngine.Random.Range(0, westBetaChunks);
+        int indexWestTracker = 0;
+        int infoIndexWest = 0;
+        int indexEastHighChest = UnityEngine.Random.Range(0, eastBetaChunks);
+        int indexEastTracker = 0;
+        int infoIndexEast = 0;
+        for (int i = 0; i < chunkSpawnInfos.Length; i++)
+        {
+            var info = chunkSpawnInfos[i];
+            if (info == null) continue;
+            if (info.ChunkInfo.ChunkType == Chunk.Type.BetaPath)
+            {
+                if (info.ChunkInfo.Coordinate.x < 3)
+                {
+                    if (indexWestTracker == -1) continue;
+                    if (indexWestHighChest == indexWestTracker)
+                    {
+                        infoIndexWest = i;
+                        indexWestTracker = -1;
+                    }
+                    else indexWestTracker++;
+                }
+                else
+                {
+                    if (indexEastTracker == -1) continue;
+                    if (indexEastHighChest == indexEastTracker)
+                    {
+                        infoIndexEast = i;
+                        indexEastTracker = -1;
+                    }
+                    else indexEastTracker++;
+                }
+            }
+        }
+
+        int medLowTracker = 0;
+        for (int i = 0; i < chunkSpawnInfos.Length; i++)
+        {
+            var info = chunkSpawnInfos[i];
+            if (info != null)
+            {
+                chunksFilledWithTreasure++;
+
+                // use one chest per chunk
+                Chest[] chests = info.ChunkHolder.GetComponentsInChildren<Chest>();
+                if (chests.Length == 0) continue; // should be impossible
+
+                int usingChest = UnityEngine.Random.Range(0, chests.Length);
+                for (int c = 0; c < chests.Length; c++) if (c != usingChest) Destroy(chests[c].gameObject);
+
+                if (info.ChunkInfo.ChunkType == Chunk.Type.BetaPath)
+                {
+                    if (i == infoIndexWest || i == infoIndexEast)
+                    {
+                        chests[usingChest].item = RoomGenerator2.Instance.chestDistribution.GetBowl(2);
+                        yield return null;
+                        continue;
+                    }
+                }
+                chests[usingChest].item = RoomGenerator2.Instance.chestDistribution.GetBowl(medLowTracker);
+                medLowTracker = (medLowTracker + 1) % 2;
+
+                yield return null;
             }
         }
     }
@@ -151,12 +228,6 @@ public class ChunkSpawner : MonoBehaviour
         info.ChunkInfo.Doors.Dispose();
         info.ChunkInfo.DoorRoomIDs.Dispose();
         info.ChunkInfo.Rooms.Dispose();
-
-        // use one chest per chunk
-        Chest[] chests = info.ChunkHolder.GetComponentsInChildren<Chest>();
-        int usingChest = UnityEngine.Random.Range(0, chests.Length);
-        for (int i = 0; i < chests.Length; i++) if (i != usingChest) Destroy(chests[i].gameObject);
-
 
         yield return null;
     }

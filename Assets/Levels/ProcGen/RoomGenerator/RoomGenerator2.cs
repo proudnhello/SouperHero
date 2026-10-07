@@ -29,12 +29,14 @@ public class RoomGenerator2 : MonoBehaviour
     [Header("Layout")]
     public MapInfo MAP_INFO;
     public uint MAP_SEED = 0;
+    public ChestDistribution chestDistribution;
 
     [Header("Rooms")]
     [SerializeField] MapRoom[] AllRoomsUnsorted;
 
     [Header("NavMesh")]
     public NavMeshSurface _NavMeshSurface;
+
     // ####################
 
     // LOCAL VARIABLES

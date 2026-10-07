@@ -92,6 +92,17 @@ public class LoadingScreen : MonoBehaviour
             yield return null;
         }
 
+        LoadText.text = "Placing secrets...";
+
+        value = 0f;
+        while (value < 1f)
+        {
+            float loadingProgressVal = RoomGenerator2.Instance.chunkSpawner.chunksFilledWithTreasure / RoomGenerator2.Instance.chunkSpawner.totalChunks;
+            value = Mathf.Clamp01(loadingProgressVal);
+            loadingSlider.value = value;
+            yield return null;
+        }
+
         yield return new WaitUntil(() => GameManager.Singleton.GameReady);
 
         float time = ALPHA_FADE_ANIM_TIME;
