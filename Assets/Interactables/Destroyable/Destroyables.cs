@@ -11,6 +11,7 @@ public class Destroyables : MonoBehaviour
     public List<Collectable> multipleCollectables;
     [SerializeField] private float oddsForSomething = .5f;
     public bool DestroyedOnDamage = true;
+    [SerializeField] DestructableParticleCreator destroyedParticles;
 
     int forageableIndex = -1;
     public void TrackSpawn(int index, List<Collectable> newList)
@@ -48,10 +49,14 @@ public class Destroyables : MonoBehaviour
         }
 
         if (forageableIndex >= 0) RunStateManager.Singleton.TrackBrokenDestroyable(forageableIndex);
+
+        destroyedParticles?.Emit();
     }
 
     public void ManualDestroy()
     {
         if (forageableIndex >= 0) RunStateManager.Singleton.TrackBrokenDestroyable(forageableIndex);
+
+        destroyedParticles?.Emit();
     }
 }

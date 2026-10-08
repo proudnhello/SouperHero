@@ -31,11 +31,11 @@ public class LoadingScreen : MonoBehaviour
         if (SceneManager.GetSceneByBuildIndex(0).IsValid()) SceneManager.UnloadSceneAsync(0);
         AudioManager.Singleton._MusicHandler.ChangeState(MusicHandler.MusicState.LOADING);
         LoadText.text = "";
+        loadingSlider.gameObject.SetActive(false);
         Sequence loadSequence = DOTween.Sequence();
         loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
         loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
         loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
-        loadSequence.AppendInterval(2f);
         loadSequence.OnComplete(() =>
         {
             StartCoroutine(LoadGameScene());
@@ -48,6 +48,7 @@ public class LoadingScreen : MonoBehaviour
 
         AsyncOperation async = SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);
         async.allowSceneActivation = false;
+        loadingSlider.gameObject.SetActive(true);
 
         float value = 0f;
         float loadingProgressBuffer = 0;
