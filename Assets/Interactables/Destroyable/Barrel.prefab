@@ -183,6 +183,7 @@ MonoBehaviour:
   oddsForSomething: 0.2
   DestroyedOnDamage: 1
   destroyedParticles: {fileID: 8455236579799471622}
+  hitsToBreak: 1
 --- !u!50 &2217634043715287802
 Rigidbody2D:
   serializedVersion: 4
@@ -256,8 +257,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b39fe10fbf01e449926f4c84e8c184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particles: {fileID: 8970397727183147623}
-  emitCount: 10
+  hitParticles: {fileID: 0}
+  hitEmitCount: 12
+  breakParticles: {fileID: 8970397727183147623}
+  breakEmitCount: 12
 --- !u!199 &5698104947731726660
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -297,9 +300,9 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 326946545
-  m_SortingLayer: 6
-  m_SortingOrder: 200
+  m_SortingLayerID: -1597912585
+  m_SortingLayer: 5
+  m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0

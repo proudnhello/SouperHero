@@ -4,23 +4,32 @@ using UnityEngine;
 
 public class DestructableParticleCreator : MonoBehaviour
 {
-    [SerializeField] ParticleSystem particles;
-    [SerializeField] int emitCount = 12;
-    // Start is called before the first frame update
-    public void Emit()
+    [SerializeField] ParticleSystem hitParticles;
+    [SerializeField] int hitEmitCount = 12;
+    [SerializeField] ParticleSystem breakParticles;
+    [SerializeField] int breakEmitCount = 12;
+
+    public void Hit()
     {
-        transform.parent = null;
-        particles.Emit(emitCount);
+        if (hitParticles != null) hitParticles.Emit(hitEmitCount);
+    }
+
+    public void Break()
+    {
+        if (hitParticles != null) hitParticles.transform.parent = null;
+        breakParticles.transform.parent = null;
+        breakParticles.Emit(breakEmitCount);
         StartCoroutine(Wait());
 
         IEnumerator Wait()
         {
             Debug.Log("trigger");
-            while (particles.IsAlive())
+            while (breakParticles.IsAlive())
             {
                 yield return null;
             }
-            Destroy(gameObject);
+            if (hitParticles != null) Destroy(hitParticles.gameObject);
+            Destroy(breakParticles.gameObject);
         }
 
     }
