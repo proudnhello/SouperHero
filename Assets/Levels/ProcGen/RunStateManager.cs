@@ -64,7 +64,6 @@ public class RunStateManager : MonoBehaviour
             runData.seed = initialSeed > 0 ? initialSeed : (uint)UnityEngine.Random.Range(0, int.MaxValue);
         }
 
-
         enemySpawnIndex = 0;
         destroyableSpawnIndex = 0;
 
@@ -87,6 +86,7 @@ public class RunStateManager : MonoBehaviour
 
     public void SaveRunState(bool initialState = false)
     {
+        if (GameManager.Singleton.TutorialRunning) return;
         runData.playerPos = PlayerEntityManager.Singleton.transform.position;
         SaveManager.Singleton.SaveRunState(runData);
     }
@@ -105,6 +105,7 @@ public class RunStateManager : MonoBehaviour
 
     public void TrackEnemyDeath(int index)
     {
+        if (GameManager.Singleton.TutorialRunning) return;
         if (runData == null)
         {
             Debug.LogWarning("Run data is null.");
@@ -127,6 +128,7 @@ public class RunStateManager : MonoBehaviour
 
     public void TrackBrokenDestroyable(int index)
     {
+        if (GameManager.Singleton.TutorialRunning) return;
         runData.destroyableStates[index] = 0;
     }
 }

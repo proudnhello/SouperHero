@@ -10,10 +10,10 @@ public class EntityRenderer
     // Maybe there's some genious reason for this that I'm not seeing, but it seems like an unnecessary abstraction layer to me
     protected Entity Entity;
     protected SpriteRenderer spriteRenderer;
-    public EntityRenderer(Entity entity)
+    public EntityRenderer(Entity entity, SpriteRenderer sprite = null)
     {
         Entity = entity;
-        spriteRenderer = Entity.GetComponent<SpriteRenderer>();
+        spriteRenderer = sprite == null ? Entity.GetComponent<SpriteRenderer>() : sprite;
     }
 
     IEnumerator ITakeDamageAnimation;
@@ -23,9 +23,9 @@ public class EntityRenderer
         Entity.StartCoroutine(ITakeDamageAnimation = TakeDamageAnimation());
     }
 
-    IEnumerator TakeDamageAnimation()
+    public IEnumerator TakeDamageAnimation()
     {
-        float maxFlashCycles = (Entity.GetInvincibility() / 0.3f);
+        float maxFlashCycles = Entity != null ? (Entity.GetInvincibility() / 0.3f) : 2;
         int flashCycles = 0;
 
         while (maxFlashCycles > flashCycles)

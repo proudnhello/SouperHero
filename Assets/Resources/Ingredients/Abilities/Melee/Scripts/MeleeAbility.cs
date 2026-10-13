@@ -46,7 +46,8 @@ public class MeleeAbility : AbilityAbstractClass
                 rayDir, length, CollisionLayers.Singleton.GetEnvironmentLayer());
             float rayLength = wall.collider != null ? Vector2.Distance(wall.point, PlayerEntityManager.Singleton.gameObject.transform.position) : length;
             RaycastHit2D[] hits = Physics2D.RaycastAll(PlayerEntityManager.Singleton.gameObject.transform.position,
-                rayDir, rayLength, CollisionLayers.Singleton.GetEnemyLayer() | CollisionLayers.Singleton.GetDestroyableLayer());
+                rayDir, rayLength, CollisionLayers.Singleton.GetEnemyLayer() | CollisionLayers.Singleton.GetDestroyableLayer()
+                | CollisionLayers.Singleton.GetInteractableLayer());
             Debug.DrawRay(PlayerEntityManager.Singleton.gameObject.transform.position,
                 rayDir * rayLength, Color.magenta, .5f);
             foreach (var hit in hits) hitColliders.Add(hit.collider);
@@ -67,6 +68,13 @@ public class MeleeAbility : AbilityAbstractClass
             {
                 // Remove the destroyable object
                 destroyableObject.RemoveDestroyable();
+                continue;
+            }
+
+            NPC npc = col.transform.parent.GetComponentInChildren<NPC>();
+            if (npc != null)
+            {
+                npc.TakeDamange();
             }
         }
         PlayerEntityManager.Singleton.StartCoroutine(HandleAnim(length));

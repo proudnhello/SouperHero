@@ -43,9 +43,9 @@ public class DialogueManager : MonoBehaviour
         nameText.text = LocalizationManager.GetLocalizedDialogue(dialogue.nameKey);
         sentenceKeys.Clear();
 
-        foreach (string sentenceKey in dialogue.sentenceKeys)
+        foreach (var sentenceKey in dialogue.sentenceKeys)
         {
-            sentenceKeys.Enqueue(sentenceKey);
+            if (dialogue.currentStage == sentenceKey.stage) sentenceKeys.Enqueue(sentenceKey.sentence);
         }
 
         DisplayNextSentence();
@@ -53,8 +53,8 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        if (sentenceKeys.Count == 0){
-            isDialogueActive = false;
+        if (sentenceKeys.Count == 0)
+        {
             EndDialogue();
             return;
         }
@@ -81,6 +81,7 @@ public class DialogueManager : MonoBehaviour
 
     public void EndDialogue()
     {
+        isDialogueActive = false;
         animator.SetBool("IsOpen", false);
     }
 

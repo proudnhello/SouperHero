@@ -591,7 +591,7 @@ MonoBehaviour:
   needsBounds: 1
   baseStats:
     maxHealth: 90
-    baseMoveSpeed: 5.7
+    baseMoveSpeed: 5
     invincibility: 1
   currentStats:
     health: 0
@@ -602,7 +602,7 @@ MonoBehaviour:
   animations: {fileID: 11400000, guid: bf07f1b198392e9458fd9bd5aad1a318, type: 2}
   playerMovement: {fileID: 4828791170773762287}
   playerHoldingPoint: {fileID: 4867118698823343567}
-  DEBUG_INVINCIBLE: 0
+  DEBUG_INVINCIBLE: 1
 --- !u!114 &4828791170773762287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -774,7 +774,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4732919122290708663}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
   m_Name: 
@@ -787,11 +787,11 @@ MonoBehaviour:
   m_SelfShadows: 0
   m_ApplyToSortingLayers: 00000000dd9d7a5cf7c9c1a06dd40f9f
   m_ShapePath:
-  - {x: -0.42385864, y: -0.71585083, z: 0}
-  - {x: -0.42515182, y: -0.68481445, z: 0}
-  - {x: -0.4555092, y: -0.6858139, z: 0}
-  - {x: -0.4552536, y: -0.62646484, z: 0}
-  - {x: -0.42482376, y: -0.62638855, z: 0}
+  - {x: -0.4197502, y: -0.71482086, z: 0}
+  - {x: -0.4184723, y: -0.6837845, z: 0}
+  - {x: -0.4524231, y: -0.6822128, z: 0}
+  - {x: -0.45165634, y: -0.6321182, z: 0}
+  - {x: -0.41659927, y: -0.629982, z: 0}
   - {x: -0.4210472, y: -0.5974808, z: 0}
   - {x: 0.38581848, y: -0.59085846, z: 0}
   - {x: 0.385849, y: -0.6250839, z: 0}
@@ -799,12 +799,12 @@ MonoBehaviour:
   - {x: 0.41769028, y: -0.68785095, z: 0}
   - {x: 0.38698196, y: -0.6882248, z: 0}
   - {x: 0.3866005, y: -0.7193146, z: 0}
-  m_ShapePathHash: -2124240203
+  m_ShapePathHash: 1604120885
   m_Mesh: {fileID: 0}
-  m_InstanceId: 61556
+  m_InstanceId: -1264988
   m_LocalBounds:
-    m_Center: {x: -0.018909454, y: -0.6550865, z: 0}
-    m_Extent: {x: 0.43659973, y: 0.06422806, z: 0}
+    m_Center: {x: -0.01736641, y: -0.6550865, z: 0}
+    m_Extent: {x: 0.4350567, y: 0.06422806, z: 0}
 --- !u!114 &4146716975940015470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1028,7 +1028,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 2024971425
   m_SortingOrder: 0

@@ -62,9 +62,9 @@ public class CollisionLayers : MonoBehaviour
         return environmentLayer;
     }
 
-    public int GetInteractableLayer()
+    public LayerMask GetInteractableLayer()
     {
-        return LayerMask.NameToLayer("Interactable");
+        return interactableLayer;
     }
 
     public int GetEntityLayer()

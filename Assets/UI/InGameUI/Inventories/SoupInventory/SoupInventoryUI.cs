@@ -37,6 +37,7 @@ public class SoupInventoryUI : MonoBehaviour
         InventoryHolder.localPosition = new Vector2(InventoryHolder.localPosition.x, ClosedYPos);
         CookingScreen.EnterCookingScreen += OpenInventoryScreen;
         CookingScreen.ExitCookingScreen += CloseInventoryScreen;
+        DialogueTrigger.OnTriggerDialogue += CloseInventoryScreen;
         PlayerInventory.ChangedEquippedSoup += ChangeEquippedSoup;
         PlayerInventory.UsedSoupAttack += ChangeUseCount;
     }
@@ -60,6 +61,7 @@ public class SoupInventoryUI : MonoBehaviour
     {
         CookingScreen.EnterCookingScreen -= OpenInventoryScreen;
         CookingScreen.ExitCookingScreen -= CloseInventoryScreen;
+        DialogueTrigger.OnTriggerDialogue -= CloseInventoryScreen;
         PlayerInventory.ChangedEquippedSoup -= ChangeEquippedSoup;
         PlayerInventory.UsedSoupAttack -= ChangeUseCount;
     }
@@ -119,7 +121,7 @@ public class SoupInventoryUI : MonoBehaviour
     }
     public void CloseInventoryScreen()
     {
-        if (CookingScreen.Singleton.IsCooking) return; // cannot close while cooking
+        if (CookingScreen.Singleton.IsCooking || !IsOpen) return; // cannot close while cooking
 
         MoveInventory(false);
         CursorManager.Singleton.ExitSoupInventory();

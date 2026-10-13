@@ -64,6 +64,12 @@ public class ProjectileObject : MonoBehaviour
             collider.gameObject.GetComponent<Destroyables>().RemoveDestroyable();
             canHitPlayer = false;
             gameObject.SetActive(false);
+        } else if (collider.CompareTag("NPC"))
+        {
+            NPC npc = collider.GetComponentInParent<NPC>();
+            npc.TakeDamange();
+            canHitPlayer = false;
+            gameObject.SetActive(false);
         }
     }
 

@@ -37,9 +37,11 @@ public class CameraMover : MonoBehaviour
     float ZoomedOutSize;
     float ZoomedInSize;
 
-    // This method is called when the script instance is being loaded
+    bool startHasBeenCalled = false;
     private void Start()
     {
+        if (startHasBeenCalled) return;
+        startHasBeenCalled = true;
         // Get the player's transform from the PlayerEntityManager singleton
         _player = PlayerEntityManager.Singleton.gameObject.transform;
         transform.position = new Vector3(_player.position.x, _player.position.y, transform.position.z);
@@ -115,11 +117,13 @@ public class CameraMover : MonoBehaviour
 
     public IEnumerator ZoomAnimIntro(float holdTime, float zoomOutTime)
     {
+        Start();
+
         zoomInProgress = true;
         Vector3 StartMoverPos = Vector3.zero;
 
         float time = 0;
-        while (time < holdTime)
+        do
         {
             StartMoverPos = new Vector3(_player.position.x, _player.position.y, transform.position.z);
             transform.position = StartMoverPos;
@@ -127,7 +131,7 @@ public class CameraMover : MonoBehaviour
 
             yield return null;
             time += Time.deltaTime;
-        }
+        } while (time < holdTime);
 
         zoomTimeProgressed = 0;
         while (zoomTimeProgressed <= zoomOutTime)
@@ -183,7 +187,11 @@ public class CameraMover : MonoBehaviour
     Vector3 TargetPos;
     void CalculateTargetPos()
     {
-
+        if (DialogueManager.Singleton.IsDialogueActive())
+        {
+            TargetPos = new Vector3(ActiveNPCPosition.x, ActiveNPCPosition.y, transform.position.z);
+            return;
+        }
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         // Calculate the target distance based on the mouse position and player position, divided by the distance divider
         Vector3 targetDist = (mousePos - _player.position) / distanceDivider;
@@ -192,4 +200,6 @@ public class CameraMover : MonoBehaviour
         TargetPos = new Vector3(Mathf.Clamp(targetDist.x, -maxDistance.x, maxDistance.x) + _player.position.x,
                                 Mathf.Clamp(targetDist.y, -maxDistance.y, maxDistance.y) + _player.position.y, transform.position.z);
     }
+
+    public Vector3 ActiveNPCPosition;
 }

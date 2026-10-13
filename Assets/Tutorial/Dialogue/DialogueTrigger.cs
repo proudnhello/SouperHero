@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,8 +6,10 @@ using UnityEngine;
 public class DialogueTrigger : MonoBehaviour
 {
     public Dialogue dialogue;
+    public static event Action OnTriggerDialogue;
     public void TriggerDialogue()
     {
+        OnTriggerDialogue?.Invoke();
         DialogueManager.Singleton.StartDialogue(dialogue);
     }
 }

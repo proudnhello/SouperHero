@@ -91,23 +91,27 @@ public class GameManager : MonoBehaviour
     public static event Action OnStartRun;
     internal bool GameRunning;
     internal bool GameReady;
-    public void StartRun()
+    internal bool TutorialRunning;
+
+    public void StartRun(bool isTutorial = false)
     {
         OnStartRun?.Invoke();
         GameReady = true;
+        TutorialRunning = isTutorial;
     }
 
     // Goes to Win or Death Scene
     public static event Action OnEndRun;
     public void EndRun(bool successfulRun)
     {
-        MetricsTracker.Singleton.EndRun(successfulRun);
+        if (!TutorialRunning) MetricsTracker.Singleton.EndRun(successfulRun);
         Cursor.visible = true;
         OnEndRun?.Invoke();
         GameRunning = false;
         GameReady = false;
 
-        if (successfulRun) SceneManager.LoadScene(4);
+        if (TutorialRunning) { TutorialRunning = false; SceneManager.LoadScene(0);}
+        else if (successfulRun) SceneManager.LoadScene(4);
         else SceneManager.LoadScene(3);
     }
 
