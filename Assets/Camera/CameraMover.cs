@@ -187,11 +187,15 @@ public class CameraMover : MonoBehaviour
     Vector3 TargetPos;
     void CalculateTargetPos()
     {
-        if (DialogueManager.Singleton.IsDialogueActive())
+        if (DialogueManager.Singleton != null)
         {
-            TargetPos = new Vector3(ActiveNPCPosition.x, ActiveNPCPosition.y, transform.position.z);
-            return;
+            if (DialogueManager.Singleton.IsDialogueActive())
+            {
+                TargetPos = new Vector3(ActiveNPCPosition.x, ActiveNPCPosition.y, transform.position.z);
+                return;
+            }
         }
+        
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         // Calculate the target distance based on the mouse position and player position, divided by the distance divider
         Vector3 targetDist = (mousePos - _player.position) / distanceDivider;

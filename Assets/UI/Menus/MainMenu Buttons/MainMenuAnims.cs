@@ -217,7 +217,7 @@ public class MainMenuAnims : MonoBehaviour
 
     public void StartTutorial()
     {
-        SceneManager.LoadScene(5);
+        SceneManager.LoadScene(6);
     }
 
     public void GoToCosmetics()

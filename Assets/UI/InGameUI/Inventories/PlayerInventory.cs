@@ -329,12 +329,10 @@ public class PlayerInventory : MonoBehaviour
     {
         // Don't Use Spoon if In Cooking Screen or if the player can't attack
         if (CookingScreen.Singleton.IsCooking || SoupInventoryUI.Singleton.IsOpen ||
-            !PlayerEntityManager.Singleton.CanAttack() || DialogueManager.Singleton.IsDialogueActive())
-        {
-            return;
-        }
+            !PlayerEntityManager.Singleton.CanAttack()) return;
+        if (DialogueManager.Singleton != null) if (DialogueManager.Singleton.IsDialogueActive()) return;
         //handle throwing object
-        else if (playerHolding)
+        if (playerHolding)
         {
             playerHolding = false;
             Throw(objectHolding);
@@ -385,7 +383,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void Inventory(InputAction.CallbackContext ctx)
     {
-        if (DialogueManager.Singleton.IsDialogueActive()) return;
+        if (DialogueManager.Singleton != null) if (DialogueManager.Singleton.IsDialogueActive()) return;
         SoupInventoryUI.Singleton.ToggleInventory();
     }
 

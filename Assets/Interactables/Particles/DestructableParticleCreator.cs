@@ -23,7 +23,6 @@ public class DestructableParticleCreator : MonoBehaviour
 
         IEnumerator Wait()
         {
-            Debug.Log("trigger");
             while (breakParticles.IsAlive())
             {
                 yield return null;

@@ -27,7 +27,6 @@ public class Destroyables : MonoBehaviour
 
         hitsToBreak--;
         destroyedParticles?.Hit();
-        Debug.Log(hitsToBreak);
 
         if (hitsToBreak > 0) return;
 

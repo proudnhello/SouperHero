@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Text.RegularExpressions;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -59,9 +60,31 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        string sentence = LocalizationManager.GetLocalizedDialogue(sentenceKeys.Dequeue()); 
+        string rawSentence = LocalizationManager.GetLocalizedDialogue(sentenceKeys.Dequeue());
+        string currSentence = "";
+        for (int i = 0; i < rawSentence.Length; i++)
+        {
+            char c = rawSentence[i];
+            currSentence += c;
+            if (c == '[')
+            {
+                i++;
+                c = rawSentence[i];
+                string key = "";
+                do
+                {
+                    key += c;
+                    i++;
+                    c = rawSentence[i];
+                } while (c != ']');
+                Debug.Log(key);
+                currSentence += PlayerKeybinds.Singleton.GetBindingByActionName(key);
+                currSentence += c;
+            }
+        }
+
         StopAllCoroutines();
-        StartCoroutine(TypeSentence(sentence));
+        StartCoroutine(TypeSentence(currSentence));
     }
 
     public bool IsDialogueActive()

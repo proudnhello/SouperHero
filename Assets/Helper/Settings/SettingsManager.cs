@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.InputSystem;
+
 
 [Serializable]
 public class SettingsData
@@ -36,6 +37,9 @@ public class SettingsManager : MonoBehaviour
         LocalizationManager.Singleton.ChangeLanguage(Language);
         Screen.fullScreen = FullScreen;
         grayscaleRenderFeature.UseGrayscale = UseGrayscale;
+        var rebinds = PlayerPrefs.GetString("rebinds");
+        if (!string.IsNullOrEmpty(rebinds))
+            PlayerKeybinds.Singleton.actions.LoadBindingOverridesFromJson(rebinds);
     }
 
     // idea from https://www.reddit.com/r/csharp/comments/11a2dvw/why_use_get_set_at_all/
