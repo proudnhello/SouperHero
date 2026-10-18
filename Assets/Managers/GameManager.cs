@@ -118,11 +118,13 @@ public class GameManager : MonoBehaviour
         if (!TutorialRunning) MetricsTracker.Singleton.EndRun(successfulRun);
         Cursor.visible = true;
         OnEndRun?.Invoke();
-        GameRunning = false;
+        
         GameReady = false;
 
-        if (TutorialRunning) { TutorialRunning = false; SceneManager.LoadScene(0);}
-        else if (successfulRun) SceneManager.LoadScene(4);
+        if (TutorialRunning) { TutorialRunning = false; return; }
+
+        GameRunning = false;
+        if (successfulRun) SceneManager.LoadScene(4);
         else SceneManager.LoadScene(3);
     }
 

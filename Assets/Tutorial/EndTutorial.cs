@@ -7,6 +7,7 @@ public class EndTutorial : MonoBehaviour
 {
     [SerializeField] GameObject Door;
     [SerializeField] DialogueTrigger dialogueCookChange;
+    [SerializeField] MainMenuSceneTransition trans;
 
     private void Start()
     {
@@ -27,9 +28,22 @@ public class EndTutorial : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
+        if (isEnding) return;
         if (collision.gameObject.CompareTag("Player"))
         {
-            GameManager.Singleton.EndRun(true);
+            StartCoroutine(EndTutorialTransition());
         }
+    }
+
+    bool isEnding = false;
+    IEnumerator EndTutorialTransition()
+    {
+        isEnding = true;
+        trans.FadeToBlack();
+        GameManager.Singleton.EndRun(true);
+
+        yield return new WaitUntil(() => !trans.inProgress);
+        GameManager.Singleton.GameRunning = false;
+        SceneManager.LoadScene(0);
     }
 }

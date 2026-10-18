@@ -1,7 +1,8 @@
+using NavMeshPlus.Components;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using NavMeshPlus.Components;
+using UnityEngine.SceneManagement;
 
 public class TutorialSetup : MonoBehaviour
 {
@@ -23,5 +24,8 @@ public class TutorialSetup : MonoBehaviour
 
         GameManager.Singleton.StartRun(true);
         GameManager.Singleton.GameRunning = true;
+
+        // DEBUG.. if not coming from load scene then just zoom out camera
+        if (!SceneManager.GetSceneByBuildIndex(1).IsValid()) CameraMover.Singleton.StartCoroutine(CameraMover.Singleton.ZoomAnimIntro(0, camZoomOutStartTime));
     }
 }
