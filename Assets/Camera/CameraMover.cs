@@ -51,6 +51,7 @@ public class CameraMover : MonoBehaviour
         _cam.m_Lens.OrthographicSize = ZoomedInSize;
         CookingScreen.EnterCookingScreen += ZoomIn;
         CookingScreen.ExitCookingScreen += ZoomOut;
+        zoomInProgress = false;
     }
 
     private void OnDisable()

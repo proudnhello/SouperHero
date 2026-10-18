@@ -25,7 +25,6 @@ public class DialogueManager : MonoBehaviour
         else
         {
             Singleton = this;
-            DontDestroyOnLoad(this);
         }
     }
 

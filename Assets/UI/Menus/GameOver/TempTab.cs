@@ -27,7 +27,7 @@ public class TempTab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    private void Start()
+    private void OnEnable()
     {
         if (isSelected)
         {

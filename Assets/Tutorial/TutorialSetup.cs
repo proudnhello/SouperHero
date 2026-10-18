@@ -23,7 +23,5 @@ public class TutorialSetup : MonoBehaviour
 
         GameManager.Singleton.StartRun(true);
         GameManager.Singleton.GameRunning = true;
-        CameraMover.Singleton.StartCoroutine(CameraMover.Singleton.ZoomAnimIntro(0, camZoomOutStartTime));
-
     }
 }

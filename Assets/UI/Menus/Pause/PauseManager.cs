@@ -9,6 +9,7 @@ public class PauseManager : MonoBehaviour
     internal static bool isPaused = false;
     [SerializeField] GameObject pauseScreen;
     [SerializeField] GameObject settingsMenu;
+    [SerializeField] SettingsTabs settingsTabs;
     [SerializeField] GameObject minimap;
     [SerializeField] GameObject playerMinimapIcon;
 
@@ -90,7 +91,7 @@ public class PauseManager : MonoBehaviour
 
         enableMiniMap();
         decreasePlayerMinimapIcon();
-        
+        settingsTabs.CloseSettings();
     }
 
     public void MainMenu()

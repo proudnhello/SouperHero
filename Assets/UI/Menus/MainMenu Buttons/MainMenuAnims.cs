@@ -37,13 +37,14 @@ public class MainMenuAnims : MonoBehaviour
     public Animator playerAnimator;
 
     [SerializeField] GameObject exitPanel;
+    [SerializeField] MainMenuSceneTransition sceneTransitionStarter;
 
     [Header("Start Sequence")]
 
     private bool isLoading = false;
 
     [Header("Menus")]
-    [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GraphicRaycaster mainMenu;
     [SerializeField] private GameObject settingsMenu;
 
 
@@ -60,7 +61,7 @@ public class MainMenuAnims : MonoBehaviour
         s = DOTween.Sequence();
 
         s.Append(titleText.transform.DOLocalMoveY(0, 1.65f).SetEase(Ease.OutBounce));
-        s.Append(blackFade.GetComponent<Image>().DOColor(new Color(0, 0, 0, 0), 2f).SetEase(Ease.InQuad));
+        s.Append(blackFade.GetComponent<Image>().DOColor(new Color(1, 1, 1, 0), 2f).SetEase(Ease.InQuad));
         s.Append(book.transform.DOLocalMoveX(0, 1.35f).SetEase(Ease.OutQuad));
         s.Append(firstButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
         s.Append(secondButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
@@ -107,7 +108,7 @@ public class MainMenuAnims : MonoBehaviour
             {
                 s.Kill();
                 titleText.transform.localPosition = new Vector3(titleText.transform.localPosition.x, 0, titleText.transform.localPosition.z);
-                blackFade.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+                blackFade.GetComponent<Image>().color = new Color(1, 1, 1, 0);
                 book.transform.localPosition = new Vector3(0, book.transform.localPosition.y, book.transform.localPosition.z);
                 firstButton.anchoredPosition = new Vector2(42, firstButton.anchoredPosition.y);
                 secondButton.anchoredPosition = new Vector2(42, secondButton.anchoredPosition.y);
@@ -159,8 +160,8 @@ public class MainMenuAnims : MonoBehaviour
     {
         if (isLoading) return;
         isLoading = true;
-        mainMenu.SetActive(false);
-        GameManager.Singleton.NewGame();
+        mainMenu.enabled = false;
+        GameManager.Singleton.NewGame(sceneTransitionStarter);
     }
 
     public void ContinueFromLoad()
@@ -168,8 +169,8 @@ public class MainMenuAnims : MonoBehaviour
         if (isLoading) return;
         isLoading = true;
 
-        mainMenu.SetActive(false);
-        GameManager.Singleton.LoadSave();
+        mainMenu.enabled = false;
+        GameManager.Singleton.LoadSave(sceneTransitionStarter);
     }
 
     public void BackButton()
@@ -217,7 +218,10 @@ public class MainMenuAnims : MonoBehaviour
 
     public void StartTutorial()
     {
-        SceneManager.LoadScene(6);
+        if (isLoading) return;
+        isLoading = true;
+        mainMenu.enabled = false;
+        GameManager.Singleton.LoadTutorial(sceneTransitionStarter);
     }
 
     public void GoToCosmetics()

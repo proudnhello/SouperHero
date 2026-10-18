@@ -35,7 +35,8 @@ public class GameManager : MonoBehaviour
     }
 
     internal bool IsCurrentRunFromSave;
-    public void NewGame()
+    internal int SceneToLoad = 2;
+    public void NewGame(MainMenuSceneTransition trans)
     {
         IsCurrentRunFromSave = false;
         SaveManager.Singleton.ResetGameState(); // Delete previous save
@@ -43,18 +44,27 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
 #endif
-
-        StartCoroutine(LoadLoadingScene());
+        SceneToLoad = 2;
+        StartCoroutine(LoadLoadingScene(trans));
     }
 
-    public void LoadSave()
+    public void LoadSave(MainMenuSceneTransition trans)
     {
         IsCurrentRunFromSave = true;
-        StartCoroutine(LoadLoadingScene());
+        SceneToLoad = 2;
+        StartCoroutine(LoadLoadingScene(trans));
     }
 
-    IEnumerator LoadLoadingScene() // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
+    public void LoadTutorial(MainMenuSceneTransition trans)
     {
+        SceneToLoad = 6;
+        StartCoroutine(LoadLoadingScene(trans));
+    }
+
+    IEnumerator LoadLoadingScene(MainMenuSceneTransition trans) // taken from https://fmod.com/docs/2.02/unity/examples-async-loading.html
+    {
+        trans.FadeToBlack();
+
         AsyncOperation async = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
 
         //Display loading bar
@@ -77,6 +87,7 @@ public class GameManager : MonoBehaviour
         // Keep yielding the co-routine until all the sample data loading is done
         yield return new WaitUntil(() => !FMODUnity.RuntimeManager.AnySampleDataLoading());
 
+        yield return new WaitUntil(() => !trans.inProgress);
 
         // Allow the scene to be activated. This means that any OnActivated() or Start()
         // methods will be guaranteed that all FMOD Studio loading will be completed and

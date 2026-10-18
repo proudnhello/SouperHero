@@ -32,14 +32,22 @@ public class LoadingScreen : MonoBehaviour
         AudioManager.Singleton._MusicHandler.ChangeState(MusicHandler.MusicState.LOADING);
         LoadText.text = "";
         loadingSlider.gameObject.SetActive(false);
-        Sequence loadSequence = DOTween.Sequence();
-        loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
-        loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
-        loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
-        loadSequence.OnComplete(() =>
+
+        if (GameManager.Singleton.SceneToLoad == 2)
         {
-            StartCoroutine(LoadGameScene());
-        });
+            Sequence loadSequence = DOTween.Sequence();
+            loadSequence.Append(exit.transform.DOLocalMoveY(-200, 0.25f));
+            loadSequence.Append(the.transform.DOLocalMoveY(0, 0.25f));
+            loadSequence.Append(find.transform.DOLocalMoveY(200, 0.25f));
+            loadSequence.OnComplete(() =>
+            {
+                StartCoroutine(LoadGameScene());
+            });
+        } else if (GameManager.Singleton.SceneToLoad == 6)
+        {
+            StartCoroutine(LoadTutorialScene());
+        }
+       
     }
 
     IEnumerator LoadGameScene()
@@ -147,5 +155,74 @@ public class LoadingScreen : MonoBehaviour
         CircleWipe.gameObject.SetActive(false);
 
         SceneManager.UnloadSceneAsync(1);
+    }
+
+    IEnumerator LoadTutorialScene()
+    {
+        LoadText.text = "Loading tutorial...";
+
+        AsyncOperation async = SceneManager.LoadSceneAsync(6, LoadSceneMode.Additive);
+        async.allowSceneActivation = false;
+        loadingSlider.gameObject.SetActive(true);
+
+        float value = 0f;
+        float loadingProgressBuffer = 0;
+        while (value < 1f)
+        {
+            float loadingProgressVal = async.progress;
+            value = Mathf.Clamp01(((loadingProgressVal / 0.9f) / 2f) + ((loadingProgressBuffer / 0.9f) / 2f));
+            loadingSlider.value = value;
+            loadingProgressBuffer += 0.1f;
+            yield return null;
+        }
+
+        async.allowSceneActivation = true;
+        yield return new WaitUntil(() => async.isDone);
+
+        Scene targetScene = SceneManager.GetSceneByBuildIndex(6);
+        SceneManager.SetActiveScene(targetScene);
+
+
+        yield return new WaitUntil(() => GameManager.Singleton.GameReady);
+
+        float time = ALPHA_FADE_ANIM_TIME;
+        while (time > 0)
+        {
+            time -= Time.deltaTime;
+            Alpha.alpha = time / ALPHA_FADE_ANIM_TIME;
+            yield return null;
+        }
+        Alpha.alpha = 0f;
+
+        time = 0;
+        CameraMover.Singleton.StartCoroutine(CameraMover.Singleton.ZoomAnimIntro(HOLD_WIPE_TIME + START_WIPE_TIME, FINISH_WIPE_TIME));
+
+        while (time <= START_WIPE_TIME)
+        {
+            time += Time.deltaTime;
+            var percentCompleted = Mathf.Clamp01(time / (START_WIPE_TIME));
+            var scaledPercentaged = wipeMotionCurve.Evaluate(percentCompleted);
+            float val = PERCENTAGE_TO_HOLD * scaledPercentaged * Screen.width * WIPE_SCREEN_SIZE_MULT;
+            CircleWipe.sizeDelta = new Vector2(val, val);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(HOLD_WIPE_TIME);
+
+        time = 0;
+        while (time <= FINISH_WIPE_TIME)
+        {
+            time += Time.deltaTime;
+            var percentCompleted = Mathf.Clamp01(time / FINISH_WIPE_TIME);
+            var scaledPercentaged = wipeMotionCurve.Evaluate(percentCompleted);
+            float val = (1 - PERCENTAGE_TO_HOLD) * scaledPercentaged * Screen.width * WIPE_SCREEN_SIZE_MULT +
+                 PERCENTAGE_TO_HOLD * Screen.width * WIPE_SCREEN_SIZE_MULT;
+            CircleWipe.sizeDelta = new Vector2(val, val);
+            yield return null;
+        }
+        CircleWipe.gameObject.SetActive(false);
+
+        SceneManager.UnloadSceneAsync(1);
+
     }
 }
