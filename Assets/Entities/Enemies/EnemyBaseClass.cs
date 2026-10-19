@@ -78,7 +78,7 @@ public abstract class EnemyBaseClass : Entity
         AudioManager.Singleton._MusicHandler.RemoveAgro(enemyIndex);
         _sprite.color = _sprite.color / 1.5f;
         _collider.enabled = false;
-        _rigidbody.velocity = Vector2.zero;
+        _rigidbody.drag *= 2.5f;
         agent.updatePosition = false;
         if (drop && collectable != null)
         {
