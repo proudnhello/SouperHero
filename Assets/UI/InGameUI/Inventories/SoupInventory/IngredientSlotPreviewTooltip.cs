@@ -10,7 +10,8 @@ public class IngredientSlotPreviewTooltip : MonoBehaviour, ITooltipSource
     [SerializeField] float FadeAnimTime;
     [SerializeField] TMP_Text TooltipText;
     [SerializeField] BoxCollider2D boxCollider2D;
-    [SerializeField] Vector2 BoxColliderMultiplier;
+    [SerializeField] Vector2 BoxColliderMultiplier_1;
+    [SerializeField] Vector2 BoxColliderMultiplier_Multiple;
     [SerializeField] Vector3 TooltipOffset;
     [SerializeField] string TOOLTIP_KEY;
     [SerializeField] string TOOLTIP_KEY_TYPE;
@@ -21,11 +22,14 @@ public class IngredientSlotPreviewTooltip : MonoBehaviour, ITooltipSource
 
     public void SetupTooltip(Vector3 p1, Vector3 p2, int amount)
     {
+        Debug.Log(gameObject.name + " " + amount);
         gameObject.SetActive(true);
         transform.position = (p1 + p2) / 2;
-        boxCollider2D.size = new Vector2(Mathf.Abs(p2.x - p1.x) * BoxColliderMultiplier.x, Mathf.Abs(p2.y - p1.y) * BoxColliderMultiplier.y);
+        boxCollider2D.size = amount == 1 ? new Vector2(Mathf.Abs(p2.x - p1.x) * BoxColliderMultiplier_1.x, Mathf.Abs(p2.y - p1.y) * BoxColliderMultiplier_1.y) :
+            new Vector2(Mathf.Abs(p2.x - p1.x) * BoxColliderMultiplier_Multiple.x, Mathf.Abs(p2.y - p1.y) * BoxColliderMultiplier_Multiple.y);
         Tooltip.gameObject.SetActive(false);
-        Tooltip.transform.localPosition = new Vector3(Mathf.Abs(p2.x - p1.x)/ 2 * BoxColliderMultiplier.x, 0) + TooltipOffset;
+
+        Tooltip.transform.localPosition = new Vector3(boxCollider2D.size.x/2, 0) + TooltipOffset;
         TooltipText.text = LocalizationManager.GetLocalizedString(TOOLTIP_KEY) + " " + amount + " ";
         string ing = amount > 1 ? LocalizationManager.GetLocalizedString(TOOLTIP_INGREDIENT_PLURAL) : LocalizationManager.GetLocalizedString(TOOLTIP_INGREDIENT_SINGULAR);
         if (isWildcard) TooltipText.text += ing + " " + LocalizationManager.GetLocalizedString(TOOLTIP_KEY_TYPE);

@@ -12,7 +12,7 @@ public class Collectable : MonoBehaviour
     public CollectableUI collectableUI;
     internal string promptText;
 
-    public void Spawn(Vector2 spawnPoint)
+    public void Spawn(Vector2 spawnPoint, Vector2 hitDir = default, float knockback = -1)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(spawnPoint, 0.01f);
         foreach (Collider2D collider in colliders)
@@ -27,6 +27,7 @@ public class Collectable : MonoBehaviour
         collectableObj.Init(this);
         collectableUI?.Init(this);
         collectableObj.Drop(spawnPoint);
+        if (hitDir != Vector2.zero) StartCoroutine(collectableObj.Bounce(hitDir, knockback));
     }
 
     public void SpawnInUI(Vector2 spawnPoint, float rotation)

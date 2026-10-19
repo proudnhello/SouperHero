@@ -82,7 +82,9 @@ public abstract class EnemyBaseClass : Entity
         agent.updatePosition = false;
         if (drop && collectable != null)
         {
-            Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>().Spawn(transform.position); //Spawn collectable on enemy death
+            float knockback = inflictionHandler.HasInfliction(InflictionType.SLIMY_Knockback) ? inflictionHandler.GetActiveStatuses()[InflictionType.SLIMY_Knockback].amount : 0;
+            Collectable c = Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>();
+            c.Spawn(transform.position, _rigidbody.velocity.normalized, knockback); //Spawn collectable on enemy death
         }
         entityRenderer.EnemyDeath();
         RunStateManager.Singleton.TrackEnemyDeath(enemyIndex);

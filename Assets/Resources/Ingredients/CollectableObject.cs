@@ -66,4 +66,50 @@ public class CollectableObject : Interactable
 
         Destroy(this.transform.parent.gameObject);
     }
+
+    [SerializeField] float BOUNCE_HEIGHT = 2f;
+    [SerializeField] float BOUNCE_DISTANCE = .1f;
+    [SerializeField] float GRAVITY = -.98f;
+    public IEnumerator Bounce(Vector2 dir, float knockback)
+    {
+
+        float knockAdjustHeight = map(knockback, 0f, 15f, .5f, 1f);
+        float knockAdjustLength = map(knockback, 0f, 15f, .1f, 1f);
+
+        for (int bounce = 3; bounce > 0; bounce--)
+        {
+            float heightVelocity = BOUNCE_HEIGHT * (2 << bounce) * knockAdjustHeight;
+            float lengthVelocity = BOUNCE_DISTANCE * (2 << bounce) * knockAdjustLength;
+
+            float currTopPoint = .0001f;
+            Vector2 currBottomPoint = transform.position;
+            while (currTopPoint > 0)
+            {
+                currTopPoint += heightVelocity;
+                currBottomPoint += dir * lengthVelocity;
+
+                transform.position = new Vector2(currBottomPoint.x, currBottomPoint.y + currTopPoint);
+                heightVelocity += GRAVITY;
+                yield return new WaitForFixedUpdate();
+            }
+
+            transform.position = new Vector2(currBottomPoint.x, currBottomPoint.y);
+
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.01f);
+            foreach (Collider2D collider in colliders)
+            {
+                // If the collectable were to be spawned in a pit hazard, don't spawn it
+                if (collider.gameObject.CompareTag("PitHazard"))
+                {
+                    Destroy(this.transform.parent.gameObject);
+                    break;
+                }
+            }
+        }
+    }
+
+    private static float map(float value, float fromLow, float fromHigh, float toLow, float toHigh)
+    {
+        return Mathf.Clamp((value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow) + toLow, toLow, toHigh);
+    }
 }

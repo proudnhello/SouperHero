@@ -223,8 +223,10 @@ public class SoupBioDisplay : MonoBehaviour
                     IngSlotObjects[i].color = SlotPreviewTooltips[tooltip].SLOT_COLOR;
                 }
                 Vector2 p1 = new(IngSlotObjects[IngSlot].transform.position.x - SlotSpriteHalfDimensions.x, IngSlotObjects[IngSlot].transform.position.y - SlotSpriteHalfDimensions.y);
+                Debug.Log(IngSlotObjects[IngSlot].transform.position.x);
                 IngSlot += soupIngAmount-1;
                 Vector2 p2 = new(IngSlotObjects[IngSlot].transform.position.x + SlotSpriteHalfDimensions.x, IngSlotObjects[IngSlot].transform.position.y + SlotSpriteHalfDimensions.y);
+                Debug.Log(IngSlotObjects[IngSlot].transform.position.x);
                 SlotPreviewTooltips[tooltip].SetupTooltip(p1, p2, soupIngAmount);
                 IngSlot++;
             }
