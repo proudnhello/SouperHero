@@ -27,6 +27,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public float dashCooldown = 1f;
 
     public static event Action dash;
+    [SerializeField] ParticleSystem dashDustHor;
+    [SerializeField] Vector2 dustOffsetHor;
+    [SerializeField] ParticleSystem dashDustVer;
+    [SerializeField] Vector2 dustOffsetVer;
 
     // Start is called before the first frame update
     void Awake()
@@ -194,6 +198,16 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = currentDirection * dashSpeed;
         }
+
+
+        float dir = rb.velocity.x > 1 ? 1f : -1f;
+        (ParticleSystem sys, Vector2 offset, float size) = Mathf.Abs(rb.velocity.normalized.x) > .75f ? (dashDustHor, dustOffsetHor, 0.25f) : (dashDustVer, dustOffsetVer, 1f);
+        var p = new ParticleSystem.EmitParams();
+        p.startSize3D = new Vector3(dir * size, size);
+        p.position = new Vector3(transform.position.x + (offset.x * Mathf.Sign(dir)), transform.position.y + offset.y);
+        p.applyShapeToPosition = true;
+        sys.Emit(p, 1);
+
         dash?.Invoke();
 
         yield return new WaitForSeconds(dashDuration);

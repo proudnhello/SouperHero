@@ -141,7 +141,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -5036,6 +5036,9 @@ MonoBehaviour:
   DestroyedOnDamage: 1
   destroyedParticles: {fileID: 3680966296385708684}
   hitsToBreak: 2
+  spawnCollectableOffsetY: 2.22
+  bounceAmount: 101.8
+  groundOffsetY: 0.07
 --- !u!95 &-2271839371715764953
 Animator:
   serializedVersion: 5
@@ -5248,7 +5251,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:

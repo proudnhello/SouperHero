@@ -1,8 +1,10 @@
+using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CollectableObject : Interactable
 {
@@ -67,26 +69,42 @@ public class CollectableObject : Interactable
         Destroy(this.transform.parent.gameObject);
     }
 
-    [SerializeField] float BOUNCE_HEIGHT = 2f;
-    [SerializeField] float BOUNCE_DISTANCE = .1f;
-    [SerializeField] float GRAVITY = -.98f;
-    public IEnumerator Bounce(Vector2 dir, float knockback)
+    float BOUNCE_HEIGHT = 0.02f;
+    float BOUNCE_DISTANCE = 0.03f;
+    float GRAVITY = -0.022f;
+    float WALL_CHECK_DIST = 0.1f;
+    public IEnumerator Bounce(Vector2 dir, float knockback, int bounces = 3, float startOffset = -1, float groundOffsetY = 0)
     {
 
-        float knockAdjustHeight = map(knockback, 0f, 15f, .5f, 1f);
-        float knockAdjustLength = map(knockback, 0f, 15f, .1f, 1f);
+        float knockAdjustHeight = map(knockback, 0f, 15f, .375f, .75f);
+        float knockAdjustLength = map(knockback, 0f, 15f, .075f, .75f);
 
-        for (int bounce = 3; bounce > 0; bounce--)
+
+        bool hasCollided = false;
+
+        if (startOffset >= 0) bounces+=1;
+
+        Vector2 groundPoint = new Vector2(transform.position.x, transform.position.y + groundOffsetY);
+
+        for (int bounce = bounces; bounce > 0; bounce--)
         {
-            float heightVelocity = BOUNCE_HEIGHT * (2 << bounce) * knockAdjustHeight;
-            float lengthVelocity = BOUNCE_DISTANCE * (2 << bounce) * knockAdjustLength;
-
-            float currTopPoint = .0001f;
-            Vector2 currBottomPoint = transform.position;
+            float heightVelocity = startOffset >= 0 && bounce == bounces ? 0 : BOUNCE_HEIGHT * (2 << bounce) * knockAdjustHeight;
+            float lengthVelocity = startOffset >= 0 ? 0 : BOUNCE_DISTANCE * (2 << bounce) * knockAdjustLength;
+            Debug.Log(heightVelocity);
+            float currTopPoint = startOffset >= 0 && bounce == bounces ? startOffset : .0001f;
+            Vector2 currBottomPoint = groundPoint;
             while (currTopPoint > 0)
             {
                 currTopPoint += heightVelocity;
-                currBottomPoint += dir * lengthVelocity;
+                Debug.Log(bounce + ": " + heightVelocity + " " + currTopPoint);
+
+                if (!hasCollided)
+                {
+                    RaycastHit2D wall = Physics2D.Raycast(currBottomPoint, dir, WALL_CHECK_DIST, CollisionLayers.Singleton.GetEnvironmentLayer());
+                    if (wall.collider != null) { hasCollided = true; bounce = 0; }
+                }
+                // only move in direction if hasn't collided with wall
+                if (!hasCollided) currBottomPoint += dir * lengthVelocity;
 
                 transform.position = new Vector2(currBottomPoint.x, currBottomPoint.y + currTopPoint);
                 heightVelocity += GRAVITY;

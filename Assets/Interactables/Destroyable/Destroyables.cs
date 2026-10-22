@@ -13,6 +13,9 @@ public class Destroyables : MonoBehaviour
     public bool DestroyedOnDamage = true;
     [SerializeField] DestructableParticleCreator destroyedParticles;
     [SerializeField] int hitsToBreak = 1;
+    [SerializeField] float spawnCollectableOffsetY = -1;
+    [SerializeField] float bounceAmount = 0;
+    [SerializeField] float groundOffsetY = 0;
 
     int forageableIndex = -1;
     public void TrackSpawn(int index, List<Collectable> newList)
@@ -37,7 +40,7 @@ public class Destroyables : MonoBehaviour
             if (singleCollectable != null)
             {
                 GameObject gameObj = Instantiate(singleCollectable.gameObject, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
-                gameObj.GetComponent<Collectable>().Spawn(this.transform.position);
+                gameObj.GetComponent<Collectable>().Spawn(this.transform.position, Vector2.up, bounceAmount, 2, spawnCollectableOffsetY, groundOffsetY);
                 Destroyed?.Invoke(transform.position);
             }
         } else
@@ -48,7 +51,7 @@ public class Destroyables : MonoBehaviour
                 {
                     int randomIndex = UnityEngine.Random.Range(0, multipleCollectables.Count);
                     GameObject gameObj = Instantiate(multipleCollectables[randomIndex].gameObject, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
-                    gameObj.GetComponent<Collectable>().Spawn(this.transform.position);
+                    gameObj.GetComponent<Collectable>().Spawn(this.transform.position, Vector2.up, bounceAmount, 2, spawnCollectableOffsetY, groundOffsetY);
                 }
                 Destroyed?.Invoke(transform.position);
             }

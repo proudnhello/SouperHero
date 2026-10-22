@@ -84,7 +84,7 @@ public abstract class EnemyBaseClass : Entity
         {
             float knockback = inflictionHandler.HasInfliction(InflictionType.SLIMY_Knockback) ? inflictionHandler.GetActiveStatuses()[InflictionType.SLIMY_Knockback].amount : 0;
             Collectable c = Instantiate(collectable.gameObject, transform.position, Quaternion.identity).GetComponent<Collectable>();
-            c.Spawn(transform.position, _rigidbody.velocity.normalized, knockback); //Spawn collectable on enemy death
+            c.Spawn(transform.position, _rigidbody.velocity.normalized, knockback, 3); //Spawn collectable on enemy death
         }
         entityRenderer.EnemyDeath();
         RunStateManager.Singleton.TrackEnemyDeath(enemyIndex);

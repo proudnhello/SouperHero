@@ -184,6 +184,9 @@ MonoBehaviour:
   DestroyedOnDamage: 1
   destroyedParticles: {fileID: 8455236579799471622}
   hitsToBreak: 1
+  spawnCollectableOffsetY: 0.4
+  bounceAmount: 0
+  groundOffsetY: 0.2
 --- !u!50 &2217634043715287802
 Rigidbody2D:
   serializedVersion: 4
@@ -352,7 +355,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:

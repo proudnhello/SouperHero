@@ -165,6 +165,9 @@ MonoBehaviour:
   DestroyedOnDamage: 1
   destroyedParticles: {fileID: 1031900518217408675}
   hitsToBreak: 1
+  spawnCollectableOffsetY: 0.4
+  bounceAmount: 0
+  groundOffsetY: 0.2
 --- !u!114 &5827697160182941612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,7 +355,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
