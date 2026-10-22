@@ -16,7 +16,6 @@ public class DeathMetricsDisplay : MonoBehaviour
     [SerializeField] TextMeshProUGUI metricsText;
 
 
-
     private TimeSpan timeFormatter;
 
     public static DeathMetricsDisplay Singleton { get; private set; }
