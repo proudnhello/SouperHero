@@ -23,13 +23,17 @@ public class SettingBookTab : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private void Awake()
     {
         if (isQuitButton) text.text = LocalizationManager.GetLocalizedString("Exit Button");
+        isRevealed = StartRevealed;
+    }
+
+    private void OnEnable()
+    {
         text.gameObject.SetActive(false);
         if (StartRevealed)
         {
             tab.anchoredPosition = new Vector2(UnselectedPosX, tab.localPosition.y);
         }
         else tab.anchoredPosition = new Vector2(HiddenPosX, tab.localPosition.y);
-        isRevealed = StartRevealed;
     }
 
 
@@ -56,7 +60,7 @@ public class SettingBookTab : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         tab.anchoredPosition = new Vector2(HiddenPosX, tab.localPosition.y);
         tabPosSequence = DOTween.Sequence();
-        tabPosSequence.Append(tab.DOAnchorPos(new Vector2(UnselectedPosX, tab.localPosition.y), RevealAnimTime).SetEase(Ease.OutQuad));
+        tabPosSequence.Append(tab.DOAnchorPos(new Vector2(UnselectedPosX, tab.localPosition.y), RevealAnimTime).SetEase(Ease.OutQuad)).SetUpdate(true);
         tabPosSequence.OnComplete(() => { isRevealed = true; });
     }
     public void HoverTab()
@@ -65,7 +69,8 @@ public class SettingBookTab : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         text.gameObject.SetActive(true);
         tabPosSequence = DOTween.Sequence();
-        tabPosSequence.Append(tab.DOAnchorPos(new Vector2(SelectedPosX, tab.localPosition.y), SelectAnimTime).SetEase(Ease.OutQuad));
+        tabPosSequence.Append(tab.DOAnchorPos(new Vector2(SelectedPosX, tab.localPosition.y), SelectAnimTime).SetEase(Ease.OutQuad)).SetUpdate(true);
+        Debug.Log("hover " + gameObject.name);
     }
 
     public void UnhoverTab()
@@ -74,7 +79,7 @@ public class SettingBookTab : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         text.gameObject.SetActive(false);
         tabPosSequence = DOTween.Sequence();
-        tabPosSequence.Append(tab.DOAnchorPos(new Vector2(UnselectedPosX, tab.localPosition.y), SelectAnimTime).SetEase(Ease.OutQuad));
+        tabPosSequence.Append(tab.DOAnchorPos(new Vector2(UnselectedPosX, tab.localPosition.y), SelectAnimTime).SetEase(Ease.OutQuad)).SetUpdate(true);
         quitPhase = 0;
         if (isQuitButton) text.text = LocalizationManager.GetLocalizedString("Exit Button");
     }
@@ -82,9 +87,13 @@ public class SettingBookTab : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void KeepSelected(bool selection)
     {
         isSelected = selection;
+
         if (!isSelected)
         {
             UnhoverTab();
+        } else
+        {
+            HoverTab();
         }
     }
 
