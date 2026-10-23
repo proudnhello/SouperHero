@@ -34,6 +34,9 @@ public class CameraMover : MonoBehaviour
     [Header("Zoom Anim")]
     [SerializeField] AnimationCurve ZoomAnimationCurve;
     [SerializeField] float ZoomAnimationTime;
+
+    [Header("End Anim")]
+    [SerializeField] float EndAnimationTime;
     float ZoomedOutSize;
     float ZoomedInSize;
 
@@ -51,6 +54,7 @@ public class CameraMover : MonoBehaviour
         _cam.m_Lens.OrthographicSize = ZoomedInSize;
         CookingScreen.EnterCookingScreen += ZoomIn;
         CookingScreen.ExitCookingScreen += ZoomOut;
+        GameManager.OnEndRun += EndGame;
         zoomInProgress = false;
     }
 
@@ -58,6 +62,7 @@ public class CameraMover : MonoBehaviour
     {
         CookingScreen.EnterCookingScreen -= ZoomIn;
         CookingScreen.ExitCookingScreen -= ZoomOut;
+        GameManager.OnEndRun -= EndGame;
     }
 
     void ZoomIn()
@@ -69,6 +74,12 @@ public class CameraMover : MonoBehaviour
     {
         if (IZoomAnim != null) StopCoroutine(IZoomAnim);
         StartCoroutine(IZoomAnim = ZoomAnim(false));
+    }
+
+    void EndGame(bool s)
+    {
+        if (IZoomAnim != null) StopCoroutine(IZoomAnim);
+        StartCoroutine(IZoomAnim = EndRunZoomAnim());
     }
 
     float zoomTimeProgressed;
@@ -206,5 +217,57 @@ public class CameraMover : MonoBehaviour
                                 Mathf.Clamp(targetDist.y, -maxDistance.y, maxDistance.y) + _player.position.y, transform.position.z);
     }
 
-    public Vector3 ActiveNPCPosition;
+    internal Vector3 ActiveNPCPosition;
+
+    IEnumerator EndRunZoomAnim()
+    {
+        zoomInProgress = true;
+
+        Vector3 ReturnPos = transform.position;
+        GoalPos = new Vector3(_player.position.x, _player.position.y, transform.position.z);
+
+        while (zoomTimeProgressed >= 0 && zoomTimeProgressed <= ZoomAnimationTime)
+        {
+            var percentCompleted = Mathf.Clamp01(zoomTimeProgressed / ZoomAnimationTime);
+            var scaledPercentaged = ZoomAnimationCurve.Evaluate(percentCompleted);
+
+            var newOrthoSize = Mathf.Lerp(ZoomedOutSize, ZoomedInSize, scaledPercentaged);
+
+            var newPosition = Vector3.Lerp(ReturnPos, GoalPos, scaledPercentaged);
+
+            _cam.m_Lens.OrthographicSize = newOrthoSize;
+            transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
+            yield return null;
+
+            zoomTimeProgressed += Time.deltaTime;
+        }
+
+        zoomTimeProgressed = ZoomAnimationTime;
+        _cam.m_Lens.OrthographicSize = ZoomedInSize;
+        transform.position = GoalPos;
+        IZoomAnim = null;
+    }
+
+    public IEnumerator EndRunMoveAnim(float animTime)
+    {
+        Vector3 ReturnPos = new Vector3(_player.position.x, _player.position.y, transform.position.z);
+        GoalPos = new Vector3(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width*.39f, 0, 0)).x, _player.position.y, transform.position.z);
+
+        zoomTimeProgressed = 0;
+        while (zoomTimeProgressed >= 0 && zoomTimeProgressed <= animTime)
+        {
+            var percentCompleted = Mathf.Clamp01(zoomTimeProgressed / animTime);
+            var scaledPercentaged = ZoomAnimationCurve.Evaluate(percentCompleted);
+
+            var newPosition = Vector3.Lerp(ReturnPos, GoalPos, scaledPercentaged);
+
+            transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
+            yield return null;
+
+            zoomTimeProgressed += Time.deltaTime;
+        }
+
+        transform.position = GoalPos;
+        IZoomAnim = null;
+    }
 }

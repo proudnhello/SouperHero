@@ -22,57 +22,65 @@ public class DeathMetricsDisplay : MonoBehaviour
 
     public void Start()
     {
-        DisplayStats(MetricsTracker.Singleton.metricsData);
+        GameManager.OnEndRun += DisplayStats;
     }
 
-    public void DisplayStats(MetricsData metricsData)
+    private void OnDisable()
     {
-        if (metricsData == null) return;
+        GameManager.OnEndRun -= DisplayStats;
+    }
+
+    public void DisplayStats(bool s)
+    {
+        if (MetricsTracker.Singleton == null) return;
+
+        MetricsData metricsData = MetricsTracker.Singleton.metricsData;
+
 
         metricsText.text = "";
 
         if (metricsData.new_MaxNumEnemiesKilled)
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Monsters Slain") +
-                $"<color=#F4B07D>{metricsData.best_NumEnemiesKilled}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
+                $"<color=#000515>{metricsData.best_NumEnemiesKilled}</color>" +
+                $"<color=#AC0000> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
                 "\n";
         }
         else
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Monsters Slain") +
-                $"<color=#F4B07D>{metricsData.curr_NumEnemiesKilled}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") + $"{metricsData.best_NumEnemiesKilled})</color>" +
+                $"<color=#000515>{metricsData.curr_NumEnemiesKilled}</color>" +
+                $"<color=#AC0000> (" + LocalizationManager.GetLocalizedString("Best") + $"{metricsData.best_NumEnemiesKilled})</color>" +
                 "\n";
         }
 
         if (metricsData.new_MaxNumIngredientsCollected)
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Ingredients Collected") +
-                $"<color=#F4B07D>{metricsData.curr_NumIngredientsCollected}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
+                $"<color=#000515>{metricsData.curr_NumIngredientsCollected}</color>" +
+                $"<color=#AC0000> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
                 "\n";
         }
         else
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Ingredients Collected") +
-                $"<color=#F4B07D>{metricsData.curr_NumIngredientsCollected}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") + $"{metricsData.best_NumIngredientsCollected})</color>" +
+                $"<color=#000515>{metricsData.curr_NumIngredientsCollected}</color>" +
+                $"<color=#AC0000> (" + LocalizationManager.GetLocalizedString("Best") + $"{metricsData.best_NumIngredientsCollected})</color>" +
                 "\n";
         }
 
         if (metricsData.new_MaxNumSoupsCooked)
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Soups Cooked") +
-                $"<color=#F4B07D>{metricsData.curr_NumSoupsCooked}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
+                $"<color=#000515>{metricsData.curr_NumSoupsCooked}</color>" +
+                $"<color=#AC0000> (" + LocalizationManager.GetLocalizedString("New Best") + ")</color>" +
                 "\n";
         }
         else
         {
             metricsText.text += LocalizationManager.GetLocalizedString("Soups Cooked") +
-                $"<color=#F4B07D>{metricsData.curr_NumSoupsCooked}</color>" +
-                $"<color=#A9A9A9> (" + LocalizationManager.GetLocalizedString("Best") +  $"{metricsData.best_NumSoupsCooked})</color>" +
+                $"<color=#000515>{metricsData.curr_NumSoupsCooked}</color>" +
+                $"<color=#AC0000> (" + LocalizationManager.GetLocalizedString("Best") +  $"{metricsData.best_NumSoupsCooked})</color>" +
                 "\n";
         }
 
@@ -90,7 +98,7 @@ public class DeathMetricsDisplay : MonoBehaviour
         }
 
         metricsText.text += LocalizationManager.GetLocalizedString("Time Elapsed") +
-            $"<color=#F4B07D>{timeElapsedStr}</color>" +
+            $"<color=#000515>{timeElapsedStr}</color>" +
             "\n";
 
         // check if they have won before
@@ -116,32 +124,27 @@ public class DeathMetricsDisplay : MonoBehaviour
                 if (metricsData.new_FastestRun)
                 {
                     metricsText.text += "Win Time Elapsed: " +
-                        $"<color=#F4B07D>{timeElapsedStr}</color>" +
-                         $"<color=#A9A9A9> (New Best!)</color>" +
+                        $"<color=#000515>{timeElapsedStr}</color>" +
+                         $"<color=#AC0000> (New Best!)</color>" +
                         "\n";
                 }
                 else
                 {
                     metricsText.text += "Win Time Elapsed: " +
-                        $"<color=#F4B07D>{timeElapsedStr}</color>" +
-                         $"<color=#A9A9A9> (Best: {bestRunTime})</color>" +
+                        $"<color=#000515>{timeElapsedStr}</color>" +
+                         $"<color=#AC0000> (Best: {bestRunTime})</color>" +
                         "\n";
                 }
             }
             else
             {
                 metricsText.text += "Best Win Time: " +
-                        $"<color=#F4B07D>{bestRunTime}</color>" +
+                        $"<color=#000515>{bestRunTime}</color>" +
                         "\n";
             }
         }
 
-        metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#F4B07D>{metricsData.totalDeaths}</color>" + "\n";
-        metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#F4B07D>{metricsData.totalWins}</color>" + "\n";
-    }
-
-    public void DisplayStatsNoParams()
-    {
-        DisplayStats(MetricsTracker.Singleton.metricsData);
+        metricsText.text += LocalizationManager.GetLocalizedString("Total Deaths") + $"<color=#000515>{metricsData.totalDeaths}</color>" + "\n";
+        metricsText.text += LocalizationManager.GetLocalizedString("Total Wins") + $"<color=#000515>{metricsData.totalWins}</color>" + "\n";
     }
 }

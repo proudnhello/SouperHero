@@ -13,7 +13,7 @@ public class PauseManager : MonoBehaviour
     [SerializeField] GameObject minimap;
     [SerializeField] GameObject playerMinimapIcon;
 
-    private void Awake()
+    private void Start()
     {
         if (pauseScreen != null)
         {

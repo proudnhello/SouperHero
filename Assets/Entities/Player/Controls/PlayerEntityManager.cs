@@ -31,6 +31,7 @@ public class PlayerEntityManager : Entity
         input = new();
         input.Enable();
         entityRenderer = new PlayerRenderer(this, animations);
+        GameManager.OnEndRun += GameEnd;
     }
 
     private void Start()
@@ -39,10 +40,16 @@ public class PlayerEntityManager : Entity
         gameObject.GetComponent<SpriteRenderer>().material = PlayerCosmeticRenderer.Singleton.playerMaterial;
     }
 
+    void GameEnd(bool s)
+    {
+        input.Disable();
+    }
+
     private void OnDisable()
     {
         input.Disable();
         ((PlayerRenderer)entityRenderer).Disable();
+        GameManager.OnEndRun -= GameEnd;
     }
     public override void ModifyHealth(int amount)
     {
@@ -85,6 +92,7 @@ public class PlayerEntityManager : Entity
 
     public override void DealDamage(int damage)
     {
+        if (!GameManager.Singleton.GameRunning) return;
         // If we're charging, don't apply inflictions
         if (!IsInvincible())
         {

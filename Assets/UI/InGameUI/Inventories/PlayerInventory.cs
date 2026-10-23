@@ -329,7 +329,7 @@ public class PlayerInventory : MonoBehaviour
     {
         // Don't Use Spoon if In Cooking Screen or if the player can't attack
         if (CookingScreen.Singleton.IsCooking || SoupInventoryUI.Singleton.IsOpen ||
-            !PlayerEntityManager.Singleton.CanAttack()) return;
+            !PlayerEntityManager.Singleton.CanAttack() || !GameManager.Singleton.GameRunning) return;
         if (DialogueManager.Singleton != null) if (DialogueManager.Singleton.IsDialogueActive()) return;
         //handle throwing object
         if (playerHolding)

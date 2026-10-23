@@ -112,20 +112,25 @@ public class GameManager : MonoBehaviour
     }
 
     // Goes to Win or Death Scene
-    public static event Action OnEndRun;
+    public static event Action<bool> OnEndRun;
     public void EndRun(bool successfulRun)
     {
         if (!TutorialRunning) MetricsTracker.Singleton.EndRun(successfulRun);
         Cursor.visible = true;
-        OnEndRun?.Invoke();
         
         GameReady = false;
 
         if (TutorialRunning) { TutorialRunning = false; return; }
 
         GameRunning = false;
-        if (successfulRun) SceneManager.LoadScene(4);
-        else SceneManager.LoadScene(3);
+        OnEndRun?.Invoke(successfulRun);
+        //if (successfulRun) SceneManager.LoadScene(4);
+        //else SceneManager.LoadScene(3);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U)) EndRun(false);
     }
 
 }

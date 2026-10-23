@@ -45,7 +45,7 @@ public class MusicHandler
             if (currMusicState == null || currMusicState is LoadingScreen) ChangeState(MusicState.EXPLORATION);
             AgroEnemies = new();
         };
-        GameManager.OnEndRun += () =>
+        GameManager.OnEndRun += (n) =>
         {
             CookingScreen.EnterCookingScreen -= TryCheckMusicState;
             CookingScreen.ExitCookingScreen -= TryCheckMusicState;
