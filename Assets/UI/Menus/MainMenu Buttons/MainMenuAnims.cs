@@ -16,15 +16,27 @@ public class MainMenuAnims : MonoBehaviour
     public GameObject blackFade;
     public GameObject titleText;
     public GameObject book;
-    public RectTransform firstButton;
-    public RectTransform secondButton;
-    public RectTransform thirdButton;
+
+    [SerializeField] float bookMoveInPosition = 876f;
+
+
+    [Header("Button Fade In Anim")]
+    [SerializeField] float delayAfterBookSlideToFade = 1f;
+    [SerializeField] Vector2 fadeInPoses;
+    [SerializeField] float fadeInTime = 0.65f;
+    [SerializeField] float timeBetweenFadeIns = 0.3f;
+
+    public RectTransform[] bookPageOne;
+    public RectTransform[] bookPageTwo;
+    //public RectTransform firstButton;
+    //public RectTransform secondButton;
+    //public RectTransform tutorialButton;
+    //public RectTransform thirdButton;
 
     public RectTransform fourthButton;
     public RectTransform fifthButton;
     public RectTransform sixthButton;
 
-    public RectTransform tutorialButton;
     public RectTransform cosmeticsButton;
 
     public GameObject cosmeticsSet;
@@ -62,21 +74,34 @@ public class MainMenuAnims : MonoBehaviour
 
         s.Append(titleText.transform.DOLocalMoveY(0, 1.65f).SetEase(Ease.OutBounce));
         s.Append(blackFade.GetComponent<Image>().DOColor(new Color(1, 1, 1, 0), 2f).SetEase(Ease.InQuad));
-        s.Append(book.transform.DOLocalMoveX(0, 1.35f).SetEase(Ease.OutQuad));
-        s.Append(firstButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
-        s.Append(secondButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
-        s.Append(thirdButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
+        s.Append(book.transform.DOLocalMoveX(bookMoveInPosition, 1.35f).SetEase(Ease.OutQuad));
+
+        for (int i = 0; i < bookPageOne.Length; i++)
+        {
+            var but = bookPageOne[i];
+            var canv = but.GetComponent<CanvasGroup>();
+            but.anchoredPosition = new Vector2(but.anchoredPosition.x, fadeInPoses.x);
+            canv.alpha = 0;
+            s.Join(but.DOAnchorPosY(fadeInPoses.y, fadeInTime).SetEase(Ease.OutBack).SetDelay(i == 0 ? delayAfterBookSlideToFade : timeBetweenFadeIns));
+            s.Join(canv.DOFade(1, fadeInTime).SetEase(Ease.OutSine));
+        }
+
+        //s.Append(firstButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
+        //s.Append(secondButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
+        //s.Append(tutorialButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
+        //s.Append(thirdButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
         s.OnComplete(() => { isDone = true; });
 
         moveInSecondarySequence = DOTween.Sequence();
 
-        moveInSecondarySequence.Append(firstButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
-        moveInSecondarySequence.Append(secondButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
-        moveInSecondarySequence.Append(thirdButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
+        //moveInSecondarySequence.Append(firstButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
+        //moveInSecondarySequence.Append(secondButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
+        //moveInSecondarySequence.Append(tutorialButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
+        //moveInSecondarySequence.Append(thirdButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
 
-        moveInSecondarySequence.Append(fourthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.InQuad));
-        moveInSecondarySequence.Append(fifthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        moveInSecondarySequence.Append(sixthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
+        //moveInSecondarySequence.Append(fourthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.InQuad));
+        //moveInSecondarySequence.Append(fifthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
+        //moveInSecondarySequence.Append(sixthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
 
 
         moveInSecondarySequence.SetAutoKill(false);
@@ -84,13 +109,14 @@ public class MainMenuAnims : MonoBehaviour
 
         moveOutSecondarySequence = DOTween.Sequence();
 
-        moveOutSecondarySequence.Append(fourthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
-        moveOutSecondarySequence.Append(fifthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
-        moveOutSecondarySequence.Append(sixthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
+        //moveOutSecondarySequence.Append(fourthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
+        //moveOutSecondarySequence.Append(fifthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
+        //moveOutSecondarySequence.Append(sixthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
 
-        moveOutSecondarySequence.Append(firstButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        moveOutSecondarySequence.Append(secondButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        moveOutSecondarySequence.Append(thirdButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
+        //moveOutSecondarySequence.Append(firstButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
+        //moveOutSecondarySequence.Append(secondButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
+        //moveOutSecondarySequence.Append(tutorialButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
+        //moveOutSecondarySequence.Append(thirdButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
 
         moveOutSecondarySequence.SetAutoKill(false);
         moveOutSecondarySequence.Pause();
@@ -106,14 +132,15 @@ public class MainMenuAnims : MonoBehaviour
             playerAnimator.SetTrigger("Left Click");
             if (!isDone)
             {
-                s.Kill();
-                titleText.transform.localPosition = new Vector3(titleText.transform.localPosition.x, 0, titleText.transform.localPosition.z);
-                blackFade.GetComponent<Image>().color = new Color(1, 1, 1, 0);
-                book.transform.localPosition = new Vector3(0, book.transform.localPosition.y, book.transform.localPosition.z);
-                firstButton.anchoredPosition = new Vector2(42, firstButton.anchoredPosition.y);
-                secondButton.anchoredPosition = new Vector2(42, secondButton.anchoredPosition.y);
-                thirdButton.anchoredPosition = new Vector2(42, thirdButton.anchoredPosition.y);
-                isDone = true;
+                //s.Kill();
+                //titleText.transform.localPosition = new Vector3(titleText.transform.localPosition.x, 0, titleText.transform.localPosition.z);
+                //blackFade.GetComponent<Image>().color = new Color(1, 1, 1, 0);
+                //book.transform.localPosition = new Vector3(0, book.transform.localPosition.y, book.transform.localPosition.z);
+                ////firstButton.anchoredPosition = new Vector2(42, firstButton.anchoredPosition.y);
+                ////secondButton.anchoredPosition = new Vector2(42, secondButton.anchoredPosition.y);
+                ////tutorialButton.anchoredPosition = new Vector2(42, tutorialButton.anchoredPosition.y);
+                ////thirdButton.anchoredPosition = new Vector2(42, thirdButton.anchoredPosition.y);
+                //isDone = true;
             }
         }
     }
@@ -231,24 +258,24 @@ public class MainMenuAnims : MonoBehaviour
             return;
         }
 
-        isLoading = true;
-        Sequence cosmeticsInSequence = DOTween.Sequence();
+        //isLoading = true;
+        //Sequence cosmeticsInSequence = DOTween.Sequence();
 
-        cosmeticsInSequence.Append(primaryButtonSet.transform.DOLocalMoveX(1500, 0.25f).SetEase(Ease.InQuad));
-        cosmeticsInSequence.Append(secondaryButtonSet.transform.DOLocalMoveX(1500, 0.25f).SetEase(Ease.InQuad));
-        cosmeticsInSequence.Append(book.transform.DOLocalMoveX(950, 0.5f).SetEase(Ease.InQuad));
-        cosmeticsInSequence.Append(cosmeticsButton.transform.DOLocalMoveY(-650, 0.25f).SetEase(Ease.InQuad));
-        cosmeticsInSequence.Append(tutorialButton.transform.DOLocalMoveY(-650, 0.25f).SetEase(Ease.InQuad));
-        cosmeticsInSequence.Append(titleText.transform.DOLocalMoveY(550, 0.25f).SetEase(Ease.InQuad));
+        //cosmeticsInSequence.Append(primaryButtonSet.transform.DOLocalMoveX(1500, 0.25f).SetEase(Ease.InQuad));
+        //cosmeticsInSequence.Append(secondaryButtonSet.transform.DOLocalMoveX(1500, 0.25f).SetEase(Ease.InQuad));
+        //cosmeticsInSequence.Append(book.transform.DOLocalMoveX(950, 0.5f).SetEase(Ease.InQuad));
+        //cosmeticsInSequence.Append(cosmeticsButton.transform.DOLocalMoveY(-650, 0.25f).SetEase(Ease.InQuad));
+        ////cosmeticsInSequence.Append(tutorialButton.transform.DOLocalMoveY(-650, 0.25f).SetEase(Ease.InQuad));
+        //cosmeticsInSequence.Append(titleText.transform.DOLocalMoveY(550, 0.25f).SetEase(Ease.InQuad));
 
-        cosmeticsInSequence.Append(camera.transform.DOLocalMoveX(-8, 0.5f).SetEase(Ease.OutQuad));
+        //cosmeticsInSequence.Append(camera.transform.DOLocalMoveX(-8, 0.5f).SetEase(Ease.OutQuad));
 
-        cosmeticsInSequence.Append(cosmeticsSet.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
+        //cosmeticsInSequence.Append(cosmeticsSet.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
 
-        cosmeticsInSequence.OnComplete(() =>
-        {
-            isLoading = false;
-        });
+        //cosmeticsInSequence.OnComplete(() =>
+        //{
+        //    isLoading = false;
+        //});
     }
 
     public void GetOutOfCosmetics()
@@ -258,22 +285,22 @@ public class MainMenuAnims : MonoBehaviour
             return;
         }
 
-        Sequence cosmeticsOutSequence = DOTween.Sequence();
+        //Sequence cosmeticsOutSequence = DOTween.Sequence();
 
-        cosmeticsOutSequence.Append(cosmeticsSet.transform.DOLocalMoveX(-1800, 0.5f).SetEase(Ease.InQuad));
+        //cosmeticsOutSequence.Append(cosmeticsSet.transform.DOLocalMoveX(-1800, 0.5f).SetEase(Ease.InQuad));
 
-        cosmeticsOutSequence.Append(camera.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
+        //cosmeticsOutSequence.Append(camera.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
 
-        cosmeticsOutSequence.Append(titleText.transform.DOLocalMoveY(0, 0.25f).SetEase(Ease.OutQuad));
-        cosmeticsOutSequence.Append(tutorialButton.transform.DOLocalMoveY(-449, 0.25f).SetEase(Ease.OutQuad));
-        cosmeticsOutSequence.Append(cosmeticsButton.transform.DOLocalMoveY(-449, 0.25f).SetEase(Ease.OutQuad));
-        cosmeticsOutSequence.Append(book.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
-        cosmeticsOutSequence.Append(secondaryButtonSet.transform.DOLocalMoveX(549, 0.25f).SetEase(Ease.OutQuad));
-        cosmeticsOutSequence.Append(primaryButtonSet.transform.DOLocalMoveX(549, 0.25f).SetEase(Ease.OutQuad));
+        //cosmeticsOutSequence.Append(titleText.transform.DOLocalMoveY(0, 0.25f).SetEase(Ease.OutQuad));
+        //cosmeticsOutSequence.Append(tutorialButton.transform.DOLocalMoveY(-449, 0.25f).SetEase(Ease.OutQuad));
+        //cosmeticsOutSequence.Append(cosmeticsButton.transform.DOLocalMoveY(-449, 0.25f).SetEase(Ease.OutQuad));
+        //cosmeticsOutSequence.Append(book.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
+        //cosmeticsOutSequence.Append(secondaryButtonSet.transform.DOLocalMoveX(549, 0.25f).SetEase(Ease.OutQuad));
+        //cosmeticsOutSequence.Append(primaryButtonSet.transform.DOLocalMoveX(549, 0.25f).SetEase(Ease.OutQuad));
 
-        cosmeticsOutSequence.OnComplete(() =>
-        {
-            isLoading = false;
-        });
+        //cosmeticsOutSequence.OnComplete(() =>
+        //{
+        //    isLoading = false;
+        //});
     }
 }

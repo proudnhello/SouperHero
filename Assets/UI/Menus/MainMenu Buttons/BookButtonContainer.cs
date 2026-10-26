@@ -5,25 +5,25 @@ using DG.Tweening;
 
 // Container class for selecting between menu options
 // Using DoTween
-public class ButtonContainer : MonoBehaviour
+public class BookButtonContainer : MonoBehaviour
 {
-    public List<ButtonScript> buttons;
+    public List<BookButtonScript> buttons;
 
     // Store the original positions of the button objects so that you can bring them back to where they were
     // ChatGPT had a good idea to make it generalized into a dictionary. Thank you my dearest AI overlord \\ >.< //
-    private Dictionary<ButtonScript, float> originalPositions = new Dictionary<ButtonScript, float>();
+    private Dictionary<BookButtonScript, float> originalPositions = new Dictionary<BookButtonScript, float>();
     public float _animTime = 0.5f;
     public float _scaleFactor = 0.8f;
     public float _moveDistance = 20.0f;
     public float _xScaleFactor = 0.85f;
-    private ButtonScript _currentButton;
+    private BookButtonScript _currentButton;
 
     // Store all of the original positions of the buttons, and add event triggers to each one to check if its being hovered or not
     // TODO: find a way to run the onButtonHover on the start button, probably have to change the script execution order in build
     void Start()
     {
         _currentButton = buttons[0];
-        foreach (ButtonScript button in buttons)
+        foreach (BookButtonScript button in buttons)
         {
             RectTransform rect = button.GetComponent<RectTransform>();
             if (rect != null)
@@ -36,7 +36,9 @@ public class ButtonContainer : MonoBehaviour
             EventTrigger trigger = button.GetComponent<EventTrigger>();
             if (trigger == null) trigger = button.gameObject.AddComponent<EventTrigger>();
 
-            AddEvent(trigger, EventTriggerType.PointerEnter, () => OnButtonHover(button));
+            AddEvent(trigger, EventTriggerType.PointerEnter, () => OnButtonHover(button, true));
+            AddEvent(trigger, EventTriggerType.PointerExit, () => OnButtonHover(button, false));
+
         }
     }
 
@@ -44,7 +46,6 @@ public class ButtonContainer : MonoBehaviour
     // I <3 ChatGPT (only sometimes)
     private void AddEvent(EventTrigger trigger, EventTriggerType type, System.Action callback)
     {
-
         EventTrigger.Entry entry = new EventTrigger.Entry { eventID = type };
         entry.callback.AddListener((_) => callback());
         trigger.triggers.Add(entry);
@@ -52,33 +53,15 @@ public class ButtonContainer : MonoBehaviour
 
     // Function to tween the position of a button when it is hovered. Also makes the other ones reset their positions.
     // Kills the animation tween and sets its position. Could just animate it back, but who tf cares realisitcally
-    private void OnButtonHover(ButtonScript hoveredButton)
+    private void OnButtonHover(BookButtonScript _button, bool hoverOn)
     {
-        _currentButton = hoveredButton;
-
-        foreach (ButtonScript button in buttons)
+        if (hoverOn)
         {
-            RectTransform rect = button.GetComponent<RectTransform>();
-            if (rect != null)
-            {
-                if (button == hoveredButton)
-                {
-                    button._buttonBackgroundRectTransform.DOScale(button._targetScale, button._animTime).SetEase(Ease.OutQuint);
-
-                    //rect.DOLocalMoveX(originalPositions[button] * _xScaleFactor, _animTime).SetEase(Ease.OutQuad);
-                }
-                else
-                {
-                    if (button._buttonBackgroundRectTransform == null)
-                    {
-                        button._buttonBackgroundRectTransform = button._buttonBackground.GetComponent<RectTransform>();
-                    }
-                    button._buttonBackgroundRectTransform.DOKill();
-                    button._buttonBackgroundRectTransform.transform.localScale = Vector3.zero;
-
-                    //rect.DOLocalMoveX(originalPositions[button], _animTime).SetEase(Ease.OutQuad);
-                }
-            }
+            _button.OnHover(_animTime, _scaleFactor);
+        } 
+        else
+        {
+            _button.OnUnhover(_animTime);
         }
     }
 }
