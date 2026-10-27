@@ -42,6 +42,23 @@ public class BookButtonContainer : MonoBehaviour
         }
     }
 
+    public void Enable()
+    {
+        foreach (var but in buttons)
+        {
+            but.enabled = true;
+            if (but.isHovering) but.OnHover(_animTime, _scaleFactor);
+        }
+    }
+    public void Disable()
+    {
+        foreach (var but in buttons)
+        {
+            but.OnUnhover(_animTime);
+            but.enabled = false;
+        }
+    }
+
     // Wrapper function to take care of making the event and attaching it to a callback function
     // I <3 ChatGPT (only sometimes)
     private void AddEvent(EventTrigger trigger, EventTriggerType type, System.Action callback)

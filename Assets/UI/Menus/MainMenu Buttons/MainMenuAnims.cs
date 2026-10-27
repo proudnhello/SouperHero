@@ -27,8 +27,11 @@ public class MainMenuAnims : MonoBehaviour
     [SerializeField] float delayForQuitTab = 0.15f;
 
     public RectTransform[] bookPageOne;
+    public BookButtonContainer bookPageOneContainer;
     [SerializeField] SettingBookTab bookPageOneTab;
     public RectTransform[] bookPageTwo;
+    public BookButtonContainer bookPageTwoContainer;
+    public BookButtonScript continueButton;
 
     [Header("Page Flip Anim")]
     [SerializeField] float pageFlipForwardDelay;
@@ -43,9 +46,9 @@ public class MainMenuAnims : MonoBehaviour
     [SerializeField] float bookSlideSettingsTime = 0.75f;
     [SerializeField] float settingsBookPos = 0;
     [SerializeField] float settingsCameraPos = 0;
-    [SerializeField] float delayBeforeFadingInSettingsContents = 0.80f;
     [SerializeField] SettingsTabs settingsTabs;
     [SerializeField] float delayAfterLeavingSettingsContents = 0.80f;
+    [SerializeField] float delayFlipBookOnExitOptions = 0.2f;
 
     //public RectTransform firstButton;
     //public RectTransform secondButton;
@@ -57,7 +60,6 @@ public class MainMenuAnims : MonoBehaviour
     public GameObject secondaryButtonSet;
     public GameObject primaryButtonSet;
 
-    public GameObject continueButton;
 
     public Animator playerAnimator;
 
@@ -82,6 +84,9 @@ public class MainMenuAnims : MonoBehaviour
 
     void Start()
     {
+        bookPageOneContainer.Disable();
+        bookPageTwoContainer.Disable();
+
         s = DOTween.Sequence();
 
         blackFade.color = Color.white;
@@ -100,7 +105,7 @@ public class MainMenuAnims : MonoBehaviour
         }
 
         s.JoinCallback(() => bookPageOneTab.RevealTab());
-        s.OnComplete(() => { isDone = true; });
+        s.OnComplete(() => { isDone = true; bookPageOneContainer.Enable(); });
 
         BuildFlipSequences();
 
@@ -111,6 +116,7 @@ public class MainMenuAnims : MonoBehaviour
     {
         moveInSecondarySequence = DOTween.Sequence();
         float t = 0;
+        moveInSecondarySequence.InsertCallback(0, () => bookPageOneContainer.Disable());
         for (int i = 0; i < bookPageOne.Length; i++)
         {
             var but = bookPageOne[i];
@@ -132,12 +138,14 @@ public class MainMenuAnims : MonoBehaviour
             moveInSecondarySequence.Insert(t, canv.DOFade(1, fadeInTimeOnFlip).SetEase(Ease.OutSine));
             t += timeBetweenFadeInsOnFlip;
         }
+        moveInSecondarySequence.OnComplete(() => bookPageTwoContainer.Enable());
         moveInSecondarySequence.SetAutoKill(false);
         moveInSecondarySequence.Pause();
 
 
         moveOutSecondarySequence = DOTween.Sequence();
         t = 0;
+        moveOutSecondarySequence.InsertCallback(0, () => bookPageTwoContainer.Disable());
         for (int i = 0; i < bookPageTwo.Length; i++)
         {
             var but = bookPageTwo[i];
@@ -157,6 +165,7 @@ public class MainMenuAnims : MonoBehaviour
             moveOutSecondarySequence.Insert(t, canv.DOFade(1, fadeInTimeOnFlip).SetEase(Ease.OutSine));
             t += timeBetweenFadeInsOnFlip;
         }
+        moveOutSecondarySequence.OnComplete(() => bookPageOneContainer.Enable());
         moveOutSecondarySequence.SetAutoKill(false);
         moveOutSecondarySequence.Pause();
     }
@@ -203,7 +212,7 @@ public class MainMenuAnims : MonoBehaviour
     public void StartButton()
     {
         Debug.Log($"State Path: {SaveManager.Singleton.HasSavedRun()}");
-        continueButton.SetActive(SaveManager.Singleton.HasSavedRun());
+        if (!SaveManager.Singleton.HasSavedRun()) continueButton.Disable();
         StartCoroutine("startCoroutine");
     }
 
@@ -244,6 +253,7 @@ public class MainMenuAnims : MonoBehaviour
     {
         Sequence sweep = DOTween.Sequence();
         float t = 0;
+        bookPageOneContainer.Disable();
         for (int i = 0; i < bookPageOne.Length; i++)
         {
             var but = bookPageOne[i];
@@ -258,7 +268,6 @@ public class MainMenuAnims : MonoBehaviour
         sweep.Insert(t, camera.transform.DOLocalMoveX(settingsCameraPos, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
         sweep.Insert(t, book.transform.DOLocalMoveX(settingsBookPos, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
         sweep.InsertCallback(t, () => bookPageOneTab.HideTab());
-        t += delayBeforeFadingInSettingsContents;
         sweep.InsertCallback(t, () => settingsTabs.OpenSettings());
         sweep.Play();
     }
@@ -273,6 +282,7 @@ public class MainMenuAnims : MonoBehaviour
         sweep.Insert(t, blackFade.DOColor(new Color(1, 1, 1, 0), bookSlideSettingsTime).SetEase(Ease.OutQuad));
         sweep.Insert(t, camera.transform.DOLocalMoveX(0, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
         sweep.Insert(t, book.transform.DOLocalMoveX(bookMoveInPosition, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
+        t += delayFlipBookOnExitOptions;
         sweep.InsertCallback(t, () => BookFlip.SetTrigger("FlipBackwardPlus"));
         t += delayAfterLeavingSettingsContents;
 
@@ -284,6 +294,7 @@ public class MainMenuAnims : MonoBehaviour
             sweep.Insert(t, canv.DOFade(1, fadeInTime).SetEase(Ease.OutSine));
             if (i < bookPageOne.Length - 1) t += timeBetweenFadeIns;
         }
+        sweep.OnComplete(() => bookPageOneContainer.Enable());
         sweep.Play();
     }
 
