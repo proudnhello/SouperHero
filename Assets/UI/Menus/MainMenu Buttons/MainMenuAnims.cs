@@ -1,11 +1,10 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using DG.Tweening;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using System.IO;
-using static RunStateManager;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 // Who had the bright idea to put this script on the PLAYER in the main menu???? Why?
 public class MainMenuAnims : MonoBehaviour
@@ -13,7 +12,7 @@ public class MainMenuAnims : MonoBehaviour
     //public static MainMenuAnims Singleton { get; private set; }
 
     public GameObject camera;
-    public GameObject blackFade;
+    public Image blackFade;
     public GameObject titleText;
     public GameObject book;
 
@@ -25,19 +24,33 @@ public class MainMenuAnims : MonoBehaviour
     [SerializeField] Vector2 fadeInPoses;
     [SerializeField] float fadeInTime = 0.65f;
     [SerializeField] float timeBetweenFadeIns = 0.3f;
+    [SerializeField] float delayForQuitTab = 0.15f;
 
     public RectTransform[] bookPageOne;
+    [SerializeField] SettingBookTab bookPageOneTab;
     public RectTransform[] bookPageTwo;
+
+    [Header("Page Flip Anim")]
+    [SerializeField] float pageFlipForwardDelay;
+    [SerializeField] float pageFlipForwardAnimTime;
+    [SerializeField] Animator BookFlip;
+    [SerializeField] float fadeInTimeOnFlip = 0.65f;
+    [SerializeField] float timeBetweenFadeInsOnFlip = 0.3f;
+    [SerializeField] float pageFlipBackwardDelay;
+    [SerializeField] float pageFlipBackwardAnimTime;
+
+    [Header("Settings Move Anim")]
+    [SerializeField] float bookSlideSettingsTime = 0.75f;
+    [SerializeField] float settingsBookPos = 0;
+    [SerializeField] float settingsCameraPos = 0;
+    [SerializeField] float delayBeforeFadingInSettingsContents = 0.80f;
+    [SerializeField] SettingsTabs settingsTabs;
+    [SerializeField] float delayAfterLeavingSettingsContents = 0.80f;
+
     //public RectTransform firstButton;
     //public RectTransform secondButton;
     //public RectTransform tutorialButton;
     //public RectTransform thirdButton;
-
-    public RectTransform fourthButton;
-    public RectTransform fifthButton;
-    public RectTransform sixthButton;
-
-    public RectTransform cosmeticsButton;
 
     public GameObject cosmeticsSet;
 
@@ -67,13 +80,13 @@ public class MainMenuAnims : MonoBehaviour
 
     private bool isDone = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         s = DOTween.Sequence();
 
+        blackFade.color = Color.white;
         s.Append(titleText.transform.DOLocalMoveY(0, 1.65f).SetEase(Ease.OutBounce));
-        s.Append(blackFade.GetComponent<Image>().DOColor(new Color(1, 1, 1, 0), 2f).SetEase(Ease.InQuad));
+        s.Append(blackFade.DOColor(new Color(1, 1, 1, 0), 2f).SetEase(Ease.InQuad));
         s.Append(book.transform.DOLocalMoveX(bookMoveInPosition, 1.35f).SetEase(Ease.OutQuad));
 
         for (int i = 0; i < bookPageOne.Length; i++)
@@ -83,45 +96,69 @@ public class MainMenuAnims : MonoBehaviour
             but.anchoredPosition = new Vector2(but.anchoredPosition.x, fadeInPoses.x);
             canv.alpha = 0;
             s.Join(but.DOAnchorPosY(fadeInPoses.y, fadeInTime).SetEase(Ease.OutBack).SetDelay(i == 0 ? delayAfterBookSlideToFade : timeBetweenFadeIns));
-            s.Join(canv.DOFade(1, fadeInTime).SetEase(Ease.OutSine));
+            s.Join(canv.DOFade(1, fadeInTime).SetEase(Ease.OutSine).SetDelay(i == bookPageOne.Length-1 ? delayForQuitTab : 0));
         }
 
-        //s.Append(firstButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
-        //s.Append(secondButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
-        //s.Append(tutorialButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
-        //s.Append(thirdButton.DOAnchorPosX(42, 0.65f).SetEase(Ease.OutQuad));
+        s.JoinCallback(() => bookPageOneTab.RevealTab());
         s.OnComplete(() => { isDone = true; });
 
+        BuildFlipSequences();
+
+        AudioManager.Singleton._MusicHandler.ChangeState(MusicHandler.MusicState.MAINMENU);
+    }
+
+    public void BuildFlipSequences()
+    {
         moveInSecondarySequence = DOTween.Sequence();
-
-        //moveInSecondarySequence.Append(firstButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
-        //moveInSecondarySequence.Append(secondButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
-        //moveInSecondarySequence.Append(tutorialButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
-        //moveInSecondarySequence.Append(thirdButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.InQuad));
-
-        //moveInSecondarySequence.Append(fourthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.InQuad));
-        //moveInSecondarySequence.Append(fifthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        //moveInSecondarySequence.Append(sixthButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-
-
+        float t = 0;
+        for (int i = 0; i < bookPageOne.Length; i++)
+        {
+            var but = bookPageOne[i];
+            var canv = but.GetComponent<CanvasGroup>();
+            moveInSecondarySequence.Insert(t, but.DOAnchorPosY(fadeInPoses.x, fadeInTimeOnFlip).SetEase(Ease.InBack));
+            moveInSecondarySequence.Insert(t, canv.DOFade(0, fadeInTimeOnFlip).SetEase(Ease.InSine));
+            if (i < bookPageOne.Length - 1) t += timeBetweenFadeIns;
+        }
+        t += pageFlipForwardDelay;
+        moveInSecondarySequence.InsertCallback(t, () => BookFlip.SetTrigger("FlipForward"));
+        t += pageFlipForwardAnimTime;
+        for (int i = 0; i < bookPageTwo.Length; i++)
+        {
+            var but = bookPageTwo[i];
+            var canv = but.GetComponent<CanvasGroup>();
+            but.anchoredPosition = new Vector2(but.anchoredPosition.x, fadeInPoses.x);
+            canv.alpha = 0;
+            moveInSecondarySequence.Insert(t, but.DOAnchorPosY(fadeInPoses.y, fadeInTimeOnFlip).SetEase(Ease.OutBack));
+            moveInSecondarySequence.Insert(t, canv.DOFade(1, fadeInTimeOnFlip).SetEase(Ease.OutSine));
+            t += timeBetweenFadeInsOnFlip;
+        }
         moveInSecondarySequence.SetAutoKill(false);
         moveInSecondarySequence.Pause();
 
+
         moveOutSecondarySequence = DOTween.Sequence();
-
-        //moveOutSecondarySequence.Append(fourthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
-        //moveOutSecondarySequence.Append(fifthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
-        //moveOutSecondarySequence.Append(sixthButton.DOAnchorPosX(194, 0.25f).SetEase(Ease.OutQuad));
-
-        //moveOutSecondarySequence.Append(firstButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        //moveOutSecondarySequence.Append(secondButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        //moveOutSecondarySequence.Append(tutorialButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-        //moveOutSecondarySequence.Append(thirdButton.DOAnchorPosX(42, 0.25f).SetEase(Ease.OutQuad));
-
+        t = 0;
+        for (int i = 0; i < bookPageTwo.Length; i++)
+        {
+            var but = bookPageTwo[i];
+            var canv = but.GetComponent<CanvasGroup>();
+            moveOutSecondarySequence.Insert(t, but.DOAnchorPosY(fadeInPoses.x, fadeInTimeOnFlip).SetEase(Ease.InBack));
+            moveOutSecondarySequence.Insert(t, canv.DOFade(0, fadeInTimeOnFlip).SetEase(Ease.InSine));
+            if (i < bookPageTwo.Length - 1) t += timeBetweenFadeIns;
+        }
+        t += pageFlipBackwardDelay;
+        moveOutSecondarySequence.InsertCallback(t, () => BookFlip.SetTrigger("FlipBackward"));
+        t += pageFlipBackwardAnimTime;
+        for (int i = 0; i < bookPageOne.Length; i++)
+        {
+            var but = bookPageOne[i];
+            var canv = but.GetComponent<CanvasGroup>();
+            moveOutSecondarySequence.Insert(t, but.DOAnchorPosY(fadeInPoses.y, fadeInTimeOnFlip).SetEase(Ease.OutBack));
+            moveOutSecondarySequence.Insert(t, canv.DOFade(1, fadeInTimeOnFlip).SetEase(Ease.OutSine));
+            t += timeBetweenFadeInsOnFlip;
+        }
         moveOutSecondarySequence.SetAutoKill(false);
         moveOutSecondarySequence.Pause();
-
-        AudioManager.Singleton._MusicHandler.ChangeState(MusicHandler.MusicState.MAINMENU);
     }
 
     // Update is called once per frame
@@ -145,10 +182,10 @@ public class MainMenuAnims : MonoBehaviour
         }
     }
 
-    public void ResetTrigger()
-    {
-        playerAnimator.ResetTrigger("Left Click");
-    }
+    //public void ResetTrigger()
+    //{
+    //    playerAnimator.ResetTrigger("Left Click");
+    //}
 
 
     public IEnumerator startCoroutine()
@@ -165,7 +202,6 @@ public class MainMenuAnims : MonoBehaviour
 
     public void StartButton()
     {
-
         Debug.Log($"State Path: {SaveManager.Singleton.HasSavedRun()}");
         continueButton.SetActive(SaveManager.Singleton.HasSavedRun());
         StartCoroutine("startCoroutine");
@@ -204,43 +240,51 @@ public class MainMenuAnims : MonoBehaviour
     {
         StartCoroutine("backCoroutine");
     }
-    float initialX = 831.5f;
-
     public void EnterOptionsScreen()
     {
-        settingsMenu.SetActive(true);
-        book.SetActive(false);
-        initialX = settingsMenu.transform.localPosition.x;
         Sequence sweep = DOTween.Sequence();
-        sweep.Append(settingsMenu.transform.DOLocalMoveX(0, 0.75f).SetEase(Ease.InOutQuad));
+        float t = 0;
+        for (int i = 0; i < bookPageOne.Length; i++)
+        {
+            var but = bookPageOne[i];
+            var canv = but.GetComponent<CanvasGroup>();
+            sweep.Insert(t, but.DOAnchorPosY(fadeInPoses.x, fadeInTimeOnFlip).SetEase(Ease.InBack));
+            sweep.Insert(t, canv.DOFade(0, fadeInTimeOnFlip).SetEase(Ease.InSine));
+            if (i < bookPageOne.Length - 1) t += timeBetweenFadeIns;
+        }
+        t += pageFlipForwardDelay;
+        sweep.InsertCallback(t, () => BookFlip.SetTrigger("FlipForwardPlus"));
+        sweep.Insert(t, blackFade.DOColor(new Color(1, 1, 1, .75f), bookSlideSettingsTime).SetEase(Ease.OutQuad));
+        sweep.Insert(t, camera.transform.DOLocalMoveX(settingsCameraPos, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
+        sweep.Insert(t, book.transform.DOLocalMoveX(settingsBookPos, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
+        sweep.InsertCallback(t, () => bookPageOneTab.HideTab());
+        t += delayBeforeFadingInSettingsContents;
+        sweep.InsertCallback(t, () => settingsTabs.OpenSettings());
         sweep.Play();
     }
 
     public void ExitOptionsScreen()
     {
         Sequence sweep = DOTween.Sequence();
-        sweep.Append(settingsMenu.transform.DOLocalMoveX(initialX, 0.75f).SetEase(Ease.InOutQuad));
-        sweep.OnComplete(() =>
+        settingsTabs.CloseSettings();
+        bookPageOneTab.RevealTab();
+
+        float t = 0;
+        sweep.Insert(t, blackFade.DOColor(new Color(1, 1, 1, 0), bookSlideSettingsTime).SetEase(Ease.OutQuad));
+        sweep.Insert(t, camera.transform.DOLocalMoveX(0, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
+        sweep.Insert(t, book.transform.DOLocalMoveX(bookMoveInPosition, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
+        sweep.InsertCallback(t, () => BookFlip.SetTrigger("FlipBackwardPlus"));
+        t += delayAfterLeavingSettingsContents;
+
+        for (int i = 0; i < bookPageOne.Length; i++)
         {
-            settingsMenu.SetActive(false);
-            book.SetActive(true);
-        });
+            var but = bookPageOne[i];
+            var canv = but.GetComponent<CanvasGroup>();
+            sweep.Insert(t, but.DOAnchorPosY(fadeInPoses.y, fadeInTime).SetEase(Ease.OutBack));
+            sweep.Insert(t, canv.DOFade(1, fadeInTime).SetEase(Ease.OutSine));
+            if (i < bookPageOne.Length - 1) t += timeBetweenFadeIns;
+        }
         sweep.Play();
-    }
-
-    public void ShowExitConfirmation()
-    {
-        exitPanel.SetActive(true);
-    }
-
-    public void ConfirmedExit()
-    {
-        Application.Quit();  // Quits the game in a build
-    }
-
-    public void ReturnFromExit()
-    {
-        exitPanel.SetActive(false);
     }
 
     public void StartTutorial()

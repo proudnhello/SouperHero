@@ -1,34 +1,93 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class SettingsTabs : MonoBehaviour
 {
-    public List<GameObject> UI_List = new List<GameObject>();
+    public CanvasGroup[] UI_List;
+    public SettingBookTab[] tabs;
+    
     public GameObject settingsMenu;
 
-    private void Start()
+    [SerializeField] float delayBeforeTabs;
+    [SerializeField] float delayBeforeFadingInContent;
+    [SerializeField] float fadeTime;
+    [SerializeField] float TIME_BETWEEN_TAB_REVEAL;
+    [SerializeField] float BookFlipTime;
+    [SerializeField] Animator BookFlip;
+    Tween[] fadeTweens;
+
+    private void Awake()
     {
-        ShowUI(0);
+        for (int c = 0; c < UI_List.Length; c++) UI_List[c].alpha = 0;
+        fadeTweens = new Tween[UI_List.Length];
     }
 
+    int currentlyShowing = -1;
+    Sequence fade;
+    Sequence tabsSeq;
+
+    public void OpenSettings()
+    {
+        tabsSeq = DOTween.Sequence();
+        int t = 0;
+        float time = delayBeforeTabs;
+        foreach (var tab in tabs)
+        {
+            bool matches = t == currentlyShowing;
+            tabsSeq.InsertCallback(time, () => tab.RevealTab(matches));
+            t++;
+            time += TIME_BETWEEN_TAB_REVEAL;
+        }
+        tabsSeq.Play();
+
+        foreach (var tab in tabs) tab.DisableButton(true);
+        currentlyShowing = currentlyShowing == -1 ? 0 : currentlyShowing;
+        fade = DOTween.Sequence();
+        fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(1, fadeTime).SetEase(Ease.OutSine);
+        fade.Insert(delayBeforeFadingInContent, fadeTweens[currentlyShowing]);
+        fade.OnComplete(() => { foreach (var tab in tabs) tab.DisableButton(false); });
+    }
+
+    int queuedTab = -1;
     public void ShowUI(int index)
     {
-        // Iterate through UI
-        for (int i = 0; i < UI_List.Count; i++)
+        if (queuedTab == index) return;
+
+        queuedTab = index;
+        if (currentlyShowing >= 0)
         {
-            if (i == index)
-            {
-                // Show UI
-                UI_List[i].SetActive(true);
-            }
-            else
-            {
-                // Hide UI
-                UI_List[i].SetActive(false);
-            }
+            float elapsed = !fadeTweens[currentlyShowing].IsPlaying() ? fadeTime : fade.Elapsed();
+            fade.Kill();
+            fade = DOTween.Sequence();
+            fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(0, elapsed).SetEase(Ease.OutSine);
+            fade.Append(fadeTweens[currentlyShowing]);
+            fade.OnComplete(() => ShowNext());
         }
+        else
+        {
+            ShowNext();
+        }
+
+
+        void ShowNext()
+        {
+            fade = DOTween.Sequence();
+            foreach (var tab in tabs) tab.DisableButton(true);
+            Debug.Log(currentlyShowing + " -> " + index);
+            float fadeDelay = currentlyShowing != index ? BookFlipTime : 0f;
+            string flipType = currentlyShowing < index ? "FlipForward" : "FlipBackward";
+            if (currentlyShowing != index) fade.InsertCallback(0, () => BookFlip.SetTrigger(flipType));
+            currentlyShowing = index;
+            fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(1, fadeTime).SetEase(Ease.OutSine);
+            fade.InsertCallback(fadeDelay, () => { foreach (var tab in tabs) tab.DisableButton(false); });
+            fade.Insert(fadeDelay, fadeTweens[currentlyShowing]);
+            fade.Play();
+        }  
     }
 
     public void GoToMainMenu()
@@ -39,7 +98,21 @@ public class SettingsTabs : MonoBehaviour
 
     public void CloseSettings()
     {
-        ShowUI(0);
-        settingsMenu.SetActive(false);
+        tabsSeq.Kill();
+        tabsSeq = DOTween.Sequence();
+        foreach (var tab in tabs)
+        {
+            tabsSeq.AppendCallback(() => tab.HideTab());
+            tabsSeq.AppendInterval(TIME_BETWEEN_TAB_REVEAL);
+        }
+        tabsSeq.Play();
+
+
+        float elapsed = !fadeTweens[currentlyShowing].IsPlaying() ? fadeTime : fade.Elapsed();
+        fade.Kill();
+        fade = DOTween.Sequence();
+        fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(0, elapsed).SetEase(Ease.OutSine);
+        fade.Append(fadeTweens[currentlyShowing]);
+        fade.Play();
     }
 }

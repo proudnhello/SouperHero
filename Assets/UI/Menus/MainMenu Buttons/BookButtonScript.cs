@@ -19,7 +19,6 @@ public class BookButtonScript : MonoBehaviour, IPointerClickHandler
     void Start()
     {
         baseScale = rectTransform.localScale.x;
-        print(rectTransform);
     }
 
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
