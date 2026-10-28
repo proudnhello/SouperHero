@@ -15,10 +15,12 @@ public class BookButtonScript : MonoBehaviour, IPointerClickHandler
     [SerializeField]
     public UnityEvent onClickEvent;
 
+    internal bool FullyDisabled = false;
     public void Disable()
     {
         text.color = new Color(0.3215686f, 0.3215686f, 0.3215686f, 1);
         this.enabled = false;
+        FullyDisabled = true;
     }
 
     // Set all member fields

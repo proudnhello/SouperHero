@@ -25,6 +25,7 @@ public class SettingsTabs : MonoBehaviour
     {
         for (int c = 0; c < UI_List.Length; c++) UI_List[c].alpha = 0;
         fadeTweens = new Tween[UI_List.Length];
+        foreach (var c in UI_List) { c.alpha = 0; c.blocksRaycasts = false; }
     }
 
     int currentlyShowing = -1;
@@ -50,7 +51,10 @@ public class SettingsTabs : MonoBehaviour
         fade = DOTween.Sequence();
         fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(1, fadeTime).SetEase(Ease.OutSine);
         fade.Insert(delayBeforeFadingInContent, fadeTweens[currentlyShowing]);
-        fade.OnComplete(() => { foreach (var tab in tabs) tab.DisableButton(false); });
+        fade.OnComplete(() => {
+            UI_List[currentlyShowing].blocksRaycasts = true;
+            foreach (var tab in tabs) 
+                tab.DisableButton(false); });
     }
 
     int queuedTab = -1;
@@ -65,6 +69,7 @@ public class SettingsTabs : MonoBehaviour
             fade.Kill();
             fade = DOTween.Sequence();
             fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(0, elapsed).SetEase(Ease.OutSine);
+            UI_List[currentlyShowing].blocksRaycasts = false;
             fade.Append(fadeTweens[currentlyShowing]);
             fade.OnComplete(() => ShowNext());
         }
@@ -78,7 +83,6 @@ public class SettingsTabs : MonoBehaviour
         {
             fade = DOTween.Sequence();
             foreach (var tab in tabs) tab.DisableButton(true);
-            Debug.Log(currentlyShowing + " -> " + index);
             float fadeDelay = currentlyShowing != index ? BookFlipTime : 0f;
             string flipType = currentlyShowing < index ? "FlipForward" : "FlipBackward";
             if (currentlyShowing != index) fade.InsertCallback(0, () => BookFlip.SetTrigger(flipType));
@@ -86,7 +90,7 @@ public class SettingsTabs : MonoBehaviour
             fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(1, fadeTime).SetEase(Ease.OutSine);
             fade.InsertCallback(fadeDelay, () => { foreach (var tab in tabs) tab.DisableButton(false); });
             fade.Insert(fadeDelay, fadeTweens[currentlyShowing]);
-            fade.Play();
+            fade.OnComplete(() => UI_List[currentlyShowing].blocksRaycasts = true);
         }  
     }
 
@@ -112,6 +116,7 @@ public class SettingsTabs : MonoBehaviour
         fade.Kill();
         fade = DOTween.Sequence();
         fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(0, elapsed).SetEase(Ease.OutSine);
+        UI_List[currentlyShowing].blocksRaycasts = false;
         fade.Append(fadeTweens[currentlyShowing]);
         fade.Play();
     }

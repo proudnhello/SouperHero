@@ -46,6 +46,7 @@ public class BookButtonContainer : MonoBehaviour
     {
         foreach (var but in buttons)
         {
+            if (but.FullyDisabled) continue;
             but.enabled = true;
             if (but.isHovering) but.OnHover(_animTime, _scaleFactor);
         }

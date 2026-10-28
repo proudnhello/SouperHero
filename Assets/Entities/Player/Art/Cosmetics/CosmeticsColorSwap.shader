@@ -31,7 +31,7 @@ Shader "Cosmetics/ColorReplacement"
 
     SubShader
     {
-Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
+        Tags {"Queue" = "Transparent" "RenderType"="Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
         LOD 100
         Cull Off
 
@@ -79,12 +79,14 @@ Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
+                float4 color : COLOR;
             };
 
             struct v2f
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
+                float4 color : COLOR;
             };
 
 
@@ -94,6 +96,7 @@ Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.color = v.color;
                 return o;
             }
 
@@ -109,6 +112,8 @@ Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
                 if(_color.a<=0.15){
                     return half4(0,0,0,0);
                 }
+
+                half alpha = _color.a;
 
                 half dis1 = distance(_FilterColor1);
                 fixed InThreshold_1 = dis1 <= _Threshold1 ? 1 : 0;
@@ -134,7 +139,7 @@ Tags {"Queue" = "Transparent"} ZWrite Off  Blend SrcAlpha OneMinusSrcAlpha
                 fixed InThreshold_6 = dis6 <= _Threshold6 ? 1 : 0;
                 _color = _color * (1-InThreshold_6) + lerp(_ColorReplacement6, _color, smoothstep(0, _Threshold6, dis6)) * InThreshold_6;
 
-                return _color;
+                return _color * i.color;
             }
             ENDCG
         }
