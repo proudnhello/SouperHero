@@ -42,7 +42,7 @@ public class EntityInflictionEffectHandler
 
         public void StartStatusEffect(IEnumerator method)
         {
-            if (entity.isActiveAndEnabled)
+            if (entity.isActiveAndEnabled && GameManager.Singleton.GameRunning)
             {
                 entity.StartCoroutine(StatusMethod = method);
             }
@@ -77,6 +77,8 @@ public class EntityInflictionEffectHandler
 
     public void ApplyInflictions(List<InflictionStat> spoonInflictions, Transform source)
     {
+        if (!GameManager.Singleton.GameRunning) return;
+
         float damage = 0;
         foreach (var infliction in spoonInflictions)
         {

@@ -10,6 +10,7 @@ using System.Collections;
 public class CooldownBar : MonoBehaviour
 {
     public Image cooldownFill;
+    [SerializeField] GameObject cooldownHolder;
 
     void Update()
     {
@@ -23,5 +24,20 @@ public class CooldownBar : MonoBehaviour
         {
             cooldownFill.enabled = false;
         }
+    }
+
+    private void OnEnable()
+    {
+        GameManager.OnEndRun += GameEnd;
+    }
+
+    void GameEnd(bool s)
+    {
+        cooldownHolder.SetActive(false);
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnEndRun -= GameEnd;
     }
 }

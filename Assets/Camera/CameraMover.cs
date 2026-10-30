@@ -250,7 +250,7 @@ public class CameraMover : MonoBehaviour
 
     public IEnumerator EndRunMoveAnim(float animTime)
     {
-        Vector3 ReturnPos = new Vector3(_player.position.x, _player.position.y, transform.position.z);
+        Vector3 ReturnPos = transform.position;
         GoalPos = new Vector3(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width*.39f, 0, 0)).x, _player.position.y, transform.position.z);
 
         zoomTimeProgressed = 0;

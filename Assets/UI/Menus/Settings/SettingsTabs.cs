@@ -31,10 +31,29 @@ public class SettingsTabs : MonoBehaviour
     int currentlyShowing = -1;
     Sequence fade;
     Sequence tabsSeq;
+    public void InstantOpenSettings()
+    {
+        foreach (var c in UI_List)
+        {
+            c.alpha = 0;
+            c.blocksRaycasts = false;
+        }
+        int showing = currentlyShowing == -1 ? 0 : currentlyShowing;
+        for (int t = 0; t < tabs.Length; t++)
+        {
+            if (t == showing) tabs[t].KeepSelected(true);
+            else tabs[t].InstantUnhover();
+        }
+        tabs[showing].KeepSelected(true);
+        currentlyShowing = -1;
+        queuedTab = -1;
+        fade.Kill();
+        ShowUI(showing);
+    }
 
     public void OpenSettings()
     {
-        tabsSeq = DOTween.Sequence();
+        tabsSeq = DOTween.Sequence().SetUpdate(true);
         int t = 0;
         float time = delayBeforeTabs;
         foreach (var tab in tabs)
@@ -48,7 +67,7 @@ public class SettingsTabs : MonoBehaviour
 
         foreach (var tab in tabs) tab.DisableButton(true);
         currentlyShowing = currentlyShowing == -1 ? 0 : currentlyShowing;
-        fade = DOTween.Sequence();
+        fade = DOTween.Sequence().SetUpdate(true);
         fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(1, fadeTime).SetEase(Ease.OutSine);
         fade.Insert(delayBeforeFadingInContent, fadeTweens[currentlyShowing]);
         fade.OnComplete(() => {
@@ -65,10 +84,11 @@ public class SettingsTabs : MonoBehaviour
         queuedTab = index;
         if (currentlyShowing >= 0)
         {
-            float elapsed = !fadeTweens[currentlyShowing].IsPlaying() ? fadeTime : fade.Elapsed();
+            float elapsed = fadeTweens[currentlyShowing] == null ? 0 :
+                !fadeTweens[currentlyShowing].IsActive() ? fadeTime : fade.Elapsed();
             fade.Kill();
-            fade = DOTween.Sequence();
-            fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(0, elapsed).SetEase(Ease.OutSine);
+            fade = DOTween.Sequence().SetUpdate(true);
+            fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(0, elapsed).SetEase(Ease.OutSine).SetUpdate(true);
             UI_List[currentlyShowing].blocksRaycasts = false;
             fade.Append(fadeTweens[currentlyShowing]);
             fade.OnComplete(() => ShowNext());
@@ -81,7 +101,7 @@ public class SettingsTabs : MonoBehaviour
 
         void ShowNext()
         {
-            fade = DOTween.Sequence();
+            fade = DOTween.Sequence().SetUpdate(true);
             foreach (var tab in tabs) tab.DisableButton(true);
             float fadeDelay = currentlyShowing != index ? BookFlipTime : 0f;
             string flipType = currentlyShowing < index ? "FlipForward" : "FlipBackward";
@@ -112,7 +132,8 @@ public class SettingsTabs : MonoBehaviour
         tabsSeq.Play();
 
 
-        float elapsed = !fadeTweens[currentlyShowing].IsPlaying() ? fadeTime : fade.Elapsed();
+        float elapsed = fadeTweens[currentlyShowing] == null ? fadeTime :
+            !fadeTweens[currentlyShowing].IsActive() ? fadeTime : fade.Elapsed();
         fade.Kill();
         fade = DOTween.Sequence();
         fadeTweens[currentlyShowing] = UI_List[currentlyShowing].DOFade(0, elapsed).SetEase(Ease.OutSine);

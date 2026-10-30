@@ -23,6 +23,12 @@ public class PlayerEntityManager : Entity
     private GameObject shieldObject;
     private List<Infliction> shieldInflictions;
     [SerializeField] bool DEBUG_INVINCIBLE;
+    public Transform currentPlayerLocation;
+    SpriteRenderer spriteRenderer;
+    [SerializeField] GameObject miniMapIcon;
+    [SerializeField] Collider2D _collider;
+    [SerializeField] Rigidbody2D rb;
+
     private void Awake()
     {
         if (Singleton == null) Singleton = this;
@@ -37,12 +43,20 @@ public class PlayerEntityManager : Entity
     private void Start()
     {
         playerAudio = new PlayerAudio();
-        gameObject.GetComponent<SpriteRenderer>().material = PlayerCosmeticRenderer.Singleton.playerMaterial;
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = PlayerCosmeticRenderer.Singleton.playerMaterial;
     }
 
     void GameEnd(bool s)
     {
+        currentPlayerLocation.position = new Vector3(99999999f, 99999999f, 0);
         input.Disable();
+        StopAllCoroutines();
+        if (shieldObject != null) shieldObject.SetActive(false);
+        spriteRenderer.enabled = false;
+        miniMapIcon.SetActive(false);
+        _collider.enabled = false;
+        rb.bodyType = RigidbodyType2D.Static;
     }
 
     private void OnDisable()
@@ -82,7 +96,7 @@ public class PlayerEntityManager : Entity
 
     public Vector2 GetPlayerPosition()
     {
-        return transform.position;
+        return currentPlayerLocation.position;
     }
 
     public override bool IsInvincible()
@@ -163,6 +177,8 @@ public class PlayerEntityManager : Entity
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!GameManager.Singleton.GameRunning) return;
+
         // If we're charging or shielded and we hit an enemy, apply the inflictions
         if (CollisionLayers.Singleton.InEnemyLayer(collision.gameObject) && (playerMovement.charging || shielded))
         {
@@ -194,28 +210,28 @@ public class PlayerEntityManager : Entity
 
     public override void Fall(Transform respawnPoint)
     {
-        GetComponent<Collider2D>().enabled = false;
+        if (!GameManager.Singleton.GameRunning) return;
+        _collider.enabled = false;
         SetMoveSpeed(11, 0);
         StartCoroutine(FallAnimation(respawnPoint));
     }
 
     IEnumerator FallAnimation(Transform respawnPoint)
     {
-        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        Vector3 initialScale = sprite.size;
+        Vector3 initialScale = spriteRenderer.size;
         Vector2 changeAmount = new Vector2(initialScale.x / 10, initialScale.y / 10);
 
-        while (sprite.size.x > 0)
+        while (spriteRenderer.size.x > 0)
         {
             yield return new WaitForSeconds(0.05f);
-            sprite.size -= changeAmount;
+            spriteRenderer.size -= changeAmount;
 
         }
 
-        sprite.size = initialScale;
+        spriteRenderer.size = initialScale;
         ResetMoveSpeed(11);
         DealDamage(GetBaseStats().maxHealth / 9); // Deal damage to the player == 1/9 of max health or one heart
         transform.position = respawnPoint.position;
-        GetComponent<Collider2D>().enabled = true;
+        _collider.enabled = true;
     }
 }

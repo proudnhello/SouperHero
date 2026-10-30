@@ -11,8 +11,9 @@ public class MainMenuAnims : MonoBehaviour
 {
     //public static MainMenuAnims Singleton { get; private set; }
 
-    public GameObject camera;
-    public Image blackFade;
+    public GameObject _camera;
+    public Image blackFadeWorld;
+    public Image blackFadeOverlay;
     public GameObject titleText;
     public GameObject book;
 
@@ -43,6 +44,7 @@ public class MainMenuAnims : MonoBehaviour
     [SerializeField] float pageFlipBackwardAnimTime;
 
     [Header("Settings Move Anim")]
+    [SerializeField] GameObject settingsMenu;
     [SerializeField] float bookSlideSettingsTime = 0.75f;
     [SerializeField] float settingsBookPos = 0;
     [SerializeField] float settingsCameraPos = 0;
@@ -50,29 +52,12 @@ public class MainMenuAnims : MonoBehaviour
     [SerializeField] float delayAfterLeavingSettingsContents = 0.80f;
     [SerializeField] float delayFlipBookOnExitOptions = 0.2f;
 
-    //public RectTransform firstButton;
-    //public RectTransform secondButton;
-    //public RectTransform tutorialButton;
-    //public RectTransform thirdButton;
-
-    public GameObject cosmeticsSet;
-
-    public GameObject secondaryButtonSet;
-    public GameObject primaryButtonSet;
-
-
     public Animator playerAnimator;
 
-    [SerializeField] GameObject exitPanel;
     [SerializeField] MainMenuSceneTransition sceneTransitionStarter;
 
-    [Header("Start Sequence")]
-
     private bool isLoading = false;
-
-    [Header("Menus")]
     [SerializeField] private GraphicRaycaster mainMenu;
-    [SerializeField] private GameObject settingsMenu;
 
 
 
@@ -81,7 +66,10 @@ public class MainMenuAnims : MonoBehaviour
     private Sequence moveOutSecondarySequence;
 
     private bool isDone = false;
-
+    private void Awake()
+    {
+        settingsMenu.SetActive(false);
+    }
     void Start()
     {
         bookPageOneContainer.Disable();
@@ -89,9 +77,10 @@ public class MainMenuAnims : MonoBehaviour
 
         s = DOTween.Sequence();
 
-        blackFade.color = Color.white;
+        blackFadeWorld.color = Color.white;
+        blackFadeOverlay.color = new Color(1, 1, 1, 0);
         s.Append(titleText.transform.DOLocalMoveY(0, 1.65f).SetEase(Ease.OutBounce));
-        s.Append(blackFade.DOColor(new Color(1, 1, 1, 0), 2f).SetEase(Ease.InQuad));
+        s.Append(blackFadeWorld.DOColor(new Color(1, 1, 1, 0), 2f).SetEase(Ease.InQuad));
         s.Append(book.transform.DOLocalMoveX(bookMoveInPosition, 1.35f).SetEase(Ease.OutQuad));
 
         for (int i = 0; i < bookPageOne.Length; i++)
@@ -175,7 +164,7 @@ public class MainMenuAnims : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            playerAnimator.SetTrigger("Left Click");
+            //playerAnimator.SetTrigger("Left Click");
             if (!isDone)
             {
                 //s.Kill();
@@ -191,10 +180,6 @@ public class MainMenuAnims : MonoBehaviour
         }
     }
 
-    //public void ResetTrigger()
-    //{
-    //    playerAnimator.ResetTrigger("Left Click");
-    //}
 
 
     public IEnumerator startCoroutine()
@@ -252,6 +237,7 @@ public class MainMenuAnims : MonoBehaviour
     public void EnterOptionsScreen()
     {
         Sequence sweep = DOTween.Sequence();
+        settingsMenu.SetActive(true);
         float t = 0;
         bookPageOneContainer.Disable();
         for (int i = 0; i < bookPageOne.Length; i++)
@@ -264,8 +250,8 @@ public class MainMenuAnims : MonoBehaviour
         }
         t += pageFlipForwardDelay;
         sweep.InsertCallback(t, () => BookFlip.SetTrigger("FlipForwardPlus"));
-        sweep.Insert(t, blackFade.DOColor(new Color(1, 1, 1, .75f), bookSlideSettingsTime).SetEase(Ease.OutQuad));
-        sweep.Insert(t, camera.transform.DOLocalMoveX(settingsCameraPos, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
+        sweep.Insert(t, blackFadeOverlay.DOColor(new Color(1, 1, 1, .75f), bookSlideSettingsTime).SetEase(Ease.OutQuad));
+        sweep.Insert(t, _camera.transform.DOLocalMoveX(settingsCameraPos, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
         sweep.Insert(t, book.transform.DOLocalMoveX(settingsBookPos, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
         sweep.InsertCallback(t, () => bookPageOneTab.HideTab());
         sweep.InsertCallback(t, () => settingsTabs.OpenSettings());
@@ -279,8 +265,8 @@ public class MainMenuAnims : MonoBehaviour
         bookPageOneTab.RevealTab();
 
         float t = 0;
-        sweep.Insert(t, blackFade.DOColor(new Color(1, 1, 1, 0), bookSlideSettingsTime).SetEase(Ease.OutQuad));
-        sweep.Insert(t, camera.transform.DOLocalMoveX(0, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
+        sweep.Insert(t, blackFadeOverlay.DOColor(new Color(1, 1, 1, 0), bookSlideSettingsTime).SetEase(Ease.OutQuad));
+        sweep.Insert(t, _camera.transform.DOLocalMoveX(0, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
         sweep.Insert(t, book.transform.DOLocalMoveX(bookMoveInPosition, bookSlideSettingsTime).SetEase(Ease.InOutQuad));
         t += delayFlipBookOnExitOptions;
         sweep.InsertCallback(t, () => BookFlip.SetTrigger("FlipBackwardPlus"));
@@ -304,58 +290,5 @@ public class MainMenuAnims : MonoBehaviour
         isLoading = true;
         mainMenu.enabled = false;
         GameManager.Singleton.LoadTutorial(sceneTransitionStarter);
-    }
-
-    public void GoToCosmetics()
-    {
-        if (isLoading)
-        {
-            return;
-        }
-
-        //isLoading = true;
-        //Sequence cosmeticsInSequence = DOTween.Sequence();
-
-        //cosmeticsInSequence.Append(primaryButtonSet.transform.DOLocalMoveX(1500, 0.25f).SetEase(Ease.InQuad));
-        //cosmeticsInSequence.Append(secondaryButtonSet.transform.DOLocalMoveX(1500, 0.25f).SetEase(Ease.InQuad));
-        //cosmeticsInSequence.Append(book.transform.DOLocalMoveX(950, 0.5f).SetEase(Ease.InQuad));
-        //cosmeticsInSequence.Append(cosmeticsButton.transform.DOLocalMoveY(-650, 0.25f).SetEase(Ease.InQuad));
-        ////cosmeticsInSequence.Append(tutorialButton.transform.DOLocalMoveY(-650, 0.25f).SetEase(Ease.InQuad));
-        //cosmeticsInSequence.Append(titleText.transform.DOLocalMoveY(550, 0.25f).SetEase(Ease.InQuad));
-
-        //cosmeticsInSequence.Append(camera.transform.DOLocalMoveX(-8, 0.5f).SetEase(Ease.OutQuad));
-
-        //cosmeticsInSequence.Append(cosmeticsSet.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
-
-        //cosmeticsInSequence.OnComplete(() =>
-        //{
-        //    isLoading = false;
-        //});
-    }
-
-    public void GetOutOfCosmetics()
-    {
-        if (isLoading)
-        {
-            return;
-        }
-
-        //Sequence cosmeticsOutSequence = DOTween.Sequence();
-
-        //cosmeticsOutSequence.Append(cosmeticsSet.transform.DOLocalMoveX(-1800, 0.5f).SetEase(Ease.InQuad));
-
-        //cosmeticsOutSequence.Append(camera.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
-
-        //cosmeticsOutSequence.Append(titleText.transform.DOLocalMoveY(0, 0.25f).SetEase(Ease.OutQuad));
-        //cosmeticsOutSequence.Append(tutorialButton.transform.DOLocalMoveY(-449, 0.25f).SetEase(Ease.OutQuad));
-        //cosmeticsOutSequence.Append(cosmeticsButton.transform.DOLocalMoveY(-449, 0.25f).SetEase(Ease.OutQuad));
-        //cosmeticsOutSequence.Append(book.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutQuad));
-        //cosmeticsOutSequence.Append(secondaryButtonSet.transform.DOLocalMoveX(549, 0.25f).SetEase(Ease.OutQuad));
-        //cosmeticsOutSequence.Append(primaryButtonSet.transform.DOLocalMoveX(549, 0.25f).SetEase(Ease.OutQuad));
-
-        //cosmeticsOutSequence.OnComplete(() =>
-        //{
-        //    isLoading = false;
-        //});
     }
 }

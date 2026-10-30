@@ -76,7 +76,7 @@ public class TaterhopAI : EnemyBaseClass
     protected override void Update()
     {
         if (IsDead()) return;
-        freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
+        freezeEnemy = Vector2.Distance(transform.position, PlayerEntityManager.Singleton.currentPlayerLocation.position) > FreezeEnemyWhenThisFar;
     }
 
     protected override void Die()

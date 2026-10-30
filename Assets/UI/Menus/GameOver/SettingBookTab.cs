@@ -7,7 +7,6 @@ using System.Collections;
 
 public class SettingBookTab : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] int spriteScalar = 5;
     [SerializeField] TextMeshProUGUI text;
     [SerializeField] RectTransform tab;
     [SerializeField] bool StartRevealed = true;
@@ -103,6 +102,15 @@ public class SettingBookTab : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         quitPhase = 0;
         if (isQuitButton) text.text = LocalizationManager.GetLocalizedString("Exit Button");
         tabPosSequence.Play();
+    }
+
+    public void InstantUnhover()
+    {
+        tabPosSequence?.Kill();
+        text.gameObject.SetActive(false);
+        tab.localPosition = new Vector2(UnselectedPosX, tab.localPosition.y);
+        isSelected = false;
+        isHovering = false;
     }
 
     public void KeepSelected(bool selection)

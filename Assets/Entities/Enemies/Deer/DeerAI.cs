@@ -75,7 +75,7 @@ public class DeerAI : EnemyBaseClass
     protected override void Update()
     {
         if (IsDead()) return;
-        freezeEnemy = Vector2.Distance (transform.position, PlayerEntityManager.Singleton.transform.position) > FreezeEnemyWhenThisFar;
+        freezeEnemy = Vector2.Distance (transform.position, PlayerEntityManager.Singleton.GetPlayerPosition()) > FreezeEnemyWhenThisFar;
     }
 
     protected void Death()

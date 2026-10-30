@@ -44,7 +44,6 @@ public class CosmeticSwitching : MonoBehaviour
                 button.SelectCosmetic();
             }
         }
-
     }
 
     private void AddEvent(EventTrigger trigger, EventTriggerType type, System.Action callback)
@@ -62,12 +61,12 @@ public class CosmeticSwitching : MonoBehaviour
             cosmeticTitleText.text = LocalizationManager.GetLocalizedString(_button.cosmeticUnlock.UUID);
             if (_button.achievementUnlock != null) unlockDescriptionText.text = LocalizationManager.GetLocalizedString("Achieve") + LocalizationManager.GetLocalizedString(_button.achievementUnlock.name) + "\"";
             else unlockDescriptionText.text = "";
-            //_button.OnHover(_animTime, _scaleFactor);
         }
         else
         {
             selector.gameObject.SetActive(false);
-            //_button.OnUnhover(_animTime);
+            cosmeticTitleText.text = "";
+            unlockDescriptionText.text = "";
         }
     }
 
@@ -84,94 +83,4 @@ public class CosmeticSwitching : MonoBehaviour
             cosmeticButtons[index].SelectCosmetic();
         }
     }
-
-    //public void SwitchCosmetic(int direction)
-    //{
-    //    int currIndex = _database.AllCosmetics.IndexOf(currCosmetic);
-
-    //    int newIndex = currIndex + direction;
-    //    if (newIndex < 0)
-    //    {
-    //        newIndex = _database.AllCosmetics.Count - 1;
-    //    }
-
-    //    currCosmetic = _database.AllCosmetics[newIndex % _database.AllCosmetics.Count];
-
-    //    ChangeCosmeticText(currCosmetic.UUID);
-
-    //    UpdateSelectUI();
-    //}
-
-    //private void ChangeCosmeticText(string cosmeticName)
-    //{
-    //    string localizedCosmeticName = LocalizationManager.GetLocalizedString(cosmeticName);
-    //    cosmeticText.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText(localizedCosmeticName);
-    //    cosmeticText.transform.GetChild(1).GetComponent<TextMeshProUGUI>().SetText(localizedCosmeticName);
-    //}
-
-    //public void SetSelectedCosmetic()
-    //{
-    //    selectedCosmetic = currCosmetic;
-    //    PlayerCosmeticRenderer.Singleton.SetPlayerCosmetic(selectedCosmetic.Material);
-    //    UnlockDataManager.Singleton.SetCosmetic(selectedCosmetic);
-    //    UpdateSelectUI();
-    //}
-
-    //private void UpdateSelectUI()
-    //{
-    //    if (selectedCosmetic == currCosmetic)  // Selected cosmetic already
-    //    {
-    //        selectedText.SetActive(true);
-    //        selectButton.SetActive(false);
-    //        unlockText.SetActive(false);
-    //        lockedText.SetActive(false);
-    //    }
-    //    else
-    //    {
-    //        selectedText.SetActive(false);
-    //        if (UnlockDataManager.Singleton.IsCosmeticUnlocked(currCosmetic.UUID))
-    //        {   // Not selected cosmetic
-    //            selectButton.SetActive(true);
-    //            unlockText.SetActive(false);
-    //            lockedText.SetActive(false);
-    //        }
-    //        else // Locked cosmetic
-    //        {
-    //            selectButton.SetActive(false);
-    //            unlockText.SetActive(true);
-    //            lockedText.SetActive(true);
-
-    //            SetDescriptionText(currCosmetic);
-    //        }
-    //    }
-    //}
-
-    //public void SwapToSelectedCosmetic()
-    //{
-    //    player.material = selectedCosmetic.Material;
-    //}
-
-    //public void FixCosmeticToSelected()
-    //{
-    //    selectedCosmetic = currCosmetic = UnlockDataManager.Singleton.GetCurrentCosmetic();
-    //    SwapToSelectedCosmetic();
-    //    ChangeCosmeticText(currCosmetic.UUID);
-    //    unlockText.SetActive(false);
-    //    selectButton.SetActive(false);
-    //    selectedText.SetActive(true);
-    //    lockedText.SetActive(false);
-    //}
-
-    //private void SetDescriptionText(CosmeticData cosmetic)
-    //{
-    //    foreach (var ach in UnlockDataManager.Singleton.database.AllAchievements)
-    //    {
-    //        if (ach.RewardedCosmetic == cosmetic)
-    //        {
-    //            string localizedText = LocalizationManager.GetLocalizedString("Achieve") + LocalizationManager.GetLocalizedString(ach.name) + "\"";
-    //            //descriptionText.SetText("Achieve \"" + ach.name + "\"");
-    //            descriptionText.SetText(localizedText);
-    //        }
-    //    }
-    //}
 }

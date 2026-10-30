@@ -60,7 +60,7 @@ public class RatishAI : EnemyBaseClass
         public override void Update(RatishAI turret, float deltaT)
         {
             hideTimer -= deltaT;
-            float playerDistance = Vector2.Distance(turret.transform.position, PlayerEntityManager.Singleton.transform.position);
+            float playerDistance = Vector2.Distance(turret.transform.position, PlayerEntityManager.Singleton.currentPlayerLocation.position);
             if ((turret.playerDetected || turret.alwaysAggro) && hideTimer <= 0 && playerDistance >= turret.hideRange)
             {
                 turret.animator.Play("Emerge");
@@ -192,7 +192,7 @@ public class RatishAI : EnemyBaseClass
     {
         animator.Play("Attack");
         StandardEnemyBullet bulletInstance = Instantiate(bullet, firingPoint.position, firingPoint.rotation);
-        Vector2 playerDirection = PlayerEntityManager.Singleton.transform.position - transform.position;
+        Vector2 playerDirection = PlayerEntityManager.Singleton.currentPlayerLocation.position - transform.position;
         bulletInstance.SetDirection(playerDirection);
     }
 

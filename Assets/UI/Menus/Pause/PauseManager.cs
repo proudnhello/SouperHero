@@ -12,6 +12,7 @@ public class PauseManager : MonoBehaviour
     [SerializeField] SettingsTabs settingsTabs;
     [SerializeField] GameObject minimap;
     [SerializeField] GameObject playerMinimapIcon;
+    [SerializeField] GameObject buttonHolder;
 
     private void Start()
     {
@@ -56,8 +57,13 @@ public class PauseManager : MonoBehaviour
 
     void OnPauseButton()
     {
-        if (pauseScreen != null && !CookingScreen.Singleton.IsCooking) //Don't pause when cooking ---- Why????
+        if (pauseScreen != null && !CookingScreen.Singleton.IsCooking && GameManager.Singleton.GameRunning) //Don't pause when cooking ---- Why????
         {
+            if (settingsMenu.activeInHierarchy)
+            {
+                ReturnFromSettings();
+                return;
+            }
             isPaused = !isPaused;
             if (isPaused)
             {
@@ -74,6 +80,7 @@ public class PauseManager : MonoBehaviour
     {
         Time.timeScale = 0;
         pauseScreen.SetActive(true);
+        settingsMenu.SetActive(false);
         PlayerEntityManager.Singleton.input.Disable();
         isPaused = true;
 
@@ -111,6 +118,14 @@ public class PauseManager : MonoBehaviour
     {
         Time.timeScale = 0;
         settingsMenu.SetActive(true);
+        buttonHolder.SetActive(false);
+        settingsTabs.InstantOpenSettings();
+    }
+
+    public void ReturnFromSettings()
+    {
+        buttonHolder.SetActive(true);
+        settingsMenu.SetActive(false);
     }
 
     public void enableMiniMap()

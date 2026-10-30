@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PlayerMenuAnim : MonoBehaviour
 {
     private bool facingRight = false;
+    [SerializeField] Animator playerAnimator;
 
     void Update()
     {
@@ -18,5 +19,16 @@ public class PlayerMenuAnim : MonoBehaviour
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             facingRight = true;
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            playerAnimator.SetTrigger("Left Click");
+        }
+    }
+
+
+    public void ResetTrigger()
+    {
+        playerAnimator.ResetTrigger("Left Click");
     }
 }

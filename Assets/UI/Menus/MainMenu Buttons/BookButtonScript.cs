@@ -31,6 +31,12 @@ public class BookButtonScript : MonoBehaviour, IPointerClickHandler
         baseScale = rectTransform.localScale.x;
     }
 
+    private void OnEnable()
+    {
+        if (baseScale == 0) Start();
+        rectTransform.localScale = new Vector3(baseScale, baseScale, baseScale);
+    }
+
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
     {
         if (!this.enabled) return;
@@ -46,7 +52,7 @@ public class BookButtonScript : MonoBehaviour, IPointerClickHandler
     {
         isHovering = true;
         if (!this.enabled) return;
-        scaleTween = rectTransform.DOScale(_scaleFactor, _animTime).SetEase(Ease.OutCubic);
+        scaleTween = rectTransform.DOScale(_scaleFactor, _animTime).SetEase(Ease.OutCubic).SetUpdate(true);
         jitter.StartJitter();
     }
 
@@ -55,9 +61,9 @@ public class BookButtonScript : MonoBehaviour, IPointerClickHandler
         if (!isHovering) return;
         isHovering = false;
         if (!this.enabled || scaleTween == null) return;
-        float elapsed = scaleTween.Elapsed() == 0 ? _animTime : scaleTween.Elapsed();
+        float elapsed = !scaleTween.IsActive() ? _animTime : scaleTween.Elapsed();
         scaleTween.Kill();
-        rectTransform.DOScale(baseScale, elapsed).SetEase(Ease.OutCubic);
+        rectTransform.DOScale(baseScale, elapsed).SetEase(Ease.OutCubic).SetUpdate(true);
         jitter.EndJitter();
     }
 }

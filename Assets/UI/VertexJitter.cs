@@ -65,7 +65,7 @@ public class VertexJitter : MonoBehaviour
             CurrCurveScale = Mathf.Lerp(0, CurveScale, adjustedPercent);
             yield return null;
 
-            timeProgressed = easeIn ? timeProgressed + Time.deltaTime : timeProgressed - Time.deltaTime;
+            timeProgressed = easeIn ? timeProgressed + Time.unscaledDeltaTime : timeProgressed - Time.unscaledDeltaTime;
         }
 
         timeProgressed = easeIn ? easeAnimTime : 0;

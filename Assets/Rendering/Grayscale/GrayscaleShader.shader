@@ -21,6 +21,7 @@ Shader "Hidden/Grayscale"
         Pass
         {
             Name "Downscale"
+
         CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag

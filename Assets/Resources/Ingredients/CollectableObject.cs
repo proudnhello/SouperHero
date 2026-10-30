@@ -90,13 +90,11 @@ public class CollectableObject : Interactable
         {
             float heightVelocity = startOffset >= 0 && bounce == bounces ? 0 : BOUNCE_HEIGHT * (2 << bounce) * knockAdjustHeight;
             float lengthVelocity = startOffset >= 0 ? 0 : BOUNCE_DISTANCE * (2 << bounce) * knockAdjustLength;
-            Debug.Log(heightVelocity);
             float currTopPoint = startOffset >= 0 && bounce == bounces ? startOffset : .0001f;
             Vector2 currBottomPoint = groundPoint;
             while (currTopPoint > 0)
             {
                 currTopPoint += heightVelocity;
-                Debug.Log(bounce + ": " + heightVelocity + " " + currTopPoint);
 
                 if (!hasCollided)
                 {

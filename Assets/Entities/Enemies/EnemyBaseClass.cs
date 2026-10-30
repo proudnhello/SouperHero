@@ -46,7 +46,7 @@ public abstract class EnemyBaseClass : Entity
     protected void initEnemy()
     {
         _sprite = GetComponent<SpriteRenderer>();
-        _playerTransform = PlayerEntityManager.Singleton.gameObject.transform;
+        _playerTransform = PlayerEntityManager.Singleton.currentPlayerLocation;
         _initialColor = _sprite.color;
         _collider = GetComponent<Collider2D>();
         entityRenderer = new(this);

@@ -2,36 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class EndScreenNavigation : MonoBehaviour
 {
-    [SerializeField] GameObject exitPanel;
+    [SerializeField] MainMenuSceneTransition trans;
+    [SerializeField] GraphicRaycaster graphicRaycaster;
 
     // Goes back to Main Menu
+    int queueScene = -1;
     public void MainMenu()
     {
-        Time.timeScale = 1;
-        SceneManager.LoadScene(0);
+        if (isEnding) return;
+        queueScene = 0;
+        StartCoroutine(EndTutorialTransition());
     }
     // Restarts the Game
     public void RestartGame()
     {
+        if (isEnding) return;
+
         SaveManager.Singleton.ResetGameState();
-        Time.timeScale = 1;
-        SceneManager.LoadScene(1);
-    }
-    public void ShowExitConfirmation()
-    {
-        exitPanel.SetActive(true);
+        queueScene = 1;
+        StartCoroutine(EndTutorialTransition());
     }
 
-    public void ConfirmedExit()
-    {
-        Application.Quit();  // Quits the game in a build
-    }
 
-    public void ReturnFromExit()
+    bool isEnding = false;
+    IEnumerator EndTutorialTransition()
     {
-        exitPanel.SetActive(false);
+        graphicRaycaster.enabled = false;
+        isEnding = true;
+        trans.FadeToBlack();
+        yield return new WaitUntil(() => !trans.inProgress);
+        SceneManager.LoadScene(queueScene);
     }
 }

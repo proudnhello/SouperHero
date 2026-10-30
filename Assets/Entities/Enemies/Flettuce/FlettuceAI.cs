@@ -267,7 +267,7 @@ public class FlettuceAI : EnemyBaseClass
 
         private float EuclideanDist()
         {
-            return Vector2.Distance(_blackboard.transform.position, PlayerEntityManager.Singleton.transform.position);
+            return Vector2.Distance(_blackboard.transform.position, PlayerEntityManager.Singleton.currentPlayerLocation.position);
         }
 
     }

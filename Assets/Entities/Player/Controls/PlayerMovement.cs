@@ -18,7 +18,6 @@ public class PlayerMovement : MonoBehaviour
     internal float currrentMoveSpeed = 0;
     internal Vector2 currentDirection;
 
-    private bool canDash = true;
     private bool isDashing = false;
     float currPostDashHoldSpeedMult = 1;
     [SerializeField] private float dashDuration = 0.3f;

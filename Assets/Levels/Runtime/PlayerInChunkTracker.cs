@@ -6,10 +6,10 @@ public class PlayerInChunkTracker
     float CHECK_INTERVAL = 0.5f;
     public IEnumerator GetPlayerCurrentChunk(ChunkSpawner _ChunkSpawner, MapInfo MAP_INFO)
     {
-        Coord GetCurrentChunk(Vector2 pos)
-        {
-            return new Coord(pos / MAP_INFO.GRID_SIZE / MAP_INFO.CHUNK_SIZE);
-        }
+        //Coord GetCurrentChunk(Vector2 pos)
+        //{
+        //    return new Coord(pos / MAP_INFO.GRID_SIZE / MAP_INFO.CHUNK_SIZE);
+        //}
 
         // 0 = bottom left, 1 = bottom right, 2 = top left, 3 = top right
         int GetCurrentChunkCorner(Vector2 pos)
